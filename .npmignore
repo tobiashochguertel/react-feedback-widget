@@ -1,0 +1,7 @@
+src/
+rollup.config.js
+.gitignore
+*.log
+.DS_Store
+test/
+examples/
