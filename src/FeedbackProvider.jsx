@@ -11,8 +11,31 @@ import { getElementInfo, captureElementScreenshot } from './utils.js';
 
 const FeedbackContext = createContext(null);
 
-export const FeedbackProvider = ({ children, onSubmit }) => {
-  const [isActive, setIsActive] = useState(false);
+export const FeedbackProvider = ({
+  children,
+  onSubmit,
+  isActive: controlledIsActive,
+  onActiveChange
+}) => {
+  const [internalIsActive, setInternalIsActive] = useState(false);
+
+  // Determine if component is controlled
+  const isControlled = controlledIsActive !== undefined;
+  const isActive = isControlled ? controlledIsActive : internalIsActive;
+
+  // Handle state changes
+  const setIsActive = useCallback((newValue) => {
+    if (isControlled) {
+      // If controlled, call the callback
+      if (onActiveChange) {
+        onActiveChange(typeof newValue === 'function' ? newValue(isActive) : newValue);
+      }
+    } else {
+      // If uncontrolled, update internal state
+      setInternalIsActive(newValue);
+    }
+  }, [isControlled, onActiveChange, isActive]);
+
   const [hoveredElement, setHoveredElement] = useState(null);
   const [selectedElement, setSelectedElement] = useState(null);
   const [highlightStyle, setHighlightStyle] = useState({});

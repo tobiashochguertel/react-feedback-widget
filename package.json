@@ -1,6 +1,6 @@
 {
-  "name": "react-feedback-widget",
-  "version": "1.0.0",
+  "name": "murali-feedback-widget-react",
+  "version": "1.0.4",
   "description": "A visual feedback widget for React applications with element selection and screenshot capture",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -19,11 +19,11 @@
     "bug-report",
     "user-feedback"
   ],
-  "author": "Your Name ",
+  "author": "Murali <murali.g@hyperverge.co>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Murali1889/react-feedback-widget.git"
+    "url": "git+https://github.com/Murali1889/react-feedback-widget.git"
   },
   "peerDependencies": {
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
