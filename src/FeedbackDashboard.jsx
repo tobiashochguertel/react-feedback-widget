@@ -5,7 +5,7 @@ import {
   X, Trash2, CheckCircle, AlertCircle, Play, Ban, ChevronDown,
   Filter, RefreshCw, Loader2, MessageSquare, Inbox, Eye, Archive, Download,
   PauseCircle, XCircle, HelpCircle, Lightbulb, Bug, Zap, Image, Layers, FileCode, Video,
-  User, Mail, Globe, Monitor, Code, Copy, Check, ChevronRight, ZoomIn
+  User, Mail, Globe, Monitor, Code, Copy, Check, ChevronRight, ZoomIn, Search
 } from 'lucide-react';
 import { getTheme, fadeIn, slideInRight, scaleIn, dropdownSlideIn, pulse, spin, slideDown } from './theme.js';
 import { formatPath } from './utils.js';
@@ -243,6 +243,44 @@ const FilterTabs = styled.div`
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+  align-items: center;
+`;
+
+const SearchContainer = styled.div`
+  position: relative;
+  margin-right: 16px;
+  display: flex;
+  align-items: center;
+`;
+
+const SearchInput = styled.input`
+  height: 36px;
+  padding: 0 12px 0 36px;
+  border-radius: 8px;
+  border: 1px solid ${props => props.theme.colors.border};
+  background-color: ${props => props.theme.colors.inputBg};
+  color: ${props => props.theme.colors.textPrimary};
+  font-size: 13px;
+  width: 200px;
+  transition: all 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: ${props => props.theme.colors.borderFocus};
+    width: 240px;
+  }
+
+  &::placeholder {
+    color: ${props => props.theme.colors.textTertiary};
+  }
+`;
+
+const SearchIconWrapper = styled.div`
+  position: absolute;
+  left: 10px;
+  color: ${props => props.theme.colors.textTertiary};
+  pointer-events: none;
+  display: flex;
   align-items: center;
 `;
 
@@ -1025,6 +1063,7 @@ export const FeedbackDashboard = ({
   const [feedbackList, setFeedbackList] = useState([]);
   const [expandedRow, setExpandedRow] = useState(null);
   const [filterStatus, setFilterStatus] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const [screenshotModal, setScreenshotModal] = useState({ isOpen: false, image: null });
   const [statusChangeModal, setStatusChangeModal] = useState({
     isOpen: false,
@@ -1210,12 +1249,28 @@ export const FeedbackDashboard = ({
 
   // Filter feedback
   const filteredFeedback = useMemo(() => {
-    if (filterStatus === 'all') return feedbackList;
-    return feedbackList.filter(item => {
-      const itemStatus = normalizeStatusKey(item.status || 'new', mergedStatuses);
-      return itemStatus === filterStatus;
-    });
-  }, [feedbackList, filterStatus, mergedStatuses]);
+    let filtered = feedbackList;
+
+    // Filter by status
+    if (filterStatus !== 'all') {
+      filtered = filtered.filter(item => {
+        const itemStatus = normalizeStatusKey(item.status || 'new', mergedStatuses);
+        return itemStatus === filterStatus;
+      });
+    }
+
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      filtered = filtered.filter(item => {
+        const feedbackText = (item.feedback || item.description || '').toLowerCase();
+        // You can expand this to search other fields if needed
+        return feedbackText.includes(query);
+      });
+    }
+
+    return filtered;
+  }, [feedbackList, filterStatus, searchQuery, mergedStatuses]);
 
   // Get status counts
   const statusCounts = useMemo(() => {
@@ -1312,6 +1367,16 @@ export const FeedbackDashboard = ({
               </HeaderSubtitle>
             </HeaderTitleSection>
             <HeaderActions>
+              <SearchContainer>
+                <SearchIconWrapper>
+                  <Search size={14} />
+                </SearchIconWrapper>
+                <SearchInput
+                  placeholder="Search feedback..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </SearchContainer>
               <RefreshButton onClick={handleRefresh} disabled={isLoading}>
                 {isLoading ? (
                   <LoadingSpinner size={16} />
