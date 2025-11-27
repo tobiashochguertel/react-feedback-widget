@@ -187,36 +187,38 @@ const StyledTextArea = styled.textarea`
 `;
 
 const DragDropZone = styled.div`
-  border: 2px dashed ${props => props.$isDragging ? props.theme.colors.highlightBorder : props.theme.colors.border};
-  background: ${props => props.$isDragging ? props.theme.colors.highlightBg : props.theme.colors.inputBg};
+  border: 2px dashed ${props => props.$isDragging ? props.theme.colors.highlightBorder : 'transparent'};
+  background: ${props => props.$isDragging ? props.theme.colors.highlightBg : 'transparent'};
   border-radius: 12px;
-  padding: 32px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
-  min-height: 120px;
+  min-height: 80px;
   text-align: center;
+  margin-top: 8px;
 
   &:hover {
-    border-color: ${props => props.theme.colors.textSecondary};
+    border-color: ${props => props.theme.colors.border};
     background: ${props => props.theme.colors.hoverBg};
   }
 `;
 
 const DropText = styled.p`
   margin: 0;
-  font-size: 14px;
+  font-size: 13px;
   color: ${props => props.theme.colors.textSecondary};
   font-weight: 500;
+  opacity: 0.8;
 `;
 
 const DropSubText = styled.p`
   margin: 0;
-  font-size: 12px;
+  font-size: 11px;
   color: ${props => props.theme.colors.textTertiary};
 `;
 
@@ -660,22 +662,21 @@ export const FeedbackModal = ({
               $isDragging={isDragging}
               onClick={() => screenshotInputRef.current?.click()}
             >
-              <Upload size={32} color={isDragging ? theme.colors.highlightBorder : theme.colors.textTertiary} />
-              <div>
-                <DropText>Click to upload or drag and drop</DropText>
-                <DropSubText>Images, Videos, PDF, or any file</DropSubText>
-              </div>
+              {isDragging && <Upload size={24} color={theme.colors.highlightBorder} />}
               
-              <UploadButtons>
-                <UploadButton onClick={(e) => { e.stopPropagation(); screenshotInputRef.current?.click(); }}>
-                  <Image size={16} />
-                  Image
-                </UploadButton>
-                <UploadButton onClick={(e) => { e.stopPropagation(); videoInputRef.current?.click(); }}>
-                  <Video size={16} />
-                  Video
-                </UploadButton>
-              </UploadButtons>
+              {!isDragging && (
+                <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                   <UploadButton onClick={(e) => { e.stopPropagation(); screenshotInputRef.current?.click(); }}>
+                    <Image size={14} />
+                    Screenshot
+                  </UploadButton>
+                  <UploadButton onClick={(e) => { e.stopPropagation(); videoInputRef.current?.click(); }}>
+                    <Video size={14} />
+                    Video
+                  </UploadButton>
+                  <span style={{ fontSize: 12, color: theme.colors.textTertiary }}>or drag files here</span>
+                </div>
+              )}
             </DragDropZone>
           )}
 

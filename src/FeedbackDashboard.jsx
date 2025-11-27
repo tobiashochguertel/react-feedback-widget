@@ -113,20 +113,27 @@ const DashboardPanel = styled.div`
 `;
 
 const DashboardHeader = styled.div`
-  background: ${props => props.theme.mode === 'dark'
-    ? 'linear-gradient(180deg, #1e293b 0%, #0f172a 100%)'
-    : 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)'};
-  border-bottom: 1px solid ${props => props.theme.mode === 'dark'
-    ? 'rgba(148, 163, 184, 0.1)'
-    : 'rgba(226, 232, 240, 0.8)'};
-  padding-bottom: 16px;
+  background: ${props => props.theme.colors.modalBg};
+  border-bottom: 1px solid ${props => props.theme.colors.border};
+  display: flex;
+  flex-direction: column;
 `;
 
-const HeaderContent = styled.div`
-  padding: 24px 28px 16px 28px;
+const HeaderTop = styled.div`
+  padding: 20px 24px;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  border-bottom: 1px solid ${props => props.theme.colors.border}80;
+`;
+
+const HeaderBottom = styled.div`
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background-color: ${props => props.theme.colors.headerBg};
 `;
 
 const HeaderTitleSection = styled.div`
@@ -239,7 +246,6 @@ const CloseButton = styled.button`
 `;
 
 const FilterTabs = styled.div`
-  padding: 0 28px;
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
@@ -248,26 +254,27 @@ const FilterTabs = styled.div`
 
 const SearchContainer = styled.div`
   position: relative;
-  margin-right: 16px;
   display: flex;
   align-items: center;
+  flex: 1;
+  max-width: 240px;
 `;
 
 const SearchInput = styled.input`
-  height: 36px;
-  padding: 0 12px 0 36px;
-  border-radius: 8px;
+  height: 32px;
+  padding: 0 12px 0 32px;
+  border-radius: 6px;
   border: 1px solid ${props => props.theme.colors.border};
   background-color: ${props => props.theme.colors.inputBg};
   color: ${props => props.theme.colors.textPrimary};
   font-size: 13px;
-  width: 200px;
+  width: 100%;
   transition: all 0.2s ease;
 
   &:focus {
     outline: none;
     border-color: ${props => props.theme.colors.borderFocus};
-    width: 240px;
+    background-color: ${props => props.theme.mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'white'};
   }
 
   &::placeholder {
@@ -1354,7 +1361,7 @@ export const FeedbackDashboard = ({
       <DashboardBackdrop onClick={onClose} />
       <DashboardPanel>
         <DashboardHeader>
-          <HeaderContent>
+          <HeaderTop>
             <HeaderTitleSection>
               <HeaderTitle>
                 {title}
@@ -1367,16 +1374,6 @@ export const FeedbackDashboard = ({
               </HeaderSubtitle>
             </HeaderTitleSection>
             <HeaderActions>
-              <SearchContainer>
-                <SearchIconWrapper>
-                  <Search size={14} />
-                </SearchIconWrapper>
-                <SearchInput
-                  placeholder="Search feedback..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </SearchContainer>
               <RefreshButton onClick={handleRefresh} disabled={isLoading}>
                 {isLoading ? (
                   <LoadingSpinner size={16} />
@@ -1393,45 +1390,58 @@ export const FeedbackDashboard = ({
                 <X size={20} color={theme.colors.textSecondary} />
               </CloseButton>
             </HeaderActions>
-          </HeaderContent>
+          </HeaderTop>
 
-          <FilterTabs>
-            <FilterTab
-              $isAll
-              $isActive={filterStatus === 'all'}
-              onClick={() => setFilterStatus('all')}
-            >
-              All
-              <FilterCount $isActive={filterStatus === 'all'}>
-                {feedbackList.length}
-              </FilterCount>
-            </FilterTab>
-            {Object.entries(visibleStatuses).map(([key, rawStatusData]) => {
-              // Skip invalid/undefined status entries
-              if (!rawStatusData || typeof rawStatusData !== 'object') return null;
-              const count = statusCounts[key] || 0;
-              const statusData = getStatusData(key, visibleStatuses);
-              const IconComponent = getIconComponent(statusData.icon);
-              return (
-                <FilterTab
-                  key={key}
-                  $isActive={filterStatus === key}
-                  $statusColor={statusData.color}
-                  $statusBg={statusData.bgColor}
-                  $statusTextColor={statusData.textColor}
-                  onClick={() => setFilterStatus(key)}
-                >
-                  <IconComponent size={14} />
-                  {statusData.label}
-                  {count > 0 && (
-                    <FilterCount $isActive={filterStatus === key}>
-                      {count}
-                    </FilterCount>
-                  )}
-                </FilterTab>
-              );
-            })}
-          </FilterTabs>
+          <HeaderBottom>
+            <FilterTabs>
+              <FilterTab
+                $isAll
+                $isActive={filterStatus === 'all'}
+                onClick={() => setFilterStatus('all')}
+              >
+                All
+                <FilterCount $isActive={filterStatus === 'all'}>
+                  {feedbackList.length}
+                </FilterCount>
+              </FilterTab>
+              {Object.entries(visibleStatuses).map(([key, rawStatusData]) => {
+                // Skip invalid/undefined status entries
+                if (!rawStatusData || typeof rawStatusData !== 'object') return null;
+                const count = statusCounts[key] || 0;
+                const statusData = getStatusData(key, visibleStatuses);
+                const IconComponent = getIconComponent(statusData.icon);
+                return (
+                  <FilterTab
+                    key={key}
+                    $isActive={filterStatus === key}
+                    $statusColor={statusData.color}
+                    $statusBg={statusData.bgColor}
+                    $statusTextColor={statusData.textColor}
+                    onClick={() => setFilterStatus(key)}
+                  >
+                    <IconComponent size={14} />
+                    {statusData.label}
+                    {count > 0 && (
+                      <FilterCount $isActive={filterStatus === key}>
+                        {count}
+                      </FilterCount>
+                    )}
+                  </FilterTab>
+                );
+              })}
+            </FilterTabs>
+
+            <SearchContainer>
+              <SearchIconWrapper>
+                <Search size={14} />
+              </SearchIconWrapper>
+              <SearchInput
+                placeholder="Search feedback..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </SearchContainer>
+          </HeaderBottom>
         </DashboardHeader>
 
         <Content>
