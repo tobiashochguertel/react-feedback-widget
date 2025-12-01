@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import styled, { ThemeProvider, keyframes } from 'styled-components';
-import { 
-  X, Send, Paperclip, ChevronRight, 
+import {
+  X, Send, Paperclip, ChevronRight,
   Monitor, Globe, Code, Layers, FileCode,
-  Copy, Check, Video, Upload, Image, Trash2, FileText
+  Copy, Check, Video, Upload, Image, Trash2, FileText,
+  Database, ExternalLink, MessageSquare
 } from 'lucide-react';
 import { getTheme } from './theme.js';
 import { formatPath } from './utils.js';
+import { showError } from './ErrorToast.jsx';
 
 
 
@@ -28,8 +30,8 @@ const slideUp = keyframes`
 const ModalBackdrop = styled.div`
   position: fixed;
   inset: 0;
-  background-color: ${props => props.theme.mode === 'dark' ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.2)'};
-  backdrop-filter: blur(8px);
+  background-color: ${props => props.theme.mode === 'dark' ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.5)'};
+  backdrop-filter: blur(4px);
   z-index: 99998;
   animation: ${fadeIn} 0.2s ease-out;
 `;
@@ -39,16 +41,15 @@ const ModalContainer = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 520px;
+  width: 480px;
   max-width: 95vw;
   max-height: 90vh;
   display: flex;
   flex-direction: column;
   background-color: ${props => props.theme.colors.modalBg};
-  border: 1px solid ${props => props.theme.colors.border};
-  border-radius: 20px;
+  border-radius: 16px;
   box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.25),
+    0 20px 60px -12px rgba(0, 0, 0, 0.25),
     0 0 0 1px rgba(0,0,0,0.05);
   z-index: 99999;
   animation: ${slideUp} 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -67,38 +68,31 @@ const ModalContainer = styled.div`
 
 // --- HEADER ---
 const ModalHeader = styled.div`
-  padding: 20px 24px;
+  padding: 16px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid ${props => props.theme.mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)'};
 `;
 
 const TitleGroup = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  align-items: center;
+  gap: 8px;
 `;
 
 const ModalTitle = styled.h3`
   margin: 0;
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 600;
   color: ${props => props.theme.colors.textPrimary};
-  letter-spacing: -0.01em;
-`;
-
-const ModalSubtitle = styled.span`
-  font-size: 13px;
-  color: ${props => props.theme.colors.textSecondary};
 `;
 
 const CloseButton = styled.button`
   border: none;
   background: transparent;
   cursor: pointer;
-  padding: 8px;
-  border-radius: 8px;
+  padding: 6px;
+  border-radius: 50%;
   color: ${props => props.theme.colors.textSecondary};
   transition: all 0.2s;
   display: flex;
@@ -113,7 +107,7 @@ const CloseButton = styled.button`
 
 // --- BODY & FORM ---
 const ModalBody = styled.div`
-  padding: 20px 24px;
+  padding: 0 20px 20px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -121,320 +115,207 @@ const ModalBody = styled.div`
   flex: 1;
 `;
 
-const PillContainer = styled.div`
+const TypeSelector = styled.div`
   display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding-bottom: 2px;
-  scrollbar-width: none; 
-  &::-webkit-scrollbar { display: none; }
+  gap: 6px;
+  flex-wrap: wrap;
 `;
 
-const Pill = styled.button`
-  border: none;
-  padding: 8px 14px;
-  border-radius: 20px;
-  font-size: 13px;
+const TypePill = styled.button`
+  border: 1px solid ${props => props.$active ? 'transparent' : props.theme.colors.border};
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-  white-space: nowrap;
+  transition: all 0.2s;
   
   background: ${props => props.$active 
-    ? (props.theme.mode === 'dark' ? '#3b82f6' : '#2563eb') 
-    : props.theme.colors.hoverBg};
+    ? (props.theme.mode === 'dark' ? 'rgba(59, 130, 246, 0.2)' : '#eff6ff') 
+    : 'transparent'};
   
   color: ${props => props.$active 
-    ? '#ffffff' 
+    ? (props.theme.mode === 'dark' ? '#60a5fa' : '#2563eb') 
     : props.theme.colors.textSecondary};
+    
+  border-color: ${props => props.$active 
+    ? (props.theme.mode === 'dark' ? '#60a5fa' : '#bfdbfe') 
+    : props.theme.colors.border};
 
   &:hover {
-    background: ${props => props.$active 
-      ? (props.theme.mode === 'dark' ? '#2563eb' : '#1d4ed8') 
-      : props.theme.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)'};
+    background: ${props => props.$active ? '' : props.theme.colors.hoverBg};
   }
-`;
-
-const InputWrapper = styled.div`
-  position: relative;
 `;
 
 const StyledTextArea = styled.textarea`
   width: 100%;
-  min-height: 120px;
-  padding: 16px;
-  border: none;
-  border-radius: 12px;
+  min-height: 100px;
+  padding: 12px;
+  border: 2px solid ${props => props.theme.colors.border};
+  border-radius: 10px;
   background-color: ${props => props.theme.colors.inputBg};
   color: ${props => props.theme.colors.textPrimary};
   font-family: inherit;
-  font-size: 15px;
-  line-height: 1.6;
+  font-size: 14px;
+  line-height: 1.5;
   resize: none;
   outline: none;
   box-sizing: border-box;
-  box-shadow: inset 0 0 0 1px ${props => props.theme.colors.border};
-  transition: all 0.2s;
+  transition: border-color 0.2s, background-color 0.2s;
 
   &::placeholder {
     color: ${props => props.theme.colors.textTertiary};
   }
 
   &:focus {
-    box-shadow: inset 0 0 0 2px ${props => props.theme.mode === 'dark' ? '#3b82f6' : '#2563eb'};
-    background-color: ${props => props.theme.mode === 'dark' ? 'rgba(0,0,0,0.2)' : '#ffffff'};
+    border-color: ${props => props.theme.mode === 'dark' ? '#3b82f6' : '#93c5fd'};
+    background-color: ${props => props.theme.colors.cardBg};
+  }
+
+  &:hover:not(:focus) {
+    border-color: ${props => props.theme.colors.textTertiary};
   }
 `;
 
-const DragDropZone = styled.div`
-  border: 2px dashed ${props => props.$isDragging ? props.theme.colors.highlightBorder : 'transparent'};
-  background: ${props => props.$isDragging ? props.theme.colors.highlightBg : 'transparent'};
-  border-radius: 12px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  min-height: 80px;
-  text-align: center;
-  margin-top: 8px;
-
-  &:hover {
-    border-color: ${props => props.theme.colors.border};
-    background: ${props => props.theme.colors.hoverBg};
-  }
-`;
-
-const DropText = styled.p`
-  margin: 0;
-  font-size: 13px;
-  color: ${props => props.theme.colors.textSecondary};
-  font-weight: 500;
-  opacity: 0.8;
-`;
-
-const DropSubText = styled.p`
-  margin: 0;
-  font-size: 11px;
-  color: ${props => props.theme.colors.textTertiary};
-`;
-
-// --- ATTACHMENT CARD ---
-const UploadButtons = styled.div`
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-`;
-
-const UploadButton = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
+const MediaPreview = styled.div`
+  position: relative;
   border-radius: 8px;
-  border: 1px solid ${props => props.theme.colors.border};
-  background: ${props => props.theme.colors.cardBg};
-  color: ${props => props.theme.colors.textSecondary};
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 500;
-  transition: all 0.2s;
-
-  &:hover {
-    border-color: ${props => props.theme.colors.textPrimary};
-    color: ${props => props.theme.colors.textPrimary};
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px ${props => props.theme.colors.shadow};
-  }
-`;
-
-const AttachmentCard = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px;
-  border-radius: 12px;
-  background: ${props => props.theme.colors.hoverBg};
-  border: 1px solid ${props => props.theme.colors.border};
-`;
-
-const Thumbnail = styled.div`
-  width: 56px;
-  height: 40px;
-  border-radius: 6px;
-  background-image: url(${props => props.src});
-  background-size: cover;
-  background-position: center;
-  border: 1px solid rgba(0,0,0,0.1);
-  flex-shrink: 0;
-  background-color: white;
+  overflow: hidden;
+  background: #000;
+  max-height: 160px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${props => props.theme.colors.textPrimary};
+  
+  img, video {
+    max-width: 100%;
+    max-height: 160px;
+    object-fit: contain;
+  }
 `;
 
-const AttachmentInfo = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-`;
-
-const AttachmentName = styled.span`
-  font-size: 13px;
-  font-weight: 500;
-  color: ${props => props.theme.colors.textPrimary};
-`;
-
-const AttachmentMeta = styled.span`
-  font-size: 12px;
-  color: ${props => props.theme.colors.textSecondary};
-  display: flex;
-  align-items: center;
-  gap: 6px;
-`;
-
-// --- TECHNICAL DRAWER (Grid Layout) ---
-const DetailsDrawer = styled.div`
-  margin: 0;
-  background: ${props => props.theme.mode === 'dark' ? '#0f172a' : '#f8fafc'};
-  border-top: 1px solid ${props => props.theme.colors.border};
-`;
-
-const DrawerTrigger = styled.button`
-  width: 100%;
-  padding: 12px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+const RemoveMediaButton = styled.button`
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0,0,0,0.6);
   border: none;
-  background: transparent;
-  color: ${props => props.theme.colors.textSecondary};
-  font-size: 12px;
-  font-weight: 600;
+  border-radius: 4px;
+  padding: 4px;
+  color: white;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   
   &:hover {
-    color: ${props => props.theme.colors.textPrimary};
-    background: ${props => props.theme.colors.hoverBg};
+    background: rgba(239, 68, 68, 0.8);
   }
 `;
 
-const AnimatedChevronRight = styled(ChevronRight)`
-  transition: transform 0.2s;
-  transform: ${props => (props.$isOpen ? 'rotate(90deg)' : 'none')};
-`;
-
-const DrawerContent = styled.div`
-  padding: 0 24px 20px 24px;
-  animation: ${fadeIn} 0.2s ease;
-`;
-
-const DetailsGrid = styled.div`
-  display: grid;
-  grid-template-columns: auto minmax(80px, auto) 1fr;
-  column-gap: 12px;
-  row-gap: 8px;
-  align-items: center;
-  font-size: 12px;
-`;
-
-const IconWrapper = styled.div`
-  color: ${props => props.theme.colors.textTertiary};
+const EmptyMediaSlot = styled.div`
+  border: 1px dashed ${props => props.theme.colors.border};
+  border-radius: 8px;
+  padding: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
-`;
-
-const Label = styled.span`
+  gap: 12px;
   color: ${props => props.theme.colors.textSecondary};
-  font-weight: 500;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background-color: ${props => props.theme.colors.hoverBg};
+  opacity: 0.6;
+
+  &:hover {
+    opacity: 1;
+    border-color: ${props => props.theme.colors.borderFocus};
+  }
 `;
 
-const Value = styled.div`
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  color: ${props => props.theme.colors.textPrimary};
-  background: ${props => props.theme.mode === 'dark' ? 'rgba(255,255,255,0.05)' : '#ffffff'};
-  border: 1px solid ${props => props.theme.colors.border};
-  padding: 4px 8px;
-  border-radius: 6px;
+const Footer = styled.div`
+  padding: 16px 20px;
+  background: ${props => props.theme.colors.headerBg};
+  border-top: 1px solid ${props => props.theme.colors.border};
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  min-height: 28px;
-  word-break: break-all;
 `;
 
-const IconButton = styled.button`
-  background: transparent;
-  border: none;
-  padding: 4px;
-  cursor: pointer;
-  color: ${props => props.theme.colors.textTertiary};
+const IntegrationRow = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+`;
+
+const IntegrationIcon = styled.button`
+  width: 24px;
+  height: 24px;
   border-radius: 4px;
   display: flex;
   align-items: center;
-  
-  &:hover {
-    color: ${props => props.theme.colors.textPrimary};
-    background: ${props => props.theme.colors.hoverBg};
-  }
-`;
+  justify-content: center;
+  border: 1px solid ${props => props.$active ? 'transparent' : props.theme.colors.border};
+  background: ${props => props.$active 
+    ? (props.$type === 'jira' ? '#0052CC' : props.$type === 'sheets' ? '#34A853' : props.theme.colors.textSecondary)
+    : 'transparent'};
+  color: ${props => props.$active ? 'white' : props.theme.colors.textTertiary};
+  cursor: pointer;
+  transition: all 0.15s;
+  padding: 0;
 
-// --- FOOTER ---
-const Footer = styled.div`
-  padding: 16px 24px 24px 24px;
-  display: flex;
-  justify-content: flex-end;
-  background: ${props => props.theme.colors.modalBg};
+  &:hover {
+    border-color: ${props => props.$active ? 'transparent' : props.theme.colors.textSecondary};
+    color: ${props => props.$active ? 'white' : props.theme.colors.textSecondary};
+  }
 `;
 
 const SubmitButton = styled.button`
-  background: ${props => props.theme.mode === 'dark' ? '#3b82f6' : '#2563eb'};
+  background: ${props => props.theme.colors.btnPrimaryBg};
   color: white;
   border: none;
-  padding: 10px 24px;
-  border-radius: 10px;
+  padding: 8px 20px;
+  border-radius: 6px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   transition: all 0.2s;
-  box-shadow: 0 4px 12px ${props => props.theme.mode === 'dark' ? 'rgba(59, 130, 246, 0.4)' : 'rgba(37, 99, 235, 0.3)'};
 
   &:hover:not(:disabled) {
+    background: ${props => props.theme.colors.btnPrimaryHover};
     transform: translateY(-1px);
-    background: ${props => props.theme.mode === 'dark' ? '#2563eb' : '#1d4ed8'};
-  }
-
-  &:active:not(:disabled) {
-    transform: translateY(0);
   }
 
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
-    box-shadow: none;
   }
 `;
 
-// --- DATA ---
-const FEEDBACK_TYPES = [
-  { id: 'bug', label: 'Report Bug', placeholder: 'What went wrong? Steps to reproduce...' },
-  { id: 'feature', label: 'Feature Request', placeholder: 'What feature would make your life easier?' },
-  { id: 'improvement', label: 'Improvement', placeholder: 'How can we make this experience better?' },
-  { id: 'other', label: 'Other', placeholder: 'What is on your mind?' },
-];
+// Jira Icon SVG
+const JiraIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M11.571 11.513H0a5.218 5.218 0 0 0 5.232 5.215h2.13v2.057A5.215 5.215 0 0 0 12.575 24V12.518a1.005 1.005 0 0 0-1.005-1.005zm5.723-5.756H5.736a5.215 5.215 0 0 0 5.215 5.214h2.129v2.058a5.218 5.218 0 0 0 5.215 5.214V6.758a1.001 1.001 0 0 0-1.001-1.001zM23.013 0H11.455a5.215 5.215 0 0 0 5.215 5.215h2.129v2.057A5.215 5.215 0 0 0 24 12.483V1.005A1.005 1.005 0 0 0 23.013 0z"/>
+  </svg>
+);
 
-// --- COMPONENT ---
+// Google Sheets Icon SVG
+const SheetsIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19.5 3H4.5C3.12 3 2 4.12 2 5.5v13C2 19.88 3.12 21 4.5 21h15c1.38 0 2.5-1.12 2.5-2.5v-13C22 4.12 20.88 3 19.5 3zM9 17H6v-2h3v2zm0-4H6v-2h3v2zm0-4H6V7h3v2zm9 8h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V7h6v2z"/>
+  </svg>
+);
+
+const FEEDBACK_TYPES = [
+  { id: 'bug', label: 'Bug' },
+  { id: 'feature', label: 'Feature' },
+  { id: 'improvement', label: 'Improvement' },
+  { id: 'other', label: 'Other' },
+];
 
 export const FeedbackModal = ({
   isOpen,
@@ -446,98 +327,80 @@ export const FeedbackModal = ({
   onSubmit,
   userName,
   userEmail,
-  mode = 'light'
+  mode = 'light',
+  integrations = null
 }) => {
   const [feedbackType, setFeedbackType] = useState('bug');
   const [description, setDescription] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
-  const [copied, setCopied] = useState(false);
   const [manualScreenshot, setManualScreenshot] = useState(null);
   const [manualVideo, setManualVideo] = useState(null);
   const [manualFile, setManualFile] = useState(null);
-  const [isDragging, setIsDragging] = useState(false);
+
+  const [selectedIntegrations, setSelectedIntegrations] = useState({
+    local: true,
+    jira: false,
+    sheets: false
+  });
+  
+  const [videoUrl, setVideoUrl] = useState(null);
   
   const descriptionRef = useRef(null);
   const screenshotInputRef = useRef(null);
   const videoInputRef = useRef(null);
   const theme = getTheme(mode);
+  
+  const hasJira = integrations?.jira?.enabled;
+  const hasSheets = integrations?.sheets?.enabled;
+
+  // Memoize video URL to prevent re-rendering on typing
+  useEffect(() => {
+    let url = null;
+    if (videoBlob) {
+      url = URL.createObjectURL(videoBlob);
+    } else if (manualVideo) {
+      url = URL.createObjectURL(manualVideo);
+    }
+    
+    setVideoUrl(url);
+
+    return () => {
+      if (url) URL.revokeObjectURL(url);
+    };
+  }, [videoBlob, manualVideo]);
 
   useEffect(() => {
     if (isOpen) {
-      // Reset ALL state when modal opens
       setFeedbackType('bug');
       setDescription('');
       setIsSubmitting(false);
-      setShowDetails(false);
-      setCopied(false);
       setManualScreenshot(null);
       setManualVideo(null);
       setManualFile(null);
-      setIsDragging(false);
-      if (screenshotInputRef.current) screenshotInputRef.current.value = '';
-      if (videoInputRef.current) videoInputRef.current.value = '';
+      setSelectedIntegrations({
+        local: true,
+        jira: false,
+        sheets: false
+      });
       setTimeout(() => descriptionRef.current?.focus(), 150);
     }
   }, [isOpen]);
 
   const handleFile = (file) => {
     if (!file) return;
-    
-    // Reset other states
     setManualScreenshot(null);
     setManualVideo(null);
     setManualFile(null);
     
-    // Handle Images
     if (file.type.startsWith('image/')) {
       const reader = new FileReader();
       reader.onloadend = () => setManualScreenshot(reader.result);
       reader.readAsDataURL(file);
-    } 
-    // Handle Videos
-    else if (file.type.startsWith('video/')) {
+    } else if (file.type.startsWith('video/')) {
       setManualVideo(file);
-    }
-    // Handle Other Files (PDF, etc.)
-    else {
+    } else {
       setManualFile(file);
     }
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-    
-    const items = e.dataTransfer.items;
-    if (items) {
-      for (let i = 0; i < items.length; i++) {
-        if (items[i].kind === 'file') {
-          handleFile(items[i].getAsFile());
-          return;
-        }
-      }
-    } else if (e.dataTransfer.files.length > 0) {
-      handleFile(e.dataTransfer.files[0]);
-    }
-  };
-
-  const handleScreenshotUpload = (e) => {
-    handleFile(e.target.files[0]);
-  };
-
-  const handleVideoUpload = (e) => {
-    handleFile(e.target.files[0]);
   };
 
   const handleSubmit = async () => {
@@ -547,14 +410,10 @@ export const FeedbackModal = ({
     const feedbackData = {
       feedback: description.trim(),
       type: feedbackType,
-
-      // Conditionally add screenshot or video data
       screenshot: screenshot || manualScreenshot,
       videoBlob: videoBlob || manualVideo,
       attachment: manualFile,
       eventLogs: eventLogs || [],
-
-      // Meta data
       timestamp: new Date().toISOString(),
       url: window.location.href,
       component: elementInfo?.reactComponent || elementInfo?.tagName,
@@ -566,246 +425,127 @@ export const FeedbackModal = ({
       },
       userName: userName,
       userEmail: userEmail,
+      selectedIntegrations: selectedIntegrations,
     };
 
     try {
       await onSubmit(feedbackData);
-      // Reset state after successful submission
       setIsSubmitting(false);
-      setDescription('');
-      setFeedbackType('bug');
-      setManualScreenshot(null);
-      setManualVideo(null);
-      // Parent component will handle closing
+      onClose(); // Close modal on success
     } catch (error) {
+      showError(error.message || 'Failed to submit feedback.', 'Error');
       setIsSubmitting(false);
     }
   };
 
-  const handleCopySource = () => {
-    if (!elementInfo?.sourceFile) return;
-    const path = `${elementInfo.sourceFile.fileName}:${elementInfo.sourceFile.lineNumber}`;
-    navigator.clipboard.writeText(path);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const toggleIntegration = (key) => {
+    setSelectedIntegrations(prev => ({
+      ...prev,
+      [key]: !prev[key]
+    }));
   };
 
-  if (!isOpen) {
-    return null;
-  }
-  const currentType = FEEDBACK_TYPES.find(t => t.id === feedbackType);
+  if (!isOpen) return null;
+
+  const activeMedia = screenshot || manualScreenshot || videoBlob || manualVideo;
 
   return createPortal(
     <ThemeProvider theme={theme}>
       <ModalBackdrop onClick={onClose} />
       <ModalContainer>
-        
-        {/* Header */}
         <ModalHeader>
           <TitleGroup>
+            <MessageSquare size={18} color={theme.colors.textSecondary} />
             <ModalTitle>Send Feedback</ModalTitle>
-            <ModalSubtitle>
-              {videoBlob ? 'Describe the issue in the recording' : 'Help us improve your experience'}
-            </ModalSubtitle>
           </TitleGroup>
-          <CloseButton onClick={onClose} aria-label="Close"><X size={20} /></CloseButton>
+          <CloseButton onClick={onClose}><X size={16} /></CloseButton>
         </ModalHeader>
 
-        {/* Body */}
         <ModalBody>
-          {/* Pills */}
-          <PillContainer>
-            {FEEDBACK_TYPES.map(type => (
-              <Pill 
-                key={type.id} 
-                $active={feedbackType === type.id}
-                onClick={() => setFeedbackType(type.id)}
-              >
-                {type.label}
-              </Pill>
-            ))}
-          </PillContainer>
-
-          {/* Text Area */}
-          <InputWrapper>
-            <StyledTextArea
+           <StyledTextArea
               ref={descriptionRef}
-              placeholder={currentType.placeholder}
+              placeholder="What's on your mind?"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               disabled={isSubmitting}
             />
-          </InputWrapper>
 
-          {/* Manual Upload Inputs */}
-          <input
-            type="file"
-            ref={screenshotInputRef}
-            accept="image/*"
-            style={{ display: 'none' }}
-            onChange={handleScreenshotUpload}
-          />
-          <input
-            type="file"
-            ref={videoInputRef}
-            accept="video/*"
-            style={{ display: 'none' }}
-            onChange={handleVideoUpload}
-          />
+            {activeMedia ? (
+              <MediaPreview>
+                 {screenshot || manualScreenshot ? (
+                   <img src={screenshot || manualScreenshot} alt="Preview" />
+                 ) : (
+                   <video src={videoUrl} controls />
+                 )}
+                 {!screenshot && !videoBlob && (
+                    <RemoveMediaButton onClick={() => {
+                      setManualScreenshot(null);
+                      setManualVideo(null);
+                    }}>
+                      <Trash2 size={14} />
+                    </RemoveMediaButton>
+                 )}
+              </MediaPreview>
+            ) : (
+              <EmptyMediaSlot onClick={() => screenshotInputRef.current?.click()}>
+                 <Image size={16} />
+                 <span>Attach Screenshot or Video</span>
+                 <input 
+                   type="file" 
+                   ref={screenshotInputRef} 
+                   accept="image/*,video/*" 
+                   style={{display:'none'}} 
+                   onChange={(e) => handleFile(e.target.files[0])}
+                 />
+              </EmptyMediaSlot>
+            )}
 
-          {/* Upload / Drag Drop Zone (if no attachments) */}
-          {!screenshot && !videoBlob && !manualScreenshot && !manualVideo && !manualFile && (
-            <DragDropZone
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              $isDragging={isDragging}
-              onClick={() => screenshotInputRef.current?.click()}
-            >
-              {isDragging && <Upload size={24} color={theme.colors.highlightBorder} />}
-              
-              {!isDragging && (
-                <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-                   <UploadButton onClick={(e) => { e.stopPropagation(); screenshotInputRef.current?.click(); }}>
-                    <Image size={14} />
-                    Screenshot
-                  </UploadButton>
-                  <UploadButton onClick={(e) => { e.stopPropagation(); videoInputRef.current?.click(); }}>
-                    <Video size={14} />
-                    Video
-                  </UploadButton>
-                  <span style={{ fontSize: 12, color: theme.colors.textTertiary }}>or drag files here</span>
-                </div>
-              )}
-            </DragDropZone>
-          )}
-
-          {/* Attachments (System or Manual) */}
-          {(screenshot || manualScreenshot) && (
-            <AttachmentCard>
-              <Thumbnail src={screenshot || manualScreenshot} />
-              <AttachmentInfo>
-                <AttachmentName>Screenshot.png</AttachmentName>
-                <AttachmentMeta>
-                  <Paperclip size={10} /> 
-                  {screenshot ? 'Auto-attached' : 'Manually attached'}
-                </AttachmentMeta>
-              </AttachmentInfo>
-              {manualScreenshot && (
-                <CloseButton onClick={() => setManualScreenshot(null)} style={{ marginLeft: 'auto' }}>
-                  <Trash2 size={16} color="#ef4444" />
-                </CloseButton>
-              )}
-            </AttachmentCard>
-          )}
-
-          {(videoBlob || manualVideo) && (
-            <AttachmentCard>
-              <Thumbnail>
-                <Video size={24} />
-              </Thumbnail>
-              <AttachmentInfo>
-                <AttachmentName>
-                  {videoBlob ? 'Session Recording' : manualVideo.name}
-                </AttachmentName>
-                <AttachmentMeta>
-                  {videoBlob 
-                    ? `~${(videoBlob.size / 1024 / 1024).toFixed(2)} MB - Includes logs`
-                    : `${(manualVideo.size / 1024 / 1024).toFixed(2)} MB`
-                  }
-                </AttachmentMeta>
-              </AttachmentInfo>
-              {manualVideo && (
-                <CloseButton onClick={() => setManualVideo(null)} style={{ marginLeft: 'auto' }}>
-                  <Trash2 size={16} color="#ef4444" />
-                </CloseButton>
-              )}
-            </AttachmentCard>
-          )}
-
-          {manualFile && (
-            <AttachmentCard>
-              <Thumbnail>
-                <FileText size={24} />
-              </Thumbnail>
-              <AttachmentInfo>
-                <AttachmentName>{manualFile.name}</AttachmentName>
-                <AttachmentMeta>
-                  {(manualFile.size / 1024 / 1024).toFixed(2)} MB
-                </AttachmentMeta>
-              </AttachmentInfo>
-              <CloseButton onClick={() => setManualFile(null)} style={{ marginLeft: 'auto' }}>
-                <Trash2 size={16} color="#ef4444" />
-              </CloseButton>
-            </AttachmentCard>
-          )}
-
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+               <span style={{ fontSize: 12, color: theme.colors.textSecondary, fontWeight: 500 }}>Category:</span>
+               <TypeSelector>
+                  {FEEDBACK_TYPES.map(type => (
+                    <TypePill 
+                      key={type.id} 
+                      $active={feedbackType === type.id}
+                      onClick={() => setFeedbackType(type.id)}
+                    >
+                      {type.label}
+                    </TypePill>
+                  ))}
+               </TypeSelector>
+            </div>
         </ModalBody>
 
-        {/* Technical Details Drawer */}
-        <DetailsDrawer>
-          <DrawerTrigger onClick={() => setShowDetails(!showDetails)}>
-            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-              <Code size={14} />
-              <span>System Details</span>
-            </div>
-            <ChevronRight 
-              size={14} 
-              style={{ 
-                transform: showDetails ? 'rotate(90deg)' : 'none', 
-                transition: 'transform 0.2s' 
-              }} 
-            />
-          </DrawerTrigger>
-          
-          {showDetails && (
-            <DrawerContent>
-              <DetailsGrid>
-                {/* Component Name */}
-                <IconWrapper><Layers size={12} /></IconWrapper>
-                <Label>Component</Label>
-                <Value>{elementInfo?.reactComponent || elementInfo?.tagName || 'Unknown'}</Value>
-
-                {/* Source File with Copy */}
-                {elementInfo?.sourceFile && (
-                  <>
-                    <IconWrapper><FileCode size={12} /></IconWrapper>
-                    <Label>Source</Label>
-                    <Value>
-                      <span>
-                        {formatPath(elementInfo.sourceFile.fileName)}
-                        <span style={{ opacity: 0.5 }}>:{elementInfo.sourceFile.lineNumber}</span>
-                      </span>
-                      <IconButton onClick={handleCopySource} title="Copy path">
-                        {copied ? <Check size={12} color="#10b981" /> : <Copy size={12} />}
-                      </IconButton>
-                    </Value>
-                  </>
-                )}
-
-                {/* URL */}
-                <IconWrapper><Globe size={12} /></IconWrapper>
-                <Label>URL</Label>
-                <Value>{window.location.pathname}</Value>
-
-                {/* Viewport */}
-                <IconWrapper><Monitor size={12} /></IconWrapper>
-                <Label>Viewport</Label>
-                <Value>{window.innerWidth} × {window.innerHeight}</Value>
-              </DetailsGrid>
-            </DrawerContent>
-          )}
-        </DetailsDrawer>
-
-        {/* Footer Actions */}
         <Footer>
-           <SubmitButton onClick={handleSubmit} disabled={!description.trim() || isSubmitting}>
-            {isSubmitting ? 'Sending...' : (
-              <>Send Feedback <Send size={14} /></>
-            )}
+          <IntegrationRow>
+             {/* Integration Toggles */}
+             {hasJira && (
+               <IntegrationIcon 
+                 $active={selectedIntegrations.jira} 
+                 $type="jira"
+                 onClick={() => toggleIntegration('jira')}
+                 title="Send to Jira"
+               >
+                 <JiraIcon />
+               </IntegrationIcon>
+             )}
+             {hasSheets && (
+               <IntegrationIcon 
+                 $active={selectedIntegrations.sheets} 
+                 $type="sheets"
+                 onClick={() => toggleIntegration('sheets')}
+                 title="Send to Sheets"
+               >
+                 <SheetsIcon />
+               </IntegrationIcon>
+             )}
+          </IntegrationRow>
+          
+          <SubmitButton onClick={handleSubmit} disabled={!description.trim() || isSubmitting}>
+            {isSubmitting ? 'Sending...' : 'Send Feedback'}
+            {!isSubmitting && <Send size={14} />}
           </SubmitButton>
         </Footer>
-
       </ModalContainer>
     </ThemeProvider>,
     document.body

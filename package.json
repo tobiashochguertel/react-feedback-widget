@@ -1,10 +1,32 @@
 {
   "name": "react-visual-feedback",
-  "version": "1.4.8",
-  "description": "A visual feedback widget for React applications with element selection, screenshot capture, and professional dashboard",
+  "version": "1.5.0",
+  "description": "A visual feedback widget for React applications with element selection, screenshot capture, professional dashboard, and Jira/Google Sheets integrations",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js"
+    },
+    "./server": {
+      "import": "./dist/server/index.js",
+      "require": "./dist/server/index.js"
+    },
+    "./server/jira": {
+      "import": "./dist/server/jira.js",
+      "require": "./dist/server/jira.js"
+    },
+    "./server/sheets": {
+      "import": "./dist/server/sheets.js",
+      "require": "./dist/server/sheets.js"
+    },
+    "./integrations": {
+      "import": "./dist/integrations/index.js",
+      "require": "./dist/integrations/index.js"
+    }
+  },
   "files": [
     "dist"
   ],
@@ -21,7 +43,12 @@
     "dashboard",
     "feedback-management",
     "status-tracking",
-    "issue-tracker"
+    "issue-tracker",
+    "jira",
+    "jira-integration",
+    "google-sheets",
+    "zapier",
+    "screen-recording"
   ],
   "author": "Murali <murali.g@hyperverge.co>",
   "license": "MIT",

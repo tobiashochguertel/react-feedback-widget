@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import styled from 'styled-components';
 import { ChevronDown } from 'lucide-react';
 import { getIconComponent, normalizeStatusKey, getStatusData } from './StatusBadge.jsx';
@@ -61,17 +62,15 @@ const DropdownButton = styled.button`
 `;
 
 const DropdownMenu = styled.div`
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
+  position: fixed;
   background-color: ${props => props.theme.mode === 'dark' ? '#1e293b' : 'white'};
   border-radius: 12px;
   box-shadow: ${props => props.theme.mode === 'dark'
     ? '0 10px 40px rgba(0, 0, 0, 0.5)'
     : '0 10px 40px rgba(0, 0, 0, 0.15)'};
   padding: 8px;
-  z-index: 10000;
-  min-width: 220px;
+  z-index: 100000;
+  min-width: 180px;
   border: 1px solid ${props => props.theme.colors.border};
   animation: ${dropdownSlideIn} 0.2s ease-out;
 `;
@@ -101,11 +100,14 @@ const DropdownItem = styled.button`
 
 export const StatusDropdown = ({ currentStatus, onStatusChange, itemId, statuses = {}, acceptableStatuses, theme }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
   const dropdownRef = useRef(null);
+  const buttonRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target) &&
+          buttonRef.current && !buttonRef.current.contains(event.target)) {
         setIsOpen(false);
       }
     };
@@ -114,6 +116,17 @@ export const StatusDropdown = ({ currentStatus, onStatusChange, itemId, statuses
       document.addEventListener('mousedown', handleClickOutside);
     }
     return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isOpen]);
+
+  // Calculate dropdown position when opening
+  useEffect(() => {
+    if (isOpen && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setMenuPosition({
+        top: rect.bottom + 8,
+        left: rect.right - 180 // Align to right edge of button
+      });
+    }
   }, [isOpen]);
 
   // Handle empty or invalid statuses gracefully
@@ -138,8 +151,9 @@ export const StatusDropdown = ({ currentStatus, onStatusChange, itemId, statuses
   const { color, textColor, bgColor, label } = currentStatusData;
 
   return (
-    <DropdownContainer ref={dropdownRef}>
+    <DropdownContainer>
       <DropdownButton
+        ref={buttonRef}
         onClick={(e) => {
           e.stopPropagation();
           setIsOpen(!isOpen);
@@ -153,10 +167,14 @@ export const StatusDropdown = ({ currentStatus, onStatusChange, itemId, statuses
         <AnimatedChevron size={14} $isOpen={isOpen} />
       </DropdownButton>
 
-      {isOpen && (
-        <DropdownMenu theme={theme} onClick={(e) => e.stopPropagation()}>
+      {isOpen && createPortal(
+        <DropdownMenu
+          ref={dropdownRef}
+          theme={theme}
+          style={{ top: menuPosition.top, left: menuPosition.left }}
+          onClick={(e) => e.stopPropagation()}
+        >
           {Object.entries(visibleStatuses).map(([key, data]) => {
-            // Skip invalid/undefined status entries
             if (!data || typeof data !== 'object') return null;
             const itemData = getStatusData(key, visibleStatuses);
             const Icon = getIconComponent(itemData.icon);
@@ -179,7 +197,8 @@ export const StatusDropdown = ({ currentStatus, onStatusChange, itemId, statuses
               </DropdownItem>
             );
           })}
-        </DropdownMenu>
+        </DropdownMenu>,
+        document.body
       )}
     </DropdownContainer>
   );

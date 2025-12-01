@@ -165,7 +165,7 @@ export const getReactComponentInfo = (element) => {
       }
     }
   } catch (error) {
-    console.warn('[Feedback] Could not detect React component:', error);
+    // Could not detect React component
   }
 
   return componentInfo.componentName ? componentInfo : null;
@@ -306,8 +306,6 @@ const cropImageToSelection = (dataUrl, contextRect, selectionRect, scale) => {
 export const captureElementScreenshot = async (element) => {
   if (!element) return null;
 
-  console.log('[Feedback] Selected element:', element.tagName);
-
   // 1. Get Geometry of the specific thing user clicked
   const selectionRect = element.getBoundingClientRect();
   
@@ -351,34 +349,30 @@ export const captureElementScreenshot = async (element) => {
   }
 
   try {
-    console.log('[Feedback] Capturing context:', contextElement.tagName);
-    
     // 5. Capture
     const dataUrl = await domToPng(contextElement, captureOptions);
 
     if (dataUrl) {
       // 6. If we captured the Body, we are done (it's already viewport-sized due to options above)
       if (isBody) {
-          console.log('[Feedback] Body captured (Viewport only).');
-          return dataUrl;
+        return dataUrl;
       }
 
       // 7. If we captured a Card/Container, Crop it to the specific button/row selected
       if (contextElement !== element) {
-        console.log('[Feedback] Cropping context to selection...');
         return await cropImageToSelection(
-          dataUrl, 
-          contextRect, 
-          selectionRect, 
+          dataUrl,
+          contextRect,
+          selectionRect,
           SCALE
         );
       }
-      
+
       return dataUrl;
     }
 
   } catch (e) {
-    console.error('[Feedback] Screenshot failed:', e);
+    // Screenshot failed
   }
   
   return null;

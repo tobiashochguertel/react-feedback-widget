@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled, { ThemeProvider, keyframes } from 'styled-components';
 import { getTheme } from './theme.js';
-import { Play, Pause, RotateCcw, Volume2, VolumeX, Maximize2, Terminal, X } from 'lucide-react';
+import { Play, Pause, RotateCcw, Volume2, VolumeX, Maximize2, Terminal, X, Download, FileText } from 'lucide-react';
 import { LogEntry } from './components/LogEntry.jsx';
 
 // --- Utils ---
@@ -35,7 +35,6 @@ function dataURLtoBlob(dataURL) {
     }
     return new Blob([u8arr], { type: mime });
   } catch (e) {
-    console.error("Failed to convert data URL to blob", e);
     return null;
   }
 }
@@ -67,18 +66,25 @@ const ReplayContainer = styled.div`
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: 12px;
   overflow: hidden;
+  display: ${props => props.$fullHeight ? 'flex' : 'block'};
+  flex-direction: ${props => props.$fullHeight ? 'column' : 'unset'};
+  height: ${props => props.$fullHeight ? '100%' : 'auto'};
 `;
 
 const VideoSection = styled.div`
   display: flex;
   flex-direction: column;
+  flex: ${props => props.$fullHeight ? '1' : 'unset'};
+  min-height: ${props => props.$fullHeight ? '0' : 'unset'};
 `;
 
 const VideoWrapper = styled.div`
   position: relative;
   background: #000;
-  aspect-ratio: 16 / 9;
-  max-height: 280px;
+  aspect-ratio: ${props => props.$fullHeight ? 'unset' : '16 / 9'};
+  max-height: ${props => props.$fullHeight ? 'none' : '280px'};
+  flex: ${props => props.$fullHeight ? '1' : 'unset'};
+  min-height: ${props => props.$fullHeight ? '0' : 'unset'};
 `;
 
 const VideoPlayer = styled.video`
@@ -86,6 +92,15 @@ const VideoPlayer = styled.video`
   height: 100%;
   object-fit: contain;
   background: #000;
+
+  /* Style native controls when shown */
+  &::-webkit-media-controls {
+    display: none !important;
+  }
+
+  &::-webkit-media-controls-enclosure {
+    display: none !important;
+  }
 `;
 
 const Controls = styled.div`
@@ -95,6 +110,11 @@ const Controls = styled.div`
   padding: 10px 12px;
   background: ${props => props.theme.mode === 'dark' ? 'rgba(0,0,0,0.4)' : 'rgba(0,0,0,0.03)'};
   border-top: 1px solid ${props => props.theme.colors.border};
+
+  @media (max-width: 480px) {
+    padding: 8px 10px;
+    gap: 4px;
+  }
 `;
 
 const ControlButton = styled.button`
@@ -190,10 +210,35 @@ const TimeDisplay = styled.span`
 const LogsToggle = styled(ControlButton)`
   position: relative;
   width: auto;
-  padding: 0 8px;
-  gap: 4px;
+  padding: 0 10px;
+  gap: 6px;
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 600;
+  background: ${props => props.$active
+    ? (props.theme.mode === 'dark' ? 'rgba(59, 130, 246, 0.3)' : 'rgba(59, 130, 246, 0.15)')
+    : (props.theme.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)')};
+  border: 1px solid ${props => props.$active ? '#3b82f6' : 'transparent'};
+  color: ${props => props.$active ? '#3b82f6' : props.theme.colors.textSecondary};
+
+  &:hover {
+    background: ${props => props.theme.mode === 'dark' ? 'rgba(59, 130, 246, 0.25)' : 'rgba(59, 130, 246, 0.1)'};
+    color: #3b82f6;
+  }
+`;
+
+const DownloadButton = styled(ControlButton)`
+  width: auto;
+  padding: 0 10px;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  background: ${props => props.theme.mode === 'dark' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(16, 185, 129, 0.1)'};
+  color: #10b981;
+
+  &:hover {
+    background: ${props => props.theme.mode === 'dark' ? 'rgba(16, 185, 129, 0.25)' : 'rgba(16, 185, 129, 0.15)'};
+    color: #059669;
+  }
 `;
 
 const LogsBadge = styled.span`
@@ -310,7 +355,9 @@ export const SessionReplay = ({
   // Customization props
   showLogsButton = true,
   logsPanelWidth = '320px',
-  defaultLogsOpen = false
+  defaultLogsOpen = false,
+  fullHeight = false,
+  onTimeUpdate = null // Callback to sync logs externally
 }) => {
   const theme = getTheme(mode);
   const videoRef = useRef(null);
@@ -335,17 +382,18 @@ export const SessionReplay = ({
       return;
     }
 
+    if (videoSrc instanceof Blob) {
+      const url = URL.createObjectURL(videoSrc);
+      setVideoObjectUrl(url);
+      return () => URL.revokeObjectURL(url);
+    }
+
     if (isDataURL(videoSrc)) {
       const blob = dataURLtoBlob(videoSrc);
       if (!blob) return;
-
       const url = URL.createObjectURL(blob);
       setVideoObjectUrl(url);
-
-      return () => {
-        URL.revokeObjectURL(url);
-        setVideoObjectUrl(null);
-      };
+      return () => URL.revokeObjectURL(url);
     }
 
     setVideoObjectUrl(videoSrc);
@@ -356,30 +404,74 @@ export const SessionReplay = ({
     const video = videoRef.current;
     if (!video || !videoObjectUrl) return;
 
-    const handleLoadedMetadata = () => setDuration(video.duration);
-    const handleTimeUpdate = () => setCurrentTime(video.currentTime);
-    const handlePlay = () => setIsPlaying(true);
-    const handlePause = () => setIsPlaying(false);
+    const onLoadedMetadata = () => {
+      if (video.duration && isFinite(video.duration)) {
+        setDuration(video.duration);
+      }
+    };
 
-    video.addEventListener('loadedmetadata', handleLoadedMetadata);
-    video.addEventListener('timeupdate', handleTimeUpdate);
-    video.addEventListener('play', handlePlay);
-    video.addEventListener('pause', handlePause);
+    const onDurationChange = () => {
+      if (video.duration && isFinite(video.duration)) {
+        setDuration(video.duration);
+      }
+    };
+
+    const onTimeUpdate = () => {
+      setCurrentTime(video.currentTime);
+      // Also update duration if not set yet
+      if (duration === 0 && video.duration && isFinite(video.duration)) {
+        setDuration(video.duration);
+      }
+    };
+
+    const onPlay = () => setIsPlaying(true);
+    const onPause = () => setIsPlaying(false);
+    const onPlaying = () => setIsPlaying(true);
+
+    const onEnded = () => {
+      setIsPlaying(false);
+      setCurrentTime(0);
+    };
+
+    const onError = (e) => {
+      // Only log real errors (not empty src which happens during cleanup)
+      if (video.error && video.error.code !== 4) {
+        console.error('Video error:', video.error);
+      }
+      setIsPlaying(false);
+    };
+
+    video.addEventListener('loadedmetadata', onLoadedMetadata);
+    video.addEventListener('durationchange', onDurationChange);
+    video.addEventListener('timeupdate', onTimeUpdate);
+    video.addEventListener('play', onPlay);
+    video.addEventListener('pause', onPause);
+    video.addEventListener('playing', onPlaying);
+    video.addEventListener('ended', onEnded);
+    video.addEventListener('error', onError);
 
     return () => {
-      video.removeEventListener('loadedmetadata', handleLoadedMetadata);
-      video.removeEventListener('timeupdate', handleTimeUpdate);
-      video.removeEventListener('play', handlePlay);
-      video.removeEventListener('pause', handlePause);
+      video.removeEventListener('loadedmetadata', onLoadedMetadata);
+      video.removeEventListener('durationchange', onDurationChange);
+      video.removeEventListener('timeupdate', onTimeUpdate);
+      video.removeEventListener('play', onPlay);
+      video.removeEventListener('pause', onPause);
+      video.removeEventListener('playing', onPlaying);
+      video.removeEventListener('ended', onEnded);
+      video.removeEventListener('error', onError);
     };
-  }, [videoObjectUrl]);
+  }, [videoObjectUrl, duration]);
 
   // Filter logs based on video time
   useEffect(() => {
     const timeInMs = currentTime * 1000;
     const logs = eventLogs.filter(log => log.timestamp <= timeInMs);
     setVisibleLogs(logs);
-  }, [currentTime, eventLogs]);
+    // Notify parent of time update for external log sync
+    if (onTimeUpdate) {
+      onTimeUpdate(currentTime, logs);
+    }
+  }, [currentTime, eventLogs, onTimeUpdate]);
 
   // Auto-scroll logs
   useEffect(() => {
@@ -388,39 +480,61 @@ export const SessionReplay = ({
     }
   }, [visibleLogs.length, isLogsPanelOpen]);
 
-  const handlePlayPause = () => {
-    if (videoRef.current) {
-      videoRef.current.paused ? videoRef.current.play() : videoRef.current.pause();
+  const handlePlayPause = async () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    try {
+      if (video.paused) {
+        await video.play();
+      } else {
+        video.pause();
+      }
+    } catch (err) {
+      // Play was interrupted, try again
+      console.warn('Play interrupted:', err);
     }
   };
 
   const handleProgressClick = (e) => {
-    if (!progressRef.current || !videoRef.current) return;
+    const video = videoRef.current;
+    if (!progressRef.current || !video) return;
+
     const rect = progressRef.current.getBoundingClientRect();
-    const percent = (e.clientX - rect.left) / rect.width;
+    const percent = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
     const newTime = percent * duration;
-    videoRef.current.currentTime = newTime;
+
+    video.currentTime = newTime;
     setCurrentTime(newTime);
   };
 
   const handleRewind = () => {
-    if (videoRef.current) {
-      videoRef.current.currentTime = 0;
+    const video = videoRef.current;
+    if (video) {
+      video.currentTime = 0;
+      setCurrentTime(0);
     }
   };
 
   const handleMuteToggle = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = !isMuted;
-      setIsMuted(!isMuted);
-    }
+    const video = videoRef.current;
+    if (!video) return;
+
+    const newMuted = !isMuted;
+    video.muted = newMuted;
+    setIsMuted(newMuted);
   };
 
   const handleFullscreen = () => {
-    if (videoRef.current) {
-      if (videoRef.current.requestFullscreen) {
-        videoRef.current.requestFullscreen();
-      }
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (video.requestFullscreen) {
+      video.requestFullscreen();
+    } else if (video.webkitRequestFullscreen) {
+      video.webkitRequestFullscreen();
+    } else if (video.webkitEnterFullscreen) {
+      video.webkitEnterFullscreen();
     }
   };
 
@@ -440,14 +554,85 @@ export const SessionReplay = ({
     }
   };
 
+  const handleDownloadVideo = () => {
+    if (!videoObjectUrl) return;
+
+    const link = document.createElement('a');
+    link.href = videoObjectUrl;
+    link.download = `recording-${Date.now()}.webm`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleDownloadLogs = () => {
+    if (!eventLogs || eventLogs.length === 0) return;
+
+    // Format logs as readable text
+    const lines = [
+      '═══════════════════════════════════════════════════════════════',
+      '                    SESSION EVENT LOGS',
+      '═══════════════════════════════════════════════════════════════',
+      `Generated: ${new Date().toISOString()}`,
+      `Total Events: ${eventLogs.length}`,
+      '═══════════════════════════════════════════════════════════════',
+      ''
+    ];
+
+    eventLogs.forEach((event) => {
+      const timestamp = event.timestamp ? `[${(event.timestamp / 1000).toFixed(2)}s]` : '[--]';
+
+      switch (event.type) {
+        case 'console':
+          lines.push(`${timestamp} [CONSOLE.${(event.level || 'log').toUpperCase()}]`);
+          lines.push(`   ${event.message || 'No message'}`);
+          break;
+        case 'network':
+          const status = event.status || 'pending';
+          const duration = event.duration ? `(${event.duration}ms)` : '';
+          lines.push(`${timestamp} [NETWORK] ${event.method || 'GET'} ${event.url}`);
+          lines.push(`   Status: ${status} ${duration}`);
+          break;
+        case 'storage':
+          lines.push(`${timestamp} [${(event.storageType || 'storage').toUpperCase()}] ${event.action}`);
+          if (event.key) lines.push(`   Key: ${event.key}`);
+          break;
+        default:
+          lines.push(`${timestamp} [${(event.type || 'EVENT').toUpperCase()}]`);
+          lines.push(`   ${JSON.stringify(event).substring(0, 200)}`);
+      }
+      lines.push('');
+    });
+
+    lines.push('═══════════════════════════════════════════════════════════════');
+    lines.push('                      END OF LOGS');
+    lines.push('═══════════════════════════════════════════════════════════════');
+
+    const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `session-logs-${Date.now()}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   return (
     <ThemeProvider theme={theme}>
-      <ReplayContainer>
-        <VideoSection>
-          <VideoWrapper>
-            <VideoPlayer ref={videoRef} src={videoObjectUrl} muted={isMuted} />
+      <ReplayContainer $fullHeight={fullHeight}>
+        <VideoSection $fullHeight={fullHeight}>
+          <VideoWrapper $fullHeight={fullHeight}>
+            <VideoPlayer
+              ref={videoRef}
+              src={videoObjectUrl}
+              muted={isMuted}
+              playsInline
+              preload="metadata"
+            />
           </VideoWrapper>
           <Controls>
             <PlayButton onClick={handlePlayPause} title={isPlaying ? 'Pause' : 'Play'}>
@@ -479,10 +664,24 @@ export const SessionReplay = ({
                 title="Toggle console logs"
               >
                 <Terminal size={14} />
+                Logs
                 <LogsBadge $hasLogs={visibleLogs.length > 0}>
                   {visibleLogs.length}
                 </LogsBadge>
               </LogsToggle>
+            )}
+
+            {/* Download buttons */}
+            <DownloadButton onClick={handleDownloadVideo} title="Download video">
+              <Download size={14} />
+              Video
+            </DownloadButton>
+
+            {eventLogs.length > 0 && (
+              <DownloadButton onClick={handleDownloadLogs} title="Download logs">
+                <FileText size={14} />
+                Logs
+              </DownloadButton>
             )}
           </Controls>
         </VideoSection>

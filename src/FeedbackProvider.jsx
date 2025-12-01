@@ -13,9 +13,11 @@ import { FeedbackModal } from './FeedbackModal.jsx';
 import { FeedbackDashboard, saveFeedbackToLocalStorage } from './FeedbackDashboard.jsx';
 import { CanvasOverlay } from './CanvasOverlay.jsx';
 import { RecordingOverlay } from './RecordingOverlay.jsx';
+import ErrorToast, { showError, showSuccess } from './ErrorToast.jsx';
 import recorder from './recorder.js';
 import { getElementInfo, captureElementScreenshot, getReactComponentInfo } from './utils.js';
 import { getTheme, FeedbackGlobalStyle } from './theme.js';
+import { IntegrationClient } from './integrations/index.js';
 
 const FeedbackContext = createContext(null);
 
@@ -97,6 +99,12 @@ const initialState = {
   videoBlob: null,
   eventLogs: [],
   isManualFeedbackOpen: false,
+  // Integration state
+  integrationStatus: {
+    jira: { loading: false, error: null, result: null },
+    sheets: { loading: false, error: null, result: null }
+  },
+  lastIntegrationResults: null
 };
 
 function feedbackReducer(state, action) {
@@ -136,7 +144,43 @@ function feedbackReducer(state, action) {
     case 'STOP_RECORDING':
       return { ...state, isRecordingActive: false, isRecording: false, isInitializing: false, isPaused: false, videoBlob: action.payload.blob, eventLogs: action.payload.events, isModalOpen: action.payload.blob && action.payload.blob.size > 0 };
     case 'RESET_MODAL':
-      return { ...state, isModalOpen: false, isManualFeedbackOpen: false, selectedElement: null, screenshot: null, hoveredElement: null, hoveredComponentInfo: null, isCanvasActive: false, videoBlob: null, eventLogs: [] };
+      return { ...state, isModalOpen: false, isManualFeedbackOpen: false, selectedElement: null, screenshot: null, hoveredElement: null, hoveredComponentInfo: null, isCanvasActive: false, videoBlob: null, eventLogs: [], lastIntegrationResults: null };
+    // Integration actions
+    case 'INTEGRATION_START':
+      return {
+        ...state,
+        integrationStatus: {
+          jira: action.payload.jira ? { loading: true, error: null, result: null } : state.integrationStatus.jira,
+          sheets: action.payload.sheets ? { loading: true, error: null, result: null } : state.integrationStatus.sheets
+        }
+      };
+    case 'INTEGRATION_SUCCESS':
+      return {
+        ...state,
+        integrationStatus: {
+          jira: action.payload.jira ? { loading: false, error: null, result: action.payload.jira } : state.integrationStatus.jira,
+          sheets: action.payload.sheets ? { loading: false, error: null, result: action.payload.sheets } : state.integrationStatus.sheets
+        },
+        lastIntegrationResults: action.payload
+      };
+    case 'INTEGRATION_ERROR':
+      return {
+        ...state,
+        integrationStatus: {
+          jira: action.payload.jira?.error ? { loading: false, error: action.payload.jira.error, result: null } : state.integrationStatus.jira,
+          sheets: action.payload.sheets?.error ? { loading: false, error: action.payload.sheets.error, result: null } : state.integrationStatus.sheets
+        },
+        lastIntegrationResults: action.payload
+      };
+    case 'INTEGRATION_RESET':
+      return {
+        ...state,
+        integrationStatus: {
+          jira: { loading: false, error: null, result: null },
+          sheets: { loading: false, error: null, result: null }
+        },
+        lastIntegrationResults: null
+      };
     default:
       return state;
   }
@@ -155,7 +199,11 @@ export const FeedbackProvider = ({
   userEmail,
   onStatusChange,
   mode = 'light',
-  defaultOpen = false
+  defaultOpen = false,
+  // Integration configuration
+  integrations = null,
+  onIntegrationSuccess,
+  onIntegrationError
 }) => {
   const [state, dispatch] = useReducer(feedbackReducer, initialState);
   const {
@@ -176,8 +224,34 @@ export const FeedbackProvider = ({
     isPaused,
     videoBlob,
     eventLogs,
-    isManualFeedbackOpen
+    isManualFeedbackOpen,
+    integrationStatus,
+    lastIntegrationResults
   } = state;
+
+  // Initialize integration client
+  const integrationClientRef = useRef(null);
+
+  useEffect(() => {
+    if (integrations && (integrations.jira?.enabled || integrations.sheets?.enabled)) {
+      integrationClientRef.current = new IntegrationClient({
+        jira: integrations.jira,
+        sheets: integrations.sheets,
+        onSuccess: (type, result) => {
+          if (onIntegrationSuccess) {
+            onIntegrationSuccess(type, result);
+          }
+        },
+        onError: (type, error) => {
+          if (onIntegrationError) {
+            onIntegrationError(type, error);
+          }
+        }
+      });
+    } else {
+      integrationClientRef.current = null;
+    }
+  }, [integrations?.jira?.enabled, integrations?.sheets?.enabled, onIntegrationSuccess, onIntegrationError]);
 
   // Determine if component is controlled
   const isControlled = controlledIsActive !== undefined;
@@ -228,35 +302,46 @@ export const FeedbackProvider = ({
     return true;
   }, []);
 
+  // Throttle helper
+  const throttleRef = useRef(null);
+  const lastElementRef = useRef(null);
+
   const handleMouseMove = useCallback((e) => {
     if (!isActive) return;
 
-    const element = document.elementFromPoint(e.clientX, e.clientY);
-    if (!isValidElement(element) || element === hoveredElement) return;
+    // Throttle to 60fps max (16ms)
+    if (throttleRef.current) return;
+    throttleRef.current = requestAnimationFrame(() => {
+      throttleRef.current = null;
 
-    const componentInfo = getReactComponentInfo(element);
-    const rect = element.getBoundingClientRect();
-    const scrollX = window.pageXOffset;
-    const scrollY = window.pageYOffset;
+      const element = document.elementFromPoint(e.clientX, e.clientY);
+      if (!isValidElement(element) || element === lastElementRef.current) return;
 
-    dispatch({
-      type: 'START_HOVERING',
-      payload: {
-        element,
-        componentInfo,
-        highlightStyle: {
-          left: rect.left + scrollX,
-          top: rect.top + scrollY,
-          width: rect.width,
-          height: rect.height,
-        },
-        tooltipStyle: {
-          left: Math.min(e.clientX + 10, window.innerWidth - 300),
-          top: Math.max(e.clientY - 40, 10),
+      lastElementRef.current = element;
+      const componentInfo = getReactComponentInfo(element);
+      const rect = element.getBoundingClientRect();
+      const scrollX = window.pageXOffset;
+      const scrollY = window.pageYOffset;
+
+      dispatch({
+        type: 'START_HOVERING',
+        payload: {
+          element,
+          componentInfo,
+          highlightStyle: {
+            left: rect.left + scrollX,
+            top: rect.top + scrollY,
+            width: rect.width,
+            height: rect.height,
+          },
+          tooltipStyle: {
+            left: Math.min(e.clientX + 10, window.innerWidth - 300),
+            top: Math.max(e.clientY - 40, 10),
+          }
         }
-      }
+      });
     });
-  }, [isActive, hoveredElement, isValidElement]);
+  }, [isActive, isValidElement]);
 
   const handleElementClick = useCallback(async (e) => {
     if (!isActive || !hoveredElement) return;
@@ -270,6 +355,7 @@ export const FeedbackProvider = ({
       const screenshotData = await captureElementScreenshot(hoveredElement);
       dispatch({ type: 'COMPLETE_CAPTURE', payload: screenshotData });
     } catch (error) {
+      showError('Failed to capture screenshot. You can still submit feedback.', 'Capture Error');
       dispatch({ type: 'COMPLETE_CAPTURE', payload: null });
     }
   }, [isActive, hoveredElement]);
@@ -360,26 +446,25 @@ export const FeedbackProvider = ({
 
   const handleFeedbackSubmit = useCallback(async (feedbackData) => {
     try {
-      // Convert videoBlob to base64 if present
       let processedData = { ...feedbackData };
+
+      // Keep videoBlob as-is for FormData upload (more efficient for large files)
+      // Only convert to base64 for local storage
       if (feedbackData.videoBlob && feedbackData.videoBlob instanceof Blob) {
-        try {
-          const reader = new FileReader();
-          const videoBase64 = await new Promise((resolve, reject) => {
-            reader.onloadend = () => resolve(reader.result);
-            reader.onerror = reject;
-            reader.readAsDataURL(feedbackData.videoBlob);
-          });
-          processedData.video = videoBase64;
-          processedData.videoSize = feedbackData.videoBlob.size;
-          processedData.videoType = feedbackData.videoBlob.type;
-        } catch (videoError) {
-          // Video conversion failed silently
-        }
-        delete processedData.videoBlob;
+        processedData.videoBlob = feedbackData.videoBlob;
+        processedData.videoSize = feedbackData.videoBlob.size;
+        processedData.videoType = feedbackData.videoBlob.type;
       }
 
-      if (dashboard) {
+      // Extract selectedIntegrations from feedback data
+      const selectedIntegrations = feedbackData.selectedIntegrations || {
+        local: true,
+        jira: integrations?.jira?.enabled || false,
+        sheets: integrations?.sheets?.enabled || false
+      };
+
+      // Save to local storage if dashboard is enabled AND local is selected
+      if (dashboard && selectedIntegrations.local) {
         await saveFeedbackToLocalStorage(processedData);
       }
 
@@ -387,12 +472,79 @@ export const FeedbackProvider = ({
         await onSubmit(processedData);
       }
 
+      // Send to integrations if configured AND selected
+      const shouldSendToJira = integrationClientRef.current && integrations?.jira?.enabled && selectedIntegrations.jira;
+      const shouldSendToSheets = integrationClientRef.current && integrations?.sheets?.enabled && selectedIntegrations.sheets;
+
+      if (shouldSendToJira || shouldSendToSheets) {
+        dispatch({
+          type: 'INTEGRATION_START',
+          payload: {
+            jira: shouldSendToJira,
+            sheets: shouldSendToSheets
+          }
+        });
+
+        try {
+          // Send to integrations based on user selection
+          const integrationResults = await integrationClientRef.current.sendFeedback(processedData, {
+            jira: shouldSendToJira,
+            sheets: shouldSendToSheets
+          });
+
+          // Update feedback data with integration results (e.g., Jira key)
+          if (integrationResults.jira?.success && integrationResults.jira?.issueKey) {
+            processedData.jiraKey = integrationResults.jira.issueKey;
+            processedData.jiraUrl = integrationResults.jira.issueUrl;
+
+            // Update localStorage if dashboard is enabled and local was selected
+            if (dashboard && selectedIntegrations.local) {
+              await saveFeedbackToLocalStorage({
+                ...processedData,
+                jiraKey: integrationResults.jira.issueKey,
+                jiraUrl: integrationResults.jira.issueUrl
+              });
+            }
+          }
+
+          if (integrationResults.sheets?.success && integrationResults.sheets?.rowNumber) {
+            processedData.sheetsRow = integrationResults.sheets.rowNumber;
+          }
+
+          dispatch({ type: 'INTEGRATION_SUCCESS', payload: integrationResults });
+
+          // Show success toast
+          const successParts = [];
+          if (integrationResults.jira?.success) {
+            successParts.push(`Jira: ${integrationResults.jira.issueKey}`);
+          }
+          if (integrationResults.sheets?.success) {
+            successParts.push('Google Sheets');
+          }
+          if (successParts.length > 0) {
+            showSuccess(`Sent to ${successParts.join(', ')}`, 'Feedback Submitted');
+          }
+        } catch (integrationError) {
+          dispatch({
+            type: 'INTEGRATION_ERROR',
+            payload: { error: integrationError.message }
+          });
+          // Show error toast
+          showError(integrationError.message, 'Integration Failed');
+          // Don't throw - integration errors shouldn't block feedback submission
+        }
+      } else if (selectedIntegrations.local && dashboard) {
+        // Only saved locally
+        showSuccess('Feedback saved locally', 'Feedback Submitted');
+      }
+
       setIsActive(false);
       dispatch({ type: 'RESET_MODAL' });
     } catch (error) {
+      showError(error.message || 'Failed to submit feedback. Please try again.', 'Submission Error');
       throw error;
     }
-  }, [onSubmit, dashboard, setIsActive]);
+  }, [onSubmit, dashboard, setIsActive, integrations]);
 
   const handleCloseModal = useCallback(() => {
     setIsActive(false);
@@ -426,10 +578,12 @@ export const FeedbackProvider = ({
       if (onSubmit && typeof onSubmit === 'function') {
         await onSubmit(feedbackData);
       }
-      
+
+      showSuccess('Feedback submitted successfully!', 'Success');
       dispatch({ type: 'STOP_HOVERING' });
       dispatch({ type: 'SET_STATE', payload: { selectedElement: null, screenshot: null } });
     } catch (error) {
+      showError(error.message || 'Failed to save feedback. Please try again.', 'Submission Error');
     }
   }, [dashboard, onSubmit, userName, userEmail, setIsActive]);
 
@@ -445,7 +599,7 @@ export const FeedbackProvider = ({
       dispatch({ type: 'START_RECORDING_SUCCESS' });
     } catch (error) {
       dispatch({ type: 'START_RECORDING_FAILURE' });
-      alert("Could not start recording. Please ensure you have granted screen and microphone permissions.");
+      showError('Could not start recording. Please ensure you have granted screen and microphone permissions.', 'Recording Error');
     }
   }, []);
 
@@ -465,10 +619,15 @@ export const FeedbackProvider = ({
   }, []);
 
   const handleStopRecording = useCallback(async () => {
-    const { videoBlob: blob, events } = await recorder.stop();
-    dispatch({ type: 'STOP_RECORDING', payload: { blob, events } });
-    if (!blob || blob.size === 0) {
-      alert('Recording failed: No video data was captured.');
+    try {
+      const { videoBlob: blob, events } = await recorder.stop();
+      dispatch({ type: 'STOP_RECORDING', payload: { blob, events } });
+      if (!blob || blob.size === 0) {
+        showError('Recording failed: No video data was captured. Please try again.', 'Recording Error');
+      }
+    } catch (error) {
+      showError('Failed to stop recording properly. Please try again.', 'Recording Error');
+      dispatch({ type: 'CANCEL_RECORDING' });
     }
   }, []);
 
@@ -492,7 +651,15 @@ export const FeedbackProvider = ({
 
 
   return (
-    <FeedbackContext.Provider value={{ isActive, setIsActive, setIsDashboardOpen, startRecording: handleStartRecording }}>
+    <FeedbackContext.Provider value={{
+      isActive,
+      setIsActive,
+      setIsDashboardOpen,
+      startRecording: handleStartRecording,
+      integrationStatus,
+      integrations,
+      integrationClient: integrationClientRef.current
+    }}>
       <ThemeProvider theme={theme}>
         <FeedbackGlobalStyle />
         {children}
@@ -538,6 +705,7 @@ export const FeedbackProvider = ({
           userEmail={userEmail}
           mode={mode}
           isManual={isManualFeedbackOpen}
+          integrations={integrations}
         />
 
         <CanvasOverlay
@@ -569,8 +737,12 @@ export const FeedbackProvider = ({
             userName={userName}
             userEmail={userEmail}
             mode={mode}
+            integrations={integrations}
+            integrationClient={integrationClientRef.current}
           />
         )}
+
+        <ErrorToast />
       </ThemeProvider>
     </FeedbackContext.Provider>
   );

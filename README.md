@@ -15,10 +15,17 @@ A powerful, visual feedback collection tool for React applications with screen r
 - **Keyboard Shortcuts** - `Alt+Q` (Selection), `Alt+A` (Manual), `Alt+W` (Record), `Esc` (Cancel)
 
 ### Session Replay
-- **Video Playback** - Watch recorded user sessions
-- **Console Logs** - See console.log, errors, warnings synced with video
+- **Video Playback** - Watch recorded user sessions with fullscreen support
+- **Console Logs** - See console.log, errors, warnings synced with video timeline
 - **Network Requests** - Track API calls and responses
+- **Video Mode** - Fullscreen playback with synced logs panel (scrollable even when paused)
 - **Expandable Logs Panel** - Slide-out panel on the right side (customizable)
+
+### Screen Recording
+- **Draggable Indicator** - Recording overlay can be moved around the screen
+- **Audio Capture** - Record microphone and system audio (mixed)
+- **IndexedDB Storage** - Large videos stored locally to prevent quota errors
+- **Download Videos** - Export recordings as WebM files
 
 ### Dashboard
 - **Professional UI** - Clean 700px slide-out panel
@@ -26,6 +33,14 @@ A powerful, visual feedback collection tool for React applications with screen r
 - **User Mode** - Simplified view for end users
 - **8 Status Options** - New, Open, In Progress, Under Review, On Hold, Resolved, Closed, Won't Fix
 - **Status Callbacks** - Sync with your database on status changes
+- **Search** - Search through feedback by title, description, or user
+
+### Updates Modal
+- **What's New** - Display product updates, bug fixes, and new features to users
+- **Filter Tabs** - Filter by Fixed or New Feature
+- **Smooth Animations** - Beautiful fade-in animations with staggered item entry
+- **Mobile Responsive** - Works as a centered popup on all screen sizes
+- **Dark/Light Mode** - Full theme support
 
 ### Theming
 - **Light/Dark Mode** - Full theme support
@@ -187,6 +202,65 @@ import { SessionReplay } from 'react-visual-feedback';
   logsPanelWidth="320px"       // Width of logs panel
   defaultLogsOpen={false}      // Start with logs panel open
 />
+```
+
+### UpdatesModal Props
+
+Display product updates, bug fixes, and new features to your users with a beautiful modal.
+
+```jsx
+import { UpdatesModal } from 'react-visual-feedback';
+
+const updates = [
+  {
+    id: '1',
+    type: 'solved',           // 'solved' | 'new_feature'
+    title: 'Fixed login page performance issues',
+    description: 'Optimized the authentication flow, reducing load time by 40%',
+    date: '2024-11-30',
+    version: '2.1.0',
+    category: 'Performance'
+  },
+  {
+    id: '2',
+    type: 'new_feature',
+    title: 'Dark mode support added',
+    description: 'Full dark mode support across all components with smooth transitions',
+    date: '2024-11-28',
+    version: '2.1.0',
+    category: 'Feature'
+  }
+];
+
+<UpdatesModal
+  isOpen={showUpdates}         // Control visibility
+  onClose={() => setShowUpdates(false)}
+  updates={updates}            // Array of update objects
+  title="What's New"           // Modal title (default: "What's New")
+  mode="light"                 // Theme mode: 'light' | 'dark'
+/>
+```
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `isOpen` | `boolean` | required | Control modal visibility |
+| `onClose` | `() => void` | required | Callback when modal closes |
+| `updates` | `Update[]` | `[]` | Array of update objects |
+| `title` | `string` | `"What's New"` | Modal header title |
+| `mode` | `'light' \| 'dark'` | `'light'` | Theme mode |
+
+#### Update Object Structure
+
+```typescript
+interface Update {
+  id: string;                  // Unique identifier
+  type: 'solved' | 'new_feature';  // Update type
+  title: string;               // Update title
+  description?: string;        // Optional description
+  date?: string;               // Date string (displayed as "Mon DD")
+  version?: string;            // Version number (displayed as "vX.X.X")
+  category?: string;           // Category tag
+}
 ```
 
 ## Data Structures
@@ -853,6 +927,7 @@ import {
   FeedbackDashboard,
   FeedbackTrigger,
   CanvasOverlay,
+  UpdatesModal,          // What's New modal for updates
 
   // Hooks
   useFeedback,
@@ -885,7 +960,18 @@ import {
 
 ## Changelog
 
-### v1.5.0
+### v2.2.0
+- **Added**: `UpdatesModal` component - Display product updates, bug fixes, and new features
+- **Added**: Draggable recording indicator - Move the recording overlay anywhere on screen
+- **Added**: Video Mode with fullscreen playback and synced logs panel
+- **Added**: Search functionality in feedback dashboard
+- **Added**: IndexedDB storage for large video recordings (prevents quota errors)
+- **Added**: Video download/export functionality
+- **Improved**: Logs panel now scrollable when video is paused
+- **Improved**: Audio mixing for microphone and system audio in recordings
+- **Fixed**: Mobile responsive UpdatesModal - displays as centered popup
+
+### v2.1.0
 - **Added**: Manual feedback mode (`Alt+A`) - open form without selecting an element
 - **Added**: `defaultOpen` prop to automatically open form on mount
 - **Added**: Drag & Drop file upload support

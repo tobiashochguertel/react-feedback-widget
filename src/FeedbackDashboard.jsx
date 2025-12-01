@@ -1,98 +1,42 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { createPortal } from 'react-dom';
-import styled, { ThemeProvider } from 'styled-components';
+import styled, { ThemeProvider, css } from 'styled-components';
 import {
   X, Trash2, CheckCircle, AlertCircle, Play, Ban, ChevronDown,
   Filter, RefreshCw, Loader2, MessageSquare, Inbox, Eye, Archive, Download,
-  PauseCircle, XCircle, HelpCircle, Lightbulb, Bug, Zap, Image, Layers, FileCode, Video,
-  User, Mail, Globe, Monitor, Code, Copy, Check, ChevronRight, ZoomIn, Search
+  PauseCircle, Bug, Lightbulb, Zap, Image, Video,
+  Copy, Check, ZoomIn, Search, ExternalLink, FileCode, Layers, Monitor, Globe,
+  Maximize2, Minimize2
 } from 'lucide-react';
-import { getTheme, fadeIn, slideInRight, scaleIn, dropdownSlideIn, pulse, spin, slideDown } from './theme.js';
+import { getTheme, fadeIn, slideInRight, scaleIn, spin, slideDown } from './theme.js';
 import { formatPath } from './utils.js';
 import { SessionReplay } from './SessionReplay.jsx';
+import { LogEntry } from './components/LogEntry.jsx';
 import { StatusBadge, StatusBadgeStyled, getIconComponent, normalizeStatusKey, getStatusData } from './components/StatusBadge.jsx';
-
+import { StatusDropdown } from './components/StatusDropdown.jsx';
+import { showError, showSuccess, showInfo } from './ErrorToast.jsx';
 
 const FEEDBACK_STORAGE_KEY = 'react-feedback-data';
 
-// Default status configurations with better naming and icons
+// Default statuses
 const DEFAULT_STATUSES = {
-  new: {
-    key: 'new',
-    label: 'New',
-    color: '#8b5cf6',
-    bgColor: '#ede9fe',
-    textColor: '#6d28d9',
-    icon: 'Inbox'
-  },
-  open: {
-    key: 'open',
-    label: 'Open',
-    color: '#f59e0b',
-    bgColor: '#fef3c7',
-    textColor: '#92400e',
-    icon: 'AlertCircle'
-  },
-  inProgress: {
-    key: 'inProgress',
-    label: 'In Progress',
-    color: '#3b82f6',
-    bgColor: '#dbeafe',
-    textColor: '#1e40af',
-    icon: 'Play'
-  },
-  underReview: {
-    key: 'underReview',
-    label: 'Under Review',
-    color: '#06b6d4',
-    bgColor: '#cffafe',
-    textColor: '#0e7490',
-    icon: 'Eye'
-  },
-  onHold: {
-    key: 'onHold',
-    label: 'On Hold',
-    color: '#6b7280',
-    bgColor: '#f3f4f6',
-    textColor: '#374151',
-    icon: 'PauseCircle'
-  },
-  resolved: {
-    key: 'resolved',
-    label: 'Resolved',
-    color: '#10b981',
-    bgColor: '#d1fae5',
-    textColor: '#065f46',
-    icon: 'CheckCircle'
-  },
-  closed: {
-    key: 'closed',
-    label: 'Closed',
-    color: '#64748b',
-    bgColor: '#e2e8f0',
-    textColor: '#334155',
-    icon: 'Archive'
-  },
-  wontFix: {
-    key: 'wontFix',
-    label: "Won't Fix",
-    color: '#ef4444',
-    bgColor: '#fee2e2',
-    textColor: '#991b1b',
-    icon: 'Ban'
-  }
+  new: { key: 'new', label: 'New', color: '#8b5cf6', bgColor: '#ede9fe', textColor: '#6d28d9', icon: 'Inbox' },
+  open: { key: 'open', label: 'Open', color: '#f59e0b', bgColor: '#fef3c7', textColor: '#92400e', icon: 'AlertCircle' },
+  inProgress: { key: 'inProgress', label: 'In Progress', color: '#3b82f6', bgColor: '#dbeafe', textColor: '#1e40af', icon: 'Play' },
+  underReview: { key: 'underReview', label: 'Under Review', color: '#06b6d4', bgColor: '#cffafe', textColor: '#0e7490', icon: 'Eye' },
+  resolved: { key: 'resolved', label: 'Resolved', color: '#10b981', bgColor: '#d1fae5', textColor: '#065f46', icon: 'CheckCircle' },
+  closed: { key: 'closed', label: 'Closed', color: '#64748b', bgColor: '#e2e8f0', textColor: '#334155', icon: 'Archive' }
 };
 
-// Styled Components
+// --- Styled Components ---
+
 const DashboardBackdrop = styled.div`
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background-color: ${props => props.theme.colors.backdropBg};
   z-index: 9998;
   animation: ${fadeIn} 0.2s ease-out;
+  backdrop-filter: blur(2px);
 `;
 
 const DashboardPanel = styled.div`
@@ -101,345 +45,278 @@ const DashboardPanel = styled.div`
   right: 0;
   bottom: 0;
   width: 100%;
-  max-width: 800px;
+  max-width: 600px;
   background-color: ${props => props.theme.colors.modalBg};
   z-index: 9999;
-  box-shadow: ${props => props.theme.mode === 'dark'
-    ? '-8px 0 32px rgba(0, 0, 0, 0.6)'
-    : '-8px 0 32px rgba(0, 0, 0, 0.12)'};
+  box-shadow: -8px 0 32px rgba(0,0,0,0.15);
   display: flex;
   flex-direction: column;
   animation: ${slideInRight} 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 `;
 
 const DashboardHeader = styled.div`
-  background: ${props => props.theme.colors.modalBg};
+  padding: 20px 24px;
+  background: ${props => props.theme.colors.headerBg};
   border-bottom: 1px solid ${props => props.theme.colors.border};
   display: flex;
   flex-direction: column;
+  gap: 16px;
+  flex-shrink: 0;
 `;
 
 const HeaderTop = styled.div`
-  padding: 20px 24px;
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  border-bottom: 1px solid ${props => props.theme.colors.border}80;
+  align-items: center;
 `;
 
-const HeaderBottom = styled.div`
-  padding: 12px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  background-color: ${props => props.theme.colors.headerBg};
-`;
-
-const HeaderTitleSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-`;
-
-const HeaderTitle = styled.h2`
-  margin: 0;
-  font-size: 24px;
-  font-weight: 700;
-  color: ${props => props.theme.colors.textPrimary};
-  letter-spacing: -0.02em;
+const TitleGroup = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
 `;
 
-const ItemCountBadge = styled.span`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 28px;
-  height: 28px;
-  padding: 0 10px;
-  background: ${props => props.theme.mode === 'dark'
-    ? 'linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)'
-    : 'linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)'};
-  color: white;
-  border-radius: 14px;
-  font-size: 13px;
-  font-weight: 700;
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
-`;
-
-const HeaderSubtitle = styled.p`
+const HeaderTitle = styled.h2`
   margin: 0;
-  font-size: 13px;
-  color: ${props => props.theme.colors.textSecondary};
-  font-weight: 400;
+  font-size: 20px;
+  font-weight: 700;
+  color: ${props => props.theme.colors.textPrimary};
 `;
 
-const HeaderActions = styled.div`
+const CountBadge = styled.span`
+  background: ${props => props.theme.colors.btnPrimaryBg};
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 12px;
+`;
+
+const ActionsGroup = styled.div`
   display: flex;
   gap: 8px;
-  align-items: center;
 `;
 
-const RefreshButton = styled.button`
+const ActionButton = styled.button`
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 10px 16px;
-  background: ${props => props.theme.mode === 'dark'
-    ? 'rgba(59, 130, 246, 0.15)'
-    : 'rgba(59, 130, 246, 0.1)'};
-  border: 1px solid ${props => props.theme.mode === 'dark'
-    ? 'rgba(59, 130, 246, 0.3)'
-    : 'rgba(59, 130, 246, 0.2)'};
-  border-radius: 10px;
-  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
-  font-size: 13px;
-  font-weight: 600;
-  color: #3b82f6;
-  transition: all 0.2s ease;
-  opacity: ${props => props.disabled ? 0.6 : 1};
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid ${props => props.theme.colors.border};
+  background: transparent;
+  border-radius: 8px;
+  color: ${props => props.theme.colors.textSecondary};
+  cursor: pointer;
+  transition: all 0.2s;
 
   &:hover:not(:disabled) {
-    background: ${props => props.theme.mode === 'dark'
-      ? 'rgba(59, 130, 246, 0.25)'
-      : 'rgba(59, 130, 246, 0.15)'};
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+    background: ${props => props.theme.colors.hoverBg};
+    color: ${props => props.theme.colors.textPrimary};
   }
-
-  &:active:not(:disabled) {
-    transform: translateY(0);
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 `;
 
-const CloseButton = styled.button`
-  padding: 10px;
-  background: ${props => props.theme.mode === 'dark'
-    ? 'rgba(71, 85, 105, 0.3)'
-    : 'rgba(241, 245, 249, 0.8)'};
-  border: 1px solid ${props => props.theme.mode === 'dark'
-    ? 'rgba(148, 163, 184, 0.2)'
-    : 'rgba(226, 232, 240, 0.8)'};
-  border-radius: 10px;
-  cursor: pointer;
+const FilterBar = styled.div`
   display: flex;
+  gap: 12px;
   align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: ${props => props.theme.mode === 'dark'
-      ? 'rgba(239, 68, 68, 0.2)'
-      : 'rgba(239, 68, 68, 0.1)'};
-    border-color: ${props => props.theme.mode === 'dark'
-      ? 'rgba(239, 68, 68, 0.3)'
-      : 'rgba(239, 68, 68, 0.2)'};
-    transform: scale(1.05);
-  }
-
-  &:hover svg {
-    color: #ef4444;
-  }
-`;
-
-const FilterTabs = styled.div`
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  align-items: center;
-  width: 100%;
-  margin-bottom: 8px;
-`;
-
-const SearchContainer = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  max-width: none;
 `;
 
 const SearchInput = styled.input`
-  height: 32px;
-  padding: 0 12px 0 32px;
-  border-radius: 6px;
+  flex: 1;
+  height: 36px;
+  padding: 0 12px 0 36px;
+  border-radius: 8px;
   border: 1px solid ${props => props.theme.colors.border};
-  background-color: ${props => props.theme.colors.inputBg};
+  background: ${props => props.theme.colors.inputBg};
   color: ${props => props.theme.colors.textPrimary};
   font-size: 13px;
-  width: 100%;
-  transition: all 0.2s ease;
-
+  outline: none;
+  
   &:focus {
-    outline: none;
     border-color: ${props => props.theme.colors.borderFocus};
-    background-color: ${props => props.theme.mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'white'};
-  }
-
-  &::placeholder {
-    color: ${props => props.theme.colors.textTertiary};
   }
 `;
 
 const SearchIconWrapper = styled.div`
   position: absolute;
-  left: 10px;
-  color: ${props => props.theme.colors.textTertiary};
+  left: 12px;
+  top: 0;
+  bottom: 0;
   pointer-events: none;
+  color: ${props => props.theme.colors.textTertiary};
   display: flex;
   align-items: center;
 `;
 
-const FilterTab = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 6px 10px;
-  border: 1px solid ${props => {
-    if (props.$isActive) {
-      if (props.$isAll) return props.theme.mode === 'dark' ? '#3b82f6' : '#3b82f6';
-      return props.$statusColor || props.theme.colors.border;
-    }
-    return props.theme.colors.border;
-  }};
-  border-radius: 16px;
-  background-color: ${props => {
-    if (props.$isActive) {
-      if (props.$isAll) return props.theme.mode === 'dark' ? 'rgba(59, 130, 246, 0.2)' : 'rgba(59, 130, 246, 0.1)';
-      return props.$statusBg || props.theme.colors.hoverBg;
-    }
-    return 'transparent';
-  }};
-  color: ${props => {
-    if (props.$isActive) {
-      if (props.$isAll) return '#3b82f6';
-      return props.$statusTextColor || props.theme.colors.textPrimary;
-    }
-    return props.theme.colors.textSecondary;
-  }};
-  font-size: 11px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-
-  &:hover {
-    background-color: ${props => {
-      if (props.$isAll) return props.theme.mode === 'dark' ? 'rgba(59, 130, 246, 0.15)' : 'rgba(59, 130, 246, 0.08)';
-      return props.$statusBg || props.theme.colors.hoverBg;
-    }};
-    border-color: ${props => props.$statusColor || props.theme.colors.border};
-  }
-`;
-
-const FilterCount = styled.span`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 16px;
-  height: 16px;
-  padding: 0 4px;
-  background: ${props => props.$isActive
-    ? 'rgba(0, 0, 0, 0.1)'
-    : props.theme.colors.hoverBg};
+const FilterSelect = styled.select`
+  height: 36px;
+  padding: 0 28px 0 12px;
   border-radius: 8px;
-  font-size: 10px;
-  font-weight: 700;
+  border: 1px solid ${props => props.theme.colors.border};
+  background: ${props => props.theme.colors.inputBg};
+  color: ${props => props.theme.colors.textPrimary};
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  
+  &:focus {
+    border-color: ${props => props.theme.colors.borderFocus};
+  }
 `;
 
 const Content = styled.div`
   flex: 1;
-  overflow: auto;
-  background-color: ${props => props.theme.colors.contentBg};
-  position: relative;
+  overflow-y: auto;
+  background: ${props => props.theme.colors.contentBg};
+  padding: 16px 24px;
 `;
 
-const LoadingContainer = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: ${props => props.theme.mode === 'dark'
-    ? 'rgba(15, 23, 42, 0.9)'
-    : 'rgba(255, 255, 255, 0.9)'};
-  backdrop-filter: blur(8px);
+const FeedbackList = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  gap: 12px;
+`;
+
+const Card = styled.div`
+  background: ${props => props.theme.colors.cardBg};
+  border: 1px solid ${props => props.$expanded ? props.theme.colors.borderFocus : props.theme.colors.border};
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  
+  &:hover {
+    border-color: ${props => props.$expanded ? props.theme.colors.borderFocus : props.theme.colors.textTertiary};
+    box-shadow: 0 4px 12px ${props => props.theme.colors.shadow};
+  }
+`;
+
+const CardMain = styled.div`
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   gap: 16px;
-  z-index: 100;
+  padding: 16px;
+  align-items: start;
 `;
 
-const LoadingSpinner = styled(Loader2)`
-  animation: ${spin} 1s linear infinite;
-  color: #3b82f6;
+const Thumbnail = styled.div`
+  width: 64px;
+  height: 48px;
+  border-radius: 6px;
+  background: ${props => props.theme.colors.hoverBg};
+  border: 1px solid ${props => props.theme.colors.border};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: ${props => props.theme.colors.textTertiary};
+  flex-shrink: 0;
+
+  img, video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 `;
 
-const LoadingText = styled.p`
-  margin: 0;
-  font-size: 14px;
-  font-weight: 500;
-  color: ${props => props.theme.colors.textSecondary};
-`;
-
-const ErrorContainer = styled.div`
+const CardContent = styled.div`
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 40px;
-  text-align: center;
+  gap: 6px;
 `;
 
-const ErrorIcon = styled.div`
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: ${props => props.theme.mode === 'dark'
-    ? 'rgba(239, 68, 68, 0.15)'
-    : 'rgba(239, 68, 68, 0.1)'};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 16px;
-`;
-
-const ErrorTitle = styled.h3`
-  margin: 0 0 8px 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: ${props => props.theme.colors.textPrimary};
-`;
-
-const ErrorMessage = styled.p`
-  margin: 0 0 20px 0;
-  font-size: 13px;
-  color: ${props => props.theme.colors.textSecondary};
-  max-width: 300px;
-`;
-
-const RetryButton = styled.button`
+const CardHeader = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 20px;
-  background: #3b82f6;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  flex-wrap: wrap;
+`;
 
-  &:hover {
-    background: #2563eb;
-    transform: translateY(-1px);
+const DateText = styled.span`
+  font-size: 11px;
+  color: ${props => props.theme.colors.textSecondary};
+`;
+
+const FeedbackDescription = styled.p`
+  margin: 0;
+  font-size: 14px;
+  color: ${props => props.theme.colors.textPrimary};
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: ${props => props.$expanded ? 'unset' : 2};
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+`;
+
+const CardActions = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+`;
+
+const ExpandedSection = styled.div`
+  border-top: 1px solid ${props => props.theme.colors.border};
+  background: ${props => props.theme.colors.hoverBg};
+  padding: 16px;
+  animation: ${slideDown} 0.2s ease-out;
+`;
+
+const MediaViewer = styled.div`
+  margin-bottom: 16px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid ${props => props.theme.colors.border};
+  background: #000;
+  
+  img {
+    width: 100%;
+    max-height: 400px;
+    object-fit: contain;
+    display: block;
   }
+`;
+
+const DetailGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  font-size: 12px;
+`;
+
+const DetailItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+`;
+
+const DetailLabel = styled.span`
+  color: ${props => props.theme.colors.textTertiary};
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+`;
+
+const DetailValue = styled.div`
+  color: ${props => props.theme.colors.textPrimary};
+  background: ${props => props.theme.colors.cardBg};
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid ${props => props.theme.colors.border};
+  font-family: monospace;
+  word-break: break-all;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 `;
 
 const EmptyState = styled.div`
@@ -448,923 +325,264 @@ const EmptyState = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
-  min-height: 400px;
-  padding: 40px;
-  text-align: center;
-`;
-
-const EmptyIcon = styled.div`
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: ${props => props.theme.mode === 'dark'
-    ? 'rgba(148, 163, 184, 0.1)'
-    : 'rgba(148, 163, 184, 0.1)'};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 20px;
-`;
-
-const EmptyTitle = styled.h3`
-  margin: 0 0 8px 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: ${props => props.theme.colors.textPrimary};
-`;
-
-const EmptySubtitle = styled.p`
-  margin: 0;
-  font-size: 14px;
-  color: ${props => props.theme.colors.textSecondary};
-`;
-
-const TableContainer = styled.div`
-  min-height: 100%;
-`;
-
-const TableHeader = styled.div`
-  display: grid;
-  grid-template-columns: 40px 70px 1fr 120px ${props => props.$isDeveloper ? '40px' : ''};
+  color: ${props => props.theme.colors.textTertiary};
   gap: 12px;
-  padding: 12px 20px;
-  background-color: ${props => props.theme.colors.headerBg};
-  border-bottom: 2px solid ${props => props.theme.colors.border};
-  position: sticky;
-  top: 0;
-  z-index: 10;
 `;
 
-const TableHeaderCell = styled.div`
-  font-size: 11px;
-  font-weight: 700;
-  color: ${props => props.theme.colors.textTertiary};
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-  display: flex;
-  align-items: center;
-  justify-content: ${props => props.$center ? 'center' : 'flex-start'};
+// Video Mode - Fullscreen video player with logs
+const VideoModeBackdrop = styled.div`
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 100000;
+  animation: ${fadeIn} 0.2s ease-out;
 `;
 
-const TableRow = styled.div`
-  display: grid;
-  grid-template-columns: 40px 70px 1fr 120px ${props => props.$isDeveloper ? '40px' : ''};
-  gap: 12px;
-  padding: 12px 20px;
-  border-bottom: 1px solid ${props => props.$isExpanded
-    ? 'transparent'
-    : props.theme.colors.border};
-  border-left: 3px solid transparent;
-  background-color: ${props => props.$isExpanded
-    ? (props.theme.mode === 'dark' ? 'rgba(59, 130, 246, 0.1)' : 'rgba(59, 130, 246, 0.04)')
-    : 'transparent'};
-  transition: all 0.15s ease;
-  cursor: pointer;
-  align-items: flex-start;
-  border-left-color: ${props => props.$isExpanded ? '#3b82f6' : 'transparent'};
-
-  &:hover {
-    background-color: ${props => props.$isExpanded
-    ? (props.theme.mode === 'dark' ? 'rgba(59, 130, 246, 0.1)' : 'rgba(59, 130, 246, 0.04)')
-    : props.theme.colors.hoverBg};
-    border-left-color: ${props => props.$isExpanded ? '#3b82f6' : props.theme.colors.borderFocus};
-  }
-`;
-
-const ScreenshotCell = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const ScreenshotButton = styled.button`
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  background-color: ${props => props.theme.mode === 'dark'
-    ? 'rgba(59, 130, 246, 0.2)'
-    : 'rgba(59, 130, 246, 0.1)'};
-  border: 1px solid ${props => props.theme.mode === 'dark'
-    ? 'rgba(59, 130, 246, 0.3)'
-    : 'rgba(59, 130, 246, 0.2)'};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  color: #3b82f6;
-
-  &:hover {
-    background-color: #3b82f6;
-    color: white;
-  }
-`;
-
-const ScreenshotIndicator = styled.div`
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  background-color: ${props => props.theme.mode === 'dark'
-    ? 'rgba(59, 130, 246, 0.2)'
-    : 'rgba(59, 130, 246, 0.1)'};
-  border: 1px solid ${props => props.theme.mode === 'dark'
-    ? 'rgba(59, 130, 246, 0.3)'
-    : 'rgba(59, 130, 246, 0.2)'};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #3b82f6;
-`;
-
-const NoScreenshot = styled.div`
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  background-color: ${props => props.theme.colors.hoverBg};
-  border: 1px dashed ${props => props.theme.colors.border};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: ${props => props.theme.colors.textTertiary};
-`;
-
-const DateCell = styled.div`
-  font-size: 12px;
-  color: ${props => props.theme.colors.textSecondary};
-  font-weight: 500;
-`;
-
-const FeedbackText = styled.div`
-  font-size: 14px;
-  color: ${props => props.theme.colors.textPrimary};
-  overflow: hidden;
-  text-overflow: ${props => props.$expanded ? 'unset' : 'ellipsis'};
-  white-space: ${props => props.$expanded ? 'normal' : 'nowrap'};
-  font-weight: 400;
-  line-height: 1.5;
-`;
-
-const StatusCell = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-
-
-
-const ActionsCell = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-
-const DeleteButton = styled.button`
-  padding: 8px;
-  background-color: transparent;
-  border: none;
-  color: ${props => props.theme.colors.textTertiary};
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background-color: ${props => props.theme.mode === 'dark'
-      ? 'rgba(239, 68, 68, 0.2)'
-      : 'rgba(239, 68, 68, 0.1)'};
-    color: #ef4444;
-  }
-`;
-
-const ExpandedContent = styled.div`
-  padding: 16px 20px;
-  background-color: ${props => props.theme.mode === 'dark'
-    ? 'rgba(59, 130, 246, 0.05)'
-    : 'rgba(248, 250, 252, 1)'};
-  border-left: 3px solid #3b82f6;
-  border-bottom: 1px solid ${props => props.theme.colors.border};
-  animation: ${slideDown} 0.15s ease-out;
-`;
-
-const ExpandedLayout = styled.div`
-  display: flex;
-  gap: 16px;
-`;
-
-const ExpandedMedia = styled.div`
-  flex-shrink: 0;
-`;
-
-const ExpandedDetails = styled.div`
-  flex: 1;
-  min-width: 0;
+const VideoModeContainer = styled.div`
+  position: fixed;
+  inset: 0;
+  z-index: 100001;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 8px;
-`;
-
-const DetailRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-`;
-
-const DetailItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  color: ${props => props.theme.colors.textSecondary};
-
-  svg {
-    flex-shrink: 0;
-    color: ${props => props.theme.colors.textTertiary};
-  }
-
-  span {
-    color: ${props => props.theme.colors.textPrimary};
-    font-weight: 500;
-  }
-`;
-
-const DetailLabel = styled.span`
-  color: ${props => props.theme.colors.textTertiary} !important;
-  font-weight: 400 !important;
-`;
-
-const ComponentStack = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 11px;
-  color: ${props => props.theme.colors.textSecondary};
-  flex-wrap: wrap;
-`;
-
-const ComponentTag = styled.span`
-  background: ${props => props.theme.mode === 'dark' ? 'rgba(59, 130, 246, 0.2)' : 'rgba(59, 130, 246, 0.1)'};
-  color: #3b82f6;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 10px;
-`;
-
-const SourceLink = styled.div`
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 12px;
-  color: ${props => props.theme.mode === 'dark' ? '#93c5fd' : '#2563eb'};
-  background: ${props => props.theme.mode === 'dark' ? 'rgba(59, 130, 246, 0.15)' : 'rgba(59, 130, 246, 0.08)'};
-  padding: 6px 10px;
-  border-radius: 6px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  border: 1px solid ${props => props.theme.mode === 'dark' ? 'rgba(59, 130, 246, 0.3)' : 'rgba(59, 130, 246, 0.2)'};
-
-  &:hover {
-    background: ${props => props.theme.mode === 'dark' ? 'rgba(59, 130, 246, 0.25)' : 'rgba(59, 130, 246, 0.12)'};
-  }
-`;
-
-const TypeBadge = styled.span`
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: capitalize;
-  background: ${props => {
-    switch(props.$type) {
-      case 'bug': return props.theme.mode === 'dark' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(239, 68, 68, 0.1)';
-      case 'feature': return props.theme.mode === 'dark' ? 'rgba(34, 197, 94, 0.2)' : 'rgba(34, 197, 94, 0.1)';
-      case 'improvement': return props.theme.mode === 'dark' ? 'rgba(59, 130, 246, 0.2)' : 'rgba(59, 130, 246, 0.1)';
-      default: return props.theme.mode === 'dark' ? 'rgba(148, 163, 184, 0.2)' : 'rgba(148, 163, 184, 0.1)';
-    }
-  }};
-  color: ${props => {
-    switch(props.$type) {
-      case 'bug': return '#ef4444';
-      case 'feature': return '#22c55e';
-      case 'improvement': return '#3b82f6';
-      default: return props.theme.colors.textSecondary;
-    }
-  }};
-`;
-
-const InfoCard = styled.div`
-  background: ${props => props.theme.mode === 'dark' ? '#1e293b' : '#fff'};
-  border: 1px solid ${props => props.theme.colors.border};
-  border-radius: 12px;
   padding: 20px;
 `;
 
-const SectionLabel = styled.div`
-  font-size: 10px;
-  font-weight: 700;
-  color: ${props => props.theme.colors.textTertiary};
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-  margin-bottom: 8px;
-`;
-
-const FullFeedbackText = styled.p`
-  margin: 0;
-  color: ${props => props.theme.colors.textPrimary};
-  font-size: 14px;
-  line-height: 1.7;
-`;
-
-const ScreenshotWrapper = styled.div`
-  position: relative;
-  width: 160px;
-  height: 100px;
-  border-radius: 8px;
-  overflow: hidden;
-  cursor: zoom-in;
-  border: 1px solid ${props => props.theme.colors.border};
-  background-color: ${props => props.theme.colors.cardBg};
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  transition: all 0.2s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-    border-color: ${props => props.theme.colors.borderFocus};
-  }
-
-  &:hover .zoom-overlay {
-    opacity: 1;
-  }
-`;
-
-const ZoomOverlay = styled.div`
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.3);
+const VideoModeHeader = styled.div`
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  color: white;
-`;
-
-const ScreenshotPreview = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-`;
-
-const TechnicalGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 12px;
-`;
-
-const TechnicalItem = styled.div`
-  padding: 12px;
-  background-color: ${props => props.theme.colors.hoverBg};
-  border-radius: 8px;
-`;
-
-const TechnicalLabel = styled.div`
-  font-size: 10px;
-  font-weight: 600;
-  color: ${props => props.theme.colors.textTertiary};
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 4px;
-`;
-
-// Modal Components
-const ModalBackdrop = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
-  z-index: 10000;
-  animation: ${fadeIn} 0.2s ease-out;
-`;
-
-const ModalContainer = styled.div`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: ${props => props.theme.mode === 'dark' ? '#1e293b' : 'white'};
-  border-radius: 16px;
-  padding: 28px;
-  width: 90%;
-  max-width: 480px;
-  z-index: 10001;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.3);
-  animation: ${scaleIn} 0.2s ease-out;
-`;
-
-const ModalTitle = styled.h3`
-  margin: 0 0 8px 0;
-  font-size: 20px;
-  font-weight: 700;
-  color: ${props => props.theme.colors.textPrimary};
-`;
-
-const ModalSubtitle = styled.p`
-  margin: 0 0 20px 0;
-  font-size: 13px;
-  color: ${props => props.theme.colors.textSecondary};
-`;
-
-const StatusChangePreview = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 16px;
-  background-color: ${props => props.theme.colors.hoverBg};
-  border-radius: 12px;
-  margin-bottom: 20px;
-`;
-
-const StatusArrow = styled.div`
-  color: ${props => props.theme.colors.textTertiary};
-  font-size: 18px;
-`;
-
-const CommentLabel = styled.label`
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: ${props => props.theme.colors.textPrimary};
-  margin-bottom: 8px;
-`;
-
-const CommentTextarea = styled.textarea`
-  width: 100%;
-  min-height: 100px;
-  padding: 12px;
-  font-size: 14px;
-  border: 2px solid ${props => props.theme.colors.border};
-  border-radius: 10px;
-  resize: vertical;
-  font-family: inherit;
-  outline: none;
-  background-color: ${props => props.theme.colors.inputBg};
-  color: ${props => props.theme.colors.textPrimary};
-  transition: border-color 0.2s ease;
-  box-sizing: border-box;
-
-  &::placeholder {
-    color: ${props => props.theme.colors.textTertiary};
-  }
-
-  &:focus {
-    border-color: #3b82f6;
-  }
-`;
-
-const ModalActions = styled.div`
-  display: flex;
-  gap: 12px;
-  justify-content: flex-end;
-  margin-top: 20px;
-`;
-
-const ModalButton = styled.button`
-  padding: 10px 20px;
-  border: none;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  background-color: ${props => props.$primary ? '#3b82f6' : props.theme.colors.hoverBg};
-  color: ${props => props.$primary ? 'white' : props.theme.colors.textPrimary};
-
-  &:hover {
-    background-color: ${props => props.$primary ? '#2563eb' : props.theme.colors.border};
-    transform: translateY(-1px);
-  }
-`;
-
-// Screenshot Modal
-const ScreenshotModalBackdrop = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.95);
-  z-index: 10002;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: ${fadeIn} 0.2s ease-out;
-`;
-
-const ScreenshotCloseButton = styled.button`
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  padding: 12px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  backdrop-filter: blur(10px);
-
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    transform: scale(1.05);
-  }
-`;
-
-const ScreenshotImage = styled.img`
-  max-width: 90%;
-  max-height: 90%;
-  object-fit: contain;
-  border-radius: 12px;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
-  animation: ${scaleIn} 0.3s ease-out;
-`;
-
-const DeleteModalContainer = styled(ModalContainer)`
-  max-width: 400px;
-`;
-
-const DeleteModalTitle = styled(ModalTitle)`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: #ef4444;
-`;
-
-const DeleteModalSubtitle = styled(ModalSubtitle)`
-  font-size: 14px;
-  line-height: 1.6;
-`;
-
-const DeleteModalActions = styled(ModalActions)`
-  margin-top: 24px;
-`;
-
-const DeleteConfirmButton = styled(ModalButton)`
-  background-color: #ef4444;
-  color: white;
-  &:hover {
-    background-color: #dc2626;
-  }
-`;
-
-const ExpandedGrid = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 16px;
-  width: 100%;
-`;
-
-const DetailsColumn = styled.div`
-  flex: 1;
-  min-width: 0;
-`;
-
-const MediaColumn = styled.div`
+  margin-bottom: 16px;
   flex-shrink: 0;
 `;
 
+const VideoModeTitle = styled.h2`
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`;
 
+const VideoModeCloseBtn = styled.button`
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  color: white;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.2s;
 
-import { StatusDropdown } from './components/StatusDropdown.jsx';
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+`;
 
-// Main Dashboard Component
+const VideoModeContent = styled.div`
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 16px;
+  min-height: 0;
+  height: 100%;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 300px;
+  }
+`;
+
+const VideoModePlayer = styled.div`
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+`;
+
+const VideoModeLogsPanel = styled.div`
+  background: ${props => props.theme.mode === 'dark' ? '#0d1117' : '#f8fafc'};
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Consolas', monospace;
+  border: 1px solid ${props => props.theme.mode === 'dark' ? '#30363d' : '#e2e8f0'};
+  min-height: 0;
+  height: 100%;
+`;
+
+const VideoModeLogsHeader = styled.div`
+  padding: 12px 16px;
+  background: ${props => props.theme.mode === 'dark' ? '#161b22' : '#f1f5f9'};
+  border-bottom: 1px solid ${props => props.theme.mode === 'dark' ? '#30363d' : '#e2e8f0'};
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+`;
+
+const VideoModeLogsTitle = styled.h3`
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: #7d8590;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const VideoModeLogsList = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 8px;
+  background: ${props => props.theme.mode === 'dark' ? '#0d1117' : '#f8fafc'};
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 10px;
+  line-height: 1.5;
+  min-height: 0;
+  max-height: 100%;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  &::-webkit-scrollbar-track {
+    background: ${props => props.theme.mode === 'dark' ? '#0d1117' : '#f1f5f9'};
+  }
+  &::-webkit-scrollbar-thumb {
+    background: ${props => props.theme.mode === 'dark' ? '#30363d' : '#cbd5e1'};
+    border-radius: 4px;
+  }
+`;
+
+const ExpandButton = styled.button`
+  background: transparent;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: ${props => props.theme.colors.textSecondary};
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+
+  &:hover {
+    background: ${props => props.theme.colors.hoverBg};
+    color: ${props => props.theme.colors.textPrimary};
+  }
+`;
+
+// Helper to show type icon
+const TypeIcon = ({ type }) => {
+  switch(type) {
+    case 'bug': return <Bug size={14} color="#ef4444" />;
+    case 'feature': return <Lightbulb size={14} color="#22c55e" />;
+    case 'improvement': return <Zap size={14} color="#3b82f6" />;
+    default: return <MessageSquare size={14} color="#6b7280" />;
+  }
+};
+
+// Helper for relative date formatting
+const formatRelativeDate = (dateString) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffTime = Math.abs(now - date);
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 0) return 'Today';
+  if (diffDays === 1) return 'Yesterday';
+  if (diffDays < 7) return `${diffDays}d ago`;
+  
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+};
+
 export const FeedbackDashboard = ({
-  isOpen,
-  onClose,
-  data,
-  isDeveloper = false,
-  isUser = true,
-  onStatusChange,
-  mode = 'light',
-  isLoading = false,
-  onRefresh,
-  title = 'Feedback',
-  statuses,
-  acceptableStatuses,
-  showAllStatuses = true,
-  error = null,
-  userName,
-  userEmail
+  isOpen, onClose, data, isDeveloper = false, onStatusChange, mode = 'light',
+  isLoading = false, onRefresh, title = 'Feedback', statuses, acceptableStatuses,
+  showAllStatuses = true, error = null, integrations
 }) => {
   const [feedbackList, setFeedbackList] = useState([]);
-  const [expandedRow, setExpandedRow] = useState(null);
+  const [expandedId, setExpandedId] = useState(null);
   const [filterStatus, setFilterStatus] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [screenshotModal, setScreenshotModal] = useState({ isOpen: false, image: null });
-  const [statusChangeModal, setStatusChangeModal] = useState({
-    isOpen: false,
-    feedbackId: null,
-    newStatus: null,
-    oldStatus: null,
-    comment: ''
-  });
-  const [deleteModal, setDeleteModal] = useState({ isOpen: false, feedbackId: null });
+  const [videoModeItem, setVideoModeItem] = useState(null); // Item for fullscreen video mode
+  const [videoModeVisibleLogs, setVideoModeVisibleLogs] = useState([]); // Logs synced with video time
+  const videoModeLogsRef = useRef(null);
 
   const useLocalStorage = data === undefined;
   const theme = getTheme(mode);
 
-  // Build statuses: acceptableStatuses controls what's shown, statuses provides config
+  // Merge statuses
   const mergedStatuses = useMemo(() => {
-    // If acceptableStatuses is provided, ONLY show those statuses
-    if (acceptableStatuses && Array.isArray(acceptableStatuses) && acceptableStatuses.length > 0) {
+    if (acceptableStatuses && acceptableStatuses.length > 0) {
       const result = {};
       acceptableStatuses.forEach(key => {
-        // Use config from statuses prop if provided, otherwise create a basic config
-        if (statuses && statuses[key]) {
-          result[key] = statuses[key];
-        } else if (DEFAULT_STATUSES[key]) {
-          result[key] = DEFAULT_STATUSES[key];
-        } else {
-          // Create a fallback config for unknown status keys
-          result[key] = {
-            key: key,
-            label: key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' '),
-            color: '#6b7280',
-            bgColor: '#f3f4f6',
-            textColor: '#374151',
-            icon: 'AlertCircle'
-          };
-        }
+        result[key] = statuses?.[key] || DEFAULT_STATUSES[key] || {
+          key, label: key, color: '#6b7280', bgColor: '#f3f4f6', textColor: '#374151', icon: 'AlertCircle'
+        };
       });
       return result;
     }
-
-    // If only statuses is provided (no acceptableStatuses), use those
-    if (statuses && Object.keys(statuses).length > 0) {
-      return statuses;
-    }
-
-    // Fallback to defaults
-    return DEFAULT_STATUSES;
+    return statuses || DEFAULT_STATUSES;
   }, [statuses, acceptableStatuses]);
 
-  // Load feedback
   useEffect(() => {
-    if (isOpen) {
-      console.log('[FeedbackDashboard] Opening dashboard...');
+    const loadData = () => {
       if (useLocalStorage) {
-        console.log('[FeedbackDashboard] Loading from localStorage');
-        loadFeedback();
+        try {
+          const stored = localStorage.getItem(FEEDBACK_STORAGE_KEY);
+          setFeedbackList(stored ? JSON.parse(stored) : []);
+        } catch(e) { console.error(e); }
       } else {
-        console.log('[FeedbackDashboard] Using provided data:', data?.length, 'items');
         setFeedbackList(data || []);
       }
-    }
+    };
+    if (isOpen) loadData();
   }, [isOpen, data, useLocalStorage]);
 
-  const loadFeedback = () => {
-    try {
-      const stored = localStorage.getItem(FEEDBACK_STORAGE_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        console.log('[FeedbackDashboard] Loaded from localStorage:', parsed.length, 'items');
-        setFeedbackList(parsed);
-      } else {
-        console.log('[FeedbackDashboard] No data in localStorage');
-        setFeedbackList([]);
-      }
-    } catch (err) {
-      console.error('[FeedbackDashboard] Failed to load feedback:', err);
-      setFeedbackList([]);
-    }
-  };
-
-  const saveFeedback = (updatedList) => {
-    try {
-      localStorage.setItem(FEEDBACK_STORAGE_KEY, JSON.stringify(updatedList));
-      setFeedbackList(updatedList);
-      console.log('[FeedbackDashboard] Saved to localStorage:', updatedList.length, 'items');
-    } catch (err) {
-      console.error('[FeedbackDashboard] Failed to save feedback:', err);
-    }
-  };
-
   const handleRefresh = () => {
-    console.log('[FeedbackDashboard] Refresh clicked');
-    if (onRefresh) {
-      onRefresh();
-    } else if (useLocalStorage) {
-      loadFeedback();
+    if (onRefresh) onRefresh();
+    else if (useLocalStorage) {
+      const stored = localStorage.getItem(FEEDBACK_STORAGE_KEY);
+      setFeedbackList(stored ? JSON.parse(stored) : []);
     }
   };
 
-  const openStatusChangeModal = (id, newStatus, oldStatus) => {
-    console.log('[FeedbackDashboard] Opening status change modal:', { id, from: oldStatus, to: newStatus });
-    setStatusChangeModal({
-      isOpen: true,
-      feedbackId: id,
-      newStatus,
-      oldStatus,
-      comment: ''
-    });
-  };
-
-  const closeStatusChangeModal = () => {
-    setStatusChangeModal({
-      isOpen: false,
-      feedbackId: null,
-      newStatus: null,
-      oldStatus: null,
-      comment: ''
-    });
-  };
-
-  const confirmStatusChange = () => {
-    const { feedbackId, newStatus, comment } = statusChangeModal;
-    console.log('[FeedbackDashboard] Confirming status change:', { feedbackId, newStatus, comment });
-
-    const updated = feedbackList.map(item =>
-      item.id === feedbackId ? { ...item, status: newStatus } : item
-    );
-
-    if (useLocalStorage) {
-      saveFeedback(updated);
-    } else {
-      setFeedbackList(updated);
-    }
-
-    if (onStatusChange && typeof onStatusChange === 'function') {
-      onStatusChange({ id: feedbackId, status: newStatus, comment });
-    }
-
-    closeStatusChangeModal();
-  };
-
-  const deleteFeedback = (id) => {
-    console.log('[FeedbackDashboard] Deleting feedback:', id);
+  const handleDelete = (id) => {
+    if (!window.confirm("Delete this feedback?")) return;
     const updated = feedbackList.filter(item => item.id !== id);
     if (useLocalStorage) {
-      saveFeedback(updated);
-    } else {
-      setFeedbackList(updated);
+      localStorage.setItem(FEEDBACK_STORAGE_KEY, JSON.stringify(updated));
     }
-    if (expandedRow?.id === id) {
-      setExpandedRow(null);
-    }
-  };
-  const openDeleteModal = (id) => {
-    setDeleteModal({ isOpen: true, feedbackId: id });
-  };
-  
-  const closeDeleteModal = () => {
-    setDeleteModal({ isOpen: false, feedbackId: null });
-  };
-  
-  const confirmDelete = () => {
-    if (deleteModal.feedbackId) {
-      deleteFeedback(deleteModal.feedbackId);
-    }
-    closeDeleteModal();
+    setFeedbackList(updated);
   };
 
-  const formatShortDate = (timestamp) => {
-    try {
-      const date = new Date(timestamp);
-      if (isNaN(date.getTime())) return 'N/A';
-      const day = date.getDate();
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      return `${day} ${months[date.getMonth()]}`;
-    } catch {
-      return 'N/A';
-    }
-  };
-
-  const toggleRow = (item) => {
-    setExpandedRow(expandedRow?.id === item.id ? null : item);
-  };
-
-  // Filter feedback
-  const filteredFeedback = useMemo(() => {
-    let filtered = feedbackList;
-
-    // Filter by status
-    if (filterStatus !== 'all') {
-      filtered = filtered.filter(item => {
-        const itemStatus = normalizeStatusKey(item.status || 'new', mergedStatuses);
-        return itemStatus === filterStatus;
-      });
-    }
-
-    // Filter by search query
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase().trim();
-      filtered = filtered.filter(item => {
-        const feedbackText = (item.feedback || item.description || '').toLowerCase();
-        // You can expand this to search other fields if needed
-        return feedbackText.includes(query);
-      });
-    }
-
-    return filtered;
-  }, [feedbackList, filterStatus, searchQuery, mergedStatuses]);
-
-  // Get status counts
-  const statusCounts = useMemo(() => {
-    return feedbackList.reduce((acc, item) => {
-      const status = normalizeStatusKey(item.status || 'new', mergedStatuses);
-      acc[status] = (acc[status] || 0) + 1;
-      return acc;
-    }, {});
-  }, [feedbackList, mergedStatuses]);
-
-  // Get statuses to show in filter
-  const visibleStatuses = useMemo(() => {
-    if (showAllStatuses) return mergedStatuses;
-    return Object.fromEntries(
-      Object.entries(mergedStatuses).filter(([key]) => statusCounts[key] > 0)
-    );
-  }, [mergedStatuses, statusCounts, showAllStatuses]);
-
-  const handleDownloadAll = async () => {
-    // 1. Import jszip and file-saver
-    const JSZip = (await import('jszip')).default;
-    const saveAs = (await import('file-saver')).default;
-
-    // 2. Create a zip instance
-    const zip = new JSZip();
-
-    // 3. Get data from local storage
-    const stored = localStorage.getItem(FEEDBACK_STORAGE_KEY);
-    const feedbackItems = stored ? JSON.parse(stored) : [];
-    
-    if (feedbackItems.length === 0) {
-      alert('No feedback data to download.');
-      return;
-    }
-
-    // 4. Add files to zip
-    for (const item of feedbackItems) {
-      const folderName = `feedback-${item.id}`;
+  const filteredItems = useMemo(() => {
+    return feedbackList.filter(item => {
+      const matchesStatus = filterStatus === 'all' || normalizeStatusKey(item.status, mergedStatuses) === filterStatus;
       
-      // Separate media from the rest of the data
-      const { screenshot, video, attachment, ...metadata } = item;
-      
-      // Add metadata as a JSON file
-      zip.file(`${folderName}/details.json`, JSON.stringify(metadata, null, 2));
+      if (!matchesStatus) return false;
+      if (!searchQuery) return true;
 
-      // Function to convert data URL to blob
-      const dataURLToBlob = async (dataURL) => {
-        const res = await fetch(dataURL);
-        return await res.blob();
-      };
+      const q = searchQuery.toLowerCase();
+      const feedbackText = (item.feedback || item.description || '').toLowerCase();
+      const id = (item.id || '').toLowerCase();
+      const type = (item.type || '').toLowerCase();
+      const user = (item.userName || '').toLowerCase();
 
-      if (screenshot) {
-        try {
-          const screenshotBlob = await dataURLToBlob(screenshot);
-          zip.file(`${folderName}/screenshot.png`, screenshotBlob);
-        } catch (e) {
-          console.error(`Failed to process screenshot for feedback ${item.id}`, e);
-        }
-      }
-      
-      if (video) {
-        try {
-          const videoBlob = await dataURLToBlob(video);
-          zip.file(`${folderName}/recording.webm`, videoBlob);
-        } catch (e) {
-          console.error(`Failed to process video for feedback ${item.id}`, e);
-        }
-      }
-
-      if (attachment) {
-        try {
-          const attachmentBlob = await dataURLToBlob(attachment.data);
-          // Use original filename if available, otherwise default
-          const filename = attachment.name || 'attachment.file';
-          zip.file(`${folderName}/${filename}`, attachmentBlob);
-        } catch (e) {
-          console.error(`Failed to process attachment for feedback ${item.id}`, e);
-        }
-      }
-    }
-
-    // 5. Generate and download zip
-    zip.generateAsync({ type: 'blob' }).then((content) => {
-      saveAs(content, 'feedback-export.zip');
+      return feedbackText.includes(q) || id.includes(q) || type.includes(q) || user.includes(q);
     });
-  };
+  }, [feedbackList, filterStatus, searchQuery, mergedStatuses]);
 
   if (!isOpen) return null;
 
@@ -1374,454 +592,477 @@ export const FeedbackDashboard = ({
       <DashboardPanel>
         <DashboardHeader>
           <HeaderTop>
-            <HeaderTitleSection>
-              <HeaderTitle>
-                {title}
-                <ItemCountBadge>{feedbackList.length}</ItemCountBadge>
-              </HeaderTitle>
-              <HeaderSubtitle>
-                {filteredFeedback.length === feedbackList.length
-                  ? `Showing all feedback`
-                  : `Showing ${filteredFeedback.length} of ${feedbackList.length}`}
-              </HeaderSubtitle>
-            </HeaderTitleSection>
-            <HeaderActions>
-              <RefreshButton onClick={handleRefresh} disabled={isLoading}>
-                {isLoading ? (
-                  <LoadingSpinner size={16} />
-                ) : (
-                  <RefreshCw size={16} />
-                )}
-                {isLoading ? 'Loading...' : 'Refresh'}
-              </RefreshButton>
-              <RefreshButton onClick={handleDownloadAll} disabled={isLoading || feedbackList.length === 0}>
-                <Download size={16} />
-                Download All
-              </RefreshButton>
-              <CloseButton onClick={onClose}>
-                <X size={20} color={theme.colors.textSecondary} />
-              </CloseButton>
-            </HeaderActions>
+            <TitleGroup>
+              <HeaderTitle>{title}</HeaderTitle>
+              <CountBadge>{feedbackList.length}</CountBadge>
+            </TitleGroup>
+            <ActionsGroup>
+              <ActionButton onClick={handleRefresh} title="Refresh">
+                <RefreshCw size={16} className={isLoading ? 'animate-spin' : ''} />
+              </ActionButton>
+              <ActionButton onClick={onClose} title="Close">
+                <X size={20} />
+              </ActionButton>
+            </ActionsGroup>
           </HeaderTop>
-
-          <HeaderBottom>
-            <FilterTabs>
-              <FilterTab
-                $isAll
-                $isActive={filterStatus === 'all'}
-                onClick={() => setFilterStatus('all')}
-              >
-                All
-                <FilterCount $isActive={filterStatus === 'all'}>
-                  {feedbackList.length}
-                </FilterCount>
-              </FilterTab>
-              {Object.entries(visibleStatuses).map(([key, rawStatusData]) => {
-                // Skip invalid/undefined status entries
-                if (!rawStatusData || typeof rawStatusData !== 'object') return null;
-                const count = statusCounts[key] || 0;
-                const statusData = getStatusData(key, visibleStatuses);
-                const IconComponent = getIconComponent(statusData.icon);
-                return (
-                  <FilterTab
-                    key={key}
-                    $isActive={filterStatus === key}
-                    $statusColor={statusData.color}
-                    $statusBg={statusData.bgColor}
-                    $statusTextColor={statusData.textColor}
-                    onClick={() => setFilterStatus(key)}
-                  >
-                    <IconComponent size={14} />
-                    {statusData.label}
-                    {count > 0 && (
-                      <FilterCount $isActive={filterStatus === key}>
-                        {count}
-                      </FilterCount>
-                    )}
-                  </FilterTab>
-                );
-              })}
-            </FilterTabs>
-
-            <SearchContainer>
-              <SearchIconWrapper>
-                <Search size={14} />
-              </SearchIconWrapper>
-              <SearchInput
-                placeholder="Search feedback..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </SearchContainer>
-          </HeaderBottom>
+          
+          <FilterBar>
+            <div style={{position: 'relative', flex: 1}}>
+               <SearchIconWrapper><Search size={14} /></SearchIconWrapper>
+               <SearchInput 
+                 placeholder="Search feedback, ID, type..." 
+                 value={searchQuery}
+                 onChange={e => setSearchQuery(e.target.value)}
+               />
+            </div>
+            <FilterSelect 
+              value={filterStatus} 
+              onChange={e => setFilterStatus(e.target.value)}
+            >
+              <option value="all">All Status</option>
+              {Object.values(mergedStatuses).map(s => (
+                <option key={s.key} value={s.key}>{s.label}</option>
+              ))}
+            </FilterSelect>
+          </FilterBar>
         </DashboardHeader>
 
         <Content>
-          {isLoading && (
-            <LoadingContainer>
-              <LoadingSpinner size={40} />
-              <LoadingText>Loading feedback...</LoadingText>
-            </LoadingContainer>
-          )}
-
-          {error && !isLoading && (
-            <ErrorContainer>
-              <ErrorIcon>
-                <AlertCircle size={28} color="#ef4444" />
-              </ErrorIcon>
-              <ErrorTitle>Failed to load feedback</ErrorTitle>
-              <ErrorMessage>{error}</ErrorMessage>
-              <RetryButton onClick={handleRefresh}>
-                <RefreshCw size={16} />
-                Try Again
-              </RetryButton>
-            </ErrorContainer>
-          )}
-
-          {!isLoading && !error && feedbackList.length === 0 && (
+          {filteredItems.length === 0 ? (
             <EmptyState>
-              <EmptyIcon>
-                <Inbox size={36} color={theme.colors.textTertiary} />
-              </EmptyIcon>
-              <EmptyTitle>No feedback yet</EmptyTitle>
-              <EmptySubtitle>
-                Press Alt + Q to start giving feedback
-              </EmptySubtitle>
+              <Inbox size={48} strokeWidth={1} />
+              <span>No feedback found</span>
             </EmptyState>
-          )}
-
-          {!isLoading && !error && feedbackList.length > 0 && filteredFeedback.length === 0 && (
-            <EmptyState>
-              <EmptyIcon>
-                <Filter size={36} color={theme.colors.textTertiary} />
-              </EmptyIcon>
-              <EmptyTitle>No matching feedback</EmptyTitle>
-              <EmptySubtitle>
-                Try selecting a different filter
-              </EmptySubtitle>
-            </EmptyState>
-          )}
-
-          {!isLoading && !error && filteredFeedback.length > 0 && (
-            <TableContainer>
-              <TableHeader $isDeveloper={isDeveloper}>
-                <TableHeaderCell></TableHeaderCell>
-                <TableHeaderCell>Date</TableHeaderCell>
-                <TableHeaderCell>Feedback</TableHeaderCell>
-                <TableHeaderCell $center>Status</TableHeaderCell>
-                {isDeveloper && <TableHeaderCell $center></TableHeaderCell>}
-              </TableHeader>
-
-              {filteredFeedback.map((item) => {
-                const statusKey = normalizeStatusKey(item.status || 'new', mergedStatuses);
-                const statusData = getStatusData(statusKey, mergedStatuses);
-                const isExpanded = expandedRow?.id === item.id;
-                const IconComponent = getIconComponent(statusData.icon);
+          ) : (
+            <FeedbackList>
+              {filteredItems.map(item => {
+                const isExpanded = expandedId === item.id;
+                const statusKey = normalizeStatusKey(item.status, mergedStatuses);
+                const statusData = mergedStatuses[statusKey];
 
                 return (
-                  <div key={item.id}>
-                    <TableRow
-                      $isDeveloper={isDeveloper}
-                      $isExpanded={isExpanded}
-                      onClick={() => toggleRow(item)}
-                    >
-                      <ScreenshotCell>
-                        {item.video ? (
-                           <ScreenshotIndicator>
-                             <Video size={16} />
-                           </ScreenshotIndicator>
-                        ) : item.screenshot ? (
-                          <ScreenshotIndicator>
-                            <Image size={16} />
-                          </ScreenshotIndicator>
-                        ) : (
-                          <NoScreenshot>
-                            <MessageSquare size={14} />
-                          </NoScreenshot>
-                        )}
-                      </ScreenshotCell>
+                  <Card 
+                    key={item.id} 
+                    $expanded={isExpanded}
+                    onClick={() => setExpandedId(isExpanded ? null : item.id)}
+                  >
+                    <CardMain>
+                      <Thumbnail>
+                        {(item.video || item.videoRef) ? <Video size={24} /> : (item.screenshot ? <img src={item.screenshot} alt="" /> : <MessageSquare size={24} />)}
+                      </Thumbnail>
+                      
+                      <CardContent>
+                        <CardHeader>
+                          <TypeIcon type={item.type} />
+                          <span style={{fontSize: 12, fontWeight: 600, textTransform: 'capitalize', color: theme.colors.textPrimary}}>
+                            {item.type || 'Feedback'}
+                          </span>
+                          <span style={{fontSize: 12, color: theme.colors.textTertiary}}>•</span>
+                          <DateText>{formatRelativeDate(item.timestamp)}</DateText>
+                        </CardHeader>
+                        <FeedbackDescription $expanded={isExpanded}>
+                          {item.feedback || item.description || 'No description'}
+                        </FeedbackDescription>
+                      </CardContent>
 
-                      <DateCell>
-                        {formatShortDate(item.timestamp || item.createdAt)}
-                      </DateCell>
-
-                      <FeedbackText $expanded={isExpanded}>
-                        {item.feedback || item.description || 'No description'}
-                      </FeedbackText>
-
-                      <StatusCell>
+                      <CardActions onClick={e => e.stopPropagation()}>
                         {isDeveloper ? (
-                          <StatusDropdown
+                          <StatusDropdown 
                             currentStatus={item.status}
-                            onStatusChange={(id, newStatus) =>
-                              openStatusChangeModal(id, newStatus, statusKey)
-                            }
+                            onStatusChange={(id, s) => onStatusChange ? onStatusChange({id: item.id, status: s}) : null}
                             itemId={item.id}
                             statuses={mergedStatuses}
-                            acceptableStatuses={acceptableStatuses}
                             theme={theme}
                           />
                         ) : (
-                          <StatusBadgeStyled
-                            $statusColor={statusData.color}
-                            $textColor={statusData.textColor}
-                            $statusBg={statusData.bgColor}
+                          <StatusBadgeStyled 
+                            $statusColor={statusData?.color}
+                            $textColor={statusData?.textColor}
+                            $statusBg={statusData?.bgColor}
                           >
-                            <IconComponent size={16} />
-                            <span>{statusData.label}</span>
+                            {statusData?.label}
                           </StatusBadgeStyled>
                         )}
-                      </StatusCell>
-
-                      {isDeveloper && (
-                        <ActionsCell>
-                          <DeleteButton
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              openDeleteModal(item.id)
-                            }}
-                          >
-                            <Trash2 size={16} />
-                          </DeleteButton>
-                        </ActionsCell>
-                      )}
-                    </TableRow>
+                        {isExpanded && isDeveloper && (
+                          <ActionButton onClick={() => handleDelete(item.id)} title="Delete">
+                            <Trash2 size={14} color="#ef4444" />
+                          </ActionButton>
+                        )}
+                      </CardActions>
+                    </CardMain>
 
                     {isExpanded && (
-                       <ExpandedContent>
-                         {item.video ? (
-                            <SessionReplay
-                              videoSrc={item.video}
-                              eventLogs={item.eventLogs || []}
-                              mode={mode}
-                            />
-                         ) : (
-                            <ExpandedLayout>
-                              {item.screenshot && (
-                                <ExpandedMedia>
-                                  <ScreenshotWrapper onClick={() => setScreenshotModal({ isOpen: true, image: item.screenshot })}>
-                                    <ScreenshotPreview
-                                      src={item.screenshot}
-                                      alt="Feedback screenshot"
-                                    />
-                                    <ZoomOverlay className="zoom-overlay">
-                                      <ZoomIn size={24} />
-                                    </ZoomOverlay>
-                                  </ScreenshotWrapper>
-                                </ExpandedMedia>
-                              )}
-                              <ExpandedDetails>
-                                {/* Primary: Type + Source (what devs need most) */}
-                                <DetailRow>
-                                  {item.type && (
-                                    <TypeBadge $type={item.type}>
-                                      {item.type === 'bug' && <Bug size={10} />}
-                                      {item.type === 'feature' && <Lightbulb size={10} />}
-                                      {item.type === 'improvement' && <Zap size={10} />}
-                                      {item.type}
-                                    </TypeBadge>
-                                  )}
-                                  {item.elementInfo?.sourceFile && (
-                                    <SourceLink onClick={() => {
-                                      const path = `${item.elementInfo.sourceFile.fileName}:${item.elementInfo.sourceFile.lineNumber}`;
-                                      navigator.clipboard.writeText(path);
-                                    }}>
-                                      <FileCode size={12} />
-                                      {formatPath(item.elementInfo.sourceFile.fileName)}:{item.elementInfo.sourceFile.lineNumber}
-                                      <Copy size={10} />
-                                    </SourceLink>
-                                  )}
-                                </DetailRow>
-                              </ExpandedDetails>
-                            </ExpandedLayout>
-                         )}
-                       </ExpandedContent>
+                      <ExpandedSection onClick={e => e.stopPropagation()}>
+                        {(item.screenshot || item.video || item.videoRef) && (
+                          <MediaViewer style={{ position: 'relative' }}>
+                             {(item.video || item.videoRef) ? (
+                               <>
+                                 <SessionReplayWrapper item={item} mode={mode} />
+                                 <ExpandButton
+                                   onClick={() => setVideoModeItem(item)}
+                                   title="Open in Video Mode"
+                                   style={{
+                                     position: 'absolute',
+                                     top: 8,
+                                     right: 8,
+                                     background: 'rgba(0,0,0,0.6)',
+                                     color: 'white',
+                                     padding: 6,
+                                     borderRadius: 6
+                                   }}
+                                 >
+                                   <Maximize2 size={16} />
+                                 </ExpandButton>
+                               </>
+                             ) : (
+                               <img src={item.screenshot} alt="Evidence" />
+                             )}
+                          </MediaViewer>
+                        )}
+
+                        {/* Developer view - show technical details */}
+                        {isDeveloper && (
+                          <DetailGrid>
+                            <DetailItem>
+                              <DetailLabel>Page</DetailLabel>
+                              <DetailValue>
+                                <Globe size={12} /> {new URL(item.url || 'http://localhost').pathname}
+                              </DetailValue>
+                            </DetailItem>
+                            <DetailItem>
+                              <DetailLabel>Component</DetailLabel>
+                              <DetailValue>
+                                <Layers size={12} /> {item.elementInfo?.reactComponent || item.component || 'Unknown'}
+                              </DetailValue>
+                            </DetailItem>
+                            <DetailItem>
+                              <DetailLabel>Browser</DetailLabel>
+                              <DetailValue>
+                                <Monitor size={12} /> {item.userAgent?.split(') ')[0]?.slice(-30) || 'Unknown'}...
+                              </DetailValue>
+                            </DetailItem>
+                            {item.elementInfo?.sourceFile?.fileName && (
+                              <DetailItem>
+                                <DetailLabel>Source</DetailLabel>
+                                <DetailValue style={{cursor: 'pointer'}} onClick={() => navigator.clipboard.writeText(item.elementInfo?.sourceFile?.fileName)}>
+                                  <FileCode size={12} />
+                                  {formatPath(item.elementInfo?.sourceFile?.fileName || '')}
+                                  <Copy size={10} style={{marginLeft: 'auto'}}/>
+                                </DetailValue>
+                              </DetailItem>
+                            )}
+                          </DetailGrid>
+                        )}
+                      </ExpandedSection>
                     )}
-                  </div>
+                  </Card>
                 );
               })}
-            </TableContainer>
+            </FeedbackList>
           )}
         </Content>
       </DashboardPanel>
 
-      {/* Status Change Modal */}
-      {statusChangeModal.isOpen && (
-        <>
-          <ModalBackdrop onClick={closeStatusChangeModal} />
-          <ModalContainer theme={theme} onClick={(e) => e.stopPropagation()}>
-            <ModalTitle>Update Status</ModalTitle>
-            <ModalSubtitle>Add an optional note about this change</ModalSubtitle>
+      {/* Video Mode - Fullscreen video with logs */}
+      {videoModeItem && createPortal(
+        <ThemeProvider theme={theme}>
+          <VideoModeBackdrop onClick={() => setVideoModeItem(null)} />
+          <VideoModeContainer>
+            <VideoModeHeader>
+              <VideoModeTitle>
+                <Video size={20} />
+                {videoModeItem.feedback?.slice(0, 50) || 'Video Recording'}
+                {videoModeItem.feedback?.length > 50 && '...'}
+              </VideoModeTitle>
+              <VideoModeCloseBtn onClick={() => setVideoModeItem(null)}>
+                <Minimize2 size={16} />
+                Exit Video Mode
+              </VideoModeCloseBtn>
+            </VideoModeHeader>
 
-            <StatusChangePreview>
-              <StatusBadge status={statusChangeModal.oldStatus} statuses={mergedStatuses} />
-              <StatusArrow>→</StatusArrow>
-              <StatusBadge status={statusChangeModal.newStatus} statuses={mergedStatuses} />
-            </StatusChangePreview>
+            <VideoModeContent>
+              <VideoModePlayer>
+                <SessionReplayWrapper
+                  item={videoModeItem}
+                  mode="dark"
+                  fullHeight={true}
+                  showLogsButton={false}
+                  onTimeUpdate={(time, logs) => {
+                    setVideoModeVisibleLogs(logs);
+                    // Auto-scroll logs
+                    if (videoModeLogsRef.current) {
+                      videoModeLogsRef.current.scrollTop = videoModeLogsRef.current.scrollHeight;
+                    }
+                  }}
+                />
+              </VideoModePlayer>
 
-            <div>
-              <CommentLabel>Note (optional)</CommentLabel>
-              <CommentTextarea
-                value={statusChangeModal.comment}
-                onChange={(e) => setStatusChangeModal({
-                  ...statusChangeModal,
-                  comment: e.target.value
-                })}
-                placeholder="Add a note about this status change..."
-              />
-            </div>
+              <VideoModeLogsPanel>
+                <VideoModeLogsHeader>
+                  <VideoModeLogsTitle>
+                    <span style={{ color: '#3fb950' }}>❯</span>
+                    Console & Network Logs
+                  </VideoModeLogsTitle>
+                  <span style={{
+                    background: '#238636',
+                    color: 'white',
+                    padding: '2px 8px',
+                    borderRadius: 10,
+                    fontSize: 11,
+                    fontWeight: 600
+                  }}>
+                    {videoModeVisibleLogs.length} / {videoModeItem.eventLogs?.length || 0}
+                  </span>
+                </VideoModeLogsHeader>
 
-            <ModalActions>
-              <ModalButton onClick={closeStatusChangeModal}>Cancel</ModalButton>
-              <ModalButton $primary onClick={confirmStatusChange}>
-                Confirm
-              </ModalButton>
-            </ModalActions>
-          </ModalContainer>
-        </>
-      )}
-
-      {/* Screenshot Modal */}
-      {screenshotModal.isOpen && (
-        <ScreenshotModalBackdrop
-          onClick={() => setScreenshotModal({ isOpen: false, image: null })}
-        >
-          <ScreenshotCloseButton
-            onClick={() => setScreenshotModal({ isOpen: false, image: null })}
-          >
-            <X size={24} color="white" />
-          </ScreenshotCloseButton>
-          <ScreenshotImage
-            src={screenshotModal.image}
-            alt="Screenshot"
-            onClick={(e) => e.stopPropagation()}
-          />
-        </ScreenshotModalBackdrop>
-      )}
-       {deleteModal.isOpen && (
-        <>
-          <ModalBackdrop onClick={closeDeleteModal} />
-          <DeleteModalContainer theme={theme} onClick={(e) => e.stopPropagation()}>
-            <DeleteModalTitle>
-              <AlertCircle size={24} />
-              Delete Feedback
-            </DeleteModalTitle>
-            <DeleteModalSubtitle>
-              Are you sure you want to permanently delete this feedback? This action cannot be undone.
-            </DeleteModalSubtitle>
-            <DeleteModalActions>
-              <ModalButton onClick={closeDeleteModal}>Cancel</ModalButton>
-              <DeleteConfirmButton onClick={confirmDelete}>Delete</DeleteConfirmButton>
-            </DeleteModalActions>
-          </DeleteModalContainer>
-        </>
+                <VideoModeLogsList ref={videoModeLogsRef}>
+                  {videoModeVisibleLogs.length === 0 ? (
+                    <div style={{
+                      padding: 40,
+                      textAlign: 'center',
+                      color: '#484f58'
+                    }}>
+                      <div style={{ fontSize: 24, marginBottom: 8 }}>❯_</div>
+                      <div>No logs yet - play the video to see logs</div>
+                    </div>
+                  ) : (
+                    videoModeVisibleLogs.map((log, idx) => (
+                      <LogEntry key={idx} log={log} theme={theme} />
+                    ))
+                  )}
+                </VideoModeLogsList>
+              </VideoModeLogsPanel>
+            </VideoModeContent>
+          </VideoModeContainer>
+        </ThemeProvider>,
+        document.body
       )}
     </ThemeProvider>,
     document.body
   );
 };
 
-// Helper to save feedback to localStorage
-const MAX_FEEDBACK_ITEMS = 50;
-const MAX_VIDEO_SIZE_MB = 10; // Max video size in MB for localStorage
+// Restore SessionReplayWrapper helpers
+const MAX_VIDEO_SIZE_MB = 500;
+const VIDEO_DB_NAME = 'FeedbackVideoDB';
+const VIDEO_STORE_NAME = 'videos';
 
-// Convert Blob to base64 data URL
-const blobToBase64 = (blob) => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(blob);
-  });
+const openVideoDatabase = () => new Promise((resolve, reject) => {
+    const request = indexedDB.open(VIDEO_DB_NAME, 1);
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve(request.result);
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains(VIDEO_STORE_NAME)) db.createObjectStore(VIDEO_STORE_NAME, { keyPath: 'id' });
+    };
+});
+
+const getVideoFromIndexedDB = async (id) => {
+  try {
+    console.log('Getting video from IndexedDB, id:', id);
+    const db = await openVideoDatabase();
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction([VIDEO_STORE_NAME], 'readonly');
+      const store = transaction.objectStore(VIDEO_STORE_NAME);
+      const request = store.get(id);
+      request.onsuccess = () => {
+        const result = request.result;
+        console.log('IndexedDB get result:', result ? 'found' : 'not found',
+          result ? 'blob size: ' + result.blob?.size : '');
+        resolve(result ? result.blob : null);
+      };
+      request.onerror = (e) => {
+        console.error('IndexedDB get error:', e);
+        reject(request.error);
+      };
+      transaction.oncomplete = () => db.close();
+    });
+  } catch (e) {
+    console.error('getVideoFromIndexedDB error:', e);
+    return null;
+  }
+};
+
+const saveVideoToIndexedDB = async (id, videoBlob) => {
+  try {
+    console.log('Opening IndexedDB for save, id:', id, 'blob size:', videoBlob?.size);
+    const db = await openVideoDatabase();
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction([VIDEO_STORE_NAME], 'readwrite');
+      const store = transaction.objectStore(VIDEO_STORE_NAME);
+      const request = store.put({ id, blob: videoBlob, timestamp: Date.now() });
+      request.onsuccess = () => {
+        console.log('IndexedDB save success for id:', id);
+        resolve(true);
+      };
+      request.onerror = (e) => {
+        console.error('IndexedDB save error:', e);
+        reject(request.error);
+      };
+      transaction.oncomplete = () => db.close();
+    });
+  } catch (e) {
+    console.error('saveVideoToIndexedDB error:', e);
+    return false;
+  }
+};
+
+const deleteVideoFromIndexedDB = async (id) => {
+  try {
+    const db = await openVideoDatabase();
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction([VIDEO_STORE_NAME], 'readwrite');
+      const store = transaction.objectStore(VIDEO_STORE_NAME);
+      const request = store.delete(id);
+      request.onsuccess = () => resolve(true);
+      request.onerror = () => reject(request.error);
+      transaction.oncomplete = () => db.close();
+    });
+  } catch { return false; }
+};
+
+const SessionReplayWrapper = ({ item, mode, fullHeight = false, showLogsButton = true, onTimeUpdate = null }) => {
+  const [videoUrl, setVideoUrl] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const urlRef = useRef(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const load = async () => {
+      setLoading(true);
+      setError(null);
+
+      // Cleanup previous URL
+      if (urlRef.current) {
+        URL.revokeObjectURL(urlRef.current);
+        urlRef.current = null;
+      }
+
+      try {
+        if (item.videoRef) {
+          const blob = await getVideoFromIndexedDB(item.videoRef);
+          if (cancelled) return;
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            urlRef.current = url;
+            setVideoUrl(url);
+          } else {
+            setError('Video not found');
+          }
+        } else if (item.video) {
+          setVideoUrl(item.video);
+        } else {
+          setError('No video data');
+        }
+      } catch (e) {
+        if (!cancelled) setError('Failed to load video');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    load();
+
+    return () => {
+      cancelled = true;
+      if (urlRef.current) {
+        URL.revokeObjectURL(urlRef.current);
+        urlRef.current = null;
+      }
+    };
+  }, [item.id, item.videoRef, item.video]);
+
+  if (loading) {
+    return (
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 40,
+        color: '#94a3b8',
+        height: fullHeight ? '100%' : 'auto'
+      }}>
+        <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} />
+        <span style={{ marginLeft: 8 }}>Loading video...</span>
+      </div>
+    );
+  }
+
+  if (error || !videoUrl) {
+    return (
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 40,
+        color: '#ef4444',
+        fontSize: 13,
+        height: fullHeight ? '100%' : 'auto'
+      }}>
+        {error || 'Video unavailable'}
+      </div>
+    );
+  }
+
+  return (
+    <SessionReplay
+      videoSrc={videoUrl}
+      eventLogs={item.eventLogs || []}
+      mode={mode}
+      fullHeight={fullHeight}
+      showLogsButton={showLogsButton}
+      onTimeUpdate={onTimeUpdate}
+    />
+  );
 };
 
 export const saveFeedbackToLocalStorage = async (feedbackData) => {
   try {
     const stored = localStorage.getItem(FEEDBACK_STORAGE_KEY);
     let existing = stored ? JSON.parse(stored) : [];
-
-    // Proactively trim the list to make space before adding the new item
-    if (existing.length >= MAX_FEEDBACK_ITEMS) {
-      existing = existing.slice(0, MAX_FEEDBACK_ITEMS - 1);
-    }
-
-    // Process feedbackData - convert videoBlob to base64 if present
+    const feedbackId = Date.now().toString();
     let processedData = { ...feedbackData };
 
-    if (feedbackData.videoBlob && feedbackData.videoBlob instanceof Blob) {
-      const videoSizeMB = feedbackData.videoBlob.size / (1024 * 1024);
+    console.log('Saving feedback, has videoBlob:', !!feedbackData.videoBlob,
+      'size:', feedbackData.videoBlob?.size,
+      'type:', feedbackData.videoBlob?.type);
 
-      if (videoSizeMB <= MAX_VIDEO_SIZE_MB) {
-        try {
-          const videoBase64 = await blobToBase64(feedbackData.videoBlob);
-          processedData.video = videoBase64;
+    if (feedbackData.videoBlob && feedbackData.videoBlob instanceof Blob) {
+      const sizeMB = feedbackData.videoBlob.size / (1024 * 1024);
+      console.log('Video size:', sizeMB.toFixed(2), 'MB');
+
+      if (sizeMB <= MAX_VIDEO_SIZE_MB) {
+        const saved = await saveVideoToIndexedDB(feedbackId, feedbackData.videoBlob);
+        console.log('Video saved to IndexedDB:', saved);
+
+        if (saved) {
+          processedData.videoRef = feedbackId;
           processedData.videoSize = feedbackData.videoBlob.size;
           processedData.videoType = feedbackData.videoBlob.type;
-          console.log(`[FeedbackDashboard] Video converted to base64: ${videoSizeMB.toFixed(2)} MB`);
-        } catch (videoError) {
-          console.warn('[FeedbackDashboard] Failed to convert video:', videoError);
-          processedData.notes = (processedData.notes || '') + ' Video conversion failed.';
         }
       } else {
-        console.warn(`[FeedbackDashboard] Video too large (${videoSizeMB.toFixed(2)} MB). Max allowed: ${MAX_VIDEO_SIZE_MB} MB`);
-        processedData.notes = (processedData.notes || '') + ` Video omitted - too large (${videoSizeMB.toFixed(2)} MB).`;
+        console.warn('Video too large:', sizeMB, 'MB, max:', MAX_VIDEO_SIZE_MB, 'MB');
       }
-      // Remove the blob object as it can't be serialized
       delete processedData.videoBlob;
+      delete processedData.video;
     }
 
     const newFeedback = {
-      id: Date.now().toString(),
+      id: feedbackId,
       ...processedData,
       status: 'new',
       timestamp: new Date().toISOString()
     };
 
-    const updated = [newFeedback, ...existing];
-
-    localStorage.setItem(FEEDBACK_STORAGE_KEY, JSON.stringify(updated));
-    console.log(`[FeedbackDashboard] Saved new feedback. Total items now: ${updated.length}`);
-
+    console.log('Saving feedback with videoRef:', newFeedback.videoRef);
+    localStorage.setItem(FEEDBACK_STORAGE_KEY, JSON.stringify([newFeedback, ...existing].slice(0, 50)));
     return { success: true, data: newFeedback };
-  } catch (error) {
-    // If the quota is exceeded even after trimming, it's likely the new item itself is too large.
-    // As a fallback, we try to save it again without the screenshot/video data.
-    if (error.name === 'QuotaExceededError') {
-              console.warn('[FeedbackDashboard] Quota exceeded. Attempting to save feedback without media.');
-            try {
-              // Strip all media including attachment
-              const { screenshot, video, videoBlob, attachment, ...feedbackWithoutMedia } = feedbackData;
-      
-              const stored = localStorage.getItem(FEEDBACK_STORAGE_KEY);        let existing = stored ? JSON.parse(stored) : [];
-
-        if (existing.length >= MAX_FEEDBACK_ITEMS) {
-          existing = existing.slice(0, MAX_FEEDBACK_ITEMS - 1);
-        }
-
-        const newFeedback = {
-          id: Date.now().toString(),
-          ...feedbackWithoutMedia,
-          status: 'new',
-          timestamp: new Date().toISOString(),
-          notes: 'Media omitted due to storage limitations.'
-        };
-
-        const updated = [newFeedback, ...existing];
-        localStorage.setItem(FEEDBACK_STORAGE_KEY, JSON.stringify(updated));
-
-        console.log(`[FeedbackDashboard] Saved new feedback without media. Total items now: ${updated.length}`);
-        return { success: true, data: newFeedback };
-
-      } catch (fallbackError) {
-        console.error('[FeedbackDashboard] Fallback save failed:', fallbackError);
-        return { success: false, error: fallbackError.message };
-      }
-    }
-
-    console.error('[FeedbackDashboard] Failed to save feedback:', error);
-    return { success: false, error: error.message };
+  } catch (e) {
+    console.error('Error saving feedback:', e);
+    return { success: false, error: e.message };
   }
 };
 
-// Export default statuses for customization
 export { DEFAULT_STATUSES };

@@ -1,6 +1,55 @@
 import React, { useState, useEffect } from 'react';
-import { FeedbackProvider, useFeedback, FeedbackDashboard, FeedbackTrigger } from '../../dist/index.esm.js';
+import { FeedbackProvider, useFeedback, FeedbackDashboard, FeedbackTrigger, UpdatesModal } from '../../dist/index.esm.js';
 import { dummyFeedbackData } from './dummyData';
+
+// Sample updates data
+const sampleUpdates = [
+  {
+    id: '1',
+    type: 'solved',
+    title: 'Fixed login page performance issues',
+    description: 'Optimized the authentication flow reducing load time by 60%',
+    category: 'Bug',
+    date: new Date().toISOString(),
+    version: '2.1.0'
+  },
+  {
+    id: '2',
+    type: 'new_feature',
+    title: 'Dark mode support added',
+    description: 'Full dark mode support across all components with smooth transitions',
+    category: 'Feature',
+    date: new Date(Date.now() - 86400000).toISOString(),
+    version: '2.1.0'
+  },
+  {
+    id: '3',
+    type: 'solved',
+    title: 'Video recording audio sync fixed',
+    description: 'Resolved the audio delay issue in screen recordings',
+    category: 'Bug',
+    date: new Date(Date.now() - 172800000).toISOString(),
+    version: '2.0.9'
+  },
+  {
+    id: '4',
+    type: 'new_feature',
+    title: 'Export to PDF functionality',
+    description: 'Users can now export feedback reports to PDF format',
+    category: 'Feature',
+    date: new Date(Date.now() - 259200000).toISOString(),
+    version: '2.0.8'
+  },
+  {
+    id: '5',
+    type: 'new_feature',
+    title: 'Draggable recording indicator',
+    description: 'Recording indicator can now be moved around the screen',
+    category: 'Feature',
+    date: new Date(Date.now() - 345600000).toISOString(),
+    version: '2.0.7'
+  },
+];
 
 // Import our new components
 import { Header } from './components/Header';
@@ -30,7 +79,7 @@ function DarkModeToggle({ darkMode, setDarkMode }) {
 
 DarkModeToggle.displayName = 'DarkModeToggle';
 
-function FeedbackButtons({ onOpenDevDashboard, onOpenUserDashboard }) {
+function FeedbackButtons({ onOpenDevDashboard, onOpenUserDashboard, onOpenUpdates }) {
   const { isActive, setIsActive, setIsDashboardOpen, startRecording } = useFeedback();
 
   return (
@@ -43,6 +92,9 @@ function FeedbackButtons({ onOpenDevDashboard, onOpenUserDashboard }) {
       </Button>
       <Button variant="secondary" icon="📊" onClick={() => setIsDashboardOpen(true)}>
         Live Dashboard
+      </Button>
+      <Button variant="warning" icon="🚀" onClick={onOpenUpdates}>
+        Updates
       </Button>
       <Button variant="danger" icon="📹" onClick={startRecording}>
         Record Video
@@ -250,6 +302,7 @@ function App() {
   // State for custom dashboards with dummy data
   const [showDevDashboard, setShowDevDashboard] = useState(false);
   const [showUserDashboard, setShowUserDashboard] = useState(false);
+  const [showUpdates, setShowUpdates] = useState(false);
   const [feedbackData, setFeedbackData] = useState(dummyFeedbackData);
 
   const currentUser = {
@@ -360,8 +413,18 @@ function App() {
         <FeedbackButtons
           onOpenDevDashboard={() => setShowDevDashboard(true)}
           onOpenUserDashboard={() => setShowUserDashboard(true)}
+          onOpenUpdates={() => setShowUpdates(true)}
         />
       </div>
+
+      {/* Updates Modal */}
+      <UpdatesModal
+        isOpen={showUpdates}
+        onClose={() => setShowUpdates(false)}
+        updates={sampleUpdates}
+        title="What's New"
+        mode={darkMode ? 'dark' : 'light'}
+      />
 
       {/* Developer Dashboard */}
       <FeedbackDashboard

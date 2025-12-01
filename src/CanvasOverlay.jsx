@@ -263,7 +263,6 @@ export const CanvasOverlay = ({ isActive, onComplete, onCancel, mode = 'light' }
       const screenshotData = combinedCanvas.toDataURL('image/png', 0.95);
       setScreenshot(screenshotData);
     } catch (error) {
-      console.error('Failed to capture screenshot:', error);
       // Continue anyway - feedback can still be submitted without screenshot
       setScreenshot(null);
     }

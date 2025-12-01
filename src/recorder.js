@@ -411,92 +411,37 @@ export class SessionRecorder {
 
   async _getStream() {
     try {
+      // Request screen capture with system audio - this is the main permission
       const screenStream = await navigator.mediaDevices.getDisplayMedia({
         video: {
           cursor: 'always',
-          displaySurface: 'browser'
+          displaySurface: 'browser',
+          width: { ideal: 1920, max: 1920 },
+          height: { ideal: 1080, max: 1080 },
+          frameRate: { ideal: 30, max: 30 }
         },
-        audio: true,
+        audio: true, // Simplified - let browser handle audio config
         preferCurrentTab: true,
         selfBrowserSurface: 'include'
       });
 
-      let finalStream = new MediaStream();
+      // Build stream with video immediately
+      const finalStream = new MediaStream();
       screenStream.getVideoTracks().forEach(track => finalStream.addTrack(track));
 
-      let audioContext;
-      let hasAudio = false;
-
-      try {
-        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-        if (AudioContextClass) {
-          audioContext = new AudioContextClass();
-          const destination = audioContext.createMediaStreamDestination();
-
-          // 1. Add System Audio (if shared)
-          if (screenStream.getAudioTracks().length > 0) {
-            const systemSource = audioContext.createMediaStreamSource(screenStream);
-            const systemGain = audioContext.createGain();
-            systemGain.gain.value = 1.0;
-            systemSource.connect(systemGain).connect(destination);
-            hasAudio = true;
-          }
-
-          // 2. Add Microphone Audio
-          try {
-            const micStream = await navigator.mediaDevices.getUserMedia({
-              audio: {
-                echoCancellation: true,
-                noiseSuppression: true,
-                autoGainControl: true
-              }
-            });
-
-            if (micStream.getAudioTracks().length > 0) {
-              const micSource = audioContext.createMediaStreamSource(micStream);
-              const micGain = audioContext.createGain();
-              micGain.gain.value = 1.0;
-              micSource.connect(micGain).connect(destination);
-              hasAudio = true;
-              
-              this.micStream = micStream;
-            }
-          } catch (micError) {
-            console.warn('Microphone access denied or not available:', micError);
-          }
-
-          if (hasAudio) {
-            if (audioContext.state === 'suspended') {
-              await audioContext.resume();
-            }
-            const mixedAudioTrack = destination.stream.getAudioTracks()[0];
-            finalStream.addTrack(mixedAudioTrack);
-          }
-          
-          this.audioContext = audioContext;
-        }
-      } catch (audioContextError) {
-        console.warn('AudioContext setup failed, falling back to system audio only:', audioContextError);
-        if (screenStream.getAudioTracks().length > 0) {
-           finalStream.addTrack(screenStream.getAudioTracks()[0]);
-        }
-      }
-
-      if (!hasAudio && screenStream.getAudioTracks().length > 0 && finalStream.getAudioTracks().length === 0) {
-         finalStream.addTrack(screenStream.getAudioTracks()[0]);
+      // Add system audio if available (no extra permission needed)
+      const systemAudioTracks = screenStream.getAudioTracks();
+      if (systemAudioTracks.length > 0) {
+        finalStream.addTrack(systemAudioTracks[0]);
       }
 
       this.stream = finalStream;
       this.screenStream = screenStream;
 
+      // Handle video track ended
       const videoTrack = finalStream.getVideoTracks()[0];
       if (videoTrack) {
-        videoTrack.addEventListener('ended', () => {
-          this.stop();
-        });
-        screenStream.getVideoTracks()[0].onended = () => {
-            this.stop();
-        };
+        videoTrack.addEventListener('ended', () => this.stop());
       }
 
       return this.stream;
@@ -522,15 +467,20 @@ export class SessionRecorder {
       throw new Error('Failed to acquire a stream to record.');
     }
 
-    const supportedMimeType = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'].find(
-      type => MediaRecorder.isTypeSupported(type)
-    );
+    // Use simple WebM format - most compatible
+    const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')
+      ? 'video/webm;codecs=vp9,opus'
+      : MediaRecorder.isTypeSupported('video/webm')
+        ? 'video/webm'
+        : 'video/mp4';
 
-    if (!supportedMimeType) {
-      throw new Error('No suitable MIME type found for MediaRecorder.');
-    }
+    const recorderOptions = {
+      mimeType,
+      videoBitsPerSecond: 2500000,
+      audioBitsPerSecond: 128000
+    };
 
-    this.mediaRecorder = new MediaRecorder(this.stream, { mimeType: supportedMimeType });
+    this.mediaRecorder = new MediaRecorder(this.stream, recorderOptions);
 
     this.mediaRecorder.ondataavailable = (event) => {
       if (event.data.size > 0) {
@@ -621,7 +571,7 @@ export class SessionRecorder {
       this.micStream = null;
     }
     if (this.audioContext) {
-      this.audioContext.close().catch(console.error);
+      this.audioContext.close().catch(() => {});
       this.audioContext = null;
     }
 
