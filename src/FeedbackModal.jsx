@@ -328,7 +328,8 @@ export const FeedbackModal = ({
   userName,
   userEmail,
   mode = 'light',
-  integrations = null
+  integrations = null,
+  onAsyncSubmit
 }) => {
   const [feedbackType, setFeedbackType] = useState('bug');
   const [description, setDescription] = useState('');
@@ -403,9 +404,8 @@ export const FeedbackModal = ({
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (!description.trim() || isSubmitting) return;
-    setIsSubmitting(true);
 
     const feedbackData = {
       feedback: description.trim(),
@@ -428,13 +428,14 @@ export const FeedbackModal = ({
       selectedIntegrations: selectedIntegrations,
     };
 
-    try {
-      await onSubmit(feedbackData);
-      setIsSubmitting(false);
-      onClose(); // Close modal on success
-    } catch (error) {
-      showError(error.message || 'Failed to submit feedback.', 'Error');
-      setIsSubmitting(false);
+    // Close modal immediately and submit async
+    onClose();
+
+    // Use async submit if available, otherwise fall back to regular submit
+    if (onAsyncSubmit) {
+      onAsyncSubmit(feedbackData);
+    } else if (onSubmit) {
+      onSubmit(feedbackData);
     }
   };
 
@@ -541,9 +542,9 @@ export const FeedbackModal = ({
              )}
           </IntegrationRow>
           
-          <SubmitButton onClick={handleSubmit} disabled={!description.trim() || isSubmitting}>
-            {isSubmitting ? 'Sending...' : 'Send Feedback'}
-            {!isSubmitting && <Send size={14} />}
+          <SubmitButton onClick={handleSubmit} disabled={!description.trim()}>
+            Send Feedback
+            <Send size={14} />
           </SubmitButton>
         </Footer>
       </ModalContainer>

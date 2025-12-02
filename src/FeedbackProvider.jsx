@@ -13,6 +13,7 @@ import { FeedbackModal } from './FeedbackModal.jsx';
 import { FeedbackDashboard, saveFeedbackToLocalStorage } from './FeedbackDashboard.jsx';
 import { CanvasOverlay } from './CanvasOverlay.jsx';
 import { RecordingOverlay } from './RecordingOverlay.jsx';
+import { SubmissionQueue } from './SubmissionQueue.jsx';
 import ErrorToast, { showError, showSuccess } from './ErrorToast.jsx';
 import recorder from './recorder.js';
 import { getElementInfo, captureElementScreenshot, getReactComponentInfo } from './utils.js';
@@ -104,7 +105,9 @@ const initialState = {
     jira: { loading: false, error: null, result: null },
     sheets: { loading: false, error: null, result: null }
   },
-  lastIntegrationResults: null
+  lastIntegrationResults: null,
+  // Submission queue state
+  submissionQueue: []
 };
 
 function feedbackReducer(state, action) {
@@ -181,6 +184,24 @@ function feedbackReducer(state, action) {
         },
         lastIntegrationResults: null
       };
+    // Submission queue actions
+    case 'ADD_SUBMISSION':
+      return {
+        ...state,
+        submissionQueue: [...state.submissionQueue, action.payload]
+      };
+    case 'UPDATE_SUBMISSION':
+      return {
+        ...state,
+        submissionQueue: state.submissionQueue.map(sub =>
+          sub.id === action.payload.id ? { ...sub, ...action.payload } : sub
+        )
+      };
+    case 'REMOVE_SUBMISSION':
+      return {
+        ...state,
+        submissionQueue: state.submissionQueue.filter(sub => sub.id !== action.payload)
+      };
     default:
       return state;
   }
@@ -226,7 +247,8 @@ export const FeedbackProvider = ({
     eventLogs,
     isManualFeedbackOpen,
     integrationStatus,
-    lastIntegrationResults
+    lastIntegrationResults,
+    submissionQueue
   } = state;
 
   // Initialize integration client
@@ -444,12 +466,37 @@ export const FeedbackProvider = ({
     }
   }, [isActive, isCanvasActive, isModalOpen, handleMouseMove, handleElementClick]);
 
-  const handleFeedbackSubmit = useCallback(async (feedbackData) => {
-    try {
+  // Generate unique ID for submissions
+  const generateSubmissionId = useCallback(() => {
+    return `sub_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  }, []);
+
+  // Async submission handler that adds to queue and processes in background
+  const handleAsyncSubmit = useCallback((feedbackData) => {
+    const submissionId = generateSubmissionId();
+
+    // Add to queue immediately with 'submitting' status
+    dispatch({
+      type: 'ADD_SUBMISSION',
+      payload: { id: submissionId, status: 'submitting' }
+    });
+
+    // Reset modal state immediately (don't wait for submission)
+    setIsActive(false);
+    dispatch({ type: 'RESET_MODAL' });
+
+    // Process submission in background with timeout (60 seconds for large files)
+    const hasLargeMedia = feedbackData.videoBlob && feedbackData.videoBlob.size > 5 * 1024 * 1024; // 5MB+
+    const timeoutMs = hasLargeMedia ? 60000 : 30000; // 1 min for large, 30s otherwise
+
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Submission timed out')), timeoutMs);
+    });
+
+    const submitPromise = (async () => {
       let processedData = { ...feedbackData };
 
-      // Keep videoBlob as-is for FormData upload (more efficient for large files)
-      // Only convert to base64 for local storage
+      // Keep videoBlob as-is for FormData upload
       if (feedbackData.videoBlob && feedbackData.videoBlob instanceof Blob) {
         processedData.videoBlob = feedbackData.videoBlob;
         processedData.videoSize = feedbackData.videoBlob.size;
@@ -477,27 +524,16 @@ export const FeedbackProvider = ({
       const shouldSendToSheets = integrationClientRef.current && integrations?.sheets?.enabled && selectedIntegrations.sheets;
 
       if (shouldSendToJira || shouldSendToSheets) {
-        dispatch({
-          type: 'INTEGRATION_START',
-          payload: {
-            jira: shouldSendToJira,
-            sheets: shouldSendToSheets
-          }
-        });
-
         try {
-          // Send to integrations based on user selection
           const integrationResults = await integrationClientRef.current.sendFeedback(processedData, {
             jira: shouldSendToJira,
             sheets: shouldSendToSheets
           });
 
-          // Update feedback data with integration results (e.g., Jira key)
           if (integrationResults.jira?.success && integrationResults.jira?.issueKey) {
             processedData.jiraKey = integrationResults.jira.issueKey;
             processedData.jiraUrl = integrationResults.jira.issueUrl;
 
-            // Update localStorage if dashboard is enabled and local was selected
             if (dashboard && selectedIntegrations.local) {
               await saveFeedbackToLocalStorage({
                 ...processedData,
@@ -506,45 +542,53 @@ export const FeedbackProvider = ({
               });
             }
           }
-
-          if (integrationResults.sheets?.success && integrationResults.sheets?.rowNumber) {
-            processedData.sheetsRow = integrationResults.sheets.rowNumber;
-          }
-
-          dispatch({ type: 'INTEGRATION_SUCCESS', payload: integrationResults });
-
-          // Show success toast
-          const successParts = [];
-          if (integrationResults.jira?.success) {
-            successParts.push(`Jira: ${integrationResults.jira.issueKey}`);
-          }
-          if (integrationResults.sheets?.success) {
-            successParts.push('Google Sheets');
-          }
-          if (successParts.length > 0) {
-            showSuccess(`Sent to ${successParts.join(', ')}`, 'Feedback Submitted');
-          }
         } catch (integrationError) {
-          dispatch({
-            type: 'INTEGRATION_ERROR',
-            payload: { error: integrationError.message }
-          });
-          // Show error toast
-          showError(integrationError.message, 'Integration Failed');
-          // Don't throw - integration errors shouldn't block feedback submission
+          // Log but don't fail the submission
+          console.warn('Integration error:', integrationError.message);
         }
-      } else if (selectedIntegrations.local && dashboard) {
-        // Only saved locally
-        showSuccess('Feedback saved locally', 'Feedback Submitted');
       }
 
-      setIsActive(false);
-      dispatch({ type: 'RESET_MODAL' });
-    } catch (error) {
-      showError(error.message || 'Failed to submit feedback. Please try again.', 'Submission Error');
-      throw error;
-    }
-  }, [onSubmit, dashboard, setIsActive, integrations]);
+      return processedData;
+    })();
+
+    // Race between submission and timeout
+    Promise.race([submitPromise, timeoutPromise])
+      .then(() => {
+        // Update to success
+        dispatch({
+          type: 'UPDATE_SUBMISSION',
+          payload: { id: submissionId, status: 'success' }
+        });
+
+        // Auto-remove success after 3 seconds
+        setTimeout(() => {
+          dispatch({ type: 'REMOVE_SUBMISSION', payload: submissionId });
+        }, 3000);
+      })
+      .catch((error) => {
+        // Update to error
+        dispatch({
+          type: 'UPDATE_SUBMISSION',
+          payload: { id: submissionId, status: 'error', error: error.message }
+        });
+
+        // Auto-remove error after 5 seconds
+        setTimeout(() => {
+          dispatch({ type: 'REMOVE_SUBMISSION', payload: submissionId });
+        }, 5000);
+      });
+  }, [onSubmit, dashboard, setIsActive, integrations, generateSubmissionId]);
+
+  // Handler to dismiss a submission from the queue
+  const handleDismissSubmission = useCallback((submissionId) => {
+    dispatch({ type: 'REMOVE_SUBMISSION', payload: submissionId });
+  }, []);
+
+  // Legacy synchronous submit (kept for backward compatibility)
+  const handleFeedbackSubmit = useCallback(async (feedbackData) => {
+    // Use async handler instead
+    handleAsyncSubmit(feedbackData);
+  }, [handleAsyncSubmit]);
 
   const handleCloseModal = useCallback(() => {
     setIsActive(false);
@@ -701,6 +745,7 @@ export const FeedbackProvider = ({
           videoBlob={videoBlob}
           eventLogs={eventLogs}
           onSubmit={handleFeedbackSubmit}
+          onAsyncSubmit={handleAsyncSubmit}
           userName={userName}
           userEmail={userEmail}
           mode={mode}
@@ -743,6 +788,12 @@ export const FeedbackProvider = ({
         )}
 
         <ErrorToast />
+
+        <SubmissionQueue
+          submissions={submissionQueue}
+          onDismiss={handleDismissSubmission}
+          mode={mode}
+        />
       </ThemeProvider>
     </FeedbackContext.Provider>
   );
