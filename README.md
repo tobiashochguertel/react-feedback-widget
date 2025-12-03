@@ -1,5 +1,7 @@
 # React Visual Feedback
 
+**[Live Demo](https://react-library-demo-rosy.vercel.app/)**
+
 A powerful, visual feedback collection tool for React applications with screen recording, session replay, and an integrated dashboard for managing user feedback.
 
 ## Features
