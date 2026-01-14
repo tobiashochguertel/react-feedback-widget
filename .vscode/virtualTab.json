@@ -5,6 +5,8 @@
     "files": [
       "packages/react-visual-feedback/docs/typescript-migration-analysis.md",
       "packages/react-visual-feedback/README.md",
+      "MIGRATION.md",
+      "README.md",
       "packages/react-visual-feedback/docs/original-readme.md"
     ],
     "builtIn": true
