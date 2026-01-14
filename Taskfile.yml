@@ -18,9 +18,20 @@ tasks:
     cmds:
       - bun install
 
+  _ensure-deps:
+    desc: Ensure dependencies are installed (internal)
+    cmds:
+      - bun install
+    status:
+      - test -d node_modules
+      - test -d {{.LIB_DIR}}/node_modules
+      - test -d {{.EXAMPLE_DIR}}/node_modules
+    silent: true
+
   # Library tasks
   build:
     desc: Build the react-visual-feedback library
+    deps: [_ensure-deps]
     dir: '{{.LIB_DIR}}'
     cmds:
       - bun run build
@@ -33,6 +44,7 @@ tasks:
 
   build:watch:
     desc: Build library in watch mode
+    deps: [_ensure-deps]
     dir: '{{.LIB_DIR}}'
     cmds:
       - bun run build:watch
@@ -40,7 +52,7 @@ tasks:
   # Example tasks
   dev:
     desc: Start example app with live development
-    deps: [build]
+    deps: [_ensure-deps, build]
     dir: '{{.EXAMPLE_DIR}}'
     cmds:
       - bun run dev
