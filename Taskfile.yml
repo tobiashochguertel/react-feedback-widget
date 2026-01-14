@@ -23,9 +23,7 @@ tasks:
     cmds:
       - bun install
     status:
-      - test -d node_modules
-      - test -d {{.LIB_DIR}}/node_modules
-      - test -d {{.EXAMPLE_DIR}}/node_modules
+      - test -f {{.LIB_DIR}}/node_modules/.bin/rollup
     silent: true
 
   # Library tasks
@@ -52,7 +50,7 @@ tasks:
   # Example tasks
   dev:
     desc: Start example app with live development
-    deps: [_ensure-deps, build]
+    deps: [build]  # build already depends on _ensure-deps
     dir: '{{.EXAMPLE_DIR}}'
     cmds:
       - bun run dev
