@@ -45,23 +45,25 @@ function App() {
 **Comprehensive documentation available in [`./docs`](./docs/README.md)**
 
 ### Getting Started
+
 - [Installation](./docs/getting-started/installation.md)
 - [Quick Start Guide](./docs/getting-started/quick-start.md)
 - [Next.js Setup](./docs/getting-started/nextjs.md)
 
 ### Features
+
 - [Keyboard Shortcuts](./docs/features/keyboard-shortcuts.md)
 - More documentation coming soon...
 
 ## ⌨️ Keyboard Shortcuts
 
-| Shortcut | Action |
-|----------|--------|
-| `Alt+Q` | Activate feedback mode (element selection) |
-| `Alt+A` | Open manual feedback form |
-| `Alt+W` | Start screen recording |
-| `Alt+Shift+Q` | Open dashboard |
-| `Esc` | Cancel/close |
+| Shortcut      | Action                                     |
+|---------------|--------------------------------------------|
+| `Alt+Q`       | Activate feedback mode (element selection) |
+| `Alt+A`       | Open manual feedback form                  |
+| `Alt+W`       | Start screen recording                     |
+| `Alt+Shift+Q` | Open dashboard                             |
+| `Esc`         | Cancel/close                               |
 
 ## 🔒 Security & Privacy
 
@@ -76,6 +78,7 @@ This widget is **safe and privacy-focused**:
 ### What data is collected?
 
 Only when users submit feedback:
+
 - User-provided feedback text
 - Screenshots (if user selects an element)
 - Screen recordings (if user starts recording)
@@ -97,6 +100,7 @@ npm install react-visual-feedback
 ```
 
 **Peer Dependencies:**
+
 ```bash
 npm install react react-dom styled-components
 ```
@@ -114,8 +118,8 @@ MIT
 
 ## 👨‍💻 Author
 
-**Murali Vvrsn Gurajapu**  
-Email: murali.g@hyperverge.co
+**Murali Vvrsn Gurajapu**
+Email: <murali.g@hyperverge.co>
 
 ## 🤝 Contributing
 

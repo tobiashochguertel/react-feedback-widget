@@ -4,6 +4,7 @@
     "name": "Currently Open Files",
     "files": [
       "packages/react-visual-feedback/docs/typescript-migration-analysis.md",
+      "packages/react-visual-feedback/README.md",
       "packages/react-visual-feedback/docs/original-readme.md"
     ],
     "builtIn": true
