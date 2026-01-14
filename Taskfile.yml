@@ -1,10 +1,9 @@
 version: '3'
 
 vars:
-  PROJECT_DIR: '{{.ROOT_DIR}}'
-  EXAMPLE_NEXTJS_DIR: '{{.ROOT_DIR}}/example-nextjs'
-  SRC_DIR: '{{.ROOT_DIR}}/src'
-  DIST_DIR: '{{.ROOT_DIR}}/dist'
+  ROOT_DIR: '{{.ROOT_DIR}}'
+  LIB_DIR: '{{.ROOT_DIR}}/packages/react-visual-feedback'
+  EXAMPLE_DIR: '{{.ROOT_DIR}}/packages/feedback-example'
 
 tasks:
   default:
@@ -13,110 +12,89 @@ tasks:
       - task --list
     silent: true
 
-  # Development tasks
+  # Installation
   install:
-    desc: Install dependencies for main project and example-nextjs
+    desc: Install all workspace dependencies
     cmds:
       - bun install
-      - cd {{.EXAMPLE_NEXTJS_DIR}} && bun install
 
+  # Library tasks
   build:
-    desc: Build the react-feedback-widget library
-    deps: [_ensure-deps]
+    desc: Build the react-visual-feedback library
+    dir: '{{.LIB_DIR}}'
     cmds:
       - bun run build
     sources:
-      - '{{.SRC_DIR}}/**/*.{js,jsx}'
-      - rollup.config.js
-      - package.json
+      - '{{.LIB_DIR}}/src/**/*.{js,jsx}'
+      - '{{.LIB_DIR}}/rollup.config.js'
+      - '{{.LIB_DIR}}/package.json'
     generates:
-      - '{{.DIST_DIR}}/**/*.js'
-
-  _ensure-deps:
-    desc: Ensure dependencies are installed (internal)
-    cmds:
-      - bun install
-    status:
-      - test -d node_modules
-    silent: true
-
-  _ensure-example-deps:
-    desc: Ensure example-nextjs dependencies are installed (internal)
-    deps: [build]
-    cmds:
-      - cd {{.EXAMPLE_NEXTJS_DIR}} && bun install --force
-    status:
-      - test -d {{.EXAMPLE_NEXTJS_DIR}}/node_modules
-    silent: true
+      - '{{.LIB_DIR}}/dist/**/*.js'
 
   build:watch:
     desc: Build library in watch mode
+    dir: '{{.LIB_DIR}}'
     cmds:
-      - bun run build --watch
+      - bun run build:watch
 
+  # Example tasks
   dev:
-    desc: Start example-nextjs with live development
-    deps: [build, _ensure-example-deps]
+    desc: Start example app with live development
+    deps: [build]
+    dir: '{{.EXAMPLE_DIR}}'
     cmds:
-      - cd {{.EXAMPLE_NEXTJS_DIR}} && bun run dev -- -p 3002
+      - bun run dev
 
+  example:build:
+    desc: Build example app
+    deps: [build]
+    dir: '{{.EXAMPLE_DIR}}'
+    cmds:
+      - bun run build
+
+  example:start:
+    desc: Start example production server
+    dir: '{{.EXAMPLE_DIR}}'
+    cmds:
+      - bun run start
+
+  # Development
   dev:full:
-    desc: Run library build in watch mode and nextjs dev server concurrently
+    desc: Run library build in watch mode and example dev server concurrently
     cmds:
       - task: build:watch
       - task: dev
-    silent: false
 
-  # Maintenance tasks
+  # Maintenance
   clean:
-    desc: Clean build artifacts
+    desc: Clean all build artifacts
     cmds:
-      - rm -rf {{.DIST_DIR}}
-      - rm -rf {{.EXAMPLE_NEXTJS_DIR}}/.next
+      - rm -rf {{.LIB_DIR}}/dist
+      - rm -rf {{.EXAMPLE_DIR}}/.next
+      - rm -rf node_modules
+      - rm -rf {{.LIB_DIR}}/node_modules
+      - rm -rf {{.EXAMPLE_DIR}}/node_modules
 
   clean:build:
-    desc: Clean and rebuild
+    desc: Clean and rebuild everything
     cmds:
       - task: clean
       - task: install
       - task: build
 
-  # Example app tasks
-  example:build:
-    desc: Build example-nextjs app
-    deps: [build]
+  # Info
+  info:
+    desc: Show project information
     cmds:
-      - cd {{.EXAMPLE_NEXTJS_DIR}} && bun run build
+      - echo "Workspace root = {{.ROOT_DIR}}"
+      - echo "Library = {{.LIB_DIR}}"
+      - echo "Example = {{.EXAMPLE_DIR}}"
+      - echo "Bun version = $(bun --version)"
+      - echo "Node version = $(node --version)"
 
-  example:start:
-    desc: Start example-nextjs production server
-    deps: [example:build]
-    cmds:
-      - cd {{.EXAMPLE_NEXTJS_DIR}} && bun run start -- -p 3001
-
-  example:lint:
-    desc: Lint example-nextjs app
-    cmds:
-      - cd {{.EXAMPLE_NEXTJS_DIR}} && bun run lint
-
-  # Utility tasks
-  link:local:
-    desc: Link local development version to example-nextjs
-    cmds:
-      - task: build
-      - cd {{.EXAMPLE_NEXTJS_DIR}} && bun link react-visual-feedback
-
+  # Testing
   check:
     desc: Run all checks (build, lint)
     cmds:
       - task: build
-      - task: example:lint
-
-  info:
-    desc: Show project information
-    cmds:
-      - echo "Project root = {{.PROJECT_DIR}}"
-      - echo "Example Next.js = {{.EXAMPLE_NEXTJS_DIR}}"
-      - echo "Bun version = $(bun --version)"
-      - echo "Node version = $(node --version)"
-    silent: false
+      - task: example:build
