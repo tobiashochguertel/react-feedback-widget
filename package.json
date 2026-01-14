@@ -9,6 +9,8 @@
     "build": "bun run --filter react-visual-feedback build",
     "dev": "bun run --filter feedback-example dev"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "react-visual-feedback": "workspace:*"
+  },
   "packageManager": "bun@1.3.5"
 }
