@@ -7,11 +7,13 @@ A powerful, visual feedback collection tool for React applications with screen r
 ## 📚 Documentation Index
 
 ### Getting Started
+
 - [Installation](./getting-started/installation.md)
 - [Quick Start](./getting-started/quick-start.md)
 - [Next.js Setup](./getting-started/nextjs.md)
 
 ### Features
+
 - [Visual Element Selection](./features/element-selection.md)
 - [Screenshot Capture](./features/screenshots.md)
 - [Screen Recording & Session Replay](./features/screen-recording.md)
@@ -20,11 +22,13 @@ A powerful, visual feedback collection tool for React applications with screen r
 - [Keyboard Shortcuts](./features/keyboard-shortcuts.md)
 
 ### Integrations
+
 - [Jira Integration](./integrations/jira.md)
 - [Google Sheets Integration](./integrations/google-sheets.md)
 - [Custom Integrations](./integrations/custom.md)
 
 ### API Reference
+
 - [FeedbackProvider API](./api/feedback-provider.md)
 - [FeedbackDashboard API](./api/feedback-dashboard.md)
 - [useFeedback Hook](./api/use-feedback-hook.md)
@@ -32,6 +36,7 @@ A powerful, visual feedback collection tool for React applications with screen r
 - [All Exports](./api/exports.md)
 
 ### Examples
+
 - [Database Schemas](./examples/database-schemas.md)
 - [API Endpoints](./examples/api-endpoints.md)
 - [Custom Status System](./examples/custom-statuses.md)
@@ -39,6 +44,7 @@ A powerful, visual feedback collection tool for React applications with screen r
 ## Features Overview
 
 ### Feedback Collection
+
 - **Visual Element Selection** - Click any element with hover highlighting
 - **Screenshot Capture** - Automatic pixel-perfect screenshot with CSS rendering
 - **Screen Recording** - Record screen with audio and capture console/network logs
@@ -49,6 +55,7 @@ A powerful, visual feedback collection tool for React applications with screen r
 - **Keyboard Shortcuts** - `Alt+Q` (Selection), `Alt+A` (Manual), `Alt+W` (Record), `Esc` (Cancel)
 
 ### Session Replay
+
 - **Video Playback** - Watch recorded user sessions with fullscreen support
 - **Console Logs** - See console.log, errors, warnings synced with video timeline
 - **Network Requests** - Track API calls and responses
@@ -56,12 +63,14 @@ A powerful, visual feedback collection tool for React applications with screen r
 - **Expandable Logs Panel** - Slide-out panel on the right side (customizable)
 
 ### Screen Recording
+
 - **Draggable Indicator** - Recording overlay can be moved around the screen
 - **Audio Capture** - Record microphone and system audio (mixed)
 - **IndexedDB Storage** - Large videos stored locally to prevent quota errors
 - **Download Videos** - Export recordings as WebM files
 
 ### Dashboard
+
 - **Professional UI** - Clean 700px slide-out panel
 - **Developer Mode** - Full technical details (source file, component stack, viewport)
 - **User Mode** - Simplified view for end users
@@ -70,6 +79,7 @@ A powerful, visual feedback collection tool for React applications with screen r
 - **Search** - Search through feedback by title, description, or user
 
 ### Updates Modal
+
 - **What's New** - Display product updates, bug fixes, and new features to users
 - **Filter Tabs** - Filter by Fixed or New Feature
 - **Smooth Animations** - Beautiful fade-in animations with staggered item entry
@@ -77,6 +87,7 @@ A powerful, visual feedback collection tool for React applications with screen r
 - **Dark/Light Mode** - Full theme support
 
 ### Theming
+
 - **Light/Dark Mode** - Full theme support
 - **styled-components** - No external CSS required
 
@@ -93,8 +104,8 @@ MIT
 
 ## Author
 
-**Murali Vvrsn Gurajapu**  
-Email: murali.g@hyperverge.co
+**Murali Vvrsn Gurajapu**
+Email: <murali.g@hyperverge.co>
 
 ---
 

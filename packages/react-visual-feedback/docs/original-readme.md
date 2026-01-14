@@ -7,6 +7,7 @@ A powerful, visual feedback collection tool for React applications with screen r
 ## Features
 
 ### Feedback Collection
+
 - **Visual Element Selection** - Click any element with hover highlighting
 - **Screenshot Capture** - Automatic pixel-perfect screenshot with CSS rendering
 - **Screen Recording** - Record screen with audio and capture console/network logs
@@ -17,6 +18,7 @@ A powerful, visual feedback collection tool for React applications with screen r
 - **Keyboard Shortcuts** - `Alt+Q` (Selection), `Alt+A` (Manual), `Alt+W` (Record), `Esc` (Cancel)
 
 ### Session Replay
+
 - **Video Playback** - Watch recorded user sessions with fullscreen support
 - **Console Logs** - See console.log, errors, warnings synced with video timeline
 - **Network Requests** - Track API calls and responses
@@ -24,12 +26,14 @@ A powerful, visual feedback collection tool for React applications with screen r
 - **Expandable Logs Panel** - Slide-out panel on the right side (customizable)
 
 ### Screen Recording
+
 - **Draggable Indicator** - Recording overlay can be moved around the screen
 - **Audio Capture** - Record microphone and system audio (mixed)
 - **IndexedDB Storage** - Large videos stored locally to prevent quota errors
 - **Download Videos** - Export recordings as WebM files
 
 ### Dashboard
+
 - **Professional UI** - Clean 700px slide-out panel
 - **Developer Mode** - Full technical details (source file, component stack, viewport)
 - **User Mode** - Simplified view for end users
@@ -38,6 +42,7 @@ A powerful, visual feedback collection tool for React applications with screen r
 - **Search** - Search through feedback by title, description, or user
 
 ### Updates Modal
+
 - **What's New** - Display product updates, bug fixes, and new features to users
 - **Filter Tabs** - Filter by Fixed or New Feature
 - **Smooth Animations** - Beautiful fade-in animations with staggered item entry
@@ -45,6 +50,7 @@ A powerful, visual feedback collection tool for React applications with screen r
 - **Dark/Light Mode** - Full theme support
 
 ### Theming
+
 - **Light/Dark Mode** - Full theme support
 - **styled-components** - No external CSS required
 
@@ -55,6 +61,7 @@ npm install react-visual-feedback
 ```
 
 **Peer Dependencies:**
+
 ```bash
 npm install react react-dom styled-components
 ```
@@ -146,39 +153,39 @@ function App() {
 
 ### FeedbackProvider Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `onSubmit` | `(data) => Promise` | required | Callback when feedback is submitted |
-| `onStatusChange` | `({id, status, comment}) => void` | - | Callback when status changes |
-| `dashboard` | `boolean` | `false` | Enable dashboard feature |
-| `dashboardData` | `Array` | - | Custom data (uses localStorage if undefined) |
-| `isDeveloper` | `boolean` | `false` | Enable developer mode |
-| `isUser` | `boolean` | `true` | Enable user mode |
-| `userName` | `string` | `'Anonymous'` | User name |
-| `userEmail` | `string` | `null` | User email |
-| `mode` | `'light' \| 'dark'` | `'light'` | Theme mode |
-| `isActive` | `boolean` | - | Controlled active state |
-| `onActiveChange` | `(active) => void` | - | Callback for controlled mode |
-| `defaultOpen` | `boolean` | `false` | Open manual feedback form immediately on mount |
+| Prop             | Type                              | Default       | Description                                    |
+|------------------|-----------------------------------|---------------|------------------------------------------------|
+| `onSubmit`       | `(data) => Promise`               | required      | Callback when feedback is submitted            |
+| `onStatusChange` | `({id, status, comment}) => void` | -             | Callback when status changes                   |
+| `dashboard`      | `boolean`                         | `false`       | Enable dashboard feature                       |
+| `dashboardData`  | `Array`                           | -             | Custom data (uses localStorage if undefined)   |
+| `isDeveloper`    | `boolean`                         | `false`       | Enable developer mode                          |
+| `isUser`         | `boolean`                         | `true`        | Enable user mode                               |
+| `userName`       | `string`                          | `'Anonymous'` | User name                                      |
+| `userEmail`      | `string`                          | `null`        | User email                                     |
+| `mode`           | `'light' \| 'dark'`               | `'light'`     | Theme mode                                     |
+| `isActive`       | `boolean`                         | -             | Controlled active state                        |
+| `onActiveChange` | `(active) => void`                | -             | Callback for controlled mode                   |
+| `defaultOpen`    | `boolean`                         | `false`       | Open manual feedback form immediately on mount |
 
 ### FeedbackDashboard Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `isOpen` | `boolean` | required | Control dashboard visibility |
-| `onClose` | `() => void` | required | Callback when dashboard closes |
-| `data` | `Array` | - | Feedback data (uses localStorage if undefined) |
-| `isDeveloper` | `boolean` | `false` | Enable developer mode with delete |
-| `isUser` | `boolean` | `true` | Enable user mode |
-| `onStatusChange` | `({id, status, comment}) => void` | - | Callback when status changes |
-| `mode` | `'light' \| 'dark'` | `'light'` | Theme mode |
-| `isLoading` | `boolean` | `false` | Show loading state |
-| `onRefresh` | `() => void` | - | Callback for refresh button |
-| `title` | `string` | `'Feedback'` | Dashboard title |
-| `statuses` | `object` | `DEFAULT_STATUSES` | Status configurations (label, color, icon) |
-| `acceptableStatuses` | `string[]` | - | Array of status keys to show (e.g., `['open', 'resolved']`) |
-| `showAllStatuses` | `boolean` | `true` | Show all statuses in filter |
-| `error` | `string` | `null` | Error message to display |
+| Prop                 | Type                              | Default            | Description                                                 |
+|----------------------|-----------------------------------|--------------------|-------------------------------------------------------------|
+| `isOpen`             | `boolean`                         | required           | Control dashboard visibility                                |
+| `onClose`            | `() => void`                      | required           | Callback when dashboard closes                              |
+| `data`               | `Array`                           | -                  | Feedback data (uses localStorage if undefined)              |
+| `isDeveloper`        | `boolean`                         | `false`            | Enable developer mode with delete                           |
+| `isUser`             | `boolean`                         | `true`             | Enable user mode                                            |
+| `onStatusChange`     | `({id, status, comment}) => void` | -                  | Callback when status changes                                |
+| `mode`               | `'light' \| 'dark'`               | `'light'`          | Theme mode                                                  |
+| `isLoading`          | `boolean`                         | `false`            | Show loading state                                          |
+| `onRefresh`          | `() => void`                      | -                  | Callback for refresh button                                 |
+| `title`              | `string`                          | `'Feedback'`       | Dashboard title                                             |
+| `statuses`           | `object`                          | `DEFAULT_STATUSES` | Status configurations (label, color, icon)                  |
+| `acceptableStatuses` | `string[]`                        | -                  | Array of status keys to show (e.g., `['open', 'resolved']`) |
+| `showAllStatuses`    | `boolean`                         | `true`             | Show all statuses in filter                                 |
+| `error`              | `string`                          | `null`             | Error message to display                                    |
 
 ### useFeedback Hook
 
@@ -243,13 +250,13 @@ const updates = [
 />
 ```
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `isOpen` | `boolean` | required | Control modal visibility |
-| `onClose` | `() => void` | required | Callback when modal closes |
-| `updates` | `Update[]` | `[]` | Array of update objects |
-| `title` | `string` | `"What's New"` | Modal header title |
-| `mode` | `'light' \| 'dark'` | `'light'` | Theme mode |
+| Prop      | Type                | Default        | Description                |
+|-----------|---------------------|----------------|----------------------------|
+| `isOpen`  | `boolean`           | required       | Control modal visibility   |
+| `onClose` | `() => void`        | required       | Callback when modal closes |
+| `updates` | `Update[]`          | `[]`           | Array of update objects    |
+| `title`   | `string`            | `"What's New"` | Modal header title         |
+| `mode`    | `'light' \| 'dark'` | `'light'`      | Theme mode                 |
 
 #### Update Object Structure
 
@@ -606,7 +613,7 @@ app.post('/api/feedback', async (req, res) => {
         VALUES ($1, $2)
       `, [feedbackId, video]);
     }
-    
+
     // Insert manual attachment (generic file)
     if (attachment) {
        // Note: 'attachment' here is assumed to be pre-processed/uploaded file metadata + content
@@ -685,28 +692,28 @@ app.patch('/api/feedback/:id/status', async (req, res) => {
 
 ## Keyboard Shortcuts
 
-| Shortcut | Action |
-|----------|--------|
-| `Alt+Q` | Activate feedback mode (element selection) |
-| `Alt+A` | Open Manual Feedback form |
-| `Alt+W` | Start screen recording |
-| `Alt+Shift+Q` | Open dashboard |
-| `Esc` | Cancel/close |
+| Shortcut      | Action                                     |
+|---------------|--------------------------------------------|
+| `Alt+Q`       | Activate feedback mode (element selection) |
+| `Alt+A`       | Open Manual Feedback form                  |
+| `Alt+W`       | Start screen recording                     |
+| `Alt+Shift+Q` | Open dashboard                             |
+| `Esc`         | Cancel/close                               |
 
 ## Status System
 
 ### Default Statuses
 
-| Key | Label | Color | Icon |
-|-----|-------|-------|------|
-| `new` | New | Purple (#8b5cf6) | Inbox |
-| `open` | Open | Amber (#f59e0b) | AlertCircle |
-| `inProgress` | In Progress | Blue (#3b82f6) | Play |
-| `underReview` | Under Review | Cyan (#06b6d4) | Eye |
-| `onHold` | On Hold | Gray (#6b7280) | PauseCircle |
-| `resolved` | Resolved | Green (#10b981) | CheckCircle |
-| `closed` | Closed | Slate (#64748b) | Archive |
-| `wontFix` | Won't Fix | Red (#ef4444) | Ban |
+| Key           | Label        | Color            | Icon        |
+|---------------|--------------|------------------|-------------|
+| `new`         | New          | Purple (#8b5cf6) | Inbox       |
+| `open`        | Open         | Amber (#f59e0b)  | AlertCircle |
+| `inProgress`  | In Progress  | Blue (#3b82f6)   | Play        |
+| `underReview` | Under Review | Cyan (#06b6d4)   | Eye         |
+| `onHold`      | On Hold      | Gray (#6b7280)   | PauseCircle |
+| `resolved`    | Resolved     | Green (#10b981)  | CheckCircle |
+| `closed`      | Closed       | Slate (#64748b)  | Archive     |
+| `wontFix`     | Won't Fix    | Red (#ef4444)    | Ban         |
 
 ### Custom Statuses
 
@@ -799,22 +806,22 @@ interface StatusConfig {
 
 The following icons from Lucide React are available for custom statuses:
 
-| Icon Name | Description |
-|-----------|-------------|
-| `Inbox` | New items |
-| `AlertCircle` | Warnings/alerts |
-| `Play` | In progress |
-| `Eye` | Under review |
-| `PauseCircle` | Paused/on hold |
-| `CheckCircle` | Completed/resolved |
-| `Archive` | Archived/closed |
-| `Ban` | Rejected/won't fix |
-| `XCircle` | Cancelled |
-| `HelpCircle` | Questions |
-| `Lightbulb` | Ideas/features |
-| `Bug` | Bug reports |
-| `Zap` | Quick actions |
-| `MessageSquare` | Comments |
+| Icon Name       | Description        |
+|-----------------|--------------------|
+| `Inbox`         | New items          |
+| `AlertCircle`   | Warnings/alerts    |
+| `Play`          | In progress        |
+| `Eye`           | Under review       |
+| `PauseCircle`   | Paused/on hold     |
+| `CheckCircle`   | Completed/resolved |
+| `Archive`       | Archived/closed    |
+| `Ban`           | Rejected/won't fix |
+| `XCircle`       | Cancelled          |
+| `HelpCircle`    | Questions          |
+| `Lightbulb`     | Ideas/features     |
+| `Bug`           | Bug reports        |
+| `Zap`           | Quick actions      |
+| `MessageSquare` | Comments           |
 
 ### Status Utility Functions
 
@@ -844,15 +851,15 @@ const key = normalizeStatusKey('in_progress', customStatuses);
 
 The widget automatically normalizes various status key formats:
 
-| Input | Normalized To |
-|-------|---------------|
-| `reported`, `submitted`, `pending` | `new` |
-| `doing`, `in_progress` | `inProgress` |
-| `review`, `under_review` | `underReview` |
-| `hold`, `on_hold`, `paused` | `onHold` |
-| `done`, `fixed`, `completed` | `resolved` |
-| `archived` | `closed` |
-| `rejected`, `wont_fix`, `cancelled` | `wontFix` |
+| Input                               | Normalized To |
+|-------------------------------------|---------------|
+| `reported`, `submitted`, `pending`  | `new`         |
+| `doing`, `in_progress`              | `inProgress`  |
+| `review`, `under_review`            | `underReview` |
+| `hold`, `on_hold`, `paused`         | `onHold`      |
+| `done`, `fixed`, `completed`        | `resolved`    |
+| `archived`                          | `closed`      |
+| `rejected`, `wont_fix`, `cancelled` | `wontFix`     |
 
 ## Next.js Usage
 
@@ -963,6 +970,7 @@ import {
 ## Changelog
 
 ### v2.2.0
+
 - **Added**: `UpdatesModal` component - Display product updates, bug fixes, and new features
 - **Added**: Draggable recording indicator - Move the recording overlay anywhere on screen
 - **Added**: Video Mode with fullscreen playback and synced logs panel
@@ -974,6 +982,7 @@ import {
 - **Fixed**: Mobile responsive UpdatesModal - displays as centered popup
 
 ### v2.1.0
+
 - **Added**: Manual feedback mode (`Alt+A`) - open form without selecting an element
 - **Added**: `defaultOpen` prop to automatically open form on mount
 - **Added**: Drag & Drop file upload support
@@ -983,36 +992,43 @@ import {
 - **Improved**: Screenshot preview in dashboard with zoom overlay
 
 ### v1.4.2
+
 - **Fixed**: Modal state not resetting after submission (was showing "Sending..." on reopen)
 - **Added**: `Alt+W` keyboard shortcut for video recording
 - **Improved**: Custom status documentation - clarified that users control which statuses appear
 - **Fixed**: Prevented double submission by checking `isSubmitting` state
 
 ### v1.4.1
+
 - **Fixed**: `Cannot read properties of undefined (reading 'icon')` error when status data is malformed
 - **Added**: `getStatusData()` utility function for safe status access with defaults
 - **Improved**: Defensive null checks in StatusBadge, StatusDropdown, and FeedbackDashboard
 - **Added**: Export of status utility functions for custom implementations
 
 ### v1.4.0
+
 - **Added**: Screen recording with session replay
 - **Added**: Console and network log capture during recording
 - **Added**: Session replay component with expandable logs panel
 - **Improved**: Dashboard UI with video playback support
 
 ### v1.3.0
+
 - **Added**: Canvas drawing and annotation support
 - **Added**: Download all feedback as ZIP
 
 ### v1.2.0
+
 - **Added**: Custom status configurations
 - **Added**: Status normalization for various formats
 
 ### v1.1.0
+
 - **Added**: Dark mode support
 - **Added**: Developer/User mode views
 
 ### v1.0.0
+
 - Initial release with element selection and screenshot capture
 
 ## License
@@ -1022,7 +1038,7 @@ MIT
 ## Author
 
 **Murali Vvrsn Gurajapu**
-Email: murali.g@hyperverge.co
+Email: <murali.g@hyperverge.co>
 
 ---
 

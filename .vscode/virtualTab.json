@@ -4,7 +4,7 @@
     "name": "Currently Open Files",
     "files": [
       "packages/react-visual-feedback/docs/typescript-migration-analysis.md",
-      "GUIDE_TASKS.md"
+      "packages/react-visual-feedback/docs/original-readme.md"
     ],
     "builtIn": true
   }

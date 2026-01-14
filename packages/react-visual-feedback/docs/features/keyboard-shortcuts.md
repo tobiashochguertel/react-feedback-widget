@@ -4,13 +4,13 @@ The React Visual Feedback widget provides convenient keyboard shortcuts for quic
 
 ## Available Shortcuts
 
-| Shortcut | Action | Description |
-|----------|--------|-------------|
-| `Alt+Q` | Activate feedback mode | Enable element selection mode with hover highlighting |
-| `Alt+A` | Open Manual Feedback | Open feedback form directly without selecting an element |
-| `Alt+W` | Start screen recording | Begin recording screen with audio and event logs |
-| `Alt+Shift+Q` | Open dashboard | Open the feedback dashboard (if enabled) |
-| `Esc` | Cancel/close | Cancel current action or close open modals |
+| Shortcut      | Action                 | Description                                              |
+|---------------|------------------------|----------------------------------------------------------|
+| `Alt+Q`       | Activate feedback mode | Enable element selection mode with hover highlighting    |
+| `Alt+A`       | Open Manual Feedback   | Open feedback form directly without selecting an element |
+| `Alt+W`       | Start screen recording | Begin recording screen with audio and event logs         |
+| `Alt+Shift+Q` | Open dashboard         | Open the feedback dashboard (if enabled)                 |
+| `Esc`         | Cancel/close           | Cancel current action or close open modals               |
 
 ## Usage Examples
 
@@ -69,7 +69,7 @@ The keyboard shortcuts follow these accessibility principles:
 Keyboard shortcuts work in all modern browsers:
 
 - Chrome/Edge
-- Firefox  
+- Firefox
 - Safari
 - Opera
 
