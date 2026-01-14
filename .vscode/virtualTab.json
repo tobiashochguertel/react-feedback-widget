@@ -1,0 +1,10 @@
+[
+  {
+    "id": "builtin_group_id",
+    "name": "Currently Open Files",
+    "files": [
+      "packages/react-visual-feedback/docs/typescript-migration-analysis.md"
+    ],
+    "builtIn": true
+  }
+]
