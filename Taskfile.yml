@@ -7,6 +7,12 @@ vars:
   DIST_DIR: '{{.ROOT_DIR}}/dist'
 
 tasks:
+  default:
+    desc: Show available tasks (default)
+    cmds:
+      - task --list
+    silent: true
+
   # Development tasks
   install:
     desc: Install dependencies for main project and example-nextjs
@@ -16,6 +22,7 @@ tasks:
 
   build:
     desc: Build the react-feedback-widget library
+    deps: [_ensure-deps]
     cmds:
       - bun run build
     sources:
@@ -25,6 +32,15 @@ tasks:
     generates:
       - '{{.DIST_DIR}}/**/*.js'
 
+  _ensure-deps:
+    desc: Ensure dependencies are installed (internal)
+    cmds:
+      - bun install
+    status:
+      - test -d node_modules
+      - test -d {{.EXAMPLE_NEXTJS_DIR}}/node_modules
+    silent: true
+
   build:watch:
     desc: Build library in watch mode
     cmds:
@@ -32,7 +48,7 @@ tasks:
 
   dev:
     desc: Start example-nextjs with live development
-    deps: [build]
+    deps: [build, _ensure-deps]
     cmds:
       - cd {{.EXAMPLE_NEXTJS_DIR}} && bun run dev -- -p 3002
 
