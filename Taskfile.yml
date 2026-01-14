@@ -49,8 +49,6 @@ tasks:
     cmds:
       - rm -rf {{.DIST_DIR}}
       - rm -rf {{.EXAMPLE_NEXTJS_DIR}}/.next
-      - rm -rf node_modules
-      - rm -rf {{.EXAMPLE_NEXTJS_DIR}}/node_modules
 
   clean:build:
     desc: Clean and rebuild
