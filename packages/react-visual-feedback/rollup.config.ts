@@ -39,6 +39,7 @@ const createServerTypescriptPlugin = (options = {}) =>
   typescript({
     tsconfig: './tsconfig.json',
     declaration: false,
+    declarationDir: undefined,
     ...options,
   });
 
