@@ -5,7 +5,6 @@
     "": {
       "name": "react-feedback-widget-monorepo",
       "devDependencies": {
-        "@vitest/ui": "^4.0.17",
         "react-visual-feedback": "workspace:*",
       },
     },

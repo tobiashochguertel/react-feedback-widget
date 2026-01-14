@@ -21,13 +21,14 @@ tasks:
       - cd {{.EXAMPLE_NEXTJS_DIR}} && bun install
 
   build:
-    desc: Build the react-feedback-widget library
+    desc: Build the react-feedback-widget library (TypeScript)
     deps: [_ensure-deps]
     cmds:
       - bun run build
     sources:
-      - '{{.SRC_DIR}}/**/*.{js,jsx}'
-      - rollup.config.js
+      - '{{.SRC_DIR}}/**/*.{ts,tsx}'
+      - rollup.config.ts
+      - tsconfig.json
       - package.json
     generates:
       - '{{.DIST_DIR}}/**/*.js'

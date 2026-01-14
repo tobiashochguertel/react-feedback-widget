@@ -2,7 +2,16 @@
 
 **[Live Demo](https://react-library-demo-rosy.vercel.app/)** | **[Documentation](./docs/README.md)**
 
-A powerful, visual feedback collection tool for React applications with screen recording, session replay, and an integrated dashboard for managing user feedback.
+A powerful, visual feedback collection tool for React applications with screen recording, session replay, and an integrated dashboard for managing user feedback. **Now fully typed with TypeScript!**
+
+## 🎉 TypeScript Support
+
+This library is written in TypeScript and provides:
+
+- **Full type definitions** - All components, hooks, and utilities are fully typed
+- **Strict mode compatible** - Works with `strict: true` in your `tsconfig.json`
+- **IntelliSense support** - Excellent autocomplete and type hints in your IDE
+- **Type exports** - All types are exported for use in your application
 
 ## 🚀 Quick Start
 
@@ -10,17 +19,20 @@ A powerful, visual feedback collection tool for React applications with screen r
 npm install react-visual-feedback react react-dom styled-components
 ```
 
-```jsx
-import { FeedbackProvider } from 'react-visual-feedback';
+```tsx
+import { FeedbackProvider, FeedbackData } from 'react-visual-feedback';
 
-function App() {
+function App(): React.ReactElement {
+  const handleSubmit = async (data: FeedbackData): Promise<void> => {
+    await fetch('/api/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+  };
+
   return (
-    <FeedbackProvider onSubmit={async (data) => {
-      await fetch('/api/feedback', {
-        method: 'POST',
-        body: JSON.stringify(data)
-      });
-    }}>
+    <FeedbackProvider onSubmit={handleSubmit}>
       <YourApp />
     </FeedbackProvider>
   );
@@ -53,6 +65,7 @@ function App() {
 ### Features
 
 - [Keyboard Shortcuts](./docs/features/keyboard-shortcuts.md)
+- [TypeScript Documentation](./docs/original-readme-with-typescript.md)
 - More documentation coming soon...
 
 ## ⌨️ Keyboard Shortcuts

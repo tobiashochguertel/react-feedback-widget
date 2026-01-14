@@ -2,7 +2,9 @@
   {
     "id": "builtin_group_id",
     "name": "Currently Open Files",
-    "files": [],
+    "files": [
+      "packages/react-visual-feedback/docs/original-readme-with-typescript.md"
+    ],
     "builtIn": true,
     "bookmarks": {}
   }

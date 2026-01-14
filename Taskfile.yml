@@ -28,14 +28,15 @@ tasks:
 
   # Library tasks
   build:
-    desc: Build the react-visual-feedback library
+    desc: Build the react-visual-feedback library (TypeScript)
     deps: [_ensure-deps]
     dir: '{{.LIB_DIR}}'
     cmds:
       - bun run build
     sources:
-      - '{{.LIB_DIR}}/src/**/*.{js,jsx}'
-      - '{{.LIB_DIR}}/rollup.config.js'
+      - '{{.LIB_DIR}}/src/**/*.{ts,tsx}'
+      - '{{.LIB_DIR}}/rollup.config.ts'
+      - '{{.LIB_DIR}}/tsconfig.json'
       - '{{.LIB_DIR}}/package.json'
     generates:
       - '{{.LIB_DIR}}/dist/**/*.js'

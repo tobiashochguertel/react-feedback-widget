@@ -34,7 +34,7 @@ export default defineConfig({
   // Shared settings for all projects
   use: {
     // Base URL for navigation
-    baseURL: 'http://localhost:3000',
+    baseURL: 'http://localhost:3002',
 
     // Collect trace on first retry
     trace: 'on-first-retry',
@@ -90,7 +90,7 @@ export default defineConfig({
   // Run your local dev server before starting the tests
   webServer: {
     command: 'cd ../feedback-example && npm run dev',
-    url: 'http://localhost:3000',
+    url: 'http://localhost:3002',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
   },
