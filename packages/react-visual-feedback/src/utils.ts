@@ -2,7 +2,7 @@
  * Utility functions for react-visual-feedback
  */
 
-import { domToPng } from 'modern-screenshot';
+import { domToPng, type Options as DomToPngOptions } from 'modern-screenshot';
 import type {
   ElementInfo,
   ElementPosition,
@@ -419,7 +419,7 @@ export async function captureElementScreenshot(element: HTMLElement | null): Pro
 
   try {
     // Capture
-    const dataUrl = await domToPng(contextElement, captureOptions);
+    const dataUrl = await domToPng(contextElement, captureOptions as unknown as DomToPngOptions);
 
     if (dataUrl) {
       // If we captured the Body, we are done

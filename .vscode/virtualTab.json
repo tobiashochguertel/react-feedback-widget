@@ -2,23 +2,7 @@
   {
     "id": "builtin_group_id",
     "name": "Currently Open Files",
-    "files": [
-      "packages/react-visual-feedback/src/FeedbackProvider.tsx",
-      "packages/react-visual-feedback/tests/e2e/feedback.spec.ts",
-      "untitled:Untitled-1",
-      "packages/react-visual-feedback/package.json",
-      "packages/react-visual-feedback/playwright.config.ts",
-      "packages/react-visual-feedback/tests/unit/utils/utils.test.ts",
-      "packages/react-visual-feedback/tests/unit/components/FeedbackProvider.test.tsx",
-      "packages/react-visual-feedback/tests/setup.ts",
-      "packages/react-visual-feedback/vitest.config.ts",
-      "packages/react-visual-feedback/src/integrations/server/index.ts",
-      "packages/react-visual-feedback/src/index.ts",
-      "packages/react-visual-feedback/src/integrations/index.ts",
-      "packages/react-visual-feedback/src/integrations/sheets.ts",
-      "packages/react-visual-feedback/src/integrations/jira.ts",
-      "packages/react-visual-feedback/src/integrations/config.ts"
-    ],
+    "files": [],
     "builtIn": true,
     "bookmarks": {}
   }

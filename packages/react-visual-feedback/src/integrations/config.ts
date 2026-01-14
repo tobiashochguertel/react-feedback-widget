@@ -74,12 +74,12 @@ export interface JiraStatusMapping {
 }
 
 export interface IntegrationConfig {
-  columns?: Partial<SheetColumnsMap>;
-  columnOrder?: string[] | null;
-  fields?: Partial<JiraFieldsMap>;
-  projectKey?: string;
-  includePriority?: boolean;
-  customFields?: Record<string, string | { transform?: (data: FeedbackData) => unknown; value?: unknown }>;
+  columns?: Partial<SheetColumnsMap> | undefined;
+  columnOrder?: string[] | null | undefined;
+  fields?: Partial<JiraFieldsMap> | undefined;
+  projectKey?: string | undefined;
+  includePriority?: boolean | undefined;
+  customFields?: Record<string, string | { transform?: (data: FeedbackData) => unknown; value?: unknown }> | undefined;
 }
 
 // ============================================
@@ -514,7 +514,7 @@ export function feedbackToSheetRow(feedbackData: FeedbackData, config: Integrati
     const col = columns[key];
     if (!col) return '';
 
-    const rawValue = (feedbackData as Record<string, unknown>)[col.field];
+    const rawValue = (feedbackData as unknown as Record<string, unknown>)[col.field];
     if (col.transform) {
       return col.transform(rawValue) || '';
     }
@@ -565,7 +565,7 @@ export function feedbackToJiraIssue(feedbackData: FeedbackData, config: Integrat
   if (config.customFields) {
     Object.entries(config.customFields).forEach(([fieldId, fieldConfig]) => {
       if (typeof fieldConfig === 'string') {
-        issue.fields[fieldId] = (feedbackData as Record<string, unknown>)[fieldConfig];
+        issue.fields[fieldId] = (feedbackData as unknown as Record<string, unknown>)[fieldConfig];
       } else if (fieldConfig.transform) {
         issue.fields[fieldId] = fieldConfig.transform(feedbackData);
       } else if (fieldConfig.value !== undefined) {

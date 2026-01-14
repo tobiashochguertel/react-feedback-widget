@@ -45,7 +45,7 @@
  * ```
  */
 
-import type { Feedback, JiraConfig, SheetsConfig } from '../types/index';
+import type { Feedback, JiraConfig, SheetsConfig } from '../../types/index.js';
 
 // =============================================================================
 // JIRA EXPORTS
@@ -184,12 +184,12 @@ export async function createIntegrationHandlers(
 
   if (config.jira) {
     const { createJiraHandler } = await import('../jira');
-    handlers.jira = createJiraHandler(config.jira);
+    handlers.jira = createJiraHandler(config.jira as unknown as Parameters<typeof createJiraHandler>[0]) as unknown as IntegrationHandlers['jira'];
   }
 
   if (config.sheets) {
     const { createSheetsHandler } = await import('../sheets');
-    handlers.sheets = createSheetsHandler(config.sheets);
+    handlers.sheets = createSheetsHandler(config.sheets as unknown as Parameters<typeof createSheetsHandler>[0]) as unknown as IntegrationHandlers['sheets'];
   }
 
   return handlers as IntegrationHandlers;
@@ -245,7 +245,7 @@ export function createCombinedHandler(
       };
 
       if (res?.json && res?.status) {
-        res.status(400).json(error);
+        res.status(400).json!(error);
         return;
       }
 
@@ -264,7 +264,7 @@ export function createCombinedHandler(
       };
 
       if (res?.json && res?.status) {
-        res.status(500).json(error);
+        res.status(500).json!(error);
         return;
       }
 
@@ -280,7 +280,7 @@ export function createCombinedHandler(
       const result = await handler(feedbackData as unknown as Feedback);
 
       if (res?.json) {
-        res.json(result);
+        res.json!(result);
         return;
       }
 
@@ -295,7 +295,7 @@ export function createCombinedHandler(
       };
 
       if (res?.json && res?.status) {
-        res.status(500).json(error);
+        res.status(500).json!(error);
         return;
       }
 

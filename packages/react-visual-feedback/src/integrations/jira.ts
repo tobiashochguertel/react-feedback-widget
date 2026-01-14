@@ -18,9 +18,9 @@ import {
   feedbackToJiraIssue,
   mapLocalStatusToJira,
   mapJiraStatusToLocal,
-  JiraStatusMapping,
   JiraFieldsMap,
   ADFDocument,
+  IntegrationConfig,
 } from './config.js';
 
 // ============================================
@@ -37,14 +37,14 @@ export interface JiraClientConfig {
 
 /** Jira handler configuration */
 export interface JiraHandlerConfig extends JiraClientConfig {
-  fields?: JiraFieldsMap;
-  customFields?: Record<string, unknown>;
-  includePriority?: boolean;
-  uploadAttachments?: boolean;
+  fields?: JiraFieldsMap | undefined;
+  customFields?: Record<string, unknown> | undefined;
+  includePriority?: boolean | undefined;
+  uploadAttachments?: boolean | undefined;
   statusMapping?: {
-    toJira?: JiraStatusMapping;
-    fromJira?: JiraStatusMapping;
-  };
+    toJira?: Record<string, string> | undefined;
+    fromJira?: Record<string, string> | undefined;
+  } | undefined;
 }
 
 /** Parsed form data from request */
@@ -58,11 +58,11 @@ interface ParsedFormData {
 
 /** Feedback data with buffer attachments from FormData parsing */
 interface FeedbackDataWithBuffers extends FeedbackData {
-  screenshotBuffer?: Buffer;
-  screenshotType?: string;
-  videoBuffer?: Buffer;
-  videoType?: string;
-  videoSize?: number;
+  screenshotBuffer?: Buffer | undefined;
+  screenshotType?: string | undefined;
+  videoBuffer?: Buffer | undefined;
+  videoType?: string | undefined;
+  videoSize?: number | undefined;
 }
 
 /** Jira issue creation response */
@@ -117,10 +117,10 @@ interface JiraAttachmentResponse {
 /** Attachment result for handler response */
 interface AttachmentResult {
   type: 'screenshot' | 'video' | 'logs';
-  id?: string;
-  filename?: string;
-  size?: number;
-  error?: string;
+  id?: string | undefined;
+  filename?: string | undefined;
+  size?: number | undefined;
+  error?: string | undefined;
 }
 
 /** Create issue handler result */
@@ -582,11 +582,11 @@ async function parseFormData(req: RequestLike): Promise<ParsedFormData> {
       const eventLogsFile = formData.get('eventLogs');
 
       // Convert files to buffers
-      const feedbackData: FeedbackDataWithBuffers = {
+      const feedbackData = {
         ...(metadata as Partial<FeedbackData>),
         id: (metadata.id as string) ?? '',
         feedback: (metadata.feedback as string) ?? '',
-      };
+      } as FeedbackDataWithBuffers;
 
       if (screenshot instanceof Blob) {
         const arrayBuffer = await screenshot.arrayBuffer();
@@ -646,10 +646,10 @@ async function handleCreate(
     fields: config.fields,
     customFields: config.customFields,
     includePriority: config.includePriority,
-  });
+  } as IntegrationConfig);
 
   // Create the issue
-  const issue = await client.createIssue(issueData);
+  const issue = await client.createIssue(issueData as unknown as Record<string, unknown>);
   const issueKey = issue.key;
 
   // Upload attachments
@@ -702,10 +702,11 @@ async function handleCreate(
           feedbackData.videoBuffer,
           videoType
         );
+        const { size: _attachmentSize, ...restResult } = result[0];
         attachments.push({
           type: 'video',
           size: feedbackData.videoSize ?? feedbackData.videoBuffer.length,
-          ...result[0],
+          ...restResult,
         });
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
@@ -896,7 +897,7 @@ export function createJiraHandler(config: JiraHandlerConfig = {}): JiraHandler {
 
       // Send response based on environment
       if (res?.json && res?.status) {
-        res.status(200).json(result);
+        res.status(200).json!(result);
       } else {
         return new Response(JSON.stringify(result), {
           status: 200,
@@ -910,7 +911,7 @@ export function createJiraHandler(config: JiraHandlerConfig = {}): JiraHandler {
       };
 
       if (res?.json && res?.status) {
-        res.status(500).json(errorResponse);
+        res.status(500).json!(errorResponse);
       } else {
         return new Response(JSON.stringify(errorResponse), {
           status: 500,
@@ -1016,7 +1017,7 @@ export function formatForJiraAutomation(
   feedbackData: FeedbackData,
   config: Omit<JiraHandlerConfig, keyof JiraClientConfig> = {}
 ): JiraAutomationPayload {
-  const jiraIssue = feedbackToJiraIssue(feedbackData, config);
+  const jiraIssue = feedbackToJiraIssue(feedbackData, config as IntegrationConfig);
 
   return {
     summary: `[Feedback] ${(feedbackData.feedback ?? '').substring(0, 200)}`,
@@ -1050,7 +1051,9 @@ export function formatForZapier(feedbackData: FeedbackData): ZapierPayload {
     has_video: Boolean(feedbackData.video),
     element_selector: feedbackData.elementInfo?.selector ?? '',
     component_name: feedbackData.elementInfo?.componentStack?.[0] ?? '',
-    source_file: feedbackData.elementInfo?.sourceFile ?? '',
+    source_file: typeof feedbackData.elementInfo?.sourceFile === 'string'
+      ? feedbackData.elementInfo.sourceFile
+      : feedbackData.elementInfo?.sourceFile?.fileName ?? '',
     timestamp: feedbackData.timestamp ?? new Date().toISOString(),
   };
 }

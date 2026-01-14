@@ -156,6 +156,9 @@ export interface FeedbackData {
   jiraUrl?: string | undefined;
 }
 
+/** @deprecated Use FeedbackData instead */
+export type Feedback = FeedbackData;
+
 export interface FeedbackSubmitData extends Omit<FeedbackData, 'id' | 'timestamp'> {
   id?: string | undefined;
   timestamp?: string | undefined;

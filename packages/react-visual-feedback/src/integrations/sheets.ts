@@ -48,21 +48,21 @@ export interface OAuthStoredTokens {
 
 /** Base Sheets client configuration */
 export interface SheetsClientConfig {
-  spreadsheetId?: string;
-  sheetName?: string;
-  credentials?: string | GoogleServiceAccountCredentials;
-  columns?: SheetColumnsMap;
-  columnOrder?: string[];
+  spreadsheetId?: string | undefined;
+  sheetName?: string | undefined;
+  credentials?: string | GoogleServiceAccountCredentials | undefined;
+  columns?: SheetColumnsMap | undefined;
+  columnOrder?: string[] | undefined;
 }
 
 /** OAuth client configuration extends base config */
 export interface SheetsOAuthClientConfig extends Omit<SheetsClientConfig, 'credentials'> {
   oauth: true;
-  clientId?: string;
-  clientSecret?: string;
-  redirectUri?: string;
-  getStoredTokens?: () => Promise<OAuthStoredTokens | null>;
-  saveTokens?: (tokens: OAuthStoredTokens) => Promise<void>;
+  clientId?: string | undefined;
+  clientSecret?: string | undefined;
+  redirectUri?: string | undefined;
+  getStoredTokens?: (() => Promise<OAuthStoredTokens | null>) | undefined;
+  saveTokens?: ((tokens: OAuthStoredTokens) => Promise<void>) | undefined;
 }
 
 /** Handler configuration union */
@@ -94,8 +94,8 @@ interface ResponseLike {
 /** Append result */
 interface AppendResult {
   success: true;
-  updatedRange?: string;
-  rowNumber?: string;
+  updatedRange?: string | undefined;
+  rowNumber?: string | undefined;
 }
 
 /** Status update result */
@@ -439,8 +439,8 @@ export class SheetsOAuthClient extends SheetsClient {
   private clientId: string;
   private clientSecret: string;
   private redirectUri: string;
-  private getStoredTokens?: () => Promise<OAuthStoredTokens | null>;
-  private saveTokens?: (tokens: OAuthStoredTokens) => Promise<void>;
+  private getStoredTokens?: (() => Promise<OAuthStoredTokens | null>) | undefined;
+  private saveTokens?: ((tokens: OAuthStoredTokens) => Promise<void>) | undefined;
 
   constructor(config: SheetsOAuthClientConfig) {
     // Pass empty credentials to parent - we'll override getAccessToken
@@ -730,7 +730,7 @@ export function createSheetsHandler(config: SheetsHandlerConfig = {}): SheetsHan
 
       // Send response
       if (res?.json && res?.status) {
-        res.status(200).json(result);
+        res.status(200).json!(result);
       } else {
         return new Response(JSON.stringify(result), {
           status: 200,
@@ -744,7 +744,7 @@ export function createSheetsHandler(config: SheetsHandlerConfig = {}): SheetsHan
       };
 
       if (res?.json && res?.status) {
-        res.status(500).json(errorResponse);
+        res.status(500).json!(errorResponse);
       } else {
         return new Response(JSON.stringify(errorResponse), {
           status: 500,
