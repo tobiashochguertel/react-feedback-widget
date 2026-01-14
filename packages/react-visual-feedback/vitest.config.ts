@@ -77,13 +77,8 @@ export default defineConfig({
     watch: false,
     watchExclude: ['node_modules/**', 'dist/**'],
 
-    // Threading
+    // Threading (Vitest 4+ uses top-level pool options)
     pool: 'threads',
-    poolOptions: {
-      threads: {
-        singleThread: false,
-      },
-    },
 
     // Mocking
     mockReset: true,
@@ -91,11 +86,20 @@ export default defineConfig({
     clearMocks: true,
   },
 
+  // Thread pool options (moved to top level in Vitest 4)
+  poolOptions: {
+    threads: {
+      singleThread: false,
+    },
+  },
+
   // Path resolution
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
     },
+    // Prefer .ts/.tsx over .js/.jsx when both exist
+    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
   },
 
   // esbuild options for JSX

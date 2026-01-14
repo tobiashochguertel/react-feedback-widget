@@ -382,6 +382,18 @@ export const FeedbackProvider = ({
     }
   }, [isActive, hoveredElement]);
 
+  // Recording handlers - must be defined before handleKeyDown which uses them
+  const handleStartRecording = useCallback(async () => {
+    try {
+      dispatch({ type: 'START_RECORDING_INIT' });
+      await recorder.start();
+      dispatch({ type: 'START_RECORDING_SUCCESS' });
+    } catch (error) {
+      dispatch({ type: 'START_RECORDING_FAILURE' });
+      showError('Could not start recording. Please ensure you have granted screen and microphone permissions.', 'Recording Error');
+    }
+  }, []);
+
   const handleKeyDown = useCallback((e) => {
     // Alt+Q - Activate feedback mode (element selection)
     if (e.altKey && !e.shiftKey && (e.key.toLowerCase() === 'q' || e.keyCode === 81 || e.code === 'KeyQ')) {
@@ -636,17 +648,6 @@ export const FeedbackProvider = ({
     dispatch({ type: 'SET_STATE', payload: { isCanvasActive: false } });
   }, [setIsActive]);
 
-  const handleStartRecording = useCallback(async () => {
-    try {
-      dispatch({ type: 'START_RECORDING_INIT' });
-      await recorder.start();
-      dispatch({ type: 'START_RECORDING_SUCCESS' });
-    } catch (error) {
-      dispatch({ type: 'START_RECORDING_FAILURE' });
-      showError('Could not start recording. Please ensure you have granted screen and microphone permissions.', 'Recording Error');
-    }
-  }, []);
-
   const handlePauseRecording = useCallback(() => {
     recorder.pause();
     dispatch({ type: 'PAUSE_RECORDING' });
@@ -656,7 +657,7 @@ export const FeedbackProvider = ({
     recorder.resume();
     dispatch({ type: 'RESUME_RECORDING' });
   }, []);
-  
+
   const handleCancelRecording = useCallback(async () => {
     await recorder.stop();
     dispatch({ type: 'CANCEL_RECORDING' });
