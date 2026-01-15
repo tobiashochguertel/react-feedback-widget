@@ -362,9 +362,11 @@ export interface ScreenshotService {
 
 ## Service Layer Extraction (Set 2)
 
+Set 2 (Service Layer Extraction) - COMPLETE ✅
+
 ### I005 - Create StorageService Interface & Impl
 
-**Status**: 🔲 TODO
+**Status**: ✅ Done
 **Priority**: 🟢 High
 
 **Description**:
@@ -455,7 +457,7 @@ export class InMemoryStorageService implements StorageService {
 
 ### I006 - Create VideoStorageService (IndexedDB)
 
-**Status**: 🔲 TODO
+**Status**: ✅ Done
 **Priority**: 🟢 High
 
 **Description**:
@@ -554,7 +556,7 @@ export class IndexedDBVideoStorageService implements VideoStorageService {
 
 ### I007 - Create RecorderService Interface & Impl
 
-**Status**: 🔲 TODO
+**Status**: ✅ Done
 **Priority**: 🟢 High
 
 **Description**:
@@ -633,7 +635,7 @@ export class MediaRecorderService implements RecorderService {
 
 ### I008 - Create ScreenshotService Interface
 
-**Status**: 🔲 TODO
+**Status**: ✅ Done
 **Priority**: 🟢 High
 
 **Description**:
@@ -695,11 +697,11 @@ export class Html2CanvasService implements ScreenshotService {
 
 ### I009 - Add Dependency Injection to Provider
 
-**Status**: 🔲 TODO
+**Status**: ✅ Done
 **Priority**: 🟢 High
 
 **Description**:
-Modify FeedbackProvider to accept services via props/context, enabling testability.
+Create ServiceFactory to provide production and test service configurations with dependency injection support.
 
 **Proposed Implementation**:
 
