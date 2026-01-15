@@ -36,9 +36,6 @@ export {
   type UseDashboardReturn,
 } from './useDashboard.js';
 
-// TODO: Implement in T005
-// export { useFeedbackSubmission } from './useFeedbackSubmission';
-
 // Recording hooks (T003)
 export {
   useRecording,
@@ -79,8 +76,17 @@ export {
   type ModifierKey,
 } from './useKeyboardShortcuts.js';
 
-// TODO: Implement in T007
-// export { useFeedbackSubmission } from './useFeedbackSubmission';
+// Feedback submission hooks (T007)
+export {
+  useFeedbackSubmission,
+  type UseFeedbackSubmissionOptions,
+  type UseFeedbackSubmissionReturn,
+  type FeedbackData,
+  type SubmissionStatus,
+  type SubmissionQueueItem,
+  type SubmissionResult,
+  type SubmissionService,
+} from './useFeedbackSubmission.js';
 
 // Integration hooks - TODO: Implement in T008
 // export { useIntegrations } from './useIntegrations';

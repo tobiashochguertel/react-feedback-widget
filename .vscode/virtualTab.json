@@ -2,9 +2,7 @@
   {
     "id": "builtin_group_id",
     "name": "Currently Open Files",
-    "files": [
-      "packages/react-visual-feedback/tests/unit/hooks/useKeyboardShortcuts.test.ts"
-    ],
+    "files": [],
     "builtIn": true,
     "bookmarks": {}
   }
