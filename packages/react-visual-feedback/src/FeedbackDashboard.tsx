@@ -14,6 +14,7 @@ import { SessionReplay } from './SessionReplay';
 import { LogEntry } from './components/LogEntry';
 import { StatusBadgeStyled, normalizeStatusKey } from './components/StatusBadge';
 import { StatusDropdown } from './components/StatusDropdown';
+import { STORAGE, DEFAULT_STATUSES } from './constants';
 import type {
   ThemeMode,
   FeedbackData,
@@ -23,15 +24,6 @@ import type {
   FeedbackType,
   IntegrationsConfig,
 } from './types';
-
-// ============================================
-// CONSTANTS
-// ============================================
-
-const FEEDBACK_STORAGE_KEY = 'react-feedback-data';
-const MAX_VIDEO_SIZE_MB = 500;
-const VIDEO_DB_NAME = 'FeedbackVideoDB';
-const VIDEO_STORE_NAME = 'videos';
 
 // ============================================
 // TYPE DEFINITIONS
@@ -67,16 +59,6 @@ interface VideoDBRecord {
   blob: Blob;
   timestamp: number;
 }
-
-// Default statuses
-const DEFAULT_STATUSES: StatusConfigs = {
-  new: { key: 'new', label: 'New', color: '#8b5cf6', bgColor: '#ede9fe', textColor: '#6d28d9', icon: 'Inbox' },
-  open: { key: 'open', label: 'Open', color: '#f59e0b', bgColor: '#fef3c7', textColor: '#92400e', icon: 'AlertCircle' },
-  inProgress: { key: 'inProgress', label: 'In Progress', color: '#3b82f6', bgColor: '#dbeafe', textColor: '#1e40af', icon: 'Play' },
-  underReview: { key: 'underReview', label: 'Under Review', color: '#06b6d4', bgColor: '#cffafe', textColor: '#0e7490', icon: 'Eye' },
-  resolved: { key: 'resolved', label: 'Resolved', color: '#10b981', bgColor: '#d1fae5', textColor: '#065f46', icon: 'CheckCircle' },
-  closed: { key: 'closed', label: 'Closed', color: '#64748b', bgColor: '#e2e8f0', textColor: '#334155', icon: 'Archive' }
-};
 
 // ============================================
 // STYLED COMPONENTS
@@ -573,13 +555,13 @@ const formatRelativeDate = (dateString: string | undefined): string => {
 // ============================================
 
 const openVideoDatabase = (): Promise<IDBDatabase> => new Promise((resolve, reject) => {
-  const request = indexedDB.open(VIDEO_DB_NAME, 1);
+  const request = indexedDB.open(STORAGE.VIDEO_DB_NAME, 1);
   request.onerror = () => reject(request.error);
   request.onsuccess = () => resolve(request.result);
   request.onupgradeneeded = (event) => {
     const db = (event.target as IDBOpenDBRequest).result;
-    if (!db.objectStoreNames.contains(VIDEO_STORE_NAME)) {
-      db.createObjectStore(VIDEO_STORE_NAME, { keyPath: 'id' });
+    if (!db.objectStoreNames.contains(STORAGE.VIDEO_STORE_NAME)) {
+      db.createObjectStore(STORAGE.VIDEO_STORE_NAME, { keyPath: 'id' });
     }
   };
 });
@@ -589,8 +571,8 @@ const getVideoFromIndexedDB = async (id: string): Promise<Blob | null> => {
     console.log('Getting video from IndexedDB, id:', id);
     const db = await openVideoDatabase();
     return new Promise((resolve, reject) => {
-      const transaction = db.transaction([VIDEO_STORE_NAME], 'readonly');
-      const store = transaction.objectStore(VIDEO_STORE_NAME);
+      const transaction = db.transaction([STORAGE.VIDEO_STORE_NAME], 'readonly');
+      const store = transaction.objectStore(STORAGE.VIDEO_STORE_NAME);
       const request = store.get(id);
       request.onsuccess = () => {
         const result = request.result as VideoDBRecord | undefined;
@@ -615,8 +597,8 @@ const saveVideoToIndexedDB = async (id: string, videoBlob: Blob): Promise<boolea
     console.log('Opening IndexedDB for save, id:', id, 'blob size:', videoBlob?.size);
     const db = await openVideoDatabase();
     return new Promise((resolve, reject) => {
-      const transaction = db.transaction([VIDEO_STORE_NAME], 'readwrite');
-      const store = transaction.objectStore(VIDEO_STORE_NAME);
+      const transaction = db.transaction([STORAGE.VIDEO_STORE_NAME], 'readwrite');
+      const store = transaction.objectStore(STORAGE.VIDEO_STORE_NAME);
       const record: VideoDBRecord = { id, blob: videoBlob, timestamp: Date.now() };
       const request = store.put(record);
       request.onsuccess = () => {
@@ -749,7 +731,7 @@ const SessionReplayWrapper: React.FC<SessionReplayWrapperProps> = ({
 
 export const saveFeedbackToLocalStorage = async (feedbackData: FeedbackData): Promise<{ success: boolean; data?: FeedbackData; error?: string }> => {
   try {
-    const stored = localStorage.getItem(FEEDBACK_STORAGE_KEY);
+    const stored = localStorage.getItem(STORAGE.FEEDBACK_KEY);
     const existing: FeedbackData[] = stored ? JSON.parse(stored) : [];
     const feedbackId = Date.now().toString();
     const processedData: FeedbackData & { videoRef?: string | undefined } = { ...feedbackData };
@@ -762,7 +744,7 @@ export const saveFeedbackToLocalStorage = async (feedbackData: FeedbackData): Pr
       const sizeMB = feedbackData.videoBlob.size / (1024 * 1024);
       console.log('Video size:', sizeMB.toFixed(2), 'MB');
 
-      if (sizeMB <= MAX_VIDEO_SIZE_MB) {
+      if (sizeMB <= STORAGE.MAX_VIDEO_SIZE_MB) {
         const saved = await saveVideoToIndexedDB(feedbackId, feedbackData.videoBlob);
         console.log('Video saved to IndexedDB:', saved);
 
@@ -772,7 +754,7 @@ export const saveFeedbackToLocalStorage = async (feedbackData: FeedbackData): Pr
           processedData.videoType = feedbackData.videoBlob.type;
         }
       } else {
-        console.warn('Video too large:', sizeMB, 'MB, max:', MAX_VIDEO_SIZE_MB, 'MB');
+        console.warn('Video too large:', sizeMB, 'MB, max:', STORAGE.MAX_VIDEO_SIZE_MB, 'MB');
       }
       delete processedData.videoBlob;
       delete processedData.video;
@@ -786,7 +768,7 @@ export const saveFeedbackToLocalStorage = async (feedbackData: FeedbackData): Pr
     };
 
     console.log('Saving feedback with videoRef:', (newFeedback as unknown as { videoRef?: string }).videoRef);
-    localStorage.setItem(FEEDBACK_STORAGE_KEY, JSON.stringify([newFeedback, ...existing].slice(0, 50)));
+    localStorage.setItem(STORAGE.FEEDBACK_KEY, JSON.stringify([newFeedback, ...existing].slice(0, 50)));
     return { success: true, data: newFeedback };
   } catch (e) {
     console.error('Error saving feedback:', e);
@@ -843,7 +825,7 @@ export const FeedbackDashboard: React.FC<FeedbackDashboardProps> = ({
     const loadData = () => {
       if (useLocalStorage) {
         try {
-          const stored = localStorage.getItem(FEEDBACK_STORAGE_KEY);
+          const stored = localStorage.getItem(STORAGE.FEEDBACK_KEY);
           setFeedbackList(stored ? JSON.parse(stored) : []);
         } catch (e) { console.error(e); }
       } else {
@@ -857,7 +839,7 @@ export const FeedbackDashboard: React.FC<FeedbackDashboardProps> = ({
     if (onRefresh) {
       onRefresh();
     } else if (useLocalStorage) {
-      const stored = localStorage.getItem(FEEDBACK_STORAGE_KEY);
+      const stored = localStorage.getItem(STORAGE.FEEDBACK_KEY);
       setFeedbackList(stored ? JSON.parse(stored) : []);
     }
   };
@@ -866,7 +848,7 @@ export const FeedbackDashboard: React.FC<FeedbackDashboardProps> = ({
     if (!window.confirm("Delete this feedback?")) return;
     const updated = feedbackList.filter(item => item.id !== id);
     if (useLocalStorage) {
-      localStorage.setItem(FEEDBACK_STORAGE_KEY, JSON.stringify(updated));
+      localStorage.setItem(STORAGE.FEEDBACK_KEY, JSON.stringify(updated));
     }
     setFeedbackList(updated);
   };

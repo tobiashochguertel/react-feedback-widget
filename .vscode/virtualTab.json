@@ -3,9 +3,7 @@
     "id": "builtin_group_id",
     "name": "Currently Open Files",
     "files": [
-      "packages/react-visual-feedback/docs/spec/TASKS-OVERVIEW.md",
-      "packages/react-visual-feedback/docs/spec/TASKS-IMPROVEMENTS.md",
-      "packages/react-visual-feedback/docs/spec/TASKS-DOCUMENTATION.md"
+      "packages/react-visual-feedback/src/utils/elementUtils.ts"
     ],
     "builtIn": true,
     "bookmarks": {}

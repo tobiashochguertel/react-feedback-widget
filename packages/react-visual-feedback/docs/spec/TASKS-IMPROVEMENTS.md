@@ -1094,9 +1094,10 @@ export const feedbackMachine = createMachine({
 **Dependencies**: I010-I012
 
 **Notes**:
+
 - XState is a **required** part of this architecture refactoring
 - Install with: `npm install xstate @xstate/react`
-- Use XState Visualizer during development: https://stately.ai/viz
+- Use XState Visualizer during development: <https://stately.ai/viz>
 - All hooks (T001-T008) should consume the XState machine context
 
 ---
