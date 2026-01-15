@@ -13,6 +13,7 @@ This document provides a comprehensive analysis of the react-visual-feedback cod
 #### FeedbackDashboard.tsx (1,158 lines) - **CRITICAL**
 
 **Problems:**
+
 - Contains 59 symbols (functions, interfaces, components)
 - Handles multiple concerns:
   - IndexedDB video storage operations (`openVideoDatabase`, `getVideoFromIndexedDB`, `saveVideoToIndexedDB`)
@@ -27,6 +28,7 @@ This document provides a comprehensive analysis of the react-visual-feedback cod
 **Refactoring Recommendations:**
 
 1. **Extract IndexedDB Service** - `services/VideoStorageService.ts`
+
    ```typescript
    export class VideoStorageService {
      async openDatabase(): Promise<IDBDatabase>;
@@ -36,6 +38,7 @@ This document provides a comprehensive analysis of the react-visual-feedback cod
    ```
 
 2. **Extract LocalStorage Service** - `services/FeedbackStorageService.ts`
+
    ```typescript
    export class FeedbackStorageService {
      getAll(): FeedbackData[];
@@ -45,6 +48,7 @@ This document provides a comprehensive analysis of the react-visual-feedback cod
    ```
 
 3. **Extract Date Utilities** - `utils/dateUtils.ts`
+
    ```typescript
    export function formatRelativeDate(date: string): string;
    ```
@@ -60,6 +64,7 @@ This document provides a comprehensive analysis of the react-visual-feedback cod
 #### FeedbackProvider.tsx (899 lines) - **HIGH**
 
 **Problems:**
+
 - 11 top-level symbols but extremely complex `FeedbackProvider` function
 - Giant reducer with 25+ action types
 - Mixes UI concerns (overlay, tooltip) with business logic
@@ -69,21 +74,23 @@ This document provides a comprehensive analysis of the react-visual-feedback cod
 **Refactoring Recommendations:**
 
 1. **Extract State Machine** - `state/feedbackStateMachine.ts`
+
    ```typescript
    // Use XState or similar for complex state transitions
    export const feedbackMachine = createMachine({
-     id: 'feedback',
-     initial: 'idle',
+     id: "feedback",
+     initial: "idle",
      states: {
-       idle: { on: { ACTIVATE: 'selecting' } },
-       selecting: { on: { SELECT_ELEMENT: 'captured' } },
-       captured: { on: { OPEN_CANVAS: 'annotating' } },
+       idle: { on: { ACTIVATE: "selecting" } },
+       selecting: { on: { SELECT_ELEMENT: "captured" } },
+       captured: { on: { OPEN_CANVAS: "annotating" } },
        // ...
-     }
+     },
    });
    ```
 
 2. **Extract Custom Hooks**:
+
    - `hooks/useElementSelection.ts` - Mouse move, click, highlight logic
    - `hooks/useScreenCapture.ts` - Screenshot capture logic
    - `hooks/useScreenRecording.ts` - Recording start/stop/pause
@@ -98,6 +105,7 @@ This document provides a comprehensive analysis of the react-visual-feedback cod
 #### integrations/jira.ts (1,062 lines) & sheets.ts (1,035 lines) - **HIGH**
 
 **Problems:**
+
 - Nearly identical structure (code duplication)
 - Each contains 1000+ lines for a single integration
 - Mixes validation, UI components, API calls
@@ -106,6 +114,7 @@ This document provides a comprehensive analysis of the react-visual-feedback cod
 **Refactoring Recommendations:**
 
 1. **Create Base Integration Class** - `integrations/BaseIntegration.ts`
+
    ```typescript
    export abstract class BaseIntegration<TConfig, TPayload> {
      abstract validateConfig(config: TConfig): ValidationResult;
@@ -116,6 +125,7 @@ This document provides a comprehensive analysis of the react-visual-feedback cod
    ```
 
 2. **Use Composition Pattern**:
+
    - `integrations/jira/JiraIntegration.ts` - API logic only
    - `integrations/jira/JiraConfigModal.tsx` - UI component
    - `integrations/jira/jiraValidation.ts` - Validation logic
@@ -134,11 +144,12 @@ This document provides a comprehensive analysis of the react-visual-feedback cod
 **Problem:** `DEFAULT_STATUSES` is defined inline with hardcoded values. Adding new statuses requires modifying `FeedbackDashboard.tsx`.
 
 **Recommendation:** Use a plugin/registry pattern:
+
 ```typescript
 // status/StatusRegistry.ts
 export class StatusRegistry {
   private statuses: Map<string, StatusConfig> = new Map();
-  
+
   register(key: string, config: StatusConfig): void;
   get(key: string): StatusConfig | undefined;
   getAll(): StatusConfig[];
@@ -153,11 +164,12 @@ statusRegistry.register('custom', { label: 'Custom', ... });
 **Problem:** Adding new integrations requires modifying multiple files. Current approach has hardcoded Jira/Sheets checks throughout.
 
 **Recommendation:** Use factory pattern:
+
 ```typescript
 // integrations/IntegrationFactory.ts
 export class IntegrationFactory {
   private integrations: Map<string, IntegrationConstructor> = new Map();
-  
+
   register(type: string, constructor: IntegrationConstructor): void;
   create(type: string, config: IntegrationConfig): Integration;
 }
@@ -170,10 +182,12 @@ export class IntegrationFactory {
 #### No Abstract Interfaces - **MEDIUM**
 
 **Problem:** Components accept broad `any` types or no common interfaces. For example:
+
 - `FeedbackDashboard` accepts `data?: FeedbackData[]` but processes items expecting specific shapes
 - Integration handlers expect different config shapes
 
 **Recommendation:** Define strict interfaces and ensure all implementations satisfy them:
+
 ```typescript
 // types/Integration.ts
 export interface Integration {
@@ -191,6 +205,7 @@ export interface Integration {
 #### FeedbackContextValue is Too Large - **HIGH**
 
 **Problem:** `useFeedback` hook returns 10+ values, but most consumers only need 1-2:
+
 ```typescript
 interface FeedbackContextValue {
   isActive: boolean;
@@ -206,13 +221,14 @@ interface FeedbackContextValue {
 ```
 
 **Recommendation:** Split into focused hooks:
+
 ```typescript
 // hooks/useActivation.ts
 export function useActivation() {
   return { isActive, setIsActive };
 }
 
-// hooks/useDashboard.ts  
+// hooks/useDashboard.ts
 export function useDashboard() {
   return { isOpen, open, close };
 }
@@ -235,6 +251,7 @@ export function useIntegrations() {
 #### Direct Dependencies on Concrete Implementations - **HIGH**
 
 **Problems:**
+
 1. `FeedbackProvider` directly instantiates `IntegrationClient`
 2. Components directly call `localStorage` and `indexedDB` APIs
 3. `recorder.ts` directly uses `navigator.mediaDevices`
@@ -242,6 +259,7 @@ export function useIntegrations() {
 **Recommendations:**
 
 1. **Inject Dependencies via Props/Context**:
+
 ```typescript
 interface FeedbackProviderDeps {
   storage: StorageService;
@@ -252,7 +270,8 @@ interface FeedbackProviderDeps {
 <FeedbackProvider deps={dependencies}>
 ```
 
-2. **Create Abstractions**:
+1. **Create Abstractions**:
+
 ```typescript
 // services/StorageService.ts
 export interface StorageService {
@@ -274,23 +293,23 @@ export class InMemoryStorageService implements StorageService { ... }
 
 ### 1. Long Methods
 
-| File | Function | Lines | Recommendation |
-|------|----------|-------|----------------|
-| `FeedbackDashboard.tsx` | `FeedbackDashboard` | 350+ | Split into smaller components |
-| `FeedbackProvider.tsx` | `FeedbackProvider` | 620+ | Extract hooks |
-| `integrations/jira.ts` | `JiraConfigurationModal` | 400+ | Split into sub-components |
-| `integrations/sheets.ts` | `SheetsConfigurationModal` | 400+ | Split into sub-components |
-| `recorder.ts` | `startRecording` | 150+ | Extract helper functions |
+| File                     | Function                   | Lines | Recommendation                |
+| ------------------------ | -------------------------- | ----- | ----------------------------- |
+| `FeedbackDashboard.tsx`  | `FeedbackDashboard`        | 350+  | Split into smaller components |
+| `FeedbackProvider.tsx`   | `FeedbackProvider`         | 620+  | Extract hooks                 |
+| `integrations/jira.ts`   | `JiraConfigurationModal`   | 400+  | Split into sub-components     |
+| `integrations/sheets.ts` | `SheetsConfigurationModal` | 400+  | Split into sub-components     |
+| `recorder.ts`            | `startRecording`           | 150+  | Extract helper functions      |
 
 ### 2. Duplicated Code
 
-| Pattern | Files | Recommendation |
-|---------|-------|----------------|
-| Modal styling | jira.ts, sheets.ts, FeedbackModal.tsx | Create `<BaseModal>` component |
-| Form validation | jira.ts, sheets.ts, config.ts | Create validation utilities |
-| Error handling | All integration files | Create `<ErrorBoundary>` and error utils |
-| Status badge styling | Multiple files | Use `<StatusBadge>` consistently |
-| Theme access | All styled-components | Create theme hooks |
+| Pattern              | Files                                 | Recommendation                           |
+| -------------------- | ------------------------------------- | ---------------------------------------- |
+| Modal styling        | jira.ts, sheets.ts, FeedbackModal.tsx | Create `<BaseModal>` component           |
+| Form validation      | jira.ts, sheets.ts, config.ts         | Create validation utilities              |
+| Error handling       | All integration files                 | Create `<ErrorBoundary>` and error utils |
+| Status badge styling | Multiple files                        | Use `<StatusBadge>` consistently         |
+| Theme access         | All styled-components                 | Create theme hooks                       |
 
 ### 3. Magic Numbers/Strings
 
@@ -302,12 +321,13 @@ const FEEDBACK_STORAGE_KEY = "feedback_list";
 ```
 
 **Recommendation:** Create `constants/` directory:
+
 ```typescript
 // constants/storage.ts
 export const STORAGE = {
-  VIDEO_DB_NAME: 'feedback_videos',
-  VIDEO_STORE_NAME: 'videos',
-  FEEDBACK_KEY: 'feedback_list',
+  VIDEO_DB_NAME: "feedback_videos",
+  VIDEO_STORE_NAME: "videos",
+  FEEDBACK_KEY: "feedback_list",
   MAX_VIDEO_SIZE_MB: 50,
 } as const;
 ```
@@ -320,7 +340,7 @@ In `FeedbackProvider.tsx`, the reducer has 25+ action types with complex nested 
 
 ## Proposed Directory Structure
 
-```
+```structure
 src/
 ├── components/
 │   ├── Dashboard/
@@ -418,36 +438,42 @@ src/
 ## Refactoring Priority
 
 ### Phase 1: Foundation (1-2 weeks)
+
 1. ✅ Create directory structure
 2. ✅ Extract constants
 3. ✅ Extract utility functions
 4. ✅ Create service interfaces
 
 ### Phase 2: Services (1-2 weeks)
+
 1. ✅ Extract StorageService
 2. ✅ Extract RecorderService
 3. ✅ Extract ScreenshotService
 4. ✅ Add dependency injection
 
 ### Phase 3: State Management (1 week)
+
 1. ✅ Extract reducer to separate file
 2. ✅ Create action creators
 3. ✅ Create selectors
 4. ❓ Consider XState for complex state
 
 ### Phase 4: Component Refactoring (2-3 weeks)
+
 1. ✅ Split FeedbackDashboard
 2. ✅ Split FeedbackProvider
 3. ✅ Create shared components
 4. ✅ Extract custom hooks
 
 ### Phase 5: Integration Refactoring (1-2 weeks)
+
 1. ✅ Create BaseIntegration
 2. ✅ Refactor Jira integration
 3. ✅ Refactor Sheets integration
 4. ✅ Create IntegrationFactory
 
 ### Phase 6: Testing (Ongoing)
+
 1. ✅ Unit tests for services
 2. ✅ Unit tests for hooks
 3. ✅ Component tests
@@ -457,13 +483,13 @@ src/
 
 ## Metrics to Track
 
-| Metric | Current | Target |
-|--------|---------|--------|
-| Max file size | 1,158 lines | < 300 lines |
-| Max function size | 620 lines | < 50 lines |
-| Cyclomatic complexity | High | Low |
-| Test coverage | ~60% | > 85% |
-| Type safety | Strict | Strict |
+| Metric                | Current     | Target      |
+| --------------------- | ----------- | ----------- |
+| Max file size         | 1,158 lines | < 300 lines |
+| Max function size     | 620 lines   | < 50 lines  |
+| Cyclomatic complexity | High        | Low         |
+| Test coverage         | ~60%        | > 85%       |
+| Type safety           | Strict      | Strict      |
 
 ---
 
@@ -477,6 +503,7 @@ The TypeScript migration provides a solid foundation for refactoring. The main i
 4. **Complex state** - Reducer is too large and hard to test
 
 Following this refactoring plan will result in:
+
 - Easier testing (services can be mocked)
 - Better maintainability (smaller, focused modules)
 - Easier extensibility (adding integrations via registry)

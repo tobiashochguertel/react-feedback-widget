@@ -51,7 +51,7 @@ tasks:
   # Example tasks
   dev:
     desc: Start example app with live development
-    deps: [build]  # build already depends on _ensure-deps
+    deps: [build] # build already depends on _ensure-deps
     dir: '{{.EXAMPLE_DIR}}'
     cmds:
       - bun run dev

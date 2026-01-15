@@ -3,7 +3,8 @@
     "id": "builtin_group_id",
     "name": "Currently Open Files",
     "files": [
-      "packages/react-visual-feedback/docs/original-readme-with-typescript.md"
+      "packages/react-visual-feedback/docs/architecture-refactoring-analysis.md",
+      "untitled:Untitled-2"
     ],
     "builtIn": true,
     "bookmarks": {}

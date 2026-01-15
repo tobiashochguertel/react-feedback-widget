@@ -112,11 +112,11 @@ function App(): React.ReactElement {
 
 ```tsx
 import React from 'react';
-import { 
-  FeedbackProvider, 
-  useFeedback, 
+import {
+  FeedbackProvider,
+  useFeedback,
   FeedbackData,
-  StatusChangeParams 
+  StatusChangeParams
 } from 'react-visual-feedback';
 
 function FeedbackButtons(): React.ReactElement {
@@ -180,38 +180,38 @@ import type {
   FeedbackType,
   FeedbackStatus,
   StatusChangeParams,
-  
+
   // Event log types
   EventLog,
   EventLogType,
-  
+
   // Element info types
   ElementInfo,
   ElementPosition,
   ElementStyles,
-  
+
   // Status configuration types
   StatusConfig,
   StatusConfigs,
-  
+
   // Update modal types
   Update,
   UpdateType,
-  
+
   // Integration types
   IntegrationConfig,
   IntegrationClient,
-  
+
   // Component prop types
   FeedbackProviderProps,
   FeedbackDashboardProps,
   FeedbackModalProps,
   SessionReplayProps,
   UpdatesModalProps,
-  
+
   // Hook types
   FeedbackContextValue,
-  
+
   // Theme types
   ThemeMode,
   Theme
@@ -437,10 +437,10 @@ const updates: Update[] = [
 ### Type-Safe Status Definitions
 
 ```typescript
-import { 
-  FeedbackDashboard, 
+import {
+  FeedbackDashboard,
   StatusConfigs,
-  StatusConfig 
+  StatusConfig
 } from 'react-visual-feedback';
 
 const myStatuses: StatusConfigs = {
@@ -580,7 +580,7 @@ export function FeedbackProviderClient({ children }: FeedbackProviderClientProps
   };
 
   return (
-    <FeedbackProvider 
+    <FeedbackProvider
       onSubmit={handleSubmit}
       dashboard={true}
       mode="light"
@@ -595,10 +595,10 @@ export function FeedbackProviderClient({ children }: FeedbackProviderClientProps
 // app/layout.tsx
 import { FeedbackProviderClient } from './providers';
 
-export default function RootLayout({ 
-  children 
-}: { 
-  children: React.ReactNode 
+export default function RootLayout({
+  children
+}: {
+  children: React.ReactNode
 }): React.ReactElement {
   return (
     <html>
