@@ -106,8 +106,19 @@ export {
 export { createBoundSelector, createAllBoundSelectors } from './selectors';
 
 // ============================================
-// XState Machine (I013 - Future)
+// XState Machine (I013)
 // ============================================
 
-// TODO: Implement in I013
-// export { feedbackMachine, type FeedbackMachineContext } from './feedbackMachine';
+export {
+  feedbackMachine,
+  initialContext,
+  createInitialContext,
+  getContextFromSnapshot,
+} from './feedbackMachine';
+
+export type {
+  FeedbackContext,
+  FeedbackEvent,
+  FeedbackActorRef,
+  FeedbackSnapshot,
+} from './feedbackMachine';

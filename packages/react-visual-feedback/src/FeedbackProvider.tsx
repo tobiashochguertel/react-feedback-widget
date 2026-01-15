@@ -4,10 +4,10 @@ import React, {
   useEffect,
   useCallback,
   useRef,
-  useReducer,
 } from 'react';
 import { createPortal } from 'react-dom';
 import styled, { ThemeProvider } from 'styled-components';
+import { useMachine } from '@xstate/react';
 import { FeedbackModal } from './FeedbackModal';
 import { FeedbackDashboard, saveFeedbackToLocalStorage } from './FeedbackDashboard';
 import { CanvasOverlay } from './CanvasOverlay';
@@ -18,10 +18,9 @@ import recorder from './recorder';
 import { getElementInfo, captureElementScreenshot, getReactComponentInfo } from './utils';
 import { getTheme, FeedbackGlobalStyle } from './theme';
 import { IntegrationClient } from './integrations';
+import { feedbackMachine } from './state/feedbackMachine';
 import type {
   FeedbackData,
-  FeedbackState,
-  FeedbackAction,
   FeedbackContextValue,
   FeedbackProviderProps,
 } from './types';
@@ -95,176 +94,11 @@ const TooltipTag = styled.span`
 `;
 
 // ============================================
-// INITIAL STATE
+// STATE MACHINE
 // ============================================
 
-const initialState: FeedbackState = {
-  internalIsActive: false,
-  hoveredElement: null,
-  hoveredComponentInfo: null,
-  selectedElement: null,
-  highlightStyle: {},
-  tooltipStyle: {},
-  isModalOpen: false,
-  screenshot: null,
-  isCapturing: false,
-  isDashboardOpen: false,
-  isCanvasActive: false,
-  isRecordingActive: false,
-  isRecording: false,
-  isInitializing: false,
-  isPaused: false,
-  videoBlob: null,
-  eventLogs: [],
-  isManualFeedbackOpen: false,
-  integrationStatus: {
-    jira: { loading: false, error: null, result: null },
-    sheets: { loading: false, error: null, result: null }
-  },
-  lastIntegrationResults: null,
-  submissionQueue: []
-};
-
-// ============================================
-// REDUCER
-// ============================================
-
-function feedbackReducer(state: FeedbackState, action: FeedbackAction): FeedbackState {
-  switch (action.type) {
-    case 'SET_STATE':
-      return { ...state, ...action.payload };
-    case 'START_HOVERING':
-      return {
-        ...state,
-        hoveredElement: action.payload.element,
-        hoveredComponentInfo: action.payload.componentInfo,
-        highlightStyle: action.payload.highlightStyle,
-        tooltipStyle: action.payload.tooltipStyle
-      };
-    case 'STOP_HOVERING':
-      return { ...state, hoveredElement: null, hoveredComponentInfo: null };
-    case 'START_CAPTURE':
-      return { ...state, isCapturing: true, selectedElement: action.payload };
-    case 'COMPLETE_CAPTURE':
-      return {
-        ...state,
-        isCapturing: false,
-        screenshot: action.payload,
-        isModalOpen: true,
-        hoveredElement: null,
-        hoveredComponentInfo: null
-      };
-    case 'CANCEL_CAPTURE':
-      return { ...state, isCapturing: false, hoveredElement: null, hoveredComponentInfo: null };
-    case 'OPEN_DASHBOARD':
-      return { ...state, isDashboardOpen: true };
-    case 'CLOSE_DASHBOARD':
-      return { ...state, isDashboardOpen: false };
-    case 'OPEN_MANUAL_FEEDBACK':
-      return { ...state, isManualFeedbackOpen: true, isModalOpen: true, screenshot: null, videoBlob: null };
-    case 'CLOSE_MANUAL_FEEDBACK':
-      return { ...state, isManualFeedbackOpen: false, isModalOpen: false };
-    case 'START_RECORDING_INIT':
-      return { ...state, isInitializing: true };
-    case 'START_RECORDING_SUCCESS':
-      return { ...state, isInitializing: false, isRecordingActive: true, isRecording: true, isPaused: false };
-    case 'START_RECORDING_FAILURE':
-      return { ...state, isInitializing: false, isRecording: false, isRecordingActive: false };
-    case 'PAUSE_RECORDING':
-      return { ...state, isPaused: true };
-    case 'RESUME_RECORDING':
-      return { ...state, isPaused: false };
-    case 'CANCEL_RECORDING':
-      return {
-        ...state,
-        isRecordingActive: false,
-        isRecording: false,
-        isInitializing: false,
-        isPaused: false,
-        videoBlob: null,
-        eventLogs: []
-      };
-    case 'STOP_RECORDING':
-      return {
-        ...state,
-        isRecordingActive: false,
-        isRecording: false,
-        isInitializing: false,
-        isPaused: false,
-        videoBlob: action.payload.blob,
-        eventLogs: action.payload.events,
-        isModalOpen: !!(action.payload.blob && action.payload.blob.size > 0)
-      };
-    case 'RESET_MODAL':
-      return {
-        ...state,
-        isModalOpen: false,
-        isManualFeedbackOpen: false,
-        selectedElement: null,
-        screenshot: null,
-        hoveredElement: null,
-        hoveredComponentInfo: null,
-        isCanvasActive: false,
-        videoBlob: null,
-        eventLogs: [],
-        lastIntegrationResults: null
-      };
-    case 'INTEGRATION_START':
-      return {
-        ...state,
-        integrationStatus: {
-          jira: action.payload.jira ? { loading: true, error: null, result: null } : state.integrationStatus.jira,
-          sheets: action.payload.sheets ? { loading: true, error: null, result: null } : state.integrationStatus.sheets
-        }
-      };
-    case 'INTEGRATION_SUCCESS':
-      return {
-        ...state,
-        integrationStatus: {
-          jira: action.payload.jira ? { loading: false, error: null, result: action.payload.jira } : state.integrationStatus.jira,
-          sheets: action.payload.sheets ? { loading: false, error: null, result: action.payload.sheets } : state.integrationStatus.sheets
-        },
-        lastIntegrationResults: action.payload
-      };
-    case 'INTEGRATION_ERROR':
-      return {
-        ...state,
-        integrationStatus: {
-          jira: action.payload.jira?.error ? { loading: false, error: action.payload.jira.error, result: null } : state.integrationStatus.jira,
-          sheets: action.payload.sheets?.error ? { loading: false, error: action.payload.sheets.error, result: null } : state.integrationStatus.sheets
-        },
-        lastIntegrationResults: action.payload
-      };
-    case 'INTEGRATION_RESET':
-      return {
-        ...state,
-        integrationStatus: {
-          jira: { loading: false, error: null, result: null },
-          sheets: { loading: false, error: null, result: null }
-        },
-        lastIntegrationResults: null
-      };
-    case 'ADD_SUBMISSION':
-      return {
-        ...state,
-        submissionQueue: [...state.submissionQueue, action.payload]
-      };
-    case 'UPDATE_SUBMISSION':
-      return {
-        ...state,
-        submissionQueue: state.submissionQueue.map(sub =>
-          sub.id === action.payload.id ? { ...sub, ...action.payload } : sub
-        )
-      };
-    case 'REMOVE_SUBMISSION':
-      return {
-        ...state,
-        submissionQueue: state.submissionQueue.filter(sub => sub.id !== action.payload)
-      };
-    default:
-      return state;
-  }
-}
+// State management is handled by the XState feedbackMachine
+// See: src/state/feedbackMachine.ts
 
 // ============================================
 // TOOLTIP CONTENT TYPE
@@ -298,7 +132,14 @@ export const FeedbackProvider: React.FC<FeedbackProviderProps> = ({
   onIntegrationSuccess,
   onIntegrationError
 }) => {
-  const [state, dispatch] = useReducer(feedbackReducer, initialState);
+  // XState machine for state management (I013)
+  const [snapshot, send] = useMachine(feedbackMachine);
+
+  // Alias send as dispatch for backward compatibility with existing code
+  const dispatch = send;
+
+  // Extract state from machine context
+  const state = snapshot.context;
   const {
     internalIsActive,
     hoveredElement,

@@ -5,6 +5,15 @@
     "files": [
       "packages/react-visual-feedback/src/services/storage/InMemoryVideoStorageService.ts",
       "packages/react-visual-feedback/docs/spec/TASKS-OVERVIEW.md",
+      "packages/react-visual-feedback/docs/research/xstate-v5-integration/README.md",
+      "packages/react-visual-feedback/src/state/selectors.ts",
+      "packages/react-visual-feedback/src/state/actions.ts",
+      "packages/react-visual-feedback/src/state/feedbackReducer.ts",
+      "packages/react-visual-feedback/src/services/ServiceFactory.ts",
+      "packages/react-visual-feedback/src/services/screenshot/MockScreenshotService.ts",
+      "packages/react-visual-feedback/src/services/screenshot/ModernScreenshotService.ts",
+      "packages/react-visual-feedback/src/services/recording/MockRecorderService.ts",
+      "packages/react-visual-feedback/src/services/recording/MediaRecorderService.ts",
       "packages/react-visual-feedback/src/services/storage/IndexedDBVideoStorageService.ts",
       "packages/react-visual-feedback/src/services/storage/InMemoryStorageService.ts",
       "packages/react-visual-feedback/src/services/storage/LocalStorageService.ts"

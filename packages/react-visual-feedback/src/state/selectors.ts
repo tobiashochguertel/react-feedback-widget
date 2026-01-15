@@ -349,8 +349,8 @@ export const selectCanStartRecording = (state: FeedbackState): boolean =>
  */
 export const createBoundSelector =
   <T>(state: FeedbackState, selector: (s: FeedbackState) => T) =>
-  (): T =>
-    selector(state);
+    (): T =>
+      selector(state);
 
 /**
  * Create all bound selectors for a given state
