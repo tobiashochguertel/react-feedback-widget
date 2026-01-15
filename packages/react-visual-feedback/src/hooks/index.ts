@@ -69,8 +69,18 @@ export {
   type TooltipStyle,
 } from './useElementSelection.js';
 
-// UI hooks - TODO: Implement in T006
-// export { useKeyboardShortcuts } from './useKeyboardShortcuts';
+// UI hooks - Keyboard shortcuts (T006)
+export {
+  useKeyboardShortcuts,
+  formatShortcut,
+  type UseKeyboardShortcutsOptions,
+  type UseKeyboardShortcutsReturn,
+  type KeyboardShortcut,
+  type ModifierKey,
+} from './useKeyboardShortcuts.js';
+
+// TODO: Implement in T007
+// export { useFeedbackSubmission } from './useFeedbackSubmission';
 
 // Integration hooks - TODO: Implement in T008
 // export { useIntegrations } from './useIntegrations';

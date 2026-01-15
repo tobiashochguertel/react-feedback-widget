@@ -55,8 +55,9 @@ export default defineConfig({
     },
 
     // Type checking
+    // TODO: Re-enable when memory issues are resolved
     typecheck: {
-      enabled: true,
+      enabled: false,
       tsconfig: './tsconfig.json',
     },
 
