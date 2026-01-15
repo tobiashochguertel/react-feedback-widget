@@ -5,6 +5,7 @@
     "files": [
       "packages/react-visual-feedback/docs/architecture/README.md",
       "packages/react-visual-feedback/CHANGELOG.md",
+      "packages/react-visual-feedback/docs/REALITY-CHECK-REPORT.md",
       "packages/react-visual-feedback/docs/integrations/custom.md",
       "packages/react-visual-feedback/docs/integrations/server.md",
       "packages/react-visual-feedback/docs/integrations/sheets.md",
@@ -20,9 +21,7 @@
       "packages/react-visual-feedback/docs/hooks/useDashboard.md",
       "packages/react-visual-feedback/docs/hooks/useActivation.md",
       "packages/react-visual-feedback/docs/hooks/README.md",
-      "packages/react-visual-feedback/docs/services/screenshot-service.md",
-      "packages/react-visual-feedback/docs/services/recorder-service.md",
-      "packages/react-visual-feedback/docs/services/video-storage-service.md"
+      "packages/react-visual-feedback/docs/services/screenshot-service.md"
     ],
     "builtIn": true,
     "bookmarks": {}
