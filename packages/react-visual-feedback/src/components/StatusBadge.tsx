@@ -3,6 +3,9 @@
  *
  * Provides utility functions for status normalization and icon mapping
  * that are reused across StatusBadge and StatusDropdown components.
+ *
+ * Uses StatusRegistry for centralized status management while maintaining
+ * backward compatibility with Record<string, StatusConfig> props.
  */
 
 import React from 'react';
@@ -25,6 +28,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import type { StatusConfig } from '../types';
+import { defaultStatusRegistry, type StatusKey } from '../registry';
 
 // ============================================================================
 // Types
@@ -120,6 +124,8 @@ export function getIconComponent(
 /**
  * Normalize status key to match available statuses
  * Handles common mappings like 'reported' -> 'new', 'done' -> 'resolved'
+ *
+ * Uses StatusRegistry for normalization when no custom statuses provided.
  */
 export function normalizeStatusKey(
   status: string | null | undefined,
@@ -128,7 +134,10 @@ export function normalizeStatusKey(
   if (!status) return 'new';
   if (!availableStatuses || typeof availableStatuses !== 'object') return 'new';
 
-  // Check if status exists and has valid data
+  // If custom statuses provided, use them with registry normalization
+  const hasCustomStatuses = Object.keys(availableStatuses).length > 0;
+
+  // Check if status exists directly in available statuses
   if (
     availableStatuses[status] &&
     typeof availableStatuses[status] === 'object'
@@ -136,44 +145,28 @@ export function normalizeStatusKey(
     return status;
   }
 
-  const mappings: Record<string, string> = {
-    reported: 'new',
-    submitted: 'new',
-    pending: 'new',
-    doing: 'inProgress',
-    in_progress: 'inProgress',
-    review: 'underReview',
-    under_review: 'underReview',
-    hold: 'onHold',
-    on_hold: 'onHold',
-    paused: 'onHold',
-    done: 'resolved',
-    fixed: 'resolved',
-    completed: 'resolved',
-    archived: 'closed',
-    rejected: 'wontFix',
-    wont_fix: 'wontFix',
-    cancelled: 'wontFix',
-  };
+  // Use registry for normalization
+  const normalizedKey = defaultStatusRegistry.normalize(status) as StatusKey;
 
-  const statusLower = typeof status === 'string' ? status.toLowerCase() : '';
-  const mapped = mappings[statusLower];
-
+  // If the normalized key exists in available statuses, use it
   if (
-    mapped &&
-    availableStatuses[mapped] &&
-    typeof availableStatuses[mapped] === 'object'
+    hasCustomStatuses &&
+    availableStatuses[normalizedKey] &&
+    typeof availableStatuses[normalizedKey] === 'object'
   ) {
-    return mapped;
+    return normalizedKey;
   }
 
-  // Find first valid status key
-  const validKeys = Object.keys(availableStatuses).filter(
-    (key) =>
-      availableStatuses[key] && typeof availableStatuses[key] === 'object'
-  );
+  // Fall back to finding first valid status key
+  if (hasCustomStatuses) {
+    const validKeys = Object.keys(availableStatuses).filter(
+      (key) =>
+        availableStatuses[key] && typeof availableStatuses[key] === 'object'
+    );
+    return validKeys.length > 0 ? validKeys[0] : 'new';
+  }
 
-  return validKeys.length > 0 ? validKeys[0] : 'new';
+  return normalizedKey;
 }
 
 /**

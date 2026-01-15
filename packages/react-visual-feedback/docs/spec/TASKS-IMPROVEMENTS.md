@@ -12,7 +12,7 @@
 
 The Improvement tasks address SOLID principle violations and code smells identified in the architecture analysis.
 
-**Status**: All major sets COMPLETE ✅
+**Status**: ALL COMPLETE ✅
 
 - Set 1 (Foundation Setup) - COMPLETE ✅
 - Set 2 (Service Layer Extraction) - COMPLETE ✅
@@ -22,12 +22,9 @@ The Improvement tasks address SOLID principle violations and code smells identif
 - Set 6 (Integration System Refactoring I020-I024) - COMPLETE ✅
 - Set 7 (Shared Components I025-I028) - COMPLETE ✅
 - Set 8 (Overlay Components I029-I031) - COMPLETE ✅
-- I034 (Consolidate Magic Numbers) - COMPLETE ✅
+- Set 9 (Final Cleanup I032-I035) - COMPLETE ✅
 
-**Remaining Tasks:**
-- I032 (Extract Date Utilities) - Low Priority
-- I033 (Create Status Registry) - Low Priority  
-- I035 (Reduce FeedbackProvider Complexity) - High Priority
+**All 35 improvement tasks complete!**
 
 - **SRP Violations**: FeedbackDashboard (1,158 lines), FeedbackProvider (899 lines), jira.ts (1,062 lines), sheets.ts (1,035 lines)
 - **DIP Violations**: Direct dependencies on localStorage, IndexedDB, navigator.mediaDevices
@@ -1671,11 +1668,22 @@ Extract element tooltip from FeedbackProvider.
 
 ### I032 - Extract Date Utilities
 
-**Status**: 🔲 TODO
+**Status**: ✅ Done
 **Priority**: 🔴 Low
 
 **Description**:
 Extract date formatting utilities from FeedbackDashboard.
+
+**Implementation Notes**:
+
+- Consolidated date utilities in `src/utils/dateUtils.ts`
+- Added `formatTime(seconds)` - MM:SS or H:MM:SS format
+- Added `formatDate(dateString)` - "Jan 15, 2025" format
+- Added `formatShortDate(dateString)` - "Jan 15" format
+- Updated `DashboardHelpers.tsx` to re-export `formatRelativeDate` from dateUtils (deprecation notice added)
+- Exported all functions via `src/utils/index.ts`
+- 26 new unit tests for date utilities
+- All 449 tests passing
 
 **Dependencies**: I003
 
@@ -1683,11 +1691,26 @@ Extract date formatting utilities from FeedbackDashboard.
 
 ### I033 - Create Status Registry
 
-**Status**: 🔲 TODO
+**Status**: ✅ Done
 **Priority**: 🔴 Low
 
 **Description**:
 Create registry pattern for extensible status system.
+
+**Implementation Notes**:
+
+- Created `src/registry/statusRegistry.ts` with comprehensive StatusRegistry class
+- StatusRegistry provides: get, getAll, getActiveStatuses, getTerminalStatuses, registerStatus, unregisterStatus
+- Status normalization with DEFAULT_MAPPINGS (reported→new, doing→inProgress, done→resolved, etc.)
+- addMapping/removeMapping for custom status aliases
+- toRecord() for backward compatibility with existing components
+- fromRecord() static method for migrating existing status configurations
+- createStatusRegistry() helper for custom registries with merged statuses
+- mergeStatusConfig() for partial status customization
+- Updated StatusBadge to use defaultStatusRegistry for normalization
+- Exported all registry types and utilities from main index.ts
+- 35 new tests for StatusRegistry functionality
+- All 423 tests passing
 
 **Dependencies**: I001
 
@@ -1716,11 +1739,20 @@ Ensure all magic numbers/strings use constants module.
 
 ### I035 - Reduce FeedbackProvider Complexity
 
-**Status**: 🔲 TODO
+**Status**: ✅ Done
 **Priority**: 🟢 High
 
 **Description**:
 Final cleanup of FeedbackProvider after all hooks extracted.
+
+**Implementation Notes**:
+
+- Extracted styled components (Overlay, Highlight, Tooltip, TooltipComponent, TooltipTag) to `FeedbackProvider.styles.ts`
+- Reduced FeedbackProvider.tsx from 742 to 685 lines (57 lines removed)
+- Removed redundant `styled` import from FeedbackProvider (now uses imported styled components)
+- XState integration preserved for internal state management
+- Custom hooks (T001-T008) available for external consumers via `./hooks` module
+- All 388 tests passing
 
 **Dependencies**: T001-T008
 
@@ -1761,10 +1793,10 @@ Final cleanup of FeedbackProvider after all hooks extracted.
 | I029 | Create SelectionOverlay Component        | 🔴 Low     | ✅ Done    | 8    |
 | I030 | Create ElementHighlight Component        | 🔴 Low     | ✅ Done    | 8    |
 | I031 | Create ElementTooltip Component          | 🔴 Low     | ✅ Done    | 8    |
-| I032 | Extract Date Utilities                   | 🔴 Low     | 🔲 TODO    | -    |
-| I033 | Create Status Registry                   | 🔴 Low     | 🔲 TODO    | -    |
+| I032 | Extract Date Utilities                   | 🔴 Low     | ✅ Done    | 9    |
+| I033 | Create Status Registry                   | 🔴 Low     | ✅ Done    | 9    |
 | I034 | Consolidate Magic Numbers/Strings        | 🟢 High    | ✅ Done    | 9    |
-| I035 | Reduce FeedbackProvider Complexity       | 🟢 High    | 🔲 TODO    | -    |
+| I035 | Reduce FeedbackProvider Complexity       | 🟢 High    | ✅ Done    | 9    |
 
 ---
 

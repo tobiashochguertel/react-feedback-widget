@@ -98,6 +98,28 @@ export { StatusDropdown } from './components/StatusDropdown';
 export { LogEntry } from './components/LogEntry';
 
 // =============================================================================
+// REGISTRY (Status Management)
+// =============================================================================
+
+/**
+ * Status Registry for centralized status management.
+ * Provides extensible status definitions and mappings.
+ */
+export {
+  StatusRegistry,
+  defaultStatusRegistry,
+  createStatusRegistry,
+  mergeStatusConfig,
+  DEFAULT_STATUSES as REGISTRY_DEFAULT_STATUSES,
+  DEFAULT_MAPPINGS,
+  FEEDBACK_TYPE_ICONS,
+  type StatusKey,
+  type StatusMapping,
+  type StatusDefinition,
+  type StatusRegistryConfig,
+} from './registry';
+
+// =============================================================================
 // THEME & UTILITIES
 // =============================================================================
 

@@ -107,3 +107,71 @@ export function startOfDay(date: Date): Date {
   result.setHours(0, 0, 0, 0);
   return result;
 }
+
+/**
+ * Format seconds to a time display string (MM:SS or HH:MM:SS)
+ *
+ * @param seconds - Number of seconds to format
+ * @returns Formatted time string (e.g., "01:30", "1:23:45")
+ *
+ * @example
+ * ```typescript
+ * formatTime(90); // "01:30"
+ * formatTime(3600); // "1:00:00"
+ * formatTime(3723); // "1:02:03"
+ * ```
+ */
+export function formatTime(seconds: number): string {
+  if (seconds < 0) return '00:00';
+
+  const hrs = Math.floor(seconds / 3600);
+  const mins = Math.floor((seconds % 3600) / 60);
+  const secs = Math.floor(seconds % 60);
+
+  if (hrs > 0) {
+    return `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  }
+  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+
+/**
+ * Format a date string for display with month, day, and year
+ *
+ * @param dateString - ISO date string to format
+ * @returns Formatted date string (e.g., "Jan 15, 2025")
+ *
+ * @example
+ * ```typescript
+ * formatDate("2025-01-15T10:00:00Z"); // "Jan 15, 2025"
+ * ```
+ */
+export function formatDate(dateString: string | undefined): string {
+  if (!dateString) return '';
+
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return '';
+
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+}
+
+/**
+ * Format a date to a short display format (month and day only)
+ *
+ * @param dateString - ISO date string to format
+ * @returns Formatted date string (e.g., "Jan 15")
+ */
+export function formatShortDate(dateString: string | undefined): string {
+  if (!dateString) return '';
+
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return '';
+
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+  });
+}

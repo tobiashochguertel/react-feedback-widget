@@ -9,6 +9,7 @@
 import React from 'react';
 import { Bug, Lightbulb, Zap, MessageSquare } from 'lucide-react';
 import type { FeedbackType } from '../../types';
+import { formatRelativeDate as formatRelativeDateUtil } from '../../utils/dateUtils';
 
 // ============================================
 // TYPE ICON COMPONENT
@@ -35,25 +36,14 @@ export const TypeIcon: React.FC<TypeIconProps> = ({ type }) => {
 };
 
 // ============================================
-// HELPER FUNCTIONS
+// HELPER FUNCTIONS (Re-export from dateUtils)
 // ============================================
 
 /**
  * Format a date string to a relative date string.
+ * Re-exported from utils/dateUtils for backward compatibility.
  *
- * @param dateString - The date string to format.
- * @returns A relative date string (e.g., "Today", "Yesterday", "3d ago").
+ * @deprecated Import from '../../utils/dateUtils' directly.
  */
-export const formatRelativeDate = (dateString: string | undefined): string => {
-  if (!dateString) return '';
-  const date = new Date(dateString);
-  const now = new Date();
-  const diffTime = Math.abs(now.getTime() - date.getTime());
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+export const formatRelativeDate = formatRelativeDateUtil;
 
-  if (diffDays === 0) return 'Today';
-  if (diffDays === 1) return 'Yesterday';
-  if (diffDays < 7) return `${diffDays}d ago`;
-
-  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-};
