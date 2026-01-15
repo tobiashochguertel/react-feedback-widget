@@ -58,8 +58,18 @@ export {
   type CaptureState,
 } from './useScreenCapture.js';
 
-// UI hooks - TODO: Implement in T006, T007
-// export { useElementSelection } from './useElementSelection';
+// Element selection hooks (T005)
+export {
+  useElementSelection,
+  type UseElementSelectionOptions,
+  type UseElementSelectionReturn,
+  type ElementInfo,
+  type ComponentInfo,
+  type HighlightStyle,
+  type TooltipStyle,
+} from './useElementSelection.js';
+
+// UI hooks - TODO: Implement in T006
 // export { useKeyboardShortcuts } from './useKeyboardShortcuts';
 
 // Integration hooks - TODO: Implement in T008
