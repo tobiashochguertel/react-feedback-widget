@@ -7,22 +7,37 @@
  * @packageDocumentation
  */
 
-// Storage services - TODO: Implement in I004
-// export type { StorageService } from './storage/StorageService';
-// export type { VideoStorageService, VideoRecord } from './storage/VideoStorageService';
+// Storage services
+export type {
+  StorageService,
+  AsyncStorageService,
+} from './storage/StorageService';
+export type {
+  VideoStorageService,
+  VideoRecord,
+  VideoStorageOptions,
+} from './storage/VideoStorageService';
+
+// Recording services
+export type {
+  RecorderService,
+  RecordingState,
+  RecordingOptions,
+  RecordingResult,
+  RecordingProgress,
+} from './recording/RecorderService';
+
+// Screenshot services
+export type {
+  ScreenshotService,
+  ScreenshotOptions,
+  ScreenshotResult,
+  SelectionArea,
+} from './screenshot/ScreenshotService';
+
+// Implementations will be added in I005, I006, I007:
 // export { LocalStorageService } from './storage/LocalStorageService';
 // export { InMemoryStorageService } from './storage/InMemoryStorageService';
 // export { IndexedDBVideoStorageService } from './storage/IndexedDBVideoStorageService';
-
-// Recording services - TODO: Implement in I004
-// export type {
-//   RecorderService,
-//   RecordingOptions,
-//   RecordingResult,
-//   RecordingState,
-// } from './recording/RecorderService';
 // export { MediaRecorderService } from './recording/MediaRecorderService';
-
-// Screenshot services - TODO: Implement in I004
-// export type { ScreenshotService } from './screenshot/ScreenshotService';
-// export { Html2CanvasService } from './screenshot/Html2CanvasService';
+// export { ModernScreenshotService } from './screenshot/ModernScreenshotService';
