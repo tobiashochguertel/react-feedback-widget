@@ -1647,12 +1647,12 @@ Final cleanup of FeedbackProvider after all hooks extracted.
 | I020 | Create Base Integration Interface        | 🟡 Medium  | ✅ Done    | 6    |
 | I021 | Create IntegrationFactory                | 🟡 Medium  | ✅ Done    | 6    |
 | I022 | Create IntegrationRegistry               | 🟡 Medium  | ✅ Done    | 6    |
-| I023 | Refactor Jira Integration                | 🟡 Medium  | 🔲 TODO    | 6    |
-| I024 | Refactor Sheets Integration              | 🟡 Medium  | 🔲 TODO    | 6    |
-| I025 | Create BaseModal Component               | 🟡 Medium  | 🔲 TODO    | 7    |
-| I026 | Create Form Validation Utilities         | 🟡 Medium  | 🔲 TODO    | 7    |
-| I027 | Create ErrorBoundary Component           | 🟡 Medium  | 🔲 TODO    | 7    |
-| I028 | Create Theme Hooks                       | 🟡 Medium  | 🔲 TODO    | 7    |
+| I023 | Refactor Jira Integration                | 🟡 Medium  | ✅ Done    | 6    |
+| I024 | Refactor Sheets Integration              | 🟡 Medium  | ✅ Done    | 6    |
+| I025 | Create BaseModal Component               | 🟡 Medium  | ✅ Done    | 7    |
+| I026 | Create Form Validation Utilities         | 🟡 Medium  | ✅ Done    | 7    |
+| I027 | Create ErrorBoundary Component           | 🟡 Medium  | ✅ Done    | 7    |
+| I028 | Create Theme Hooks                       | 🟡 Medium  | ✅ Done    | 7    |
 | I029 | Create SelectionOverlay Component        | 🔴 Low     | 🔲 TODO    | 8    |
 | I030 | Create ElementHighlight Component        | 🔴 Low     | 🔲 TODO    | 8    |
 | I031 | Create ElementTooltip Component          | 🔴 Low     | 🔲 TODO    | 8    |

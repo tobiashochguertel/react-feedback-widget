@@ -8,3 +8,10 @@ export { LogEntry } from './LogEntry';
 
 // Dashboard components
 export * from './Dashboard';
+
+// Modal components
+export * from './Modal';
+
+// Shared components
+export * from './shared';
+

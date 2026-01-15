@@ -8,6 +8,21 @@
  * @packageDocumentation
  */
 
+// Theme hooks (I028)
+export {
+  useTheme,
+  useColors,
+  useFeedbackTheme,
+  useSystemThemePreference,
+  cssVar,
+  cssVarWithFallback,
+  getSystemTheme,
+  type UseThemeResult,
+  type UseColorsResult,
+  type UseFeedbackThemeResult,
+  type ThemeHookOptions,
+} from './useTheme.js';
+
 // Core hooks - TODO: Implement in T001-T008
 // export { useActivation } from './useActivation';
 // export { useDashboard } from './useDashboard';
