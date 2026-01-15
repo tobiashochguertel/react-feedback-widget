@@ -7,6 +7,7 @@
 
 import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
+import { Z_INDEX, ANIMATION } from './constants';
 
 // ============================================================================
 // Types
@@ -73,7 +74,7 @@ const ToastContainer = styled.div`
   position: fixed;
   top: 20px;
   right: 20px;
-  z-index: 999999;
+  z-index: ${Z_INDEX.ERROR_TOAST};
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -247,7 +248,7 @@ const ToastItem: React.FC<ToastItemProps> = ({ toast, onRemove }) => {
     const timer = setTimeout(
       () => {
         setIsLeaving(true);
-        setTimeout(() => onRemove(toast.id), 300);
+        setTimeout(() => onRemove(toast.id), ANIMATION.TOAST_HIDE);
       },
       toast.duration ?? 5000
     );
@@ -257,7 +258,7 @@ const ToastItem: React.FC<ToastItemProps> = ({ toast, onRemove }) => {
 
   const handleClose = (): void => {
     setIsLeaving(true);
-    setTimeout(() => onRemove(toast.id), 300);
+    setTimeout(() => onRemove(toast.id), ANIMATION.TOAST_HIDE);
   };
 
   const Icon =

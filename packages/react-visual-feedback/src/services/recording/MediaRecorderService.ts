@@ -14,15 +14,20 @@ import type {
   RecordingResult,
   RecordingProgress,
 } from './RecorderService';
+import {
+  VIDEO_DIMENSIONS,
+  RECORDING_QUALITY,
+  TIMING,
+} from '../../constants';
 
 /**
  * Default recording options
  */
 const DEFAULT_OPTIONS: RecordingOptions = {
-  width: 1920,
-  height: 1080,
-  frameRate: 30,
-  videoBitsPerSecond: 2500000, // 2.5 Mbps
+  width: VIDEO_DIMENSIONS.WIDTH,
+  height: VIDEO_DIMENSIONS.HEIGHT,
+  frameRate: RECORDING_QUALITY.FRAME_RATE,
+  videoBitsPerSecond: RECORDING_QUALITY.VIDEO_BITRATE,
   mimeType: 'video/webm;codecs=vp9',
   includeAudio: false,
   includeCursor: true,
@@ -148,7 +153,7 @@ export class MediaRecorderService implements RecorderService {
       };
 
       // Start recording
-      this.mediaRecorder.start(100); // Collect data every 100ms
+      this.mediaRecorder.start(TIMING.RECORDING_CHUNK_INTERVAL); // Collect data every 100ms
       this.startTime = Date.now();
       this.setState('recording');
 
@@ -367,7 +372,7 @@ export class MediaRecorderService implements RecorderService {
       if (this.options.maxDuration && progress.duration >= this.options.maxDuration) {
         this.stop();
       }
-    }, 1000);
+    }, TIMING.TIMER_INTERVAL);
   }
 
   /**
@@ -384,8 +389,8 @@ export class MediaRecorderService implements RecorderService {
    * Get estimated file size based on bitrate and duration
    */
   private getEstimatedSize(): number {
-    const durationSeconds = this.getDuration() / 1000;
-    const bitsPerSecond = this.options.videoBitsPerSecond || 2500000;
+    const durationSeconds = this.getDuration() / TIMING.TIMER_INTERVAL;
+    const bitsPerSecond = this.options.videoBitsPerSecond || RECORDING_QUALITY.VIDEO_BITRATE;
     return Math.floor((durationSeconds * bitsPerSecond) / 8);
   }
 

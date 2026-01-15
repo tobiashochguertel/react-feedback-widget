@@ -8,6 +8,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Network, Copy, Check, Code, FileText } from 'lucide-react';
+import { Z_INDEX, TIMING } from '../constants';
 import type { EventLog, Theme } from '../types';
 
 // ============================================================================
@@ -139,7 +140,7 @@ const CopyButton = styled.button`
   align-items: center;
   gap: 4px;
   transition: all 0.15s;
-  z-index: 5;
+  z-index: ${Z_INDEX.INTERNAL.MEDIUM};
 
   &:hover {
     background: ${(props) =>
@@ -271,7 +272,7 @@ const CopyablePre: React.FC<CopyablePreProps> = ({ content, label }) => {
           : (content ?? '');
       await navigator.clipboard.writeText(textToCopy);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setTimeout(() => setCopied(false), TIMING.COPY_FEEDBACK);
     } catch {
       // Fallback for older browsers
       const textarea = document.createElement('textarea');
@@ -284,7 +285,7 @@ const CopyablePre: React.FC<CopyablePreProps> = ({ content, label }) => {
       document.execCommand('copy');
       document.body.removeChild(textarea);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setTimeout(() => setCopied(false), TIMING.COPY_FEEDBACK);
     }
   };
 

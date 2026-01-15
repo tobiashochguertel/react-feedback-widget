@@ -10,6 +10,7 @@ import { createPortal } from 'react-dom';
 import styled, { ThemeProvider } from 'styled-components';
 import { MessageSquare, Video } from 'lucide-react';
 import { getTheme } from './theme';
+import { Z_INDEX, ANIMATION } from './constants';
 import type { ThemeMode } from './types';
 
 // ============================================================================
@@ -31,13 +32,13 @@ const Container = styled.div`
   position: fixed;
   bottom: 24px;
   right: 24px;
-  z-index: 10000;
+  z-index: ${Z_INDEX.TRIGGER};
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 6px;
   border-radius: 40px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all ${ANIMATION.TOAST_HIDE}ms cubic-bezier(0.4, 0, 0.2, 1);
 
   &:hover {
     background: ${(props) =>
@@ -55,7 +56,7 @@ const BaseButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all ${ANIMATION.NORMAL}ms cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   outline: none;
 
@@ -71,7 +72,7 @@ const MainButton = styled(BaseButton)`
   background: ${(props) => props.theme.colors.btnPrimaryBg};
   color: white;
   box-shadow: 0 4px 14px ${(props) => props.theme.colors.highlightShadow};
-  z-index: 2;
+  z-index: ${Z_INDEX.INTERNAL.LOW};
 
   &:hover {
     background: ${(props) => props.theme.colors.btnPrimaryHover};

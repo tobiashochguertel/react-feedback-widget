@@ -13,6 +13,10 @@ import type {
   ScreenshotResult,
   SelectionArea,
 } from './ScreenshotService';
+import {
+  VIDEO_DIMENSIONS,
+  DEFAULT_ELEMENT_DIMENSIONS,
+} from '../../constants';
 
 /**
  * Minimal 1x1 transparent PNG as base64
@@ -91,8 +95,8 @@ export class MockScreenshotService implements ScreenshotService {
       success: true,
       dataUrl: this.mockDataUrl,
       blob,
-      width: element?.offsetWidth || 100,
-      height: element?.offsetHeight || 100,
+      width: element?.offsetWidth || DEFAULT_ELEMENT_DIMENSIONS.WIDTH,
+      height: element?.offsetHeight || DEFAULT_ELEMENT_DIMENSIONS.HEIGHT,
       mimeType: 'image/png',
       size: blob.size,
       captureTime: Date.now() - startTime,
@@ -105,8 +109,8 @@ export class MockScreenshotService implements ScreenshotService {
   async capturePage(options?: ScreenshotOptions): Promise<ScreenshotResult> {
     // Create a mock element representing the page
     const mockElement = {
-      offsetWidth: window?.innerWidth || 1920,
-      offsetHeight: window?.innerHeight || 1080,
+      offsetWidth: window?.innerWidth || VIDEO_DIMENSIONS.FALLBACK_WIDTH,
+      offsetHeight: window?.innerHeight || VIDEO_DIMENSIONS.FALLBACK_HEIGHT,
     } as HTMLElement;
 
     return this.capture(mockElement, options);

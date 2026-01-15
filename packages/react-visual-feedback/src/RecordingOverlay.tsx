@@ -10,6 +10,7 @@ import { createPortal } from 'react-dom';
 import styled, { ThemeProvider, keyframes, css } from 'styled-components';
 import { Pause, Play, Square, Move, Loader } from 'lucide-react';
 import { getTheme } from './theme';
+import { Z_INDEX, ANIMATION } from './constants';
 import type { ThemeMode } from './types';
 
 // ============================================================================
@@ -92,8 +93,8 @@ const OverlayContainer = styled.div<{ $x: number; $y: number }>`
   position: fixed;
   left: ${(props) => props.$x}px;
   top: ${(props) => props.$y}px;
-  z-index: 10001;
-  animation: ${slideUp} 0.3s ease;
+  z-index: ${Z_INDEX.RECORDING.OVERLAY};
+  animation: ${slideUp} ${ANIMATION.TOAST_HIDE}ms ease;
   user-select: none;
 `;
 
@@ -254,7 +255,7 @@ const ProcessingOverlay = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10002;
+  z-index: ${Z_INDEX.RECORDING.CONTROLS};
   backdrop-filter: blur(4px);
 `;
 

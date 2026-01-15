@@ -19,6 +19,7 @@ import { getElementInfo, captureElementScreenshot, getReactComponentInfo } from 
 import { getTheme, FeedbackGlobalStyle } from './theme';
 import { IntegrationClient } from './integrations';
 import { feedbackMachine } from './state/feedbackMachine';
+import { Z_INDEX, ANIMATION } from './constants';
 import type {
   FeedbackData,
   FeedbackContextValue,
@@ -42,7 +43,7 @@ const Overlay = styled.div`
   right: 0;
   bottom: 0;
   background: ${props => props.theme.colors.overlayBg};
-  z-index: 999998;
+  z-index: ${Z_INDEX.SELECTION.OVERLAY};
   cursor: crosshair;
   pointer-events: none;
   transition: background 0.2s ease;
@@ -53,8 +54,8 @@ const Highlight = styled.div`
   border: 2px solid ${props => props.theme.colors.highlightBorder};
   background: ${props => props.theme.colors.highlightBg};
   pointer-events: none;
-  z-index: 999999;
-  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: ${Z_INDEX.SELECTION.HIGHLIGHT};
+  transition: all ${ANIMATION.FAST}ms cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow:
     0 0 0 4px ${props => props.theme.colors.highlightShadow},
     0 4px 6px -1px rgba(0, 0, 0, 0.1),
@@ -73,13 +74,13 @@ const Tooltip = styled.div`
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   font-weight: 500;
   pointer-events: none;
-  z-index: 1000000;
+  z-index: ${Z_INDEX.SELECTION.TOOLTIP};
   white-space: nowrap;
   box-shadow:
     0 10px 15px -3px rgba(0, 0, 0, 0.3),
     0 4px 6px -2px rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(10px);
-  transition: all 0.15s ease;
+  transition: all ${ANIMATION.FAST}ms ease;
   max-width: 300px;
 `;
 

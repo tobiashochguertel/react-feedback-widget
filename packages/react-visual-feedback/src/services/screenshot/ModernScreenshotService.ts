@@ -13,6 +13,7 @@ import type {
   ScreenshotResult,
   SelectionArea,
 } from './ScreenshotService';
+import { SCREENSHOT_SETTINGS } from '../../constants';
 
 // Dynamic imports to handle optional dependencies
 let domToPng: ((node: HTMLElement, options?: object) => Promise<string>) | null = null;
@@ -25,10 +26,10 @@ let html2canvas: ((element: HTMLElement, options?: object) => Promise<HTMLCanvas
 const DEFAULT_OPTIONS: ScreenshotOptions = {
   scale: window?.devicePixelRatio || 1,
   backgroundColor: '#ffffff',
-  quality: 0.95,
+  quality: SCREENSHOT_SETTINGS.JPEG_QUALITY,
   format: 'png',
   includePseudoElements: true,
-  timeout: 30000,
+  timeout: SCREENSHOT_SETTINGS.TIMEOUT,
 };
 
 /**

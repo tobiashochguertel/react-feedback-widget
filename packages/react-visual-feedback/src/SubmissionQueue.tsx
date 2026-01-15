@@ -10,6 +10,7 @@ import { createPortal } from 'react-dom';
 import styled, { keyframes, ThemeProvider } from 'styled-components';
 import { Loader2, CheckCircle, XCircle, X } from 'lucide-react';
 import { getTheme } from './theme';
+import { Z_INDEX, ANIMATION } from './constants';
 import type { ThemeMode, QueuedSubmission, SubmissionStatus } from './types';
 
 // ============================================================================
@@ -72,7 +73,7 @@ const QueueContainer = styled.div`
   position: fixed;
   bottom: 20px;
   right: 20px;
-  z-index: 99997;
+  z-index: ${Z_INDEX.SUBMISSION_QUEUE};
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -90,7 +91,7 @@ const QueueItem = styled.div<{ $exiting?: boolean | undefined }>`
   box-shadow:
     0 4px 12px rgba(0, 0, 0, 0.15),
     0 0 0 1px ${props => props.theme.colors.border};
-  animation: ${props => props.$exiting ? slideOut : slideIn} 0.3s ease forwards;
+  animation: ${props => props.$exiting ? slideOut : slideIn} ${ANIMATION.TOAST_HIDE}ms ease forwards;
   min-width: 200px;
 `;
 

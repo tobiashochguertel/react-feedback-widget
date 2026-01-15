@@ -5,6 +5,7 @@ import {
   X, Send, MessageSquare, Image, Trash2
 } from 'lucide-react';
 import { getTheme } from './theme';
+import { Z_INDEX, ANIMATION, TIMING } from './constants';
 import type {
   ThemeMode,
   ElementInfo,
@@ -71,8 +72,8 @@ const ModalBackdrop = styled.div`
   inset: 0;
   background-color: ${props => props.theme.mode === 'dark' ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.5)'};
   backdrop-filter: blur(4px);
-  z-index: 99998;
-  animation: ${fadeIn} 0.2s ease-out;
+  z-index: ${Z_INDEX.MODAL.BACKDROP};
+  animation: ${fadeIn} ${ANIMATION.FAST * 2}ms ease-out;
 `;
 
 const ModalContainer = styled.div`
@@ -90,8 +91,8 @@ const ModalContainer = styled.div`
   box-shadow:
     0 20px 60px -12px rgba(0, 0, 0, 0.25),
     0 0 0 1px rgba(0,0,0,0.05);
-  z-index: 99999;
-  animation: ${slideUp} 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  z-index: ${Z_INDEX.MODAL.CONTENT};
+  animation: ${slideUp} ${ANIMATION.NORMAL}ms cubic-bezier(0.2, 0.8, 0.2, 1);
   overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
@@ -429,7 +430,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
         jira: false,
         sheets: false
       });
-      setTimeout(() => descriptionRef.current?.focus(), 150);
+      setTimeout(() => descriptionRef.current?.focus(), TIMING.FOCUS_DELAY);
     }
   }, [isOpen]);
 

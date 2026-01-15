@@ -17,6 +17,7 @@ import { createPortal } from 'react-dom';
 import styled, { ThemeProvider, keyframes } from 'styled-components';
 import { Trash2 } from 'lucide-react';
 import { getTheme } from './theme';
+import { Z_INDEX, ANIMATION } from './constants';
 import type { ThemeMode } from './types';
 
 // ============================================================================
@@ -61,9 +62,9 @@ const OverlayContainer = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 10000;
+  z-index: ${Z_INDEX.CANVAS.BASE};
   cursor: crosshair;
-  animation: ${fadeIn} 0.2s ease;
+  animation: ${fadeIn} ${ANIMATION.FAST * 2}ms ease;
 `;
 
 const DrawingIndicator = styled.div`
@@ -79,7 +80,7 @@ const DrawingIndicator = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  z-index: 10001;
+  z-index: ${Z_INDEX.CANVAS.CONTROLS};
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   pointer-events: none;
 `;
@@ -103,7 +104,7 @@ const ToolsContainer = styled.div`
     props.theme.mode === 'dark' ? '#1f2937' : 'white'};
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  z-index: 10001;
+  z-index: ${Z_INDEX.CANVAS.CONTROLS};
 `;
 
 const ToolButton = styled.button`
@@ -140,7 +141,7 @@ const FeedbackInput = styled.input`
   color: ${(props) => (props.theme.mode === 'dark' ? '#f3f4f6' : '#111827')};
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   font-family: inherit;
-  z-index: 10002;
+  z-index: ${Z_INDEX.CANVAS.TOOLBAR};
 
   &::placeholder {
     color: ${(props) => (props.theme.mode === 'dark' ? '#9ca3af' : '#6b7280')};

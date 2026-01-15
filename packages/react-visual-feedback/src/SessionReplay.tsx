@@ -21,6 +21,7 @@ import {
   FileText,
 } from 'lucide-react';
 import { LogEntry } from './components/LogEntry';
+import { Z_INDEX, ANIMATION } from './constants';
 import type { EventLog, SessionReplayProps } from './types';
 
 // ============================================================================
@@ -319,8 +320,8 @@ const LogsPanel = styled.div<{ $width?: string; $closing?: boolean }>`
   border-left: 1px solid ${(props) => props.theme.colors.border};
   display: flex;
   flex-direction: column;
-  z-index: 10;
-  animation: ${(props) => (props.$closing ? slideOut : slideIn)} 0.2s ease-out
+  z-index: ${Z_INDEX.INTERNAL.HIGH};
+  animation: ${(props) => (props.$closing ? slideOut : slideIn)} ${ANIMATION.FAST * 2}ms ease-out
     forwards;
   box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
 `;

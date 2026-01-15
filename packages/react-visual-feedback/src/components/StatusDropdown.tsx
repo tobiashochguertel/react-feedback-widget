@@ -15,6 +15,7 @@ import {
   getStatusData,
 } from './StatusBadge';
 import { dropdownSlideIn } from '../theme';
+import { Z_INDEX, ANIMATION } from '../constants';
 import type { StatusConfig, Theme } from '../types';
 
 // ============================================================================
@@ -121,10 +122,10 @@ const DropdownMenu = styled.div`
       ? '0 10px 40px rgba(0, 0, 0, 0.5)'
       : '0 10px 40px rgba(0, 0, 0, 0.15)'};
   padding: 8px;
-  z-index: 100000;
+  z-index: ${Z_INDEX.STATUS_DROPDOWN};
   min-width: 180px;
   border: 1px solid ${(props) => props.theme.colors.border};
-  animation: ${dropdownSlideIn} 0.2s ease-out;
+  animation: ${dropdownSlideIn} ${ANIMATION.FAST * 2}ms ease-out;
 `;
 
 const DropdownItem = styled.button<DropdownItemProps>`

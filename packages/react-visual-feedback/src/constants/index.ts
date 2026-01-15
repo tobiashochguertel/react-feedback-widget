@@ -7,7 +7,8 @@
  * @packageDocumentation
  */
 
-export * from './storage';
 export * from './keyboard';
+export * from './media';
 export * from './status';
+export * from './storage';
 export * from './ui';

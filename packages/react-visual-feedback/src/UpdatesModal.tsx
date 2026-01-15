@@ -10,6 +10,7 @@ import { createPortal } from 'react-dom';
 import styled, { ThemeProvider, keyframes } from 'styled-components';
 import { X, CheckCircle, Sparkles, Rocket, Tag } from 'lucide-react';
 import { getTheme } from './theme';
+import { Z_INDEX, ANIMATION } from './constants';
 import type { Theme, ThemeMode } from './types';
 
 // ============================================================================
@@ -85,8 +86,8 @@ const Backdrop = styled.div`
     : 'rgba(0, 0, 0, 0.4)'};
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-  z-index: 99998;
-  animation: ${fadeIn} 0.25s ease-out forwards;
+  z-index: ${Z_INDEX.MODAL.BACKDROP};
+  animation: ${fadeIn} ${ANIMATION.NORMAL}ms ease-out forwards;
 `;
 
 const ModalContainer = styled.div`
@@ -107,8 +108,8 @@ const ModalContainer = styled.div`
   box-shadow: ${props => props.theme.mode === 'dark'
     ? '0 24px 80px -12px rgba(0, 0, 0, 0.8)'
     : '0 24px 80px -12px rgba(0, 0, 0, 0.25)'};
-  z-index: 99999;
-  animation: ${slideUp} 0.3s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+  z-index: ${Z_INDEX.MODAL.CONTENT};
+  animation: ${slideUp} ${ANIMATION.TOAST_HIDE}ms cubic-bezier(0.32, 0.72, 0, 1) forwards;
   display: flex;
   flex-direction: column;
   overflow: hidden;
