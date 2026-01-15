@@ -61,12 +61,14 @@ task-docs init ./docs/spec/my-tasks/
 ```
 
 **Pros:**
+
 - Simple to implement
 - Works in any terminal
 - Easy to integrate into CI/CD
 - No server to maintain
 
 **Cons:**
+
 - No real-time updates
 - Requires manual invocation
 
@@ -80,11 +82,13 @@ mcp_taskdocs_get_progress({ directory: "./docs/spec/my-tasks/" })
 ```
 
 **Pros:**
+
 - AI agents can call directly during work
 - Real-time validation
 - Integrated into AI workflow
 
 **Cons:**
+
 - More complex to implement
 - Requires MCP server infrastructure
 - Another process to manage
@@ -279,6 +283,7 @@ task-docs validate --format json
 ```
 
 Output:
+
 ```
 ✅ TASKS-OVERVIEW.md - All statuses consistent
 ❌ TASKS-IMPROVEMENTS.md - Inconsistency found:
@@ -296,13 +301,13 @@ task-docs report
 # Output:
 # Technical Debt Removal Progress
 # ═══════════════════════════════
-# 
+#
 # ████████░░░░░░░░░░░░  40% (4/10 tasks)
-# 
+#
 # ✅ Done:        4
 # 🔄 In Progress: 1
 # 🔲 TODO:        5
-# 
+#
 # Recent Activity:
 # - I001: Done (2 hours ago)
 # - I002: Done (1 hour ago)
@@ -385,6 +390,7 @@ task-docs/
 ```
 
 **Why Bun?**
+
 - Fast execution
 - Built-in TypeScript support
 - Single binary distribution possible
@@ -403,6 +409,7 @@ task_docs/
 ```
 
 **Why Python?**
+
 - Excellent markdown parsing libraries (markdown-it, mistune)
 - Easy to install via pip
 - Familiar to many developers
@@ -516,6 +523,7 @@ If you decide to proceed:
 **Your Thoughts?**
 
 Would you like me to:
+
 1. Start implementing this tool in a separate window?
 2. Continue with the Technical Debt tasks manually for now?
 3. Both - work on tasks while you develop the tool?

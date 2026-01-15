@@ -332,12 +332,3 @@ export function useRecording(options: UseRecordingOptions = {}): UseRecordingRet
     ]
   );
 }
-
-// Re-export types for convenience
-export type {
-  UseRecordingOptions,
-  UseRecordingReturn,
-  RecordingService,
-  RecordingState,
-  EventLogEntry,
-};

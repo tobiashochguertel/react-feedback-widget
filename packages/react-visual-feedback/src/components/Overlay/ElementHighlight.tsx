@@ -7,7 +7,7 @@
  * @module components/Overlay/ElementHighlight
  */
 
-import React, { forwardRef, useMemo } from 'react';
+import { forwardRef, useMemo } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import { createPortal } from 'react-dom';
 import type { HighlightStyle } from './SelectionOverlay';

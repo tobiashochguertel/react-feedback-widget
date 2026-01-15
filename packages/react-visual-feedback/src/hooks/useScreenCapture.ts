@@ -273,11 +273,3 @@ export function useScreenCapture(options: UseScreenCaptureOptions = {}): UseScre
     ]
   );
 }
-
-// Re-export types for convenience
-export type {
-  UseScreenCaptureOptions,
-  UseScreenCaptureReturn,
-  ScreenshotService,
-  CaptureState,
-};

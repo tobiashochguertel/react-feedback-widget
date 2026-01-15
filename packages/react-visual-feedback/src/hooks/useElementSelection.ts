@@ -477,13 +477,3 @@ export function useElementSelection(
     ]
   );
 }
-
-// Re-export types
-export type {
-  UseElementSelectionOptions,
-  UseElementSelectionReturn,
-  ElementInfo,
-  ComponentInfo,
-  HighlightStyle,
-  TooltipStyle,
-};

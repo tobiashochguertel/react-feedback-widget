@@ -317,7 +317,7 @@ export type {
 
   // Status types
   StatusConfig,
-  StatusKey,
+  // StatusKey - exported from registry, not types (to avoid duplicate identifier error)
   StatusConfigs,
   StatusChangePayload,
 

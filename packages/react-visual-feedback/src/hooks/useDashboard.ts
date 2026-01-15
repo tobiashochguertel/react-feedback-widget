@@ -160,6 +160,3 @@ export function useDashboard(options: UseDashboardOptions = {}): UseDashboardRet
     [isOpen, setIsOpen, open, close, toggle, isControlled]
   );
 }
-
-// Re-export types for convenience
-export type { UseDashboardOptions, UseDashboardReturn };

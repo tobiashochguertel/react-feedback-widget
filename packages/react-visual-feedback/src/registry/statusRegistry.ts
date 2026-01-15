@@ -16,7 +16,6 @@ import {
   PauseCircle,
   CheckCircle,
   Archive,
-  Ban,
   XCircle,
   Lightbulb,
   Bug,

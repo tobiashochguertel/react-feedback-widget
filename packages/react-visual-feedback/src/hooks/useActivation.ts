@@ -155,6 +155,3 @@ export function useActivation(options: UseActivationOptions = {}): UseActivation
     [isActive, setIsActive, toggle, activate, deactivate, isControlled]
   );
 }
-
-// Re-export types for convenience
-export type { UseActivationOptions, UseActivationReturn };

@@ -410,11 +410,3 @@ export function useKeyboardShortcuts(
     ]
   );
 }
-
-// Re-export types
-export type {
-  UseKeyboardShortcutsOptions,
-  UseKeyboardShortcutsReturn,
-  KeyboardShortcut,
-  ModifierKey,
-};

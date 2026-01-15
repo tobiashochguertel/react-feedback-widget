@@ -447,14 +447,3 @@ export function useFeedbackSubmission(
     ]
   );
 }
-
-// Re-export types
-export type {
-  FeedbackData,
-  SubmissionStatus,
-  SubmissionQueueItem,
-  SubmissionResult,
-  SubmissionService,
-  UseFeedbackSubmissionOptions,
-  UseFeedbackSubmissionReturn,
-};
