@@ -39,7 +39,7 @@ export {
 // TODO: Implement in T005
 // export { useFeedbackSubmission } from './useFeedbackSubmission';
 
-// Recording hooks (T003, T004)
+// Recording hooks (T003)
 export {
   useRecording,
   type UseRecordingOptions,
@@ -49,8 +49,14 @@ export {
   type EventLogEntry,
 } from './useRecording.js';
 
-// TODO: Implement in T004
-// export { useScreenCapture } from './useScreenCapture';
+// Screen capture hooks (T004)
+export {
+  useScreenCapture,
+  type UseScreenCaptureOptions,
+  type UseScreenCaptureReturn,
+  type ScreenshotService,
+  type CaptureState,
+} from './useScreenCapture.js';
 
 // UI hooks - TODO: Implement in T006, T007
 // export { useElementSelection } from './useElementSelection';
