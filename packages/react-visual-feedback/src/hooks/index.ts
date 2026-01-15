@@ -30,8 +30,12 @@ export {
   type UseActivationReturn,
 } from './useActivation.js';
 
-// TODO: Implement in T002
-// export { useDashboard } from './useDashboard';
+export {
+  useDashboard,
+  type UseDashboardOptions,
+  type UseDashboardReturn,
+} from './useDashboard.js';
+
 // TODO: Implement in T005
 // export { useFeedbackSubmission } from './useFeedbackSubmission';
 
