@@ -1,6 +1,6 @@
 # Data Flow
 
-> **Updated:** 2026-01-16  
+> **Updated:** 2026-01-16
 > **Related:** [Architecture Overview](./README.md)
 
 ## Overview
@@ -420,5 +420,5 @@ send(actions.openModal());
 
 ---
 
-*Documentation compiled by GitHub Copilot*  
+*Documentation compiled by GitHub Copilot*
 *For project: react-visual-feedback*

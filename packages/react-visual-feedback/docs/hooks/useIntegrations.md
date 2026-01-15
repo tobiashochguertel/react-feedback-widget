@@ -1,6 +1,6 @@
 # useIntegrations
 
-> **Updated:** 2026-01-16  
+> **Updated:** 2026-01-16
 > **Related:** [Hooks Overview](./README.md), [Integration Guide](../integrations/)
 
 ## Purpose
@@ -11,8 +11,8 @@ Manages external service integrations (Jira, Google Sheets, custom) with OAuth, 
 
 ```typescript
 import { useIntegrations } from 'react-visual-feedback';
-import type { 
-  UseIntegrationsOptions, 
+import type {
+  UseIntegrationsOptions,
   UseIntegrationsReturn,
   IntegrationType,
   IntegrationConfig,
@@ -96,25 +96,25 @@ interface IntegrationResult {
 interface UseIntegrationsOptions {
   /** Initial integrations configuration */
   integrations?: IntegrationConfig[];
-  
+
   /** OAuth callback URL */
   oauthCallbackUrl?: string;
-  
+
   /** Callback when integration is connected */
   onConnect?: (type: IntegrationType) => void;
-  
+
   /** Callback when integration is disconnected */
   onDisconnect?: (type: IntegrationType) => void;
-  
+
   /** Callback on submission success */
   onSubmitSuccess?: (result: IntegrationResult) => void;
-  
+
   /** Callback on submission error */
   onSubmitError?: (type: IntegrationType, error: Error) => void;
-  
+
   /** Whether to persist configurations */
   persist?: boolean;
-  
+
   /** Storage key for persistence */
   storageKey?: string;
 }
@@ -126,13 +126,13 @@ interface UseIntegrationsOptions {
 interface UseIntegrationsReturn {
   /** All configured integrations */
   integrations: IntegrationConfig[];
-  
+
   /** Currently connected/enabled integrations */
   connectedIntegrations: IntegrationConfig[];
-  
+
   /** Whether any integration is loading/connecting */
   isLoading: boolean;
-  
+
   /** Jira-specific state and methods */
   jira: {
     isConnected: boolean;
@@ -146,7 +146,7 @@ interface UseIntegrationsReturn {
     fetchProjects: () => Promise<JiraProject[]>;
     fetchIssueTypes: (projectKey: string) => Promise<JiraIssueType[]>;
   };
-  
+
   /** Google Sheets-specific state and methods */
   sheets: {
     isConnected: boolean;
@@ -157,34 +157,34 @@ interface UseIntegrationsReturn {
     updateConfig: (updates: Partial<SheetsConfig>) => void;
     verifySpreadsheet: (spreadsheetId: string) => Promise<boolean>;
   };
-  
+
   /** Add a new integration */
   addIntegration: (config: IntegrationConfig) => void;
-  
+
   /** Remove an integration */
   removeIntegration: (type: IntegrationType) => void;
-  
+
   /** Update integration config */
   updateIntegration: (type: IntegrationType, updates: Partial<IntegrationConfig>) => void;
-  
+
   /** Enable an integration */
   enableIntegration: (type: IntegrationType) => void;
-  
+
   /** Disable an integration */
   disableIntegration: (type: IntegrationType) => void;
-  
+
   /** Submit feedback to Jira */
   submitToJira: (data: FeedbackData) => Promise<IntegrationResult>;
-  
+
   /** Submit feedback to Google Sheets */
   submitToSheets: (data: FeedbackData) => Promise<IntegrationResult>;
-  
+
   /** Submit to all connected integrations */
   submitToAll: (data: FeedbackData) => Promise<IntegrationResult[]>;
-  
+
   /** Get integration by type */
   getIntegration: (type: IntegrationType) => IntegrationConfig | undefined;
-  
+
   /** Check if integration is connected */
   isConnected: (type: IntegrationType) => boolean;
 }
@@ -224,9 +224,9 @@ function App() {
 import { useIntegrations } from 'react-visual-feedback';
 
 function IntegrationPanel() {
-  const { 
-    jira, 
-    sheets, 
+  const {
+    jira,
+    sheets,
     connectedIntegrations,
     isLoading,
   } = useIntegrations();
@@ -234,23 +234,23 @@ function IntegrationPanel() {
   return (
     <div className="integration-panel">
       <h2>Integrations</h2>
-      
+
       {isLoading && <p>Loading...</p>}
-      
+
       {/* Jira */}
       <div className="integration">
         <h3>Jira</h3>
         <span className={jira.isConnected ? 'connected' : 'disconnected'}>
           {jira.isConnected ? '✓ Connected' : 'Not connected'}
         </span>
-        
+
         {jira.isConnected ? (
           <div>
             <p>Project: {jira.config?.projectKey}</p>
             <button onClick={jira.disconnect}>Disconnect</button>
           </div>
         ) : (
-          <button 
+          <button
             onClick={() => jira.connect({
               baseUrl: 'https://company.atlassian.net',
               projectKey: 'FEEDBACK',
@@ -269,14 +269,14 @@ function IntegrationPanel() {
         <span className={sheets.isConnected ? 'connected' : 'disconnected'}>
           {sheets.isConnected ? '✓ Connected' : 'Not connected'}
         </span>
-        
+
         {sheets.isConnected ? (
           <div>
             <p>Sheet: {sheets.config?.sheetName || 'Default'}</p>
             <button onClick={sheets.disconnect}>Disconnect</button>
           </div>
         ) : (
-          <button 
+          <button
             onClick={() => sheets.connect({
               spreadsheetId: '1234567890abcdef',
               sheetName: 'Feedback',
@@ -311,11 +311,11 @@ function JiraSetup() {
 
   const handleConnect = async () => {
     await jira.connect(config);
-    
+
     // Fetch available projects and issue types
     const projects = await jira.fetchProjects();
     console.log('Available projects:', projects);
-    
+
     if (config.projectKey) {
       const issueTypes = await jira.fetchIssueTypes(config.projectKey);
       console.log('Issue types:', issueTypes);
@@ -333,7 +333,7 @@ function JiraSetup() {
           placeholder="https://company.atlassian.net"
         />
       </label>
-      
+
       <label>
         API Token:
         <input
@@ -342,10 +342,10 @@ function JiraSetup() {
           onChange={(e) => setConfig(c => ({ ...c, apiToken: e.target.value }))}
         />
       </label>
-      
+
       <label>
         Project Key:
-        <select 
+        <select
           value={config.projectKey}
           onChange={(e) => setConfig(c => ({ ...c, projectKey: e.target.value }))}
         >
@@ -357,7 +357,7 @@ function JiraSetup() {
           ))}
         </select>
       </label>
-      
+
       <label>
         Issue Type:
         <select
@@ -371,7 +371,7 @@ function JiraSetup() {
           ))}
         </select>
       </label>
-      
+
       <button type="submit" disabled={jira.isConnecting}>
         {jira.isConnecting ? 'Connecting...' : 'Connect'}
       </button>
@@ -392,7 +392,7 @@ function SubmitWithIntegrations() {
   const handleSubmit = async (feedbackData: FeedbackData) => {
     // Option 1: Submit to all connected integrations
     const results = await submitToAll(feedbackData);
-    
+
     // Option 2: Submit to specific integrations
     // const jiraResult = await submitToJira(feedbackData);
     // const sheetsResult = await submitToSheets(feedbackData);
@@ -412,7 +412,7 @@ function SubmitWithIntegrations() {
   };
 
   return (
-    <FeedbackForm 
+    <FeedbackForm
       onSubmit={handleSubmit}
       integrations={connectedIntegrations.map(i => i.type)}
     />
@@ -470,7 +470,7 @@ function OAuthCallback() {
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
     const state = params.get('state');
-    
+
     if (code && state) {
       // Exchange code for token and complete connection
       handleOAuthCallback(code, state);
@@ -533,7 +533,7 @@ function PersistentIntegrations() {
         <p>No integrations configured. Set up below:</p>
       ) : (
         <p>
-          {integrations.connectedIntegrations.length} integration(s) 
+          {integrations.connectedIntegrations.length} integration(s)
           loaded from storage
         </p>
       )}
@@ -647,7 +647,7 @@ describe('useIntegrations', () => {
         type: 'bug',
         title: 'Test',
       });
-      
+
       if (!resultItem.success) {
         expect(onSubmitError).toHaveBeenCalled();
       }
@@ -676,5 +676,5 @@ describe('useIntegrations', () => {
 
 ---
 
-*Documentation compiled by GitHub Copilot*  
+*Documentation compiled by GitHub Copilot*
 *For project: react-visual-feedback*

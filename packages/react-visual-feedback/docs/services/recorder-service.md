@@ -1,6 +1,6 @@
 # RecorderService
 
-> **Updated:** 2026-01-16  
+> **Updated:** 2026-01-16
 > **Related:** [Services Overview](./README.md)
 
 ## Purpose
@@ -66,40 +66,40 @@ interface RecordingProgress {
 interface RecorderService {
   /** Get current recording state */
   readonly state: RecordingState;
-  
+
   /** Check if recording is currently active */
   readonly isRecording: boolean;
 
   /** Start recording */
   start(options?: RecordingOptions): Promise<boolean>;
-  
+
   /** Stop recording and get the result */
   stop(): Promise<RecordingResult>;
-  
+
   /** Pause recording */
   pause(): boolean;
-  
+
   /** Resume recording */
   resume(): boolean;
-  
+
   /** Cancel recording without saving */
   cancel(): void;
-  
+
   /** Get current recording duration in milliseconds */
   getDuration(): number;
-  
+
   /** Subscribe to recording progress updates */
   onProgress(callback: (progress: RecordingProgress) => void): () => void;
-  
+
   /** Subscribe to state changes */
   onStateChange(callback: (state: RecordingState) => void): () => void;
-  
+
   /** Check if recording is supported in current environment */
   isSupported(): boolean;
-  
+
   /** Get supported MIME types */
   getSupportedMimeTypes(): string[];
-  
+
   /** Clean up resources */
   dispose(): void;
 }
@@ -149,7 +149,7 @@ recorder.resume();
 const result = await recorder.stop();
 if (result.success) {
   console.log(`Recorded ${result.duration}ms, ${result.size} bytes`);
-  
+
   // Save to video storage
   await videoStorage.save('feedback-123', result.blob!);
 }
@@ -205,7 +205,7 @@ import { FeedbackProvider, MockRecorderService } from 'react-visual-feedback';
 
 function TestWrapper({ children }) {
   const recorder = new MockRecorderService();
-  
+
   return (
     <FeedbackProvider services={{ recorder }}>
       {children}
@@ -246,8 +246,8 @@ test('handles recording flow', async () => {
 ## Usage in FeedbackProvider
 
 ```tsx
-import { 
-  FeedbackProvider, 
+import {
+  FeedbackProvider,
   MediaRecorderService,
   MockRecorderService,
 } from 'react-visual-feedback';
@@ -284,11 +284,11 @@ import {
 import { useRecording } from 'react-visual-feedback';
 
 function RecordButton() {
-  const { 
-    isRecording, 
+  const {
+    isRecording,
     recordingState,
     recordingDuration,
-    startRecording, 
+    startRecording,
     stopRecording,
     pauseRecording,
     resumeRecording,
@@ -362,7 +362,7 @@ import { isBrowserEnvironment, checkBrowserApiAvailability } from 'react-visual-
 
 if (isBrowserEnvironment()) {
   const { mediaRecorder, displayMedia } = checkBrowserApiAvailability();
-  
+
   if (!mediaRecorder || !displayMedia) {
     console.warn('Recording not supported');
     // Hide recording button or show message
@@ -375,7 +375,7 @@ if (isBrowserEnvironment()) {
 ```typescript
 const DEFAULT_OPTIONS = {
   width: 1920,               // From VIDEO_DIMENSIONS.WIDTH
-  height: 1080,              // From VIDEO_DIMENSIONS.HEIGHT  
+  height: 1080,              // From VIDEO_DIMENSIONS.HEIGHT
   frameRate: 30,             // From RECORDING_QUALITY.FRAME_RATE
   videoBitsPerSecond: 2500000, // From RECORDING_QUALITY.VIDEO_BITRATE
   mimeType: 'video/webm;codecs=vp9',
@@ -395,5 +395,5 @@ const DEFAULT_OPTIONS = {
 
 ---
 
-*Documentation compiled by GitHub Copilot*  
+*Documentation compiled by GitHub Copilot*
 *For project: react-visual-feedback*

@@ -101,7 +101,7 @@ import {
 function MyComponent() {
   const { activate, deactivate, isActive } = useActivation();
   const { startRecording, stopRecording, isRecording } = useRecording();
-  
+
   return (
     <button onClick={() => isActive ? deactivate() : activate()}>
       {isActive ? 'Deactivate' : 'Activate'} Feedback

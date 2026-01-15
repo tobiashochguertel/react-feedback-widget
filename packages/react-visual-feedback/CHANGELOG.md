@@ -78,5 +78,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-*Maintained by: Murali Vvrsn Gurajapu*  
+*Maintained by: Murali Vvrsn Gurajapu*
 *Documentation updated: 2026-01-16*

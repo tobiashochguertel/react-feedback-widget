@@ -1,6 +1,6 @@
 # useActivation
 
-> **Updated:** 2026-01-16  
+> **Updated:** 2026-01-16
 > **Related:** [Hooks Overview](./README.md)
 
 ## Purpose
@@ -22,10 +22,10 @@ import type { UseActivationOptions, UseActivationReturn } from 'react-visual-fee
 interface UseActivationOptions {
   /** Controlled activation state */
   controlledIsActive?: boolean;
-  
+
   /** Callback when activation state changes (required for controlled mode) */
   onActiveChange?: (active: boolean) => void;
-  
+
   /** Initial state for uncontrolled mode (default: false) */
   defaultOpen?: boolean;
 }
@@ -37,19 +37,19 @@ interface UseActivationOptions {
 interface UseActivationReturn {
   /** Current activation state */
   isActive: boolean;
-  
+
   /** Set activation state */
   setIsActive: (active: boolean | ((prev: boolean) => boolean)) => void;
-  
+
   /** Toggle activation state */
   toggle: () => void;
-  
+
   /** Activate the feedback system */
   activate: () => void;
-  
+
   /** Deactivate the feedback system */
   deactivate: () => void;
-  
+
   /** Whether using controlled mode */
   isControlled: boolean;
 }
@@ -72,7 +72,7 @@ function FeedbackButton() {
       <button onClick={toggle}>
         {isActive ? 'Close Feedback' : 'Open Feedback'}
       </button>
-      
+
       {isActive && (
         <div>
           <p>Feedback UI is active</p>
@@ -92,7 +92,7 @@ import { useActivation } from 'react-visual-feedback';
 
 function FeedbackController() {
   const [isActive, setIsActive] = useState(false);
-  
+
   const activation = useActivation({
     controlledIsActive: isActive,
     onActiveChange: setIsActive,
@@ -169,7 +169,7 @@ describe('useActivation', () => {
   });
 
   test('respects defaultOpen option', () => {
-    const { result } = renderHook(() => 
+    const { result } = renderHook(() =>
       useActivation({ defaultOpen: true })
     );
     expect(result.current.isActive).toBe(true);
@@ -177,12 +177,12 @@ describe('useActivation', () => {
 
   test('toggles state', () => {
     const { result } = renderHook(() => useActivation());
-    
+
     act(() => {
       result.current.toggle();
     });
     expect(result.current.isActive).toBe(true);
-    
+
     act(() => {
       result.current.toggle();
     });
@@ -191,12 +191,12 @@ describe('useActivation', () => {
 
   test('activate and deactivate', () => {
     const { result } = renderHook(() => useActivation());
-    
+
     act(() => {
       result.current.activate();
     });
     expect(result.current.isActive).toBe(true);
-    
+
     act(() => {
       result.current.deactivate();
     });
@@ -213,11 +213,11 @@ describe('useActivation', () => {
     );
 
     expect(result.current.isControlled).toBe(true);
-    
+
     act(() => {
       result.current.toggle();
     });
-    
+
     expect(onActiveChange).toHaveBeenCalledWith(true);
   });
 });
@@ -225,5 +225,5 @@ describe('useActivation', () => {
 
 ---
 
-*Documentation compiled by GitHub Copilot*  
+*Documentation compiled by GitHub Copilot*
 *For project: react-visual-feedback*

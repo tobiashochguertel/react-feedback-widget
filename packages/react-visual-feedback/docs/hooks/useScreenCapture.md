@@ -1,6 +1,6 @@
 # useScreenCapture
 
-> **Updated:** 2026-01-16  
+> **Updated:** 2026-01-16
 > **Related:** [Hooks Overview](./README.md), [ScreenshotService](../services/screenshot-service.md)
 
 ## Purpose
@@ -22,13 +22,13 @@ import type { UseScreenCaptureOptions, UseScreenCaptureReturn } from 'react-visu
 interface UseScreenCaptureOptions {
   /** Custom screenshot service (for dependency injection) */
   service?: ScreenshotService;
-  
+
   /** Default capture options */
   defaultOptions?: ScreenshotOptions;
-  
+
   /** Callback after successful capture */
   onCapture?: (result: ScreenshotResult) => void;
-  
+
   /** Callback on capture error */
   onError?: (error: Error) => void;
 }
@@ -40,34 +40,34 @@ interface UseScreenCaptureOptions {
 interface UseScreenCaptureReturn {
   /** Whether a capture is in progress */
   isCapturing: boolean;
-  
+
   /** Captured screenshot data URL */
   screenshot: string | null;
-  
+
   /** Annotated screenshot data URL (after drawing) */
   annotatedScreenshot: string | null;
-  
+
   /** Last capture result */
   captureResult: ScreenshotResult | null;
-  
+
   /** Capture the current screen/page */
   captureScreen: (options?: ScreenshotOptions) => Promise<ScreenshotResult>;
-  
+
   /** Capture a specific element */
   captureElement: (element: HTMLElement, options?: ScreenshotOptions) => Promise<ScreenshotResult>;
-  
+
   /** Capture a specific area */
   captureArea: (area: SelectionArea, options?: ScreenshotOptions) => Promise<ScreenshotResult>;
-  
+
   /** Crop an existing screenshot */
   cropScreenshot: (selection: SelectionArea) => Promise<string>;
-  
+
   /** Set the annotated screenshot */
   setAnnotatedScreenshot: (dataUrl: string) => void;
-  
+
   /** Clear captured screenshots */
   clearScreenshots: () => void;
-  
+
   /** Whether screenshot capture is supported */
   isSupported: boolean;
 }
@@ -81,10 +81,10 @@ interface UseScreenCaptureReturn {
 import { useScreenCapture } from 'react-visual-feedback';
 
 function ScreenshotButton() {
-  const { 
-    isCapturing, 
-    screenshot, 
-    captureScreen, 
+  const {
+    isCapturing,
+    screenshot,
+    captureScreen,
     clearScreenshots,
   } = useScreenCapture();
 
@@ -100,7 +100,7 @@ function ScreenshotButton() {
       <button onClick={handleCapture} disabled={isCapturing}>
         {isCapturing ? 'Capturing...' : 'Take Screenshot'}
       </button>
-      
+
       {screenshot && (
         <div>
           <img src={screenshot} alt="Screenshot" />
@@ -137,9 +137,9 @@ function ElementCapture() {
         <h2>This area will be captured</h2>
         <p>Content to capture...</p>
       </div>
-      
+
       <button onClick={handleCapture}>Capture Element</button>
-      
+
       {screenshot && <img src={screenshot} alt="Element screenshot" />}
     </div>
   );
@@ -153,10 +153,10 @@ import { useScreenCapture, useElementSelection } from 'react-visual-feedback';
 
 function SelectiveCapture() {
   const { captureArea, screenshot } = useScreenCapture();
-  const { 
-    isEnabled, 
-    enable, 
-    disable, 
+  const {
+    isEnabled,
+    enable,
+    disable,
     selectedElement,
     highlightStyle,
   } = useElementSelection({
@@ -172,9 +172,9 @@ function SelectiveCapture() {
       <button onClick={isEnabled ? disable : enable}>
         {isEnabled ? 'Cancel Selection' : 'Select Area to Capture'}
       </button>
-      
+
       {isEnabled && highlightStyle && (
-        <div 
+        <div
           className="selection-highlight"
           style={{
             position: 'fixed',
@@ -184,7 +184,7 @@ function SelectiveCapture() {
           }}
         />
       )}
-      
+
       {screenshot && <img src={screenshot} alt="Selected area" />}
     </div>
   );
@@ -197,9 +197,9 @@ function SelectiveCapture() {
 import { useScreenCapture } from 'react-visual-feedback';
 
 function AnnotatedScreenshot() {
-  const { 
-    screenshot, 
-    annotatedScreenshot, 
+  const {
+    screenshot,
+    annotatedScreenshot,
     captureScreen,
     setAnnotatedScreenshot,
   } = useScreenCapture();
@@ -219,14 +219,14 @@ function AnnotatedScreenshot() {
   return (
     <div>
       <button onClick={handleCapture}>Capture & Annotate</button>
-      
+
       {screenshot && !annotatedScreenshot && (
-        <CanvasOverlay 
+        <CanvasOverlay
           backgroundImage={screenshot}
           onComplete={handleAnnotationComplete}
         />
       )}
-      
+
       {finalScreenshot && (
         <img src={finalScreenshot} alt="Final screenshot" />
       )}
@@ -254,14 +254,14 @@ function CroppableScreenshot() {
   return (
     <div>
       <button onClick={() => captureScreen()}>Capture</button>
-      
+
       {screenshot && (
-        <CropTool 
+        <CropTool
           image={screenshot}
           onCrop={handleCrop}
         />
       )}
-      
+
       {croppedImage && (
         <div>
           <h3>Cropped Result:</h3>
@@ -290,7 +290,7 @@ function FormatOptions() {
       <button onClick={capturePNG}>Capture PNG</button>
       <button onClick={captureJPEG}>Capture JPEG</button>
       <button onClick={captureWebP}>Capture WebP</button>
-      
+
       {captureResult && (
         <p>
           Format: {captureResult.mimeType}<br />
@@ -311,7 +311,7 @@ import { useScreenCapture, FeedbackProvider, MockScreenshotService } from 'react
 
 describe('useScreenCapture', () => {
   const mockScreenshot = new MockScreenshotService();
-  
+
   const wrapper = ({ children }) => (
     <FeedbackProvider services={{ screenshot: mockScreenshot }}>
       {children}
@@ -336,43 +336,43 @@ describe('useScreenCapture', () => {
 
   test('captures screenshot', async () => {
     const { result } = renderHook(() => useScreenCapture(), { wrapper });
-    
+
     await act(async () => {
       await result.current.captureScreen();
     });
-    
+
     expect(result.current.screenshot).toBe('data:image/png;base64,test123');
     expect(result.current.captureResult?.success).toBe(true);
   });
 
   test('clears screenshots', async () => {
     const { result } = renderHook(() => useScreenCapture(), { wrapper });
-    
+
     await act(async () => {
       await result.current.captureScreen();
     });
-    
+
     expect(result.current.screenshot).not.toBeNull();
-    
+
     act(() => {
       result.current.clearScreenshots();
     });
-    
+
     expect(result.current.screenshot).toBeNull();
     expect(result.current.annotatedScreenshot).toBeNull();
   });
 
   test('sets annotated screenshot', async () => {
     const { result } = renderHook(() => useScreenCapture(), { wrapper });
-    
+
     await act(async () => {
       await result.current.captureScreen();
     });
-    
+
     act(() => {
       result.current.setAnnotatedScreenshot('data:image/png;base64,annotated');
     });
-    
+
     expect(result.current.annotatedScreenshot).toBe('data:image/png;base64,annotated');
   });
 });
@@ -380,5 +380,5 @@ describe('useScreenCapture', () => {
 
 ---
 
-*Documentation compiled by GitHub Copilot*  
+*Documentation compiled by GitHub Copilot*
 *For project: react-visual-feedback*

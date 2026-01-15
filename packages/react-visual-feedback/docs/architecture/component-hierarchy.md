@@ -1,6 +1,6 @@
 # Component Hierarchy
 
-> **Updated:** 2026-01-16  
+> **Updated:** 2026-01-16
 > **Related:** [Architecture Overview](./README.md)
 
 ## Overview
@@ -46,7 +46,7 @@ graph TB
         FP[FeedbackProvider]
         FC[FeedbackContext]
     end
-    
+
     subgraph "Consumer Components"
         FT[FeedbackTrigger]
         FM[FeedbackModal]
@@ -54,7 +54,7 @@ graph TB
         CO[CanvasOverlay]
         RO[RecordingOverlay]
     end
-    
+
     FP --> FC
     FC --> FT
     FC --> FM
@@ -73,7 +73,7 @@ graph TB
         UM[UpdatesModal]
         JCM[JiraConfigModal]
     end
-    
+
     BM --> FM
     BM --> UM
     BM --> JCM
@@ -91,7 +91,7 @@ graph TB
         VM[VideoMode]
         SR[SessionReplay]
     end
-    
+
     DC --> DH
     DC --> FL
     DC --> VM
@@ -283,5 +283,5 @@ Error boundaries wrap critical components:
 
 ---
 
-*Documentation compiled by GitHub Copilot*  
+*Documentation compiled by GitHub Copilot*
 *For project: react-visual-feedback*

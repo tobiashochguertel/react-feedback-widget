@@ -1,6 +1,6 @@
 # Building Custom Integrations
 
-> **Updated:** 2026-01-16  
+> **Updated:** 2026-01-16
 > **Related:** [Integration Guide](./README.md), [Jira Integration](./jira.md), [Sheets Integration](./sheets.md)
 
 ## Overview
@@ -15,41 +15,41 @@ Every integration must implement this interface:
 interface Integration<TConfig = unknown, TResult = unknown> {
   /** Integration type identifier */
   readonly type: IntegrationType;
-  
+
   /** Human-readable name */
   readonly name: string;
-  
+
   /** Description of the integration */
   readonly description: string;
-  
+
   /** Icon component or URL */
   readonly icon?: ComponentType<{ size?: number }> | string;
-  
+
   /**
    * Check if the integration is properly configured.
    */
   isConfigured(): boolean;
-  
+
   /**
    * Validate a configuration object.
    */
   validateConfig(config: TConfig): ValidationResult;
-  
+
   /**
    * Submit feedback data to the integration.
    */
   submit(data: FeedbackData, options?: SubmissionOptions): Promise<SubmissionResult<TResult>>;
-  
+
   /**
    * Get the React component for the configuration modal.
    */
   getConfigModal(): ComponentType<ConfigModalProps<TConfig>>;
-  
+
   /**
    * Get current configuration.
    */
   getConfig(): TConfig | undefined;
-  
+
   /**
    * Update configuration.
    */
@@ -91,7 +91,7 @@ export class SlackIntegration implements Integration<SlackIntegrationConfig, { t
   readonly name = 'Slack';
   readonly description = 'Send feedback notifications to Slack';
   readonly icon = '💬'; // or React component
-  
+
   private config: SlackIntegrationConfig | undefined;
 
   constructor(config?: SlackIntegrationConfig) {
@@ -239,10 +239,10 @@ export function SlackConfigModal({
 
   const handleTest = async () => {
     if (!onTest) return;
-    
+
     setTesting(true);
     setError(null);
-    
+
     try {
       const result = await onTest({ webhookUrl, channel });
       if (!result.success) {
@@ -256,7 +256,7 @@ export function SlackConfigModal({
   return (
     <div className="slack-config-modal">
       <h2>Configure Slack Integration</h2>
-      
+
       <div className="form-group">
         <label htmlFor="webhookUrl">Webhook URL *</label>
         <input
@@ -439,7 +439,7 @@ interface IntegrationMetadata {
   docsUrl?: string;
 }
 
-type IntegrationConnectionType = 
+type IntegrationConnectionType =
   | 'oauth'
   | 'api_key'
   | 'webhook'
@@ -455,7 +455,7 @@ export class DiscordIntegration implements Integration<DiscordConfig, void> {
   readonly type: IntegrationType = 'custom';
   readonly name = 'Discord';
   readonly description = 'Send feedback to Discord channel';
-  
+
   private config: DiscordConfig | undefined;
 
   constructor(config?: DiscordConfig) {
@@ -517,7 +517,7 @@ export class EmailIntegration implements Integration<EmailConfig, { messageId: s
   readonly type: IntegrationType = 'custom';
   readonly name = 'Email';
   readonly description = 'Send feedback via email';
-  
+
   private config: EmailConfig | undefined;
 
   isConfigured() {
@@ -526,7 +526,7 @@ export class EmailIntegration implements Integration<EmailConfig, { messageId: s
 
   validateConfig(config: EmailConfig): ValidationResult {
     const errors: string[] = [];
-    
+
     if (!config.apiEndpoint) {
       errors.push('API endpoint is required');
     }
@@ -545,7 +545,7 @@ export class EmailIntegration implements Integration<EmailConfig, { messageId: s
   async submit(data: FeedbackData): Promise<SubmissionResult<{ messageId: string }>> {
     const response = await fetch(this.config!.apiEndpoint, {
       method: 'POST',
-      headers: { 
+      headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${this.config!.apiKey}`,
       },
@@ -591,7 +591,7 @@ export class LocalStorageIntegration implements Integration<LocalStorageConfig, 
   readonly type: IntegrationType = 'custom';
   readonly name = 'Local Storage';
   readonly description = 'Store feedback in browser localStorage';
-  
+
   private config: LocalStorageConfig | undefined;
   private readonly STORAGE_KEY = 'feedback_submissions';
 
@@ -606,7 +606,7 @@ export class LocalStorageIntegration implements Integration<LocalStorageConfig, 
   async submit(data: FeedbackData): Promise<SubmissionResult<{ id: string }>> {
     const id = crypto.randomUUID();
     const submissions = this.getSubmissions();
-    
+
     submissions.push({ id, ...data, submittedAt: new Date().toISOString() });
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(submissions));
 
@@ -662,7 +662,7 @@ validateConfig(config: MyConfig): ValidationResult {
 async submit(data: FeedbackData): Promise<SubmissionResult<T>> {
   try {
     const response = await fetch(/* ... */);
-    
+
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       return {
@@ -696,19 +696,19 @@ async submit(data: FeedbackData): Promise<SubmissionResult<T>> {
 async submit(data: FeedbackData, options?: SubmissionOptions): Promise<SubmissionResult<T>> {
   const maxRetries = options?.maxRetries ?? 3;
   const retryDelay = options?.retryDelay ?? 1000;
-  
+
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     const result = await this.attemptSubmit(data);
-    
+
     if (result.success || !this.isRetryable(result.errorCode)) {
       return result;
     }
-    
+
     if (attempt < maxRetries - 1) {
       await this.delay(retryDelay * Math.pow(2, attempt));
     }
   }
-  
+
   return {
     success: false,
     errorCode: 'MAX_RETRIES_EXCEEDED',
@@ -734,7 +734,7 @@ async submit(data: FeedbackData): Promise<SubmissionResult<T>> {
       body: JSON.stringify(data),
       signal: controller.signal,
     });
-    
+
     return { success: response.ok, data: await response.json() };
   } catch (error) {
     if (error instanceof DOMException && error.name === 'AbortError') {
@@ -809,5 +809,5 @@ describe('SlackIntegration', () => {
 
 ---
 
-*Documentation compiled by GitHub Copilot*  
+*Documentation compiled by GitHub Copilot*
 *For project: react-visual-feedback*

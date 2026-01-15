@@ -1,6 +1,6 @@
 # useFeedbackSubmission
 
-> **Updated:** 2026-01-16  
+> **Updated:** 2026-01-16
 > **Related:** [Hooks Overview](./README.md), [Integration Guide](../integrations/)
 
 ## Purpose
@@ -11,8 +11,8 @@ Manages feedback submission queue with retry logic, persistence, and integration
 
 ```typescript
 import { useFeedbackSubmission } from 'react-visual-feedback';
-import type { 
-  UseFeedbackSubmissionOptions, 
+import type {
+  UseFeedbackSubmissionOptions,
   UseFeedbackSubmissionReturn,
   SubmissionQueueItem,
   SubmissionStatus,
@@ -25,11 +25,11 @@ import type {
 ### Types
 
 ```typescript
-type SubmissionStatus = 
-  | 'pending' 
-  | 'submitting' 
-  | 'success' 
-  | 'error' 
+type SubmissionStatus =
+  | 'pending'
+  | 'submitting'
+  | 'success'
+  | 'error'
   | 'retrying';
 
 interface SubmissionQueueItem {
@@ -84,28 +84,28 @@ interface SubmissionResult {
 interface UseFeedbackSubmissionOptions {
   /** Custom submission handler */
   onSubmit?: (data: FeedbackData) => Promise<SubmissionResult>;
-  
+
   /** Callback on successful submission */
   onSuccess?: (item: SubmissionQueueItem, result: unknown) => void;
-  
+
   /** Callback on submission error */
   onError?: (item: SubmissionQueueItem, error: Error) => void;
-  
+
   /** Maximum retry attempts (default: 3) */
   maxRetries?: number;
-  
+
   /** Retry delay in ms (default: 1000) */
   retryDelay?: number;
-  
+
   /** Whether to persist queue to storage (default: true) */
   persistQueue?: boolean;
-  
+
   /** Storage key for persistence */
   storageKey?: string;
-  
+
   /** Auto-retry failed submissions (default: true) */
   autoRetry?: boolean;
-  
+
   /** Process queue concurrently (default: 1) */
   concurrency?: number;
 }
@@ -117,43 +117,43 @@ interface UseFeedbackSubmissionOptions {
 interface UseFeedbackSubmissionReturn {
   /** Current queue items */
   queue: SubmissionQueueItem[];
-  
+
   /** Items currently being submitted */
   submitting: SubmissionQueueItem[];
-  
+
   /** Failed items */
   failed: SubmissionQueueItem[];
-  
+
   /** Successfully submitted items */
   completed: SubmissionQueueItem[];
-  
+
   /** Whether any submission is in progress */
   isSubmitting: boolean;
-  
+
   /** Number of pending items */
   pendingCount: number;
-  
+
   /** Submit new feedback */
   submit: (data: FeedbackData) => Promise<SubmissionResult>;
-  
+
   /** Retry a failed submission */
   retry: (itemId: string) => Promise<SubmissionResult>;
-  
+
   /** Retry all failed submissions */
   retryAll: () => Promise<SubmissionResult[]>;
-  
+
   /** Cancel a pending submission */
   cancel: (itemId: string) => void;
-  
+
   /** Remove an item from queue */
   remove: (itemId: string) => void;
-  
+
   /** Clear completed items */
   clearCompleted: () => void;
-  
+
   /** Clear all items */
   clearAll: () => void;
-  
+
   /** Get item by ID */
   getItem: (itemId: string) => SubmissionQueueItem | undefined;
 }
@@ -174,11 +174,11 @@ function FeedbackForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-      
+
       if (!response.ok) {
         throw new Error('Submission failed');
       }
-      
+
       return { success: true, result: await response.json() };
     },
     onSuccess: (item, result) => {
@@ -231,7 +231,7 @@ function SubmissionQueue() {
   return (
     <div className="queue-panel">
       <h2>Submission Queue</h2>
-      
+
       {/* Pending count */}
       {pendingCount > 0 && (
         <p className="pending-count">{pendingCount} pending</p>
@@ -299,7 +299,7 @@ function ReliableSubmission() {
         method: 'POST',
         body: JSON.stringify(data),
       });
-      
+
       if (!response.ok) {
         if (response.status >= 500) {
           // Server error - will retry
@@ -308,7 +308,7 @@ function ReliableSubmission() {
         // Client error - won't retry
         return { success: false, error: new Error('Invalid request') };
       }
-      
+
       return { success: true, result: await response.json() };
     },
   });
@@ -377,11 +377,11 @@ import { useFeedbackSubmission, useIntegrations } from 'react-visual-feedback';
 
 function IntegratedSubmission() {
   const { connectedIntegrations, submitToJira, submitToSheets } = useIntegrations();
-  
+
   const { submit } = useFeedbackSubmission({
     onSubmit: async (data) => {
       const results = [];
-      
+
       // Submit to all connected integrations
       for (const integration of connectedIntegrations) {
         if (integration.type === 'jira') {
@@ -390,7 +390,7 @@ function IntegratedSubmission() {
           results.push(await submitToSheets(data));
         }
       }
-      
+
       const allSuccessful = results.every(r => r.success);
       return {
         success: allSuccessful,
@@ -452,7 +452,7 @@ describe('useFeedbackSubmission', () => {
   test('submits feedback successfully', async () => {
     const onSubmit = vi.fn().mockResolvedValue({ success: true, result: { id: '1' } });
     const onSuccess = vi.fn();
-    
+
     const { result } = renderHook(() =>
       useFeedbackSubmission({ onSubmit, onSuccess })
     );
@@ -525,7 +525,7 @@ describe('useFeedbackSubmission', () => {
 
   test('clearCompleted removes completed items', async () => {
     const onSubmit = vi.fn().mockResolvedValue({ success: true });
-    
+
     const { result } = renderHook(() =>
       useFeedbackSubmission({ onSubmit })
     );
@@ -569,5 +569,5 @@ describe('useFeedbackSubmission', () => {
 
 ---
 
-*Documentation compiled by GitHub Copilot*  
+*Documentation compiled by GitHub Copilot*
 *For project: react-visual-feedback*

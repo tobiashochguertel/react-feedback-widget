@@ -1,6 +1,6 @@
 # VideoStorageService
 
-> **Updated:** 2026-01-16  
+> **Updated:** 2026-01-16
 > **Related:** [Services Overview](./README.md)
 
 ## Purpose
@@ -133,7 +133,7 @@ import { FeedbackProvider, InMemoryVideoStorageService } from 'react-visual-feed
 
 function TestWrapper({ children }) {
   const videoStorage = new InMemoryVideoStorageService();
-  
+
   return (
     <FeedbackProvider services={{ videoStorage }}>
       {children}
@@ -143,7 +143,7 @@ function TestWrapper({ children }) {
 
 test('plays recorded video', async () => {
   const videoStorage = new InMemoryVideoStorageService();
-  
+
   // Pre-populate with test video
   const testBlob = new Blob(['test'], { type: 'video/webm' });
   await videoStorage.save('feedback-1', testBlob, { duration: 10 });
@@ -161,8 +161,8 @@ test('plays recorded video', async () => {
 ## Usage in FeedbackProvider
 
 ```tsx
-import { 
-  FeedbackProvider, 
+import {
+  FeedbackProvider,
   IndexedDBVideoStorageService,
   InMemoryVideoStorageService,
 } from 'react-visual-feedback';
@@ -201,7 +201,7 @@ const videoStorage = new IndexedDBVideoStorageService();
 async function checkStorageQuota() {
   const used = await videoStorage.getStorageSize();
   const usedMB = used / 1024 / 1024;
-  
+
   if (usedMB > 100) {
     console.warn(`Video storage: ${usedMB.toFixed(2)} MB - consider cleanup`);
   }
@@ -236,7 +236,7 @@ async function saveVideoWithLimit(id: string, blob: Blob): Promise<boolean> {
   if (blob.size > MAX_VIDEO_SIZE_BYTES) {
     throw new Error(`Video exceeds ${MAX_VIDEO_SIZE_MB}MB limit`);
   }
-  
+
   return videoStorage.save(id, blob);
 }
 ```
@@ -282,7 +282,7 @@ import { isBrowserEnvironment, checkBrowserApiAvailability } from 'react-visual-
 
 if (isBrowserEnvironment()) {
   const { indexedDB } = checkBrowserApiAvailability();
-  
+
   if (!indexedDB) {
     console.warn('IndexedDB not available, videos will not persist');
     // Use InMemoryVideoStorageService as fallback
@@ -300,5 +300,5 @@ if (isBrowserEnvironment()) {
 
 ---
 
-*Documentation compiled by GitHub Copilot*  
+*Documentation compiled by GitHub Copilot*
 *For project: react-visual-feedback*

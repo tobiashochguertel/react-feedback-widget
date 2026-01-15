@@ -1,6 +1,6 @@
 # useTheme
 
-> **Updated:** 2026-01-16  
+> **Updated:** 2026-01-16
 > **Related:** [Hooks Overview](./README.md), [Theme Configuration](../getting-started/quick-start.md)
 
 ## Purpose
@@ -10,12 +10,12 @@ Accesses and manages theme configuration for feedback UI components. Provides th
 ## Import
 
 ```typescript
-import { 
-  useTheme, 
-  useColors, 
-  useFeedbackTheme 
+import {
+  useTheme,
+  useColors,
+  useFeedbackTheme
 } from 'react-visual-feedback';
-import type { 
+import type {
   UseThemeResult,
   UseColorsResult,
   UseFeedbackThemeResult,
@@ -123,22 +123,22 @@ Full theme access with all configuration.
 interface UseThemeResult {
   /** Complete theme object */
   theme: Theme;
-  
+
   /** Whether using dark mode */
   isDark: boolean;
-  
+
   /** Toggle dark/light mode */
   toggleDarkMode: () => void;
-  
+
   /** Set specific theme values */
   setTheme: (updates: Partial<Theme>) => void;
-  
+
   /** Reset to default theme */
   resetTheme: () => void;
-  
+
   /** Get CSS variable value */
   getCSSVariable: (name: string) => string;
-  
+
   /** Merge custom theme values */
   mergeTheme: (customTheme: DeepPartial<Theme>) => Theme;
 }
@@ -165,7 +165,7 @@ function ThemedComponent() {
       <h2 style={{ fontSize: theme.typography.fontSize.lg }}>
         Custom Themed Content
       </h2>
-      
+
       <button onClick={toggleDarkMode}>
         {isDark ? '☀️ Light Mode' : '🌙 Dark Mode'}
       </button>
@@ -184,25 +184,25 @@ Simplified access to theme colors only.
 interface UseColorsResult {
   /** All color values */
   colors: ThemeColors;
-  
+
   /** Get a specific color */
   getColor: (name: keyof ThemeColors) => string;
-  
+
   /** Primary color */
   primary: string;
-  
+
   /** Success color */
   success: string;
-  
+
   /** Warning color */
   warning: string;
-  
+
   /** Error color */
   error: string;
-  
+
   /** Background color */
   background: string;
-  
+
   /** Text color */
   text: string;
 }
@@ -242,25 +242,25 @@ Access theme via FeedbackContext with component-specific styling helpers.
 interface UseFeedbackThemeResult {
   /** Complete theme */
   theme: Theme;
-  
+
   /** Get button styles */
   getButtonStyles: (variant?: 'primary' | 'secondary' | 'ghost') => CSSProperties;
-  
+
   /** Get input styles */
   getInputStyles: () => CSSProperties;
-  
+
   /** Get modal styles */
   getModalStyles: () => CSSProperties;
-  
+
   /** Get card styles */
   getCardStyles: () => CSSProperties;
-  
+
   /** Get overlay styles */
   getOverlayStyles: (opacity?: number) => CSSProperties;
-  
+
   /** Get tooltip styles */
   getTooltipStyles: () => CSSProperties;
-  
+
   /** Get badge styles */
   getBadgeStyles: (color?: keyof ThemeColors) => CSSProperties;
 }
@@ -411,7 +411,7 @@ import { useTheme } from 'react-visual-feedback';
 
 function ResponsiveText() {
   const { theme, setTheme } = useTheme();
-  
+
   useEffect(() => {
     const updateFontSize = () => {
       const baseSize = window.innerWidth < 768 ? 14 : 16;
@@ -427,7 +427,7 @@ function ResponsiveText() {
         },
       });
     };
-    
+
     updateFontSize();
     window.addEventListener('resize', updateFontSize);
     return () => window.removeEventListener('resize', updateFontSize);
@@ -453,19 +453,19 @@ const StyledButton = styled.button<{ $variant: 'primary' | 'secondary' }>`
   border-radius: ${props => props.theme.borderRadius.md};
   font-family: ${props => props.theme.typography.fontFamily};
   font-size: ${props => props.theme.typography.fontSize.md};
-  background-color: ${props => 
-    props.$variant === 'primary' 
-      ? props.theme.colors.primary 
+  background-color: ${props =>
+    props.$variant === 'primary'
+      ? props.theme.colors.primary
       : props.theme.colors.secondary
   };
   color: white;
   border: none;
   cursor: pointer;
-  
+
   &:hover {
-    background-color: ${props => 
-      props.$variant === 'primary' 
-        ? props.theme.colors.primaryHover 
+    background-color: ${props =>
+      props.$variant === 'primary'
+        ? props.theme.colors.primaryHover
         : props.theme.colors.secondaryHover
     };
   }
@@ -473,7 +473,7 @@ const StyledButton = styled.button<{ $variant: 'primary' | 'secondary' }>`
 
 function ThemedButton({ variant = 'primary', children }) {
   const { theme } = useTheme();
-  
+
   return (
     <ThemeProvider theme={theme}>
       <StyledButton $variant={variant}>
@@ -495,17 +495,17 @@ function CSSVariablesProvider() {
 
   useEffect(() => {
     const root = document.documentElement;
-    
+
     // Export colors as CSS variables
     Object.entries(theme.colors).forEach(([key, value]) => {
       root.style.setProperty(`--feedback-color-${key}`, value);
     });
-    
+
     // Export spacing
     Object.entries(theme.spacing).forEach(([key, value]) => {
       root.style.setProperty(`--feedback-spacing-${key}`, value);
     });
-    
+
     // Export typography
     root.style.setProperty('--feedback-font-family', theme.typography.fontFamily);
     Object.entries(theme.typography.fontSize).forEach(([key, value]) => {
@@ -538,7 +538,7 @@ const wrapper = ({ children }) => (
 describe('useTheme', () => {
   test('provides default theme', () => {
     const { result } = renderHook(() => useTheme(), { wrapper });
-    
+
     expect(result.current.theme).toBeDefined();
     expect(result.current.theme.colors.primary).toBeDefined();
     expect(result.current.isDark).toBe(false);
@@ -546,43 +546,43 @@ describe('useTheme', () => {
 
   test('toggles dark mode', () => {
     const { result } = renderHook(() => useTheme(), { wrapper });
-    
+
     expect(result.current.isDark).toBe(false);
-    
+
     act(() => {
       result.current.toggleDarkMode();
     });
-    
+
     expect(result.current.isDark).toBe(true);
   });
 
   test('setTheme updates theme values', () => {
     const { result } = renderHook(() => useTheme(), { wrapper });
-    
+
     const originalPrimary = result.current.theme.colors.primary;
-    
+
     act(() => {
       result.current.setTheme({
         colors: { primary: '#ff0000' },
       });
     });
-    
+
     expect(result.current.theme.colors.primary).toBe('#ff0000');
     expect(result.current.theme.colors.primary).not.toBe(originalPrimary);
   });
 
   test('resetTheme restores defaults', () => {
     const { result } = renderHook(() => useTheme(), { wrapper });
-    
+
     const originalPrimary = result.current.theme.colors.primary;
-    
+
     act(() => {
       result.current.setTheme({
         colors: { primary: '#ff0000' },
       });
       result.current.resetTheme();
     });
-    
+
     expect(result.current.theme.colors.primary).toBe(originalPrimary);
   });
 });
@@ -590,7 +590,7 @@ describe('useTheme', () => {
 describe('useColors', () => {
   test('provides color values', () => {
     const { result } = renderHook(() => useColors(), { wrapper });
-    
+
     expect(result.current.primary).toBeDefined();
     expect(result.current.success).toBeDefined();
     expect(result.current.error).toBeDefined();
@@ -598,7 +598,7 @@ describe('useColors', () => {
 
   test('getColor returns specific color', () => {
     const { result } = renderHook(() => useColors(), { wrapper });
-    
+
     const primary = result.current.getColor('primary');
     expect(primary).toBe(result.current.primary);
   });
@@ -607,7 +607,7 @@ describe('useColors', () => {
 describe('useFeedbackTheme', () => {
   test('provides style helpers', () => {
     const { result } = renderHook(() => useFeedbackTheme(), { wrapper });
-    
+
     expect(result.current.getButtonStyles).toBeDefined();
     expect(result.current.getInputStyles).toBeDefined();
     expect(result.current.getCardStyles).toBeDefined();
@@ -615,9 +615,9 @@ describe('useFeedbackTheme', () => {
 
   test('getButtonStyles returns valid CSS', () => {
     const { result } = renderHook(() => useFeedbackTheme(), { wrapper });
-    
+
     const primaryStyles = result.current.getButtonStyles('primary');
-    
+
     expect(primaryStyles).toHaveProperty('backgroundColor');
     expect(primaryStyles).toHaveProperty('padding');
     expect(primaryStyles).toHaveProperty('borderRadius');
@@ -625,9 +625,9 @@ describe('useFeedbackTheme', () => {
 
   test('getOverlayStyles accepts opacity', () => {
     const { result } = renderHook(() => useFeedbackTheme(), { wrapper });
-    
+
     const styles = result.current.getOverlayStyles(0.8);
-    
+
     expect(styles.backgroundColor).toContain('0.8');
   });
 });
@@ -635,5 +635,5 @@ describe('useFeedbackTheme', () => {
 
 ---
 
-*Documentation compiled by GitHub Copilot*  
+*Documentation compiled by GitHub Copilot*
 *For project: react-visual-feedback*

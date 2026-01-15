@@ -1,6 +1,6 @@
 # useDashboard
 
-> **Updated:** 2026-01-16  
+> **Updated:** 2026-01-16
 > **Related:** [Hooks Overview](./README.md)
 
 ## Purpose
@@ -22,10 +22,10 @@ import type { UseDashboardOptions, UseDashboardReturn } from 'react-visual-feedb
 interface UseDashboardOptions {
   /** Controlled open state */
   controlledIsOpen?: boolean;
-  
+
   /** Callback when open state changes (required for controlled mode) */
   onOpenChange?: (isOpen: boolean) => void;
-  
+
   /** Initial state for uncontrolled mode (default: false) */
   defaultOpen?: boolean;
 }
@@ -37,19 +37,19 @@ interface UseDashboardOptions {
 interface UseDashboardReturn {
   /** Whether the dashboard is currently open */
   isOpen: boolean;
-  
+
   /** Set open state */
   setIsOpen: (open: boolean | ((prev: boolean) => boolean)) => void;
-  
+
   /** Open the dashboard */
   open: () => void;
-  
+
   /** Close the dashboard */
   close: () => void;
-  
+
   /** Toggle the dashboard */
   toggle: () => void;
-  
+
   /** Whether using controlled mode */
   isControlled: boolean;
 }
@@ -70,7 +70,7 @@ function DashboardController() {
   return (
     <div>
       <button onClick={open}>View Dashboard</button>
-      
+
       {isOpen && (
         <div className="dashboard-modal">
           <h2>Feedback Dashboard</h2>
@@ -91,7 +91,7 @@ import { useDashboard } from 'react-visual-feedback';
 
 function DashboardWithState() {
   const [isOpen, setIsOpen] = useState(false);
-  
+
   const dashboard = useDashboard({
     controlledIsOpen: isOpen,
     onOpenChange: setIsOpen,
@@ -175,7 +175,7 @@ function FeedbackManager() {
       )}
 
       {dashboard.isOpen && (
-        <FeedbackDashboard 
+        <FeedbackDashboard
           onClose={dashboard.close}
           onNewFeedback={handleNewFeedback}
         />
@@ -199,7 +199,7 @@ describe('useDashboard', () => {
   });
 
   test('respects defaultOpen option', () => {
-    const { result } = renderHook(() => 
+    const { result } = renderHook(() =>
       useDashboard({ defaultOpen: true })
     );
     expect(result.current.isOpen).toBe(true);
@@ -207,12 +207,12 @@ describe('useDashboard', () => {
 
   test('open and close methods work', () => {
     const { result } = renderHook(() => useDashboard());
-    
+
     act(() => {
       result.current.open();
     });
     expect(result.current.isOpen).toBe(true);
-    
+
     act(() => {
       result.current.close();
     });
@@ -221,12 +221,12 @@ describe('useDashboard', () => {
 
   test('toggle toggles state', () => {
     const { result } = renderHook(() => useDashboard());
-    
+
     act(() => {
       result.current.toggle();
     });
     expect(result.current.isOpen).toBe(true);
-    
+
     act(() => {
       result.current.toggle();
     });
@@ -243,11 +243,11 @@ describe('useDashboard', () => {
     );
 
     expect(result.current.isControlled).toBe(true);
-    
+
     act(() => {
       result.current.open();
     });
-    
+
     expect(onOpenChange).toHaveBeenCalledWith(true);
   });
 });
@@ -255,5 +255,5 @@ describe('useDashboard', () => {
 
 ---
 
-*Documentation compiled by GitHub Copilot*  
+*Documentation compiled by GitHub Copilot*
 *For project: react-visual-feedback*

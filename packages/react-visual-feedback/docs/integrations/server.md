@@ -1,6 +1,6 @@
 # Server Integration
 
-> **Updated:** 2026-01-16  
+> **Updated:** 2026-01-16
 > **Related:** [Integration Guide](./README.md), [Jira Integration](./jira.md), [Sheets Integration](./sheets.md)
 
 ## Overview
@@ -414,7 +414,7 @@ const jiraHandler = createJiraHandler({
   email: process.env.JIRA_EMAIL!,
   apiToken: process.env.JIRA_API_TOKEN!,
   projectKey: 'BUG',
-  
+
   // Custom validation
   validate: (feedback) => {
     if (!feedback.title) {
@@ -457,11 +457,11 @@ Require authentication:
 // auth-middleware.ts
 export function requireAuth(req, res, next) {
   const token = req.headers.authorization?.split(' ')[1];
-  
+
   if (!token || !verifyToken(token)) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
-  
+
   next();
 }
 
@@ -618,6 +618,7 @@ requiredEnv.forEach((key) => {
 **Cause:** Server-side handler timing out.
 
 **Solution:**
+
 - Increase timeout for API routes
 - Use async screenshot upload
 - Add retry logic
@@ -627,6 +628,7 @@ requiredEnv.forEach((key) => {
 **Cause:** Screenshot data too large for default limits.
 
 **Solution:**
+
 ```typescript
 // Next.js
 export const config = {
@@ -642,11 +644,12 @@ app.use(express.json({ limit: '10mb' }));
 **Cause:** Import path incorrect.
 
 **Solution:**
+
 - Verify `react-visual-feedback/server` is the correct import
 - Check package.json exports field
 - Ensure build includes server exports
 
 ---
 
-*Documentation compiled by GitHub Copilot*  
+*Documentation compiled by GitHub Copilot*
 *For project: react-visual-feedback*

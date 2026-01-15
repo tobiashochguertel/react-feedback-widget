@@ -1,6 +1,6 @@
 # useElementSelection
 
-> **Updated:** 2026-01-16  
+> **Updated:** 2026-01-16
 > **Related:** [Hooks Overview](./README.md)
 
 ## Purpose
@@ -22,19 +22,19 @@ import type { UseElementSelectionOptions, UseElementSelectionReturn } from 'reac
 interface UseElementSelectionOptions {
   /** Whether element selection is enabled */
   enabled?: boolean;
-  
+
   /** Throttle interval for mouse move events (ms) */
   throttleMs?: number;
-  
+
   /** Container element to scope selection to */
   containerRef?: React.RefObject<HTMLElement | null>;
-  
+
   /** Callback when an element is hovered */
   onElementHover?: (info: ElementInfo | null) => void;
-  
+
   /** Callback when an element is selected (clicked) */
   onElementSelect?: (info: ElementInfo) => void;
-  
+
   /** CSS selector for elements to exclude from selection */
   excludeSelector?: string;
 }
@@ -82,40 +82,40 @@ interface TooltipStyle {
 interface UseElementSelectionReturn {
   /** Whether selection is currently enabled */
   isEnabled: boolean;
-  
+
   /** Currently hovered element */
   hoveredElement: HTMLElement | null;
-  
+
   /** Currently selected element */
   selectedElement: HTMLElement | null;
-  
+
   /** Component info for hovered element */
   hoveredComponentInfo: ComponentInfo | null;
-  
+
   /** Component info for selected element */
   selectedComponentInfo: ComponentInfo | null;
-  
+
   /** Full element info for hovered element */
   hoveredElementInfo: ElementInfo | null;
-  
+
   /** Style for highlight overlay */
   highlightStyle: HighlightStyle | null;
-  
+
   /** Style for tooltip positioning */
   tooltipStyle: TooltipStyle | null;
-  
+
   /** Enable element selection */
   enable: () => void;
-  
+
   /** Disable element selection */
   disable: () => void;
-  
+
   /** Toggle element selection */
   toggle: () => void;
-  
+
   /** Clear the current selection */
   clearSelection: () => void;
-  
+
   /** Clear hover state */
   clearHover: () => void;
 }
@@ -253,7 +253,7 @@ import { useElementSelection } from 'react-visual-feedback';
 
 function ScopedPicker() {
   const containerRef = useRef<HTMLDivElement>(null);
-  
+
   const {
     isEnabled,
     enable,
@@ -267,7 +267,7 @@ function ScopedPicker() {
   return (
     <div>
       <button onClick={enable}>Select Element</button>
-      
+
       <div ref={containerRef} className="selection-area">
         <div className="selectable">Can be selected</div>
         <div className="ignore-selection">Cannot be selected</div>
@@ -289,7 +289,7 @@ import { useElementSelection, useScreenCapture } from 'react-visual-feedback';
 
 function CaptureSelectedElement() {
   const { captureArea, screenshot } = useScreenCapture();
-  
+
   const {
     isEnabled,
     enable,
@@ -311,7 +311,7 @@ function CaptureSelectedElement() {
       </button>
 
       {isEnabled && highlightStyle && (
-        <div 
+        <div
           className="capture-highlight"
           style={{
             position: 'fixed',
@@ -367,7 +367,7 @@ describe('useElementSelection', () => {
   });
 
   test('respects enabled option', () => {
-    const { result } = renderHook(() => 
+    const { result } = renderHook(() =>
       useElementSelection({ enabled: true })
     );
     expect(result.current.isEnabled).toBe(true);
@@ -375,12 +375,12 @@ describe('useElementSelection', () => {
 
   test('enable and disable', () => {
     const { result } = renderHook(() => useElementSelection());
-    
+
     act(() => {
       result.current.enable();
     });
     expect(result.current.isEnabled).toBe(true);
-    
+
     act(() => {
       result.current.disable();
     });
@@ -389,12 +389,12 @@ describe('useElementSelection', () => {
 
   test('toggle', () => {
     const { result } = renderHook(() => useElementSelection());
-    
+
     act(() => {
       result.current.toggle();
     });
     expect(result.current.isEnabled).toBe(true);
-    
+
     act(() => {
       result.current.toggle();
     });
@@ -403,14 +403,14 @@ describe('useElementSelection', () => {
 
   test('clearSelection resets selected element', () => {
     const { result } = renderHook(() => useElementSelection());
-    
+
     // Simulate selection (would normally happen via mouse events)
     // In real tests, you'd use userEvent to click elements
-    
+
     act(() => {
       result.current.clearSelection();
     });
-    
+
     expect(result.current.selectedElement).toBeNull();
   });
 });
@@ -418,5 +418,5 @@ describe('useElementSelection', () => {
 
 ---
 
-*Documentation compiled by GitHub Copilot*  
+*Documentation compiled by GitHub Copilot*
 *For project: react-visual-feedback*

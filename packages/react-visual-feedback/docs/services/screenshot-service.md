@@ -1,6 +1,6 @@
 # ScreenshotService
 
-> **Updated:** 2026-01-16  
+> **Updated:** 2026-01-16
 > **Related:** [Services Overview](./README.md)
 
 ## Purpose
@@ -68,22 +68,22 @@ interface ScreenshotResult {
 interface ScreenshotService {
   /** Capture a screenshot of an element */
   capture(element: HTMLElement, options?: ScreenshotOptions): Promise<ScreenshotResult>;
-  
+
   /** Capture the full page */
   capturePage(options?: ScreenshotOptions): Promise<ScreenshotResult>;
-  
+
   /** Capture a specific area of the page */
   captureArea(area: SelectionArea, options?: ScreenshotOptions): Promise<ScreenshotResult>;
-  
+
   /** Crop an existing screenshot to a selection area */
   crop(dataUrl: string, selection: SelectionArea): Promise<string>;
-  
+
   /** Convert a data URL to a Blob */
   dataUrlToBlob(dataUrl: string): Promise<Blob>;
-  
+
   /** Check if screenshot service is available */
   isSupported(): boolean;
-  
+
   /** Get supported output formats */
   getSupportedFormats(): string[];
 }
@@ -112,11 +112,11 @@ if (result.success) {
   console.log(`Captured: ${result.width}x${result.height}`);
   console.log(`Size: ${result.size} bytes`);
   console.log(`Time: ${result.captureTime}ms`);
-  
+
   // Use the data URL
   const img = new Image();
   img.src = result.dataUrl;
-  
+
   // Or use the blob
   const file = new File([result.blob], 'screenshot.png', { type: 'image/png' });
 }
@@ -189,7 +189,7 @@ import { FeedbackProvider, MockScreenshotService } from 'react-visual-feedback';
 
 function TestWrapper({ children }) {
   const screenshot = new MockScreenshotService();
-  
+
   return (
     <FeedbackProvider services={{ screenshot }}>
       {children}
@@ -200,7 +200,7 @@ function TestWrapper({ children }) {
 test('captures screenshot on feedback submit', async () => {
   const screenshot = new MockScreenshotService();
   const mockDataUrl = 'data:image/png;base64,test123';
-  
+
   screenshot.setMockResult({
     success: true,
     dataUrl: mockDataUrl,
@@ -227,8 +227,8 @@ test('captures screenshot on feedback submit', async () => {
 ## Usage in FeedbackProvider
 
 ```tsx
-import { 
-  FeedbackProvider, 
+import {
+  FeedbackProvider,
   ModernScreenshotService,
   MockScreenshotService,
 } from 'react-visual-feedback';
@@ -301,7 +301,7 @@ function FeedbackFlow() {
 
   // After screenshot capture, user can draw on canvas overlay
   // The annotated version is available as annotatedScreenshot
-  
+
   const handleSubmit = () => {
     const finalScreenshot = annotatedScreenshot || screenshot;
     submitFeedback({ screenshot: finalScreenshot });
@@ -392,5 +392,5 @@ await screenshot.capture(element, { format: 'webp', quality: 0.85 });
 
 ---
 
-*Documentation compiled by GitHub Copilot*  
+*Documentation compiled by GitHub Copilot*
 *For project: react-visual-feedback*

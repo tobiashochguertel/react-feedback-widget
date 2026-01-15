@@ -1,6 +1,6 @@
 # Service Layer Documentation
 
-> **Updated:** 2026-01-16  
+> **Updated:** 2026-01-16
 > **Related:** [Architecture Overview](../architecture/README.md)
 
 ## Overview
@@ -139,13 +139,13 @@ const testServices = createTestServicesSync();
 interface ServiceContainer {
   /** General key-value storage (localStorage) */
   storage: StorageService;
-  
+
   /** Video blob storage (IndexedDB) */
   videoStorage: VideoStorageService;
-  
+
   /** Screen recording service */
   recorder: RecorderService;
-  
+
   /** Screenshot capture service */
   screenshot: ScreenshotService;
 }
@@ -243,7 +243,7 @@ import { isBrowserEnvironment, checkBrowserApiAvailability } from 'react-visual-
 // Check if running in browser
 if (isBrowserEnvironment()) {
   const { localStorage, indexedDB, mediaRecorder, html2canvas } = checkBrowserApiAvailability();
-  
+
   if (!mediaRecorder) {
     console.warn('Screen recording not supported');
   }
@@ -275,5 +275,5 @@ try {
 
 ---
 
-*Documentation compiled by GitHub Copilot*  
+*Documentation compiled by GitHub Copilot*
 *For project: react-visual-feedback*

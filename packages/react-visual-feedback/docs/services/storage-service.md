@@ -1,6 +1,6 @@
 # StorageService
 
-> **Updated:** 2026-01-16  
+> **Updated:** 2026-01-16
 > **Related:** [Services Overview](./README.md)
 
 ## Purpose
@@ -114,7 +114,7 @@ import { FeedbackProvider, InMemoryStorageService } from 'react-visual-feedback'
 
 function renderWithProvider(ui: React.ReactElement) {
   const storage = new InMemoryStorageService();
-  
+
   // Pre-populate test data
   storage.set('feedback_list', [
     { id: '1', type: 'bug', description: 'Test bug' },
@@ -226,6 +226,7 @@ interface AsyncStorageService<T = unknown> {
 ```
 
 This is useful for:
+
 - IndexedDB storage
 - Remote storage (cloud)
 - Encrypted storage
@@ -240,5 +241,5 @@ This is useful for:
 
 ---
 
-*Documentation compiled by GitHub Copilot*  
+*Documentation compiled by GitHub Copilot*
 *For project: react-visual-feedback*

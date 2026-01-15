@@ -1,6 +1,6 @@
 # useRecording
 
-> **Updated:** 2026-01-16  
+> **Updated:** 2026-01-16
 > **Related:** [Hooks Overview](./README.md), [RecorderService](../services/recorder-service.md)
 
 ## Purpose
@@ -22,19 +22,19 @@ import type { UseRecordingOptions, UseRecordingReturn } from 'react-visual-feedb
 interface UseRecordingOptions {
   /** Custom recorder service (for dependency injection) */
   service?: RecorderService;
-  
+
   /** Recording options */
   options?: RecordingOptions;
-  
+
   /** Callback when recording starts */
   onStart?: () => void;
-  
+
   /** Callback when recording stops */
   onStop?: (result: RecordingResult) => void;
-  
+
   /** Callback on recording error */
   onError?: (error: Error) => void;
-  
+
   /** Callback for progress updates */
   onProgress?: (progress: RecordingProgress) => void;
 }
@@ -46,43 +46,43 @@ interface UseRecordingOptions {
 interface UseRecordingReturn {
   /** Whether currently recording */
   isRecording: boolean;
-  
+
   /** Whether recording is paused */
   isPaused: boolean;
-  
+
   /** Current recording state */
   recordingState: RecordingState;
-  
+
   /** Recording duration in milliseconds */
   recordingDuration: number;
-  
+
   /** Recorded video blob (after stop) */
   recordedBlob: Blob | null;
-  
+
   /** Recording result (after stop) */
   recordingResult: RecordingResult | null;
-  
+
   /** Start recording */
   startRecording: (options?: RecordingOptions) => Promise<boolean>;
-  
+
   /** Stop recording */
   stopRecording: () => Promise<RecordingResult>;
-  
+
   /** Pause recording */
   pauseRecording: () => boolean;
-  
+
   /** Resume recording */
   resumeRecording: () => boolean;
-  
+
   /** Cancel recording without saving */
   cancelRecording: () => void;
-  
+
   /** Clear recorded data */
   clearRecording: () => void;
-  
+
   /** Whether recording is supported */
   isSupported: boolean;
-  
+
   /** Supported MIME types */
   supportedMimeTypes: string[];
 }
@@ -96,10 +96,10 @@ interface UseRecordingReturn {
 import { useRecording } from 'react-visual-feedback';
 
 function RecordButton() {
-  const { 
-    isRecording, 
+  const {
+    isRecording,
     recordingDuration,
-    startRecording, 
+    startRecording,
     stopRecording,
     recordedBlob,
   } = useRecording();
@@ -120,15 +120,15 @@ function RecordButton() {
       <button onClick={handleClick}>
         {isRecording ? 'Stop Recording' : 'Start Recording'}
       </button>
-      
+
       {isRecording && (
         <span>Recording: {Math.floor(recordingDuration / 1000)}s</span>
       )}
-      
+
       {recordedBlob && (
-        <video 
-          src={URL.createObjectURL(recordedBlob)} 
-          controls 
+        <video
+          src={URL.createObjectURL(recordedBlob)}
+          controls
         />
       )}
     </div>
@@ -169,15 +169,15 @@ function RecordingControls() {
       <span className="recording-time">
         {isPaused ? '⏸️' : '🔴'} {formatTime(recordingDuration)}
       </span>
-      
+
       <button onClick={isPaused ? resumeRecording : pauseRecording}>
         {isPaused ? 'Resume' : 'Pause'}
       </button>
-      
+
       <button onClick={stopRecording}>Stop & Save</button>
-      
+
       <button onClick={cancelRecording}>Cancel</button>
-      
+
       <span className="state">{recordingState}</span>
     </div>
   );
@@ -291,7 +291,7 @@ import { useRecording, FeedbackProvider, MockRecorderService } from 'react-visua
 
 describe('useRecording', () => {
   const mockRecorder = new MockRecorderService();
-  
+
   const wrapper = ({ children }) => (
     <FeedbackProvider services={{ recorder: mockRecorder }}>
       {children}
@@ -315,34 +315,34 @@ describe('useRecording', () => {
 
   test('starts and stops recording', async () => {
     const { result } = renderHook(() => useRecording(), { wrapper });
-    
+
     await act(async () => {
       await result.current.startRecording();
     });
-    
+
     expect(result.current.isRecording).toBe(true);
     expect(result.current.recordingState).toBe('recording');
-    
+
     await act(async () => {
       await result.current.stopRecording();
     });
-    
+
     expect(result.current.isRecording).toBe(false);
     expect(result.current.recordedBlob).toBeDefined();
   });
 
   test('pause and resume', async () => {
     const { result } = renderHook(() => useRecording(), { wrapper });
-    
+
     await act(async () => {
       await result.current.startRecording();
     });
-    
+
     act(() => {
       result.current.pauseRecording();
     });
     expect(result.current.isPaused).toBe(true);
-    
+
     act(() => {
       result.current.resumeRecording();
     });
@@ -352,15 +352,15 @@ describe('useRecording', () => {
 
   test('cancel discards recording', async () => {
     const { result } = renderHook(() => useRecording(), { wrapper });
-    
+
     await act(async () => {
       await result.current.startRecording();
     });
-    
+
     act(() => {
       result.current.cancelRecording();
     });
-    
+
     expect(result.current.isRecording).toBe(false);
     expect(result.current.recordedBlob).toBeNull();
   });
@@ -369,5 +369,5 @@ describe('useRecording', () => {
 
 ---
 
-*Documentation compiled by GitHub Copilot*  
+*Documentation compiled by GitHub Copilot*
 *For project: react-visual-feedback*

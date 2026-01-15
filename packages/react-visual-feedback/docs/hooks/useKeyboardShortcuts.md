@@ -1,6 +1,6 @@
 # useKeyboardShortcuts
 
-> **Updated:** 2026-01-16  
+> **Updated:** 2026-01-16
 > **Related:** [Hooks Overview](./README.md), [Keyboard Shortcuts Feature](../features/keyboard-shortcuts.md)
 
 ## Purpose
@@ -11,8 +11,8 @@ Manages keyboard shortcuts with configurable key bindings and modifier key suppo
 
 ```typescript
 import { useKeyboardShortcuts, formatShortcut } from 'react-visual-feedback';
-import type { 
-  UseKeyboardShortcutsOptions, 
+import type {
+  UseKeyboardShortcutsOptions,
   UseKeyboardShortcutsReturn,
   KeyboardShortcut,
   ModifierKey,
@@ -48,19 +48,19 @@ interface KeyboardShortcut {
 interface UseKeyboardShortcutsOptions {
   /** Initial shortcut definitions */
   shortcuts?: KeyboardShortcut[];
-  
+
   /** Whether keyboard handling is enabled globally */
   enabled?: boolean;
-  
+
   /** Callback when any shortcut is triggered */
   onShortcutTriggered?: (shortcutId: string) => void;
-  
+
   /** Whether to prevent default browser behavior */
   preventDefault?: boolean;
-  
+
   /** Whether to stop event propagation */
   stopPropagation?: boolean;
-  
+
   /** Element to attach listeners to (defaults to document) */
   targetRef?: React.RefObject<HTMLElement | null>;
 }
@@ -72,40 +72,40 @@ interface UseKeyboardShortcutsOptions {
 interface UseKeyboardShortcutsReturn {
   /** Whether keyboard handling is enabled */
   isEnabled: boolean;
-  
+
   /** List of registered shortcuts */
   shortcuts: KeyboardShortcut[];
-  
+
   /** Enable keyboard handling */
   enable: () => void;
-  
+
   /** Disable keyboard handling */
   disable: () => void;
-  
+
   /** Toggle keyboard handling */
   toggle: () => void;
-  
+
   /** Register a new shortcut */
   registerShortcut: (shortcut: KeyboardShortcut) => void;
-  
+
   /** Unregister a shortcut by ID */
   unregisterShortcut: (id: string) => void;
-  
+
   /** Update an existing shortcut */
   updateShortcut: (id: string, updates: Partial<Omit<KeyboardShortcut, 'id'>>) => void;
-  
+
   /** Enable a specific shortcut */
   enableShortcut: (id: string) => void;
-  
+
   /** Disable a specific shortcut */
   disableShortcut: (id: string) => void;
-  
+
   /** Get a shortcut by ID */
   getShortcut: (id: string) => KeyboardShortcut | undefined;
-  
+
   /** Check if a shortcut is registered */
   hasShortcut: (id: string) => boolean;
-  
+
   /** Clear all shortcuts */
   clearShortcuts: () => void;
 }
@@ -227,7 +227,7 @@ import { useKeyboardShortcuts, formatShortcut } from 'react-visual-feedback';
 
 function ShortcutHelp() {
   const [showHelp, setShowHelp] = useState(false);
-  
+
   const { shortcuts } = useKeyboardShortcuts({
     shortcuts: [
       {
@@ -244,7 +244,7 @@ function ShortcutHelp() {
   return (
     <div>
       <button onClick={() => setShowHelp(true)}>Keyboard Shortcuts</button>
-      
+
       {showHelp && (
         <div className="help-dialog">
           <h2>Keyboard Shortcuts</h2>
@@ -278,8 +278,8 @@ function ShortcutHelp() {
 ### With Feedback Widget
 
 ```tsx
-import { 
-  useActivation, 
+import {
+  useActivation,
   useDashboard,
   useRecording,
   useKeyboardShortcuts,
@@ -346,7 +346,7 @@ import { useKeyboardShortcuts } from 'react-visual-feedback';
 
 function Editor() {
   const editorRef = useRef<HTMLDivElement>(null);
-  
+
   useKeyboardShortcuts({
     targetRef: editorRef, // Only listen when editor is focused
     shortcuts: [
@@ -416,14 +416,14 @@ describe('useKeyboardShortcuts', () => {
         shortcuts: [{ id: 'test', key: 'a', action }],
       })
     );
-    
+
     expect(result.current.shortcuts).toHaveLength(1);
     expect(result.current.hasShortcut('test')).toBe(true);
   });
 
   test('registerShortcut adds shortcut', () => {
     const { result } = renderHook(() => useKeyboardShortcuts());
-    
+
     act(() => {
       result.current.registerShortcut({
         id: 'new',
@@ -431,7 +431,7 @@ describe('useKeyboardShortcuts', () => {
         action: vi.fn(),
       });
     });
-    
+
     expect(result.current.hasShortcut('new')).toBe(true);
   });
 
@@ -441,22 +441,22 @@ describe('useKeyboardShortcuts', () => {
         shortcuts: [{ id: 'test', key: 'a', action: vi.fn() }],
       })
     );
-    
+
     act(() => {
       result.current.unregisterShortcut('test');
     });
-    
+
     expect(result.current.hasShortcut('test')).toBe(false);
   });
 
   test('disable and enable work', () => {
     const { result } = renderHook(() => useKeyboardShortcuts());
-    
+
     act(() => {
       result.current.disable();
     });
     expect(result.current.isEnabled).toBe(false);
-    
+
     act(() => {
       result.current.enable();
     });
@@ -485,5 +485,5 @@ describe('formatShortcut', () => {
 
 ---
 
-*Documentation compiled by GitHub Copilot*  
+*Documentation compiled by GitHub Copilot*
 *For project: react-visual-feedback*

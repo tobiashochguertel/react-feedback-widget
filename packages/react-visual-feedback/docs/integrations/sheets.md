@@ -1,6 +1,6 @@
 # Google Sheets Integration
 
-> **Updated:** 2026-01-16  
+> **Updated:** 2026-01-16
 > **Related:** [Integration Guide](./README.md), [useIntegrations Hook](../hooks/useIntegrations.md)
 
 ## Overview
@@ -43,16 +43,16 @@ function App() {
 interface SheetsClientConfig {
   /** Google Spreadsheet ID (from URL) */
   spreadsheetId?: string;
-  
+
   /** Sheet/tab name within the spreadsheet */
   sheetName?: string;
-  
+
   /** Service account credentials (JSON string or object) */
   credentials?: string | GoogleServiceAccountCredentials;
-  
+
   /** Custom column mapping */
   columns?: SheetColumnsMap;
-  
+
   /** Custom column order */
   columnOrder?: string[];
 }
@@ -64,19 +64,19 @@ interface SheetsClientConfig {
 interface SheetsOAuthClientConfig extends Omit<SheetsClientConfig, 'credentials'> {
   /** Enable OAuth mode */
   oauth: true;
-  
+
   /** OAuth client ID from Google Cloud Console */
   clientId?: string;
-  
+
   /** OAuth client secret */
   clientSecret?: string;
-  
+
   /** OAuth redirect URI */
   redirectUri?: string;
-  
+
   /** Function to retrieve stored tokens */
   getStoredTokens?: () => Promise<OAuthStoredTokens | null>;
-  
+
   /** Function to store new tokens */
   storeTokens?: (tokens: OAuthStoredTokens) => Promise<void>;
 }
@@ -112,6 +112,7 @@ Best for automated submissions without user interaction.
 #### 2. Share Spreadsheet
 
 Share the spreadsheet with the service account email:
+
 - Find email in credentials JSON (`client_email`)
 - Add as Editor on the spreadsheet
 
@@ -337,9 +338,9 @@ function onEdit(e) {
     const newStatus = e.value;
     const row = e.range.getRow();
     const email = e.source.getRange(row, 6).getValue();
-    
+
     if (email && newStatus === 'Resolved') {
-      GmailApp.sendEmail(email, 'Feedback Update', 
+      GmailApp.sendEmail(email, 'Feedback Update',
         'Your feedback has been resolved!');
     }
   }
@@ -348,7 +349,7 @@ function onEdit(e) {
 function appendFeedback(data) {
   const sheet = SpreadsheetApp.getActiveSpreadsheet()
     .getSheetByName('Feedback');
-  
+
   sheet.appendRow([
     new Date(),
     data.type,
@@ -360,7 +361,7 @@ function appendFeedback(data) {
     data.url,
     'New',
   ]);
-  
+
   return { success: true, row: sheet.getLastRow() };
 }
 ```
@@ -556,6 +557,7 @@ describe('Sheets Integration', () => {
 **Cause:** Service account doesn't have access to spreadsheet.
 
 **Solution:**
+
 1. Share spreadsheet with service account email
 2. Grant "Editor" access
 3. Wait a few minutes for permissions to propagate
@@ -565,6 +567,7 @@ describe('Sheets Integration', () => {
 **Cause:** Invalid spreadsheet ID or access issue.
 
 **Solution:**
+
 1. Verify spreadsheet ID from URL: `docs.google.com/spreadsheets/d/{SPREADSHEET_ID}/`
 2. Ensure spreadsheet exists
 3. Check service account has access
@@ -574,6 +577,7 @@ describe('Sheets Integration', () => {
 **Cause:** Specified sheet name doesn't exist.
 
 **Solution:**
+
 1. Check exact sheet/tab name (case-sensitive)
 2. Use default sheet by omitting `sheetName`
 3. Create the tab if it doesn't exist
@@ -583,11 +587,12 @@ describe('Sheets Integration', () => {
 **Cause:** Hit Google Sheets API rate limits.
 
 **Solution:**
+
 1. Implement request batching
 2. Add retry with exponential backoff
 3. Upgrade to higher quota tier if needed
 
 ---
 
-*Documentation compiled by GitHub Copilot*  
+*Documentation compiled by GitHub Copilot*
 *For project: react-visual-feedback*

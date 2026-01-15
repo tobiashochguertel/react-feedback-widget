@@ -1,6 +1,6 @@
 # Jira Integration
 
-> **Updated:** 2026-01-16  
+> **Updated:** 2026-01-16
 > **Related:** [Integration Guide](./README.md), [useIntegrations Hook](../hooks/useIntegrations.md)
 
 ## Overview
@@ -44,28 +44,28 @@ function App() {
 interface JiraHandlerConfig extends JiraClientConfig {
   /** Jira domain (e.g., 'company.atlassian.net') */
   domain?: string;
-  
+
   /** Jira user email */
   email?: string;
-  
+
   /** Jira API token */
   apiToken?: string;
-  
+
   /** Default project key for issue creation */
   projectKey?: string;
-  
+
   /** Custom field mapping */
   fields?: JiraFieldsMap;
-  
+
   /** Additional custom fields to include */
   customFields?: Record<string, unknown>;
-  
+
   /** Whether to include priority in issues (default: true) */
   includePriority?: boolean;
-  
+
   /** Whether to upload attachments (default: true) */
   uploadAttachments?: boolean;
-  
+
   /** Status mapping for bidirectional sync */
   statusMapping?: {
     toJira?: Record<string, string>;
@@ -283,7 +283,7 @@ Add labels to created issues:
 const jiraConfig = {
   // ...
   defaultLabels: ['user-feedback', 'from-widget'],
-  
+
   // Dynamic labels based on feedback type
   labelMapping: {
     bug: ['bug-report'],
@@ -447,6 +447,7 @@ describe('Jira Integration', () => {
 **Cause:** Invalid email/API token combination.
 
 **Solution:**
+
 1. Verify email matches the account that created the token
 2. Regenerate API token at [Atlassian Account Settings](https://id.atlassian.com/manage-profile/security/api-tokens)
 3. Ensure token hasn't expired
@@ -456,6 +457,7 @@ describe('Jira Integration', () => {
 **Cause:** User lacks permissions for the project.
 
 **Solution:**
+
 1. Check user has "Create Issues" permission in Jira
 2. Verify project key is correct
 3. Ensure account type (atlassian vs. Google) is correct
@@ -465,6 +467,7 @@ describe('Jira Integration', () => {
 **Cause:** Project key doesn't exist or user can't access it.
 
 **Solution:**
+
 1. Verify project key in Jira (case-sensitive)
 2. Check user can view the project
 
@@ -473,11 +476,12 @@ describe('Jira Integration', () => {
 **Cause:** Attachment exceeds Jira's size limit.
 
 **Solution:**
+
 1. Reduce screenshot quality
 2. Limit recording duration
 3. Compress attachments before upload
 
 ---
 
-*Documentation compiled by GitHub Copilot*  
+*Documentation compiled by GitHub Copilot*
 *For project: react-visual-feedback*

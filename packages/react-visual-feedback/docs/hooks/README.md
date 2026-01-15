@@ -1,6 +1,6 @@
 # Hooks API Reference
 
-> **Updated:** 2026-01-16  
+> **Updated:** 2026-01-16
 > **Related:** [Architecture Overview](../architecture/README.md)
 
 This package provides a comprehensive set of React hooks following the Interface Segregation Principle. Each hook has a focused, single-responsibility API.
@@ -24,7 +24,7 @@ This package provides a comprehensive set of React hooks following the Interface
 All hooks are exported from the main package:
 
 ```typescript
-import { 
+import {
   useActivation,
   useDashboard,
   useRecording,
@@ -50,7 +50,7 @@ State is managed internally by the hook:
 ```tsx
 function MyComponent() {
   const { isActive, toggle } = useActivation({ defaultOpen: false });
-  
+
   return <button onClick={toggle}>{isActive ? 'Active' : 'Inactive'}</button>;
 }
 ```
@@ -62,7 +62,7 @@ State is managed externally:
 ```tsx
 function MyComponent() {
   const [isActive, setIsActive] = useState(false);
-  
+
   const activation = useActivation({
     controlledIsActive: isActive,
     onActiveChange: setIsActive,
@@ -77,9 +77,9 @@ function MyComponent() {
 ### Combining Hooks
 
 ```tsx
-import { 
-  useActivation, 
-  useRecording, 
+import {
+  useActivation,
+  useRecording,
   useScreenCapture,
   useKeyboardShortcuts,
 } from 'react-visual-feedback';
@@ -119,7 +119,7 @@ function App() {
 
 function FeedbackButton() {
   const { isActive, toggle } = useActivation();
-  
+
   return (
     <button onClick={toggle}>
       {isActive ? 'Close Feedback' : 'Give Feedback'}
@@ -199,13 +199,13 @@ import { useActivation } from 'react-visual-feedback';
 
 test('activation hook toggles state', () => {
   const { result } = renderHook(() => useActivation());
-  
+
   expect(result.current.isActive).toBe(false);
-  
+
   act(() => {
     result.current.toggle();
   });
-  
+
   expect(result.current.isActive).toBe(true);
 });
 ```
@@ -228,16 +228,16 @@ const wrapper = ({ children }) => (
 
 test('recording hook starts recording', async () => {
   const { result } = renderHook(() => useRecording(), { wrapper });
-  
+
   await act(async () => {
     await result.current.startRecording();
   });
-  
+
   expect(result.current.isRecording).toBe(true);
 });
 ```
 
 ---
 
-*Documentation compiled by GitHub Copilot*  
+*Documentation compiled by GitHub Copilot*
 *For project: react-visual-feedback*

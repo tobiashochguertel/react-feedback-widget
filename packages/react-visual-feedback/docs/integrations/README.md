@@ -1,6 +1,6 @@
 # Integration Guide
 
-> **Updated:** 2026-01-16  
+> **Updated:** 2026-01-16
 > **Related:** [useIntegrations Hook](../hooks/useIntegrations.md)
 
 ## Overview
@@ -45,28 +45,28 @@ All integrations implement the `Integration` interface:
 interface Integration<TConfig = unknown, TResult = unknown> {
   /** Unique type identifier */
   readonly type: IntegrationType;
-  
+
   /** Human-readable name */
   readonly name: string;
-  
+
   /** Description of the integration */
   readonly description: string;
-  
+
   /** Check if configured and ready */
   isConfigured(): boolean;
-  
+
   /** Validate configuration */
   validateConfig(config: TConfig): ValidationResult;
-  
+
   /** Submit feedback */
   submit(data: FeedbackData, options?: SubmissionOptions): Promise<SubmissionResult<TResult>>;
-  
+
   /** Get configuration modal component */
   getConfigModal(): ComponentType<ConfigModalProps<TConfig>>;
-  
+
   /** Get current configuration */
   getConfig(): TConfig | undefined;
-  
+
   /** Update configuration */
   setConfig(config: TConfig): void;
 }
@@ -111,7 +111,7 @@ function App() {
 import { useIntegrations } from 'react-visual-feedback';
 
 function FeedbackSubmitter() {
-  const { 
+  const {
     connectedIntegrations,
     submitToJira,
     submitToSheets,
@@ -122,7 +122,7 @@ function FeedbackSubmitter() {
   const handleSubmit = async (feedback: FeedbackData) => {
     // Submit to all connected integrations
     const results = await submitToAll(feedback);
-    
+
     results.forEach(result => {
       if (result.success) {
         console.log(`${result.type}: submitted successfully`);
@@ -254,7 +254,7 @@ function ErrorAwareFeedback() {
       Sentry.captureException(error, {
         tags: { integration: type },
       });
-      
+
       // Show user-friendly message
       toast.error(`Failed to submit to ${type}: ${error.message}`);
     },
@@ -263,7 +263,7 @@ function ErrorAwareFeedback() {
   const handleSubmit = async (data) => {
     try {
       const results = await submitToAll(data);
-      
+
       const failures = results.filter(r => !r.success);
       if (failures.length > 0) {
         // Partial failure - some integrations succeeded
@@ -344,5 +344,5 @@ GOOGLE_SERVICE_ACCOUNT={"type":"service_account",...}
 
 ---
 
-*Documentation compiled by GitHub Copilot*  
+*Documentation compiled by GitHub Copilot*
 *For project: react-visual-feedback*
