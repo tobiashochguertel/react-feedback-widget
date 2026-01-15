@@ -3,7 +3,11 @@
     "id": "builtin_group_id",
     "name": "Currently Open Files",
     "files": [
-      "packages/react-visual-feedback/src/services/index.ts"
+      "packages/react-visual-feedback/src/services/storage/InMemoryVideoStorageService.ts",
+      "packages/react-visual-feedback/docs/spec/TASKS-OVERVIEW.md",
+      "packages/react-visual-feedback/src/services/storage/IndexedDBVideoStorageService.ts",
+      "packages/react-visual-feedback/src/services/storage/InMemoryStorageService.ts",
+      "packages/react-visual-feedback/src/services/storage/LocalStorageService.ts"
     ],
     "builtIn": true,
     "bookmarks": {}

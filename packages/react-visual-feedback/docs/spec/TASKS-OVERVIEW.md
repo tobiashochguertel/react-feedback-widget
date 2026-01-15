@@ -43,7 +43,7 @@
   - [Task Sets](#task-sets)
     - [Set 1: Foundation Setup](#set-1-foundation-setup)
     - [Set 2: Service Layer Extraction](#set-2-service-layer-extraction)
-    - [Set 3: State Management Refactoring](#set-3-state-management-refactoring)
+    - [Set 3: State Management Refactoring with XState](#set-3-state-management-refactoring-with-xstate)
     - [Set 4: Custom Hooks Extraction](#set-4-custom-hooks-extraction)
     - [Set 5: Dashboard Component Refactoring](#set-5-dashboard-component-refactoring)
     - [Set 6: Integration System Refactoring](#set-6-integration-system-refactoring)

@@ -12,5 +12,6 @@ export type {
   RecordingProgress,
 } from './RecorderService';
 
-// Implementations will be added in I006:
-// export { MediaRecorderService } from './MediaRecorderService';
+// Implementations (I006)
+export { MediaRecorderService } from './MediaRecorderService';
+export { MockRecorderService } from './MockRecorderService';

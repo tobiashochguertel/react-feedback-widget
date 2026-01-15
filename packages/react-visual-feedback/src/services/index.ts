@@ -7,7 +7,7 @@
  * @packageDocumentation
  */
 
-// Storage services
+// Storage services - interfaces
 export type {
   StorageService,
   AsyncStorageService,
@@ -18,7 +18,13 @@ export type {
   VideoStorageOptions,
 } from './storage/VideoStorageService';
 
-// Recording services
+// Storage services - implementations
+export { LocalStorageService } from './storage/LocalStorageService';
+export { InMemoryStorageService } from './storage/InMemoryStorageService';
+export { IndexedDBVideoStorageService } from './storage/IndexedDBVideoStorageService';
+export { InMemoryVideoStorageService } from './storage/InMemoryVideoStorageService';
+
+// Recording services - interfaces
 export type {
   RecorderService,
   RecordingState,
@@ -27,7 +33,11 @@ export type {
   RecordingProgress,
 } from './recording/RecorderService';
 
-// Screenshot services
+// Recording services - implementations
+export { MediaRecorderService } from './recording/MediaRecorderService';
+export { MockRecorderService } from './recording/MockRecorderService';
+
+// Screenshot services - interfaces
 export type {
   ScreenshotService,
   ScreenshotOptions,
@@ -35,9 +45,24 @@ export type {
   SelectionArea,
 } from './screenshot/ScreenshotService';
 
-// Implementations will be added in I005, I006, I007:
-// export { LocalStorageService } from './storage/LocalStorageService';
-// export { InMemoryStorageService } from './storage/InMemoryStorageService';
-// export { IndexedDBVideoStorageService } from './storage/IndexedDBVideoStorageService';
-// export { MediaRecorderService } from './recording/MediaRecorderService';
-// export { ModernScreenshotService } from './screenshot/ModernScreenshotService';
+// Screenshot services - implementations
+export { ModernScreenshotService } from './screenshot/ModernScreenshotService';
+export { MockScreenshotService } from './screenshot/MockScreenshotService';
+
+// Service Factory
+export type {
+  ServiceContainer,
+  PartialServiceContainer,
+  ServiceFactoryConfig,
+} from './ServiceFactory';
+export {
+  createProductionServices,
+  createTestServices,
+  createProductionServicesSync,
+  createTestServicesSync,
+  getDefaultServices,
+  resetDefaultServices,
+  isBrowserEnvironment,
+  checkBrowserApiAvailability,
+} from './ServiceFactory';
+

@@ -11,5 +11,6 @@ export type {
   SelectionArea,
 } from './ScreenshotService';
 
-// Implementations will be added in I007:
-// export { ModernScreenshotService } from './ModernScreenshotService';
+// Implementations (I007)
+export { ModernScreenshotService } from './ModernScreenshotService';
+export { MockScreenshotService } from './MockScreenshotService';
