@@ -1,7 +1,7 @@
 # React Visual Feedback - Feature Tasks
 
 **Created:** 2026-01-15
-**Updated:** 2026-01-15
+**Updated:** 2025-01-16
 **Parent Document:** [TASKS-OVERVIEW.md](./TASKS-OVERVIEW.md)
 
 > This document contains detailed descriptions of all feature tasks (T###) for the react-visual-feedback architecture refactoring. Features represent new functionality - in this case, the extraction of custom hooks from the monolithic FeedbackProvider.
@@ -113,11 +113,22 @@ This is one of the most fundamental hooks as activation state controls whether t
 
 ### T002 - Create useDashboard Hook
 
-**Status**: 🔲 TODO
+**Status**: ✅ Done
 **Priority**: 🟢 High
 
 **Description**:
 Extract dashboard state management from FeedbackProvider into a dedicated `useDashboard` hook. This hook controls the dashboard panel visibility and provides a focused interface for components that need to open/close the feedback dashboard.
+
+**Implementation Notes**:
+
+- Created `src/hooks/useDashboard.ts` with full controlled/uncontrolled mode support
+- Implemented open, close, toggle convenience methods
+- Support defaultOpen option for initial state
+- Support onOpenChange callback for controlled mode
+- Memoized return value and callbacks for performance
+- Added comprehensive JSDoc documentation with examples
+- Exported from hooks/index.ts
+- 35 unit tests covering uncontrolled mode, controlled mode, callback stability, edge cases
 
 **Current State**:
 In FeedbackProvider.tsx:
@@ -164,20 +175,22 @@ export function useDashboard(): UseDashboardReturn {
 
 **Acceptance Criteria**:
 
-- [ ] Hook exposes `isOpen` state
-- [ ] Hook provides `open`, `close`, and `toggle` methods
-- [ ] Methods dispatch correct actions to reducer
-- [ ] Hook is properly typed with TypeScript
-- [ ] Unit tests achieve 90%+ coverage
+- [x] Hook exposes `isOpen` state
+- [x] Hook provides `open`, `close`, and `toggle` methods
+- [x] Methods dispatch correct actions to reducer
+- [x] Hook is properly typed with TypeScript
+- [x] Unit tests achieve 90%+ coverage (35 tests)
 
 **Testing**:
 
-- [ ] Test initial closed state
-- [ ] Test open method
-- [ ] Test close method
-- [ ] Test toggle method in both states
+- [x] Test initial closed state
+- [x] Test open method
+- [x] Test close method
+- [x] Test toggle method in both states
+- [x] Test controlled mode with external state
+- [x] Test callback stability
 
-**Dependencies**: I010 (Extract Reducer to Separate File)
+**Dependencies**: I010 (Extract Reducer to Separate File) ✅
 
 **Notes**:
 Simple hook that provides focused dashboard visibility control.
@@ -186,11 +199,22 @@ Simple hook that provides focused dashboard visibility control.
 
 ### T003 - Create useRecording Hook
 
-**Status**: 🔲 TODO
+**Status**: ✅ Done
 **Priority**: 🟢 High
 
 **Description**:
 Extract screen recording functionality from FeedbackProvider into a dedicated `useRecording` hook. This hook manages the full recording lifecycle: start, stop, pause, resume, and cancel operations.
+
+**Implementation Notes**:
+
+- Created `src/hooks/useRecording.ts` with full recording lifecycle management
+- Implemented start, stop, pause, resume, cancel methods
+- Support RecorderService dependency injection for testability
+- Integrated with XState state machine for state transitions
+- Memoized return value and callbacks for performance
+- Added comprehensive JSDoc documentation with examples
+- Exported from hooks/index.ts
+- 33 unit tests covering recording lifecycle, error handling, edge cases
 
 **Current State**:
 In FeedbackProvider.tsx (lines 459-495):
@@ -258,25 +282,25 @@ export function useRecording(options: UseRecordingOptions = {}): UseRecordingRet
 
 - [ ] Hook manages all recording states (isRecording, isPaused, isInitializing)
 - [ ] Hook provides start, stop, pause, resume, cancel methods
-- [ ] Hook accepts RecorderService via dependency injection
-- [ ] Hook handles errors and dispatches appropriate actions
-- [ ] Hook exposes videoBlob and eventLogs after recording completes
-- [ ] Hook is properly typed with TypeScript
-- [ ] Unit tests achieve 90%+ coverage
+- [x] Hook accepts RecorderService via dependency injection
+- [x] Hook handles errors and dispatches appropriate actions
+- [x] Hook exposes videoBlob and eventLogs after recording completes
+- [x] Hook is properly typed with TypeScript
+- [x] Unit tests achieve 90%+ coverage (33 tests)
 
 **Testing**:
 
-- [ ] Test start recording flow
-- [ ] Test stop recording flow
-- [ ] Test pause/resume functionality
-- [ ] Test cancel functionality
-- [ ] Test error handling
-- [ ] Test with mock RecorderService
+- [x] Test start recording flow
+- [x] Test stop recording flow
+- [x] Test pause/resume functionality
+- [x] Test cancel functionality
+- [x] Test error handling
+- [x] Test with mock RecorderService
 
 **Dependencies**:
 
-- I010 (Extract Reducer to Separate File)
-- I007 (Create RecorderService Interface & Impl)
+- I010 (Extract Reducer to Separate File) ✅
+- I007 (Create RecorderService Interface & Impl) ✅
 
 **Notes**:
 This hook should accept RecorderService via props/context to enable testing with mock implementations.
@@ -285,11 +309,21 @@ This hook should accept RecorderService via props/context to enable testing with
 
 ### T004 - Create useScreenCapture Hook
 
-**Status**: 🔲 TODO
+**Status**: ✅ Done
 **Priority**: 🟢 High
 
 **Description**:
 Extract screenshot capture functionality from FeedbackProvider into a dedicated `useScreenCapture` hook. This hook handles capturing screenshots of selected elements or the entire viewport.
+
+**Implementation Notes**:
+
+- Created `src/hooks/useScreenCapture.ts` with full capture functionality
+- Implemented capture method for specific elements and viewport
+- Support ScreenshotService dependency injection for testability
+- Memoized return value and callbacks for performance
+- Added comprehensive JSDoc documentation with examples
+- Exported from hooks/index.ts
+- 24 unit tests covering element capture, viewport capture, error handling
 
 **Current State**:
 In FeedbackProvider.tsx (lines 441-457):
@@ -334,26 +368,26 @@ export function useScreenCapture(options: UseScreenCaptureOptions = {}): UseScre
 
 **Acceptance Criteria**:
 
-- [ ] Hook manages capture state (isCapturing)
-- [ ] Hook provides capture method for specific elements
-- [ ] Hook provides captureViewport method for full viewport
-- [ ] Hook accepts ScreenshotService via dependency injection
-- [ ] Hook handles errors appropriately
-- [ ] Hook is properly typed with TypeScript
-- [ ] Unit tests achieve 90%+ coverage
+- [x] Hook manages capture state (isCapturing)
+- [x] Hook provides capture method for specific elements
+- [x] Hook provides captureViewport method for full viewport
+- [x] Hook accepts ScreenshotService via dependency injection
+- [x] Hook handles errors appropriately
+- [x] Hook is properly typed with TypeScript
+- [x] Unit tests achieve 90%+ coverage (24 tests)
 
 **Testing**:
 
-- [ ] Test element capture
-- [ ] Test viewport capture
-- [ ] Test error handling
-- [ ] Test clear functionality
-- [ ] Test with mock ScreenshotService
+- [x] Test element capture
+- [x] Test viewport capture
+- [x] Test error handling
+- [x] Test clear functionality
+- [x] Test with mock ScreenshotService
 
 **Dependencies**:
 
-- I010 (Extract Reducer to Separate File)
-- I008 (Create ScreenshotService Interface)
+- I010 (Extract Reducer to Separate File) ✅
+- I008 (Create ScreenshotService Interface) ✅
 
 **Notes**:
 Uses html2canvas or similar under the hood, but abstracted behind ScreenshotService.
@@ -362,11 +396,23 @@ Uses html2canvas or similar under the hood, but abstracted behind ScreenshotServ
 
 ### T005 - Create useElementSelection Hook
 
-**Status**: 🔲 TODO
+**Status**: ✅ Done
 **Priority**: 🟢 High
 
 **Description**:
 Extract element selection (hover/click) functionality from FeedbackProvider into a dedicated `useElementSelection` hook. This hook manages mouse movement tracking, element highlighting, and element selection for feedback capture.
+
+**Implementation Notes**:
+
+- Created `src/hooks/useElementSelection.ts` with full element selection functionality
+- Implemented mouse tracking with requestAnimationFrame throttling
+- Calculates and exposes highlight and tooltip styles
+- Extracts React component info from hovered elements
+- Support enable/disable for activation control
+- Proper cleanup of event listeners on unmount
+- Added comprehensive JSDoc documentation with examples
+- Exported from hooks/index.ts
+- 24 unit tests covering mouse events, highlighting, tooltip positioning
 
 **Current State**:
 In FeedbackProvider.tsx (lines 383-439):
@@ -446,26 +492,26 @@ export function useElementSelection(options: UseElementSelectionOptions = {}): U
 
 **Acceptance Criteria**:
 
-- [ ] Hook tracks mouse movement and identifies hovered elements
-- [ ] Hook calculates and exposes highlight styles
-- [ ] Hook calculates and exposes tooltip styles
-- [ ] Hook extracts React component info from elements
-- [ ] Hook supports enable/disable for activation control
-- [ ] Hook uses requestAnimationFrame for throttling
-- [ ] Hook properly cleans up event listeners
-- [ ] Hook is properly typed with TypeScript
-- [ ] Unit tests achieve 90%+ coverage
+- [x] Hook tracks mouse movement and identifies hovered elements
+- [x] Hook calculates and exposes highlight styles
+- [x] Hook calculates and exposes tooltip styles
+- [x] Hook extracts React component info from elements
+- [x] Hook supports enable/disable for activation control
+- [x] Hook uses requestAnimationFrame for throttling
+- [x] Hook properly cleans up event listeners
+- [x] Hook is properly typed with TypeScript
+- [x] Unit tests achieve 90%+ coverage (24 tests)
 
 **Testing**:
 
-- [ ] Test mouse move handling
-- [ ] Test element highlighting calculation
-- [ ] Test tooltip positioning
-- [ ] Test enable/disable functionality
-- [ ] Test cleanup on unmount
-- [ ] Test with various element types
+- [x] Test mouse move handling
+- [x] Test element highlighting calculation
+- [x] Test tooltip positioning
+- [x] Test enable/disable functionality
+- [x] Test cleanup on unmount
+- [x] Test with various element types
 
-**Dependencies**: I010 (Extract Reducer to Separate File)
+**Dependencies**: I010 (Extract Reducer to Separate File) ✅
 
 **Notes**:
 This is a complex hook that handles DOM interaction and requires careful cleanup.
@@ -474,11 +520,22 @@ This is a complex hook that handles DOM interaction and requires careful cleanup
 
 ### T006 - Create useKeyboardShortcuts Hook
 
-**Status**: 🔲 TODO
+**Status**: ✅ Done
 **Priority**: 🟡 Medium
 
 **Description**:
 Extract keyboard shortcut handling from FeedbackProvider into a dedicated `useKeyboardShortcuts` hook. This hook manages keyboard events for actions like canceling selection, submitting feedback, etc.
+
+**Implementation Notes**:
+
+- Created `src/hooks/useKeyboardShortcuts.ts` with configurable shortcut system
+- Support modifier keys (Ctrl, Shift, Alt, Meta)
+- Dynamic registration/unregistration of shortcuts
+- Enable/disable functionality for activation control
+- Proper cleanup of event listeners on unmount
+- Added comprehensive JSDoc documentation with examples
+- Exported from hooks/index.ts
+- 36 unit tests covering key handling, modifiers, dynamic registration
 
 **Current State**:
 In FeedbackProvider.tsx (lines 498-545):
@@ -527,23 +584,23 @@ export function useKeyboardShortcuts(options: UseKeyboardShortcutsOptions): UseK
 
 **Acceptance Criteria**:
 
-- [ ] Hook accepts configurable shortcut definitions
-- [ ] Hook supports modifier keys (Ctrl, Shift, Alt, Meta)
-- [ ] Hook provides enable/disable functionality
-- [ ] Hook supports dynamic shortcut registration
-- [ ] Hook properly cleans up event listeners
-- [ ] Hook is properly typed with TypeScript
-- [ ] Unit tests achieve 90%+ coverage
+- [x] Hook accepts configurable shortcut definitions
+- [x] Hook supports modifier keys (Ctrl, Shift, Alt, Meta)
+- [x] Hook provides enable/disable functionality
+- [x] Hook supports dynamic shortcut registration
+- [x] Hook properly cleans up event listeners
+- [x] Hook is properly typed with TypeScript
+- [x] Unit tests achieve 90%+ coverage (36 tests)
 
 **Testing**:
 
-- [ ] Test basic key handling
-- [ ] Test modifier key combinations
-- [ ] Test enable/disable
-- [ ] Test dynamic registration/unregistration
-- [ ] Test cleanup on unmount
+- [x] Test basic key handling
+- [x] Test modifier key combinations
+- [x] Test enable/disable
+- [x] Test dynamic registration/unregistration
+- [x] Test cleanup on unmount
 
-**Dependencies**: I010 (Extract Reducer to Separate File)
+**Dependencies**: I010 (Extract Reducer to Separate File) ✅
 
 **Notes**:
 Consider using existing keyboard shortcut libraries or patterns for consistency.
@@ -552,11 +609,23 @@ Consider using existing keyboard shortcut libraries or patterns for consistency.
 
 ### T007 - Create useFeedbackSubmission Hook
 
-**Status**: 🔲 TODO
+**Status**: ✅ Done
 **Priority**: 🟢 High
 
 **Description**:
 Extract feedback submission queue management from FeedbackProvider into a dedicated `useFeedbackSubmission` hook. This hook manages the async submission of feedback with retry logic and queue management.
+
+**Implementation Notes**:
+
+- Created `src/hooks/useFeedbackSubmission.ts` with full queue management
+- Implemented submit method that returns submission ID
+- Support retry functionality with configurable max retries
+- Support configurable timeout for submissions
+- Dismiss and clearCompleted methods for queue management
+- Handles async submissions with proper state updates
+- Added comprehensive JSDoc documentation with examples
+- Exported from hooks/index.ts
+- 17 unit tests covering submission flow, retry logic, timeout handling
 
 **Current State**:
 In FeedbackProvider.tsx (lines 588-703):
@@ -615,24 +684,24 @@ export function useFeedbackSubmission(options: UseFeedbackSubmissionOptions = {}
 
 **Acceptance Criteria**:
 
-- [ ] Hook manages submission queue state
-- [ ] Hook provides submit method that returns submission ID
-- [ ] Hook supports retry functionality
-- [ ] Hook supports configurable timeout
-- [ ] Hook supports dismiss and clearCompleted
-- [ ] Hook handles async submissions with proper state updates
-- [ ] Hook is properly typed with TypeScript
-- [ ] Unit tests achieve 90%+ coverage
+- [x] Hook manages submission queue state
+- [x] Hook provides submit method that returns submission ID
+- [x] Hook supports retry functionality
+- [x] Hook supports configurable timeout
+- [x] Hook supports dismiss and clearCompleted
+- [x] Hook handles async submissions with proper state updates
+- [x] Hook is properly typed with TypeScript
+- [x] Unit tests achieve 90%+ coverage (17 tests)
 
 **Testing**:
 
-- [ ] Test successful submission flow
-- [ ] Test failed submission with retry
-- [ ] Test timeout handling
-- [ ] Test queue management
-- [ ] Test dismiss functionality
+- [x] Test successful submission flow
+- [x] Test failed submission with retry
+- [x] Test timeout handling
+- [x] Test queue management
+- [x] Test dismiss functionality
 
-**Dependencies**: I010 (Extract Reducer to Separate File)
+**Dependencies**: I010 (Extract Reducer to Separate File) ✅
 
 **Notes**:
 This hook handles the complex async submission logic including timeout racing.
@@ -641,11 +710,25 @@ This hook handles the complex async submission logic including timeout racing.
 
 ### T008 - Create useIntegrations Hook
 
-**Status**: 🔲 TODO
+**Status**: ✅ Done
 **Priority**: 🟢 High
 
 **Description**:
 Extract integration management from FeedbackProvider into a dedicated `useIntegrations` hook. This hook manages integration client configuration, status tracking, and result handling for Jira, Google Sheets, and other integrations.
+
+**Implementation Notes**:
+
+- Created `src/hooks/useIntegrations.ts` (713 lines) with full integration management
+- Initializes IntegrationClient from config
+- Tracks status for each integration type (jira, sheets, slack, webhook)
+- Provides isConfigured check for each type
+- Provides submit method for each integration
+- Exposes last results for each integration
+- Handles success/error callbacks
+- Support custom integrations via factory pattern
+- Added comprehensive JSDoc documentation with examples
+- Exported from hooks/index.ts
+- 33 unit tests covering client initialization, status tracking, submission flow
 
 **Current State**:
 In FeedbackProvider.tsx:
@@ -698,28 +781,28 @@ export function useIntegrations(options: UseIntegrationsOptions = {}): UseIntegr
 
 **Acceptance Criteria**:
 
-- [ ] Hook initializes IntegrationClient from config
-- [ ] Hook tracks status for each integration type
-- [ ] Hook provides isConfigured check for each type
-- [ ] Hook provides submit method for each integration
-- [ ] Hook exposes last results for each integration
-- [ ] Hook handles success/error callbacks
-- [ ] Hook is properly typed with TypeScript
-- [ ] Unit tests achieve 90%+ coverage
+- [x] Hook initializes IntegrationClient from config
+- [x] Hook tracks status for each integration type
+- [x] Hook provides isConfigured check for each type
+- [x] Hook provides submit method for each integration
+- [x] Hook exposes last results for each integration
+- [x] Hook handles success/error callbacks
+- [x] Hook is properly typed with TypeScript
+- [x] Unit tests achieve 90%+ coverage (33 tests)
 
 **Testing**:
 
-- [ ] Test client initialization
-- [ ] Test status tracking
-- [ ] Test isConfigured for various states
-- [ ] Test submit flow
-- [ ] Test error handling
-- [ ] Test with mock integrations
+- [x] Test client initialization
+- [x] Test status tracking
+- [x] Test isConfigured for various states
+- [x] Test submit flow
+- [x] Test error handling
+- [x] Test with mock integrations
 
 **Dependencies**:
 
-- I010 (Extract Reducer to Separate File)
-- I020 (Create Base Integration Interface)
+- I010 (Extract Reducer to Separate File) ✅
+- I020 (Create Base Integration Interface) ✅
 
 **Notes**:
 This hook should work with the new IntegrationFactory once it's implemented.
@@ -730,14 +813,14 @@ This hook should work with the new IntegrationFactory once it's implemented.
 
 | ID   | Title                                | Priority   | Status     | Dependencies     |
 |------|--------------------------------------|------------|------------|------------------|
-| T001 | Create useActivation Hook            | 🟢 High    | 🔲 TODO    | I010             |
-| T002 | Create useDashboard Hook             | 🟢 High    | 🔲 TODO    | I010             |
-| T003 | Create useRecording Hook             | 🟢 High    | 🔲 TODO    | I010, I007       |
-| T004 | Create useScreenCapture Hook         | 🟢 High    | 🔲 TODO    | I010, I008       |
-| T005 | Create useElementSelection Hook      | 🟢 High    | 🔲 TODO    | I010             |
-| T006 | Create useKeyboardShortcuts Hook     | 🟡 Medium  | 🔲 TODO    | I010             |
-| T007 | Create useFeedbackSubmission Hook    | 🟢 High    | 🔲 TODO    | I010             |
-| T008 | Create useIntegrations Hook          | 🟢 High    | 🔲 TODO    | I010, I020       |
+| T001 | Create useActivation Hook            | 🟢 High    | ✅ Done    | I010 ✅          |
+| T002 | Create useDashboard Hook             | 🟢 High    | ✅ Done    | I010 ✅          |
+| T003 | Create useRecording Hook             | 🟢 High    | ✅ Done    | I010 ✅, I007 ✅  |
+| T004 | Create useScreenCapture Hook         | 🟢 High    | ✅ Done    | I010 ✅, I008 ✅  |
+| T005 | Create useElementSelection Hook      | 🟢 High    | ✅ Done    | I010 ✅          |
+| T006 | Create useKeyboardShortcuts Hook     | 🟡 Medium  | ✅ Done    | I010 ✅          |
+| T007 | Create useFeedbackSubmission Hook    | 🟢 High    | ✅ Done    | I010 ✅          |
+| T008 | Create useIntegrations Hook          | 🟢 High    | ✅ Done    | I010 ✅, I020 ✅  |
 
 ---
 
