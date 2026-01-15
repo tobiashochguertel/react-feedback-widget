@@ -17,7 +17,7 @@ This directory contains step definition files that implement the scenarios in `.
 
 ## 📂 Directory Structure
 
-```
+```structure
 steps/
 ├── README.md                 # This file
 ├── common.steps.ts           # Shared steps (navigation, setup)
@@ -125,7 +125,7 @@ Then('the modal closes', async ({ page }) => {
 
 Then('feedback is saved successfully', async ({ page }) => {
   // Check localStorage or API response
-  const feedback = await page.evaluate(() => 
+  const feedback = await page.evaluate(() =>
     JSON.parse(localStorage.getItem('feedback_list') || '[]')
   );
   expect(feedback.length).toBeGreaterThan(0);
@@ -174,7 +174,7 @@ Handle Gherkin data tables:
 ```typescript
 Then('each feedback card shows:', async ({ page }, dataTable) => {
   const fields = dataTable.rows().map(row => row[0]);
-  
+
   for (const field of fields) {
     const selector = `[data-testid="feedback-card"] [data-testid="${field.toLowerCase()}"]`;
     await expect(page.locator(selector).first()).toBeVisible();
@@ -337,7 +337,7 @@ npx playwright test --grep "Feedback Submission"
 - **Feature Files**: [../features/](../features/)
 - **Setup Guide**: [../SETUP.md](../SETUP.md)
 - **BDD Overview**: [../README.md](../README.md)
-- **playwright-bdd Docs**: https://vitalets.github.io/playwright-bdd/
+- **playwright-bdd Docs**: <https://vitalets.github.io/playwright-bdd/>
 
 ---
 

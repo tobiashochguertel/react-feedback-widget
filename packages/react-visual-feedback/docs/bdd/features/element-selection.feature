@@ -7,7 +7,6 @@ Feature: Element Selection
   Background:
     Given user is on a page with the feedback widget enabled
     And user has opened the feedback modal
-
   # User Story: US004 - Select Page Element
   # Priority: Medium
 

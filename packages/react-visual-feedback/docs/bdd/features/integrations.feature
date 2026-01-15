@@ -6,11 +6,9 @@ Feature: Integrations
 
   Background:
     Given user is on a page with the feedback widget enabled
-
   # User Stories: US010 - Submit Feedback to Jira
   #               US011 - Submit Feedback to Google Sheets
   # Priority: Medium
-
   # Jira Integration (US010)
 
   @jira @smoke
@@ -30,23 +28,23 @@ Feature: Integrations
     Given Jira integration is configured
     And user submits feedback with screenshot and description
     Then the Jira issue includes:
-      | Field       | Content                          |
-      | Summary     | Feedback title                   |
-      | Description | Feedback description             |
-      | Attachments | Screenshot images                |
-      | Labels      | Configured project labels        |
+      | Field       | Content                   |
+      | Summary     | Feedback title            |
+      | Description | Feedback description      |
+      | Attachments | Screenshot images         |
+      | Labels      | Configured project labels |
 
   @jira
   Scenario: Jira issue includes page metadata
     Given Jira integration is configured
     And user submits feedback
     Then the Jira issue description includes:
-      | Metadata    |
-      | Page URL    |
-      | Browser     |
-      | OS          |
-      | Timestamp   |
-      | User agent  |
+      | Metadata   |
+      | Page URL   |
+      | Browser    |
+      | OS         |
+      | Timestamp  |
+      | User agent |
 
   @jira-priority
   Scenario: Map feedback type to Jira priority
@@ -87,7 +85,6 @@ Feature: Integrations
     Then feedback is saved locally
     And user sees "Jira authentication required" message
     And a link to reconnect Jira is provided
-
   # Google Sheets Integration (US011)
 
   @sheets @smoke
@@ -106,24 +103,24 @@ Feature: Integrations
     Given Google Sheets integration is configured
     And user submits feedback with all fields
     Then the Google Sheet row includes:
-      | Column      | Content                |
-      | Timestamp   | Submission time        |
-      | Title       | Feedback title         |
-      | Description | Feedback description   |
-      | Type        | Feedback type          |
-      | Status      | Initial status         |
-      | Page URL    | Source page URL        |
-      | Screenshot  | Link to screenshot     |
+      | Column      | Content              |
+      | Timestamp   | Submission time      |
+      | Title       | Feedback title       |
+      | Description | Feedback description |
+      | Type        | Feedback type        |
+      | Status      | Initial status       |
+      | Page URL    | Source page URL      |
+      | Screenshot  | Link to screenshot   |
 
   @sheets-columns
   Scenario: Custom column mapping
     Given Google Sheets integration has custom column mapping:
-      | Source       | Column |
-      | title        | A      |
-      | description  | B      |
-      | url          | C      |
-      | status       | D      |
-      | created_at   | E      |
+      | Source      | Column |
+      | title       | A      |
+      | description | B      |
+      | url         | C      |
+      | status      | D      |
+      | created_at  | E      |
     When user submits feedback
     Then data is written to the correct columns
 
@@ -153,7 +150,6 @@ Feature: Integrations
     Then feedback is saved locally
     And user sees "Sheet sync will retry" message
     And the submission is automatically retried with backoff
-
   # Multiple Integrations
 
   @multi-integration
@@ -174,7 +170,6 @@ Feature: Integrations
     And user submits feedback
     Then only Google Sheets receives the submission
     And no Jira issue is created
-
   # Webhook Integration
 
   @webhook
@@ -187,9 +182,9 @@ Feature: Integrations
   @webhook-custom-headers
   Scenario: Webhook includes custom headers
     Given webhook integration has custom headers:
-      | Header        | Value             |
-      | Authorization | Bearer token123   |
-      | X-Project-ID  | my-project        |
+      | Header        | Value           |
+      | Authorization | Bearer token123 |
+      | X-Project-ID  | my-project      |
     When user submits feedback
     Then the webhook request includes the custom headers
 
@@ -201,7 +196,6 @@ Feature: Integrations
     Then the submission is queued for retry
     And retry uses exponential backoff (1s, 2s, 4s, 8s)
     And after 5 failures, the submission is marked as failed
-
   # Server-Side Integration
 
   @server-api
@@ -220,7 +214,6 @@ Feature: Integrations
     Then the screenshot is uploaded to the server
     And the server returns a file URL
     And the file URL is included in the feedback data
-
   # Integration Configuration
 
   @config

@@ -6,7 +6,6 @@ Feature: Feedback Submission
 
   Background:
     Given user is on a page with the feedback widget enabled
-
   # User Story: US001 - Provide Visual Feedback
   # Priority: High
 

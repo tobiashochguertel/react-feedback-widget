@@ -13,8 +13,8 @@ This directory contains user stories that describe feedback widget features from
 
 ### Files
 
-| File | Description |
-|------|-------------|
+| File                                 | Description                                                       |
+| ------------------------------------ | ----------------------------------------------------------------- |
 | [USER-STORIES.md](./USER-STORIES.md) | Complete user stories with acceptance criteria and test scenarios |
 
 ---
@@ -32,20 +32,20 @@ User stories bridge the gap between technical implementation and user value. The
 
 ## 📊 Story Overview
 
-| ID | Story | Priority | Actor |
-|----|-------|----------|-------|
-| US001 | Provide Visual Feedback | 🟢 High | Website User |
-| US002 | Capture Screenshot | 🟢 High | Website User |
-| US003 | Record Screen | 🟡 Medium | Website User |
-| US004 | Select Page Element | 🟡 Medium | Website User |
-| US005 | Use Keyboard Shortcuts | 🔴 Low | Power User |
-| US006 | View Feedback Dashboard | 🟡 Medium | Product Manager |
-| US007 | Filter and Search Feedback | 🔴 Low | Product Manager |
-| US008 | Update Feedback Status | 🟡 Medium | Product Manager |
-| US009 | Replay User Session | 🔴 Low | Developer |
-| US010 | Submit to Jira | 🟡 Medium | Product Manager |
-| US011 | Submit to Google Sheets | 🟡 Medium | Product Manager |
-| US012 | Customize Widget Theme | 🔴 Low | Developer |
+| ID    | Story                      | Priority  | Actor           |
+| ----- | -------------------------- | --------- | --------------- |
+| US001 | Provide Visual Feedback    | 🟢 High   | Website User    |
+| US002 | Capture Screenshot         | 🟢 High   | Website User    |
+| US003 | Record Screen              | 🟡 Medium | Website User    |
+| US004 | Select Page Element        | 🟡 Medium | Website User    |
+| US005 | Use Keyboard Shortcuts     | 🔴 Low    | Power User      |
+| US006 | View Feedback Dashboard    | 🟡 Medium | Product Manager |
+| US007 | Filter and Search Feedback | 🔴 Low    | Product Manager |
+| US008 | Update Feedback Status     | 🟡 Medium | Product Manager |
+| US009 | Replay User Session        | 🔴 Low    | Developer       |
+| US010 | Submit to Jira             | 🟡 Medium | Product Manager |
+| US011 | Submit to Google Sheets    | 🟡 Medium | Product Manager |
+| US012 | Customize Widget Theme     | 🔴 Low    | Developer       |
 
 ---
 

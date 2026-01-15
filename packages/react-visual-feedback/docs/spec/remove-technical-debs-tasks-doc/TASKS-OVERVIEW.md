@@ -8,11 +8,11 @@
 
 ## 📊 Quick Status Overview
 
-| Category | Total | Done | In Progress | TODO |
-|----------|-------|------|-------------|------|
-| Improvements | 7 | 0 | 0 | 7 |
-| Verification | 3 | 0 | 0 | 3 |
-| **Total** | **10** | **0** | **0** | **10** |
+| Category     | Total  | Done  | In Progress | TODO   |
+| ------------ | ------ | ----- | ----------- | ------ |
+| Improvements | 7      | 0     | 0           | 7      |
+| Verification | 3      | 0     | 0           | 3      |
+| **Total**    | **10** | **0** | **0**       | **10** |
 
 ---
 
@@ -44,51 +44,51 @@ After completing the 48-task refactoring project, several non-blocking TypeScrip
 **Priority:** Medium
 **Description:** Fix non-blocking TypeScript warnings to improve code quality and IDE experience.
 
-| Order | Task ID | Title | Status |
-|-------|---------|-------|--------|
-| 1 | I001 | Remove Duplicate Type Exports (TS2484) | 🔲 TODO |
-| 2 | I002 | Remove Unused React Imports (TS6133) | 🔲 TODO |
-| 3 | I003 | Fix exactOptionalPropertyTypes Warnings (TS2379) | 🔲 TODO |
+| Order | Task ID | Title                                            | Status  |
+| ----- | ------- | ------------------------------------------------ | ------- |
+| 1     | I001    | Remove Duplicate Type Exports (TS2484)           | 🔲 TODO |
+| 2     | I002    | Remove Unused React Imports (TS6133)             | 🔲 TODO |
+| 3     | I003    | Fix exactOptionalPropertyTypes Warnings (TS2379) | 🔲 TODO |
 
 ### Set 2: Code Quality Improvements
 
 **Priority:** Low
 **Description:** Additional code quality improvements for maintainability.
 
-| Order | Task ID | Title | Status |
-|-------|---------|-------|--------|
-| 1 | I004 | Consolidate Export Patterns in Hooks | 🔲 TODO |
-| 2 | I005 | Add Missing JSDoc Documentation | 🔲 TODO |
-| 3 | I006 | Remove Unused Imports in Registry | 🔲 TODO |
-| 4 | I007 | Clean Up Type Re-exports | 🔲 TODO |
+| Order | Task ID | Title                                | Status  |
+| ----- | ------- | ------------------------------------ | ------- |
+| 1     | I004    | Consolidate Export Patterns in Hooks | 🔲 TODO |
+| 2     | I005    | Add Missing JSDoc Documentation      | 🔲 TODO |
+| 3     | I006    | Remove Unused Imports in Registry    | 🔲 TODO |
+| 4     | I007    | Clean Up Type Re-exports             | 🔲 TODO |
 
 ### Set 3: Example Project Verification
 
 **Priority:** High
 **Description:** Verify the feedback-example project works correctly with the refactored react-visual-feedback package.
 
-| Order | Task ID | Title | Status |
-|-------|---------|-------|--------|
-| 1 | V001 | Build and Run Example Project | 🔲 TODO |
-| 2 | V002 | Verify FeedbackProvider Integration | 🔲 TODO |
-| 3 | V003 | Test All Widget Features | 🔲 TODO |
+| Order | Task ID | Title                               | Status  |
+| ----- | ------- | ----------------------------------- | ------- |
+| 1     | V001    | Build and Run Example Project       | 🔲 TODO |
+| 2     | V002    | Verify FeedbackProvider Integration | 🔲 TODO |
+| 3     | V003    | Test All Widget Features            | 🔲 TODO |
 
 ---
 
 ## 📋 Task Summary Table
 
-| ID | Category | Title | Priority | Status | Dependencies |
-|----|----------|-------|----------|--------|--------------|
-| I001 | Improvement | Remove Duplicate Type Exports | 🟡 Medium | 🔲 TODO | - |
-| I002 | Improvement | Remove Unused React Imports | 🟡 Medium | 🔲 TODO | - |
-| I003 | Improvement | Fix exactOptionalPropertyTypes | 🟡 Medium | 🔲 TODO | - |
-| I004 | Improvement | Consolidate Export Patterns | 🔴 Low | 🔲 TODO | I001 |
-| I005 | Improvement | Add Missing JSDoc | 🔴 Low | 🔲 TODO | - |
-| I006 | Improvement | Remove Unused Registry Imports | 🔴 Low | 🔲 TODO | - |
-| I007 | Improvement | Clean Up Type Re-exports | 🔴 Low | 🔲 TODO | I001 |
-| V001 | Verification | Build Example Project | 🟢 High | 🔲 TODO | - |
-| V002 | Verification | Verify FeedbackProvider | 🟢 High | 🔲 TODO | V001 |
-| V003 | Verification | Test Widget Features | 🟢 High | 🔲 TODO | V002 |
+| ID   | Category     | Title                          | Priority  | Status  | Dependencies |
+| ---- | ------------ | ------------------------------ | --------- | ------- | ------------ |
+| I001 | Improvement  | Remove Duplicate Type Exports  | 🟡 Medium | 🔲 TODO | -            |
+| I002 | Improvement  | Remove Unused React Imports    | 🟡 Medium | 🔲 TODO | -            |
+| I003 | Improvement  | Fix exactOptionalPropertyTypes | 🟡 Medium | 🔲 TODO | -            |
+| I004 | Improvement  | Consolidate Export Patterns    | 🔴 Low    | 🔲 TODO | I001         |
+| I005 | Improvement  | Add Missing JSDoc              | 🔴 Low    | 🔲 TODO | -            |
+| I006 | Improvement  | Remove Unused Registry Imports | 🔴 Low    | 🔲 TODO | -            |
+| I007 | Improvement  | Clean Up Type Re-exports       | 🔴 Low    | 🔲 TODO | I001         |
+| V001 | Verification | Build Example Project          | 🟢 High   | 🔲 TODO | -            |
+| V002 | Verification | Verify FeedbackProvider        | 🟢 High   | 🔲 TODO | V001         |
+| V003 | Verification | Test Widget Features           | 🟢 High   | 🔲 TODO | V002         |
 
 ---
 

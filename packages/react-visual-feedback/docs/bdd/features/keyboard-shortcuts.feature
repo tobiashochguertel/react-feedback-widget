@@ -7,7 +7,6 @@ Feature: Keyboard Shortcuts
   Background:
     Given user is on a page with the feedback widget enabled
     And keyboard shortcuts are enabled in the widget configuration
-
   # User Story: US005 - Use Keyboard Shortcuts
   # Priority: Low
 

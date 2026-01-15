@@ -37,12 +37,12 @@ npx playwright install
 Create `playwright-bdd.config.ts` in the package root:
 
 ```typescript
-import { defineConfig, devices } from '@playwright/test';
-import { defineBddConfig } from 'playwright-bdd';
+import { defineConfig, devices } from "@playwright/test";
+import { defineBddConfig } from "playwright-bdd";
 
 const testDir = defineBddConfig({
-  features: 'docs/bdd/features/**/*.feature',
-  steps: 'docs/bdd/steps/**/*.ts',
+  features: "docs/bdd/features/**/*.feature",
+  steps: "docs/bdd/steps/**/*.ts",
 });
 
 export default defineConfig({
@@ -51,32 +51,32 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
-  
+  reporter: "html",
+
   use: {
-    baseURL: 'http://localhost:3002',
-    trace: 'on-first-retry',
-    screenshot: 'only-on-failure',
+    baseURL: "http://localhost:3002",
+    trace: "on-first-retry",
+    screenshot: "only-on-failure",
   },
 
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"] },
     },
     {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      name: "firefox",
+      use: { ...devices["Desktop Firefox"] },
     },
     {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
+      name: "webkit",
+      use: { ...devices["Desktop Safari"] },
     },
   ],
 
   webServer: {
-    command: 'cd ../feedback-example && npm run dev',
-    url: 'http://localhost:3002',
+    command: "cd ../feedback-example && npm run dev",
+    url: "http://localhost:3002",
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
   },
@@ -163,44 +163,54 @@ Create step definitions in `docs/bdd/steps/`:
 
 ```typescript
 // docs/bdd/steps/feedback.steps.ts
-import { expect } from '@playwright/test';
-import { Given, When, Then } from 'playwright-bdd';
+import { expect } from "@playwright/test";
+import { Given, When, Then } from "playwright-bdd";
 
-Given('user is on a page with the feedback widget enabled', async ({ page }) => {
-  await page.goto('/');
-  await expect(page.locator('[data-testid="feedback-trigger"]')).toBeVisible();
-});
+Given(
+  "user is on a page with the feedback widget enabled",
+  async ({ page }) => {
+    await page.goto("/");
+    await expect(
+      page.locator('[data-testid="feedback-trigger"]'),
+    ).toBeVisible();
+  },
+);
 
-When('user clicks the feedback trigger button', async ({ page }) => {
+When("user clicks the feedback trigger button", async ({ page }) => {
   await page.click('[data-testid="feedback-trigger"]');
 });
 
-Then('a feedback form modal opens', async ({ page }) => {
+Then("a feedback form modal opens", async ({ page }) => {
   await expect(page.locator('[data-testid="feedback-modal"]')).toBeVisible();
 });
 
-When('user enters {string} in the description', async ({ page }, text: string) => {
-  await page.fill('[data-testid="feedback-description"]', text);
-});
+When(
+  "user enters {string} in the description",
+  async ({ page }, text: string) => {
+    await page.fill('[data-testid="feedback-description"]', text);
+  },
+);
 
-When('user clicks the submit button', async ({ page }) => {
+When("user clicks the submit button", async ({ page }) => {
   await page.click('[data-testid="feedback-submit"]');
 });
 
-Then('feedback is saved successfully', async ({ page }) => {
+Then("feedback is saved successfully", async ({ page }) => {
   // Check localStorage or API response
-  const feedback = await page.evaluate(() => 
-    JSON.parse(localStorage.getItem('feedback_list') || '[]')
+  const feedback = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem("feedback_list") || "[]"),
   );
   expect(feedback.length).toBeGreaterThan(0);
 });
 
-Then('user sees a confirmation message', async ({ page }) => {
+Then("user sees a confirmation message", async ({ page }) => {
   await expect(page.locator('[data-testid="success-message"]')).toBeVisible();
 });
 
-Then('the modal closes', async ({ page }) => {
-  await expect(page.locator('[data-testid="feedback-modal"]')).not.toBeVisible();
+Then("the modal closes", async ({ page }) => {
+  await expect(
+    page.locator('[data-testid="feedback-modal"]'),
+  ).not.toBeVisible();
 });
 ```
 
@@ -210,26 +220,26 @@ Then('the modal closes', async ({ page }) => {
 
 Add these data-testid attributes to components for reliable test selectors:
 
-| Component | Attribute |
-|-----------|-----------|
-| Feedback Trigger | `data-testid="feedback-trigger"` |
-| Feedback Modal | `data-testid="feedback-modal"` |
-| Description Input | `data-testid="feedback-description"` |
-| Submit Button | `data-testid="feedback-submit"` |
-| Close Button | `data-testid="feedback-close"` |
-| Screenshot Button | `data-testid="screenshot-button"` |
-| Screenshot Preview | `data-testid="screenshot-preview"` |
-| Record Button | `data-testid="record-button"` |
-| Stop Record Button | `data-testid="stop-record-button"` |
+| Component             | Attribute                             |
+| --------------------- | ------------------------------------- |
+| Feedback Trigger      | `data-testid="feedback-trigger"`      |
+| Feedback Modal        | `data-testid="feedback-modal"`        |
+| Description Input     | `data-testid="feedback-description"`  |
+| Submit Button         | `data-testid="feedback-submit"`       |
+| Close Button          | `data-testid="feedback-close"`        |
+| Screenshot Button     | `data-testid="screenshot-button"`     |
+| Screenshot Preview    | `data-testid="screenshot-preview"`    |
+| Record Button         | `data-testid="record-button"`         |
+| Stop Record Button    | `data-testid="stop-record-button"`    |
 | Element Select Button | `data-testid="element-select-button"` |
-| Dashboard Button | `data-testid="dashboard-button"` |
-| Dashboard Modal | `data-testid="dashboard-modal"` |
-| Feedback List | `data-testid="feedback-list"` |
-| Feedback Card | `data-testid="feedback-card"` |
-| Status Dropdown | `data-testid="status-dropdown"` |
-| Search Input | `data-testid="dashboard-search"` |
-| Success Message | `data-testid="success-message"` |
-| Error Message | `data-testid="error-message"` |
+| Dashboard Button      | `data-testid="dashboard-button"`      |
+| Dashboard Modal       | `data-testid="dashboard-modal"`       |
+| Feedback List         | `data-testid="feedback-list"`         |
+| Feedback Card         | `data-testid="feedback-card"`         |
+| Status Dropdown       | `data-testid="status-dropdown"`       |
+| Search Input          | `data-testid="dashboard-search"`      |
+| Success Message       | `data-testid="success-message"`       |
+| Error Message         | `data-testid="error-message"`         |
 
 ---
 
@@ -270,27 +280,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          
+
       - name: Install dependencies
         run: |
           cd packages/react-visual-feedback
           npm ci
           npx playwright install --with-deps
-          
+
       - name: Build package
         run: |
           cd packages/react-visual-feedback
           npm run build
-          
+
       - name: Run BDD tests
         run: |
           cd packages/react-visual-feedback
           npm run test:bdd
-          
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -306,8 +316,8 @@ jobs:
 - **BDD Overview**: [./README.md](./README.md)
 - **Feature Files**: [./features/](./features/)
 - **User Stories**: [../user-stories/README.md](../user-stories/README.md)
-- **Playwright Docs**: https://playwright.dev/
-- **playwright-bdd Docs**: https://vitalets.github.io/playwright-bdd/
+- **Playwright Docs**: <https://playwright.dev/>
+- **playwright-bdd Docs**: <https://vitalets.github.io/playwright-bdd/>
 
 ---
 

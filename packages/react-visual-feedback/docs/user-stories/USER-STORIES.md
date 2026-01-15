@@ -9,20 +9,20 @@
 
 ## 📊 Story Summary
 
-| ID | Title | Priority | Status |
-|----|-------|----------|--------|
-| US001 | Provide Visual Feedback | 🟢 High | 🔲 TODO |
-| US002 | Capture Screenshot | 🟢 High | 🔲 TODO |
-| US003 | Record Screen | 🟡 Medium | 🔲 TODO |
-| US004 | Select Page Element | 🟡 Medium | 🔲 TODO |
-| US005 | Use Keyboard Shortcuts | 🔴 Low | 🔲 TODO |
-| US006 | View Feedback Dashboard | 🟡 Medium | 🔲 TODO |
-| US007 | Filter and Search Feedback | 🔴 Low | 🔲 TODO |
-| US008 | Update Feedback Status | 🟡 Medium | 🔲 TODO |
-| US009 | Replay User Session | 🔴 Low | 🔲 TODO |
-| US010 | Submit to Jira | 🟡 Medium | 🔲 TODO |
-| US011 | Submit to Google Sheets | 🟡 Medium | 🔲 TODO |
-| US012 | Customize Widget Theme | 🔴 Low | 🔲 TODO |
+| ID    | Title                      | Priority  | Status  |
+| ----- | -------------------------- | --------- | ------- |
+| US001 | Provide Visual Feedback    | 🟢 High   | 🔲 TODO |
+| US002 | Capture Screenshot         | 🟢 High   | 🔲 TODO |
+| US003 | Record Screen              | 🟡 Medium | 🔲 TODO |
+| US004 | Select Page Element        | 🟡 Medium | 🔲 TODO |
+| US005 | Use Keyboard Shortcuts     | 🔴 Low    | 🔲 TODO |
+| US006 | View Feedback Dashboard    | 🟡 Medium | 🔲 TODO |
+| US007 | Filter and Search Feedback | 🔴 Low    | 🔲 TODO |
+| US008 | Update Feedback Status     | 🟡 Medium | 🔲 TODO |
+| US009 | Replay User Session        | 🔴 Low    | 🔲 TODO |
+| US010 | Submit to Jira             | 🟡 Medium | 🔲 TODO |
+| US011 | Submit to Google Sheets    | 🟡 Medium | 🔲 TODO |
+| US012 | Customize Widget Theme     | 🔴 Low    | 🔲 TODO |
 
 ---
 

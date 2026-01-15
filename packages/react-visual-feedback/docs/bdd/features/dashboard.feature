@@ -7,7 +7,6 @@ Feature: Feedback Dashboard
   Background:
     Given user is on a page with the feedback widget enabled
     And user has appropriate permissions to access the dashboard
-
   # User Stories: US006 - View Feedback Dashboard
   #               US007 - Filter and Search Feedback
   #               US008 - Update Feedback Status
@@ -33,12 +32,12 @@ Feature: Feedback Dashboard
     Given multiple feedbacks have been submitted
     When user opens the feedback dashboard
     Then each feedback card shows:
-      | Field       |
-      | Title       |
-      | Status      |
-      | Date        |
-      | Type        |
-      | Thumbnail   |
+      | Field     |
+      | Title     |
+      | Status    |
+      | Date      |
+      | Type      |
+      | Thumbnail |
 
   @detail-view
   Scenario: View feedback details
@@ -50,7 +49,6 @@ Feature: Feedback Dashboard
     And user sees attached screenshots
     And user sees attached recordings
     And user sees selected element information
-
   # Filtering and Search (US007)
 
   @filter @smoke
@@ -105,7 +103,6 @@ Feature: Feedback Dashboard
     And user clicks "Sort by Date"
     Then feedbacks are sorted by submission date
     And user can toggle between newest and oldest first
-
   # Status Management (US008)
 
   @status @smoke
@@ -151,7 +148,6 @@ Feature: Feedback Dashboard
     And user expands "Status History"
     Then user sees a list of all status changes
     And each entry shows the old status, new status, and timestamp
-
   # Session Replay (US009)
 
   @replay @smoke
@@ -178,11 +174,10 @@ Feature: Feedback Dashboard
 
     Examples:
       | speed |
-      | 0.5x  |
-      | 1x    |
-      | 1.5x  |
-      | 2x    |
-
+      |  0.5x |
+      |    1x |
+      |  1.5x |
+      |    2x |
   # Additional Dashboard Features
 
   @pagination

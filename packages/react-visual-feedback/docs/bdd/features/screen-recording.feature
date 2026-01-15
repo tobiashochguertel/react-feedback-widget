@@ -7,7 +7,6 @@ Feature: Screen Recording
   Background:
     Given user is on a page with the feedback widget enabled
     And user has opened the feedback modal
-
   # User Story: US003 - Record Screen
   # Priority: Medium
 

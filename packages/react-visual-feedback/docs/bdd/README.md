@@ -37,19 +37,19 @@ BDD tests verify that the feedback widget behaves correctly from the user's pers
 
 ### Recommended Tools
 
-| Tool | Purpose | Install |
-|------|---------|---------|
-| **Playwright** | Browser automation for React | `npm install -D @playwright/test` |
-| **Cucumber** | Gherkin parser and runner | `npm install -D @cucumber/cucumber` |
-| **playwright-bdd** | Playwright + Cucumber integration | `npm install -D playwright-bdd` |
+| Tool               | Purpose                           | Install                             |
+| ------------------ | --------------------------------- | ----------------------------------- |
+| **Playwright**     | Browser automation for React      | `npm install -D @playwright/test`   |
+| **Cucumber**       | Gherkin parser and runner         | `npm install -D @cucumber/cucumber` |
+| **playwright-bdd** | Playwright + Cucumber integration | `npm install -D playwright-bdd`     |
 
 ### Alternative Stacks
 
-| Stack | Pros | Cons |
-|-------|------|------|
+| Stack                       | Pros                          | Cons                      |
+| --------------------------- | ----------------------------- | ------------------------- |
 | Playwright + playwright-bdd | Native React/TypeScript, fast | Newer, less documentation |
-| Cypress + cypress-cucumber | Excellent DX, good debugging | Heavier, slower |
-| Jest + jest-cucumber | Already use Jest/Vitest | Less suitable for E2E |
+| Cypress + cypress-cucumber  | Excellent DX, good debugging  | Heavier, slower           |
+| Jest + jest-cucumber        | Already use Jest/Vitest       | Less suitable for E2E     |
 
 ---
 
@@ -57,24 +57,24 @@ BDD tests verify that the feedback widget behaves correctly from the user's pers
 
 ### Core Features
 
-| Feature File | User Stories | Priority |
-|--------------|--------------|----------|
-| [feedback-submission.feature](./features/feedback-submission.feature) | US001 | 🟢 High |
-| [screenshot-capture.feature](./features/screenshot-capture.feature) | US002 | 🟢 High |
-| [screen-recording.feature](./features/screen-recording.feature) | US003 | 🟡 Medium |
-| [element-selection.feature](./features/element-selection.feature) | US004 | 🟡 Medium |
-| [keyboard-shortcuts.feature](./features/keyboard-shortcuts.feature) | US005 | 🔴 Low |
+| Feature File                                                          | User Stories | Priority  |
+| --------------------------------------------------------------------- | ------------ | --------- |
+| [feedback-submission.feature](./features/feedback-submission.feature) | US001        | 🟢 High   |
+| [screenshot-capture.feature](./features/screenshot-capture.feature)   | US002        | 🟢 High   |
+| [screen-recording.feature](./features/screen-recording.feature)       | US003        | 🟡 Medium |
+| [element-selection.feature](./features/element-selection.feature)     | US004        | 🟡 Medium |
+| [keyboard-shortcuts.feature](./features/keyboard-shortcuts.feature)   | US005        | 🔴 Low    |
 
 ### Dashboard Features
 
-| Feature File | User Stories | Priority |
-|--------------|--------------|----------|
+| Feature File                                      | User Stories               | Priority  |
+| ------------------------------------------------- | -------------------------- | --------- |
 | [dashboard.feature](./features/dashboard.feature) | US006, US007, US008, US009 | 🟡 Medium |
 
 ### Integration Features
 
-| Feature File | User Stories | Priority |
-|--------------|--------------|----------|
+| Feature File                                            | User Stories | Priority  |
+| ------------------------------------------------------- | ------------ | --------- |
 | [integrations.feature](./features/integrations.feature) | US010, US011 | 🟡 Medium |
 
 ---
@@ -93,18 +93,18 @@ npm install -D @playwright/test playwright-bdd @cucumber/cucumber
 Create `playwright-bdd.config.ts`:
 
 ```typescript
-import { defineConfig } from '@playwright/test';
-import { defineBddConfig } from 'playwright-bdd';
+import { defineConfig } from "@playwright/test";
+import { defineBddConfig } from "playwright-bdd";
 
 const testDir = defineBddConfig({
-  features: 'docs/bdd/features/**/*.feature',
-  steps: 'docs/bdd/steps/**/*.ts',
+  features: "docs/bdd/features/**/*.feature",
+  steps: "docs/bdd/steps/**/*.ts",
 });
 
 export default defineConfig({
   testDir,
   use: {
-    baseURL: 'http://localhost:3002',
+    baseURL: "http://localhost:3002",
   },
 });
 ```
@@ -125,20 +125,20 @@ npx bddgen && npx playwright test
 
 ## 📋 Test Coverage Matrix
 
-| User Story | Feature File | Scenarios | Automated |
-|------------|--------------|-----------|-----------|
-| US001 | feedback-submission | 3 | 🔲 TODO |
-| US002 | screenshot-capture | 3 | 🔲 TODO |
-| US003 | screen-recording | 3 | 🔲 TODO |
-| US004 | element-selection | 3 | 🔲 TODO |
-| US005 | keyboard-shortcuts | 3 | 🔲 TODO |
-| US006 | dashboard | 3 | 🔲 TODO |
-| US007 | dashboard | 2 | 🔲 TODO |
-| US008 | dashboard | 2 | 🔲 TODO |
-| US009 | dashboard | 2 | 🔲 TODO |
-| US010 | integrations | 2 | 🔲 TODO |
-| US011 | integrations | 1 | 🔲 TODO |
-| US012 | theming | 2 | 🔲 TODO |
+| User Story | Feature File        | Scenarios | Automated |
+| ---------- | ------------------- | --------- | --------- |
+| US001      | feedback-submission | 3         | 🔲 TODO   |
+| US002      | screenshot-capture  | 3         | 🔲 TODO   |
+| US003      | screen-recording    | 3         | 🔲 TODO   |
+| US004      | element-selection   | 3         | 🔲 TODO   |
+| US005      | keyboard-shortcuts  | 3         | 🔲 TODO   |
+| US006      | dashboard           | 3         | 🔲 TODO   |
+| US007      | dashboard           | 2         | 🔲 TODO   |
+| US008      | dashboard           | 2         | 🔲 TODO   |
+| US009      | dashboard           | 2         | 🔲 TODO   |
+| US010      | integrations        | 2         | 🔲 TODO   |
+| US011      | integrations        | 1         | 🔲 TODO   |
+| US012      | theming             | 2         | 🔲 TODO   |
 
 ---
 
