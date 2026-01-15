@@ -23,9 +23,16 @@ export {
   type ThemeHookOptions,
 } from './useTheme.js';
 
-// Core hooks - TODO: Implement in T001-T008
-// export { useActivation } from './useActivation';
+// Core hooks (T001-T008)
+export {
+  useActivation,
+  type UseActivationOptions,
+  type UseActivationReturn,
+} from './useActivation.js';
+
+// TODO: Implement in T002
 // export { useDashboard } from './useDashboard';
+// TODO: Implement in T005
 // export { useFeedbackSubmission } from './useFeedbackSubmission';
 
 // Recording hooks - TODO: Implement in T003, T004

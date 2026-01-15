@@ -4,7 +4,8 @@
     "name": "Currently Open Files",
     "files": [
       "packages/react-visual-feedback/docs/spec/TASKS-OVERVIEW.md",
-      "packages/react-visual-feedback/src/FeedbackModal.tsx",
+      "packages/react-visual-feedback/src/hooks/index.ts",
+      "packages/react-visual-feedback/src/hooks/useActivation.ts",
       "packages/react-visual-feedback/src/constants/media.ts",
       "packages/react-visual-feedback/docs/spec/TASKS-IMPROVEMENTS.md"
     ],
