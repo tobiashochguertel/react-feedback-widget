@@ -3,7 +3,9 @@
     "id": "builtin_group_id",
     "name": "Currently Open Files",
     "files": [
-      "packages/react-visual-feedback/docs/spec/TASKS-OVERVIEW.md"
+      "packages/react-visual-feedback/docs/spec/TASKS-OVERVIEW.md",
+      "packages/react-visual-feedback/docs/architecture/directory-structure.md",
+      "packages/react-visual-feedback/docs/architecture/README.md"
     ],
     "builtIn": true,
     "bookmarks": {}

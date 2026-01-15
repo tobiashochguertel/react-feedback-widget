@@ -12,6 +12,43 @@ A powerful, visual feedback collection tool for React applications with screen r
 - [Quick Start](./getting-started/quick-start.md)
 - [Next.js Setup](./getting-started/nextjs.md)
 
+### Architecture & Core Concepts
+
+- [Architecture Overview](./architecture/README.md) - System design, state machine, component hierarchy
+- [Directory Structure](./architecture/directory-structure.md) - Project organization
+- [Component Hierarchy](./architecture/component-hierarchy.md) - Component relationships
+- [Data Flow](./architecture/data-flow.md) - State management and data flow
+
+### Hooks API
+
+- [Hooks Overview](./hooks/README.md) - All available hooks
+- [useActivation](./hooks/useActivation.md) - Feedback mode activation
+- [useDashboard](./hooks/useDashboard.md) - Dashboard visibility
+- [useRecording](./hooks/useRecording.md) - Screen recording
+- [useScreenCapture](./hooks/useScreenCapture.md) - Screenshot capture
+- [useElementSelection](./hooks/useElementSelection.md) - DOM element selection
+- [useKeyboardShortcuts](./hooks/useKeyboardShortcuts.md) - Keyboard shortcuts
+- [useFeedbackSubmission](./hooks/useFeedbackSubmission.md) - Submission queue
+- [useIntegrations](./hooks/useIntegrations.md) - Integration management
+- [useTheme](./hooks/useTheme.md) - Theme access
+
+### Service Layer
+
+- [Services Overview](./services/README.md) - Service architecture
+- [StorageService](./services/storage-service.md) - Browser storage
+- [VideoStorageService](./services/video-storage-service.md) - Video/IndexedDB storage
+- [RecorderService](./services/recorder-service.md) - Screen recording
+- [ScreenshotService](./services/screenshot-service.md) - Screenshot capture
+- [ThemeService](./services/theme-service.md) - Theme management
+
+### Integrations
+
+- [Integration Overview](./integrations/README.md) - Integration architecture
+- [Jira Integration](./integrations/jira.md) - Jira Cloud setup
+- [Google Sheets](./integrations/sheets.md) - Sheets integration
+- [Server Handlers](./integrations/server.md) - Server-side handlers
+- [Custom Integrations](./integrations/custom.md) - Build your own
+
 ### Features
 
 - [Visual Element Selection](./features/element-selection.md)
@@ -20,12 +57,6 @@ A powerful, visual feedback collection tool for React applications with screen r
 - [Dashboard](./features/dashboard.md)
 - [Updates Modal](./features/updates-modal.md)
 - [Keyboard Shortcuts](./features/keyboard-shortcuts.md)
-
-### Integrations
-
-- [Jira Integration](./integrations/jira.md)
-- [Google Sheets Integration](./integrations/google-sheets.md)
-- [Custom Integrations](./integrations/custom.md)
 
 ### API Reference
 

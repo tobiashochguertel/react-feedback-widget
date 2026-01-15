@@ -62,11 +62,92 @@ function App(): React.ReactElement {
 - [Quick Start Guide](./docs/getting-started/quick-start.md)
 - [Next.js Setup](./docs/getting-started/nextjs.md)
 
+### Architecture & Core Concepts
+
+- [Architecture Overview](./docs/architecture/README.md) - System design and data flow
+- [Hooks Reference](./docs/hooks/README.md) - All available hooks
+- [Services Reference](./docs/services/README.md) - Service layer documentation
+
 ### Features
 
 - [Keyboard Shortcuts](./docs/features/keyboard-shortcuts.md)
 - [TypeScript Documentation](./docs/original-readme-with-typescript.md)
-- More documentation coming soon...
+
+### Integrations
+
+- [Integration Overview](./docs/integrations/README.md) - Jira, Sheets, Custom
+- [Jira Integration](./docs/integrations/jira.md)
+- [Google Sheets](./docs/integrations/sheets.md)
+- [Server-Side Handlers](./docs/integrations/server.md)
+- [Custom Integrations](./docs/integrations/custom.md)
+
+## 🎣 Hooks
+
+React Visual Feedback provides hooks for fine-grained control:
+
+```tsx
+import {
+  useActivation,      // Control feedback mode activation
+  useDashboard,       // Control dashboard visibility
+  useRecording,       // Screen recording controls
+  useScreenCapture,   // Screenshot capture
+  useElementSelection, // DOM element selection
+  useKeyboardShortcuts, // Custom shortcuts
+  useFeedbackSubmission, // Submission queue & retry
+  useIntegrations,    // Jira/Sheets integration
+  useTheme,          // Theme access
+} from 'react-visual-feedback';
+
+function MyComponent() {
+  const { activate, deactivate, isActive } = useActivation();
+  const { startRecording, stopRecording, isRecording } = useRecording();
+  
+  return (
+    <button onClick={() => isActive ? deactivate() : activate()}>
+      {isActive ? 'Deactivate' : 'Activate'} Feedback
+    </button>
+  );
+}
+```
+
+See [Hooks Documentation](./docs/hooks/README.md) for complete API reference.
+
+## 🔌 Integrations
+
+Connect to external services:
+
+```tsx
+<FeedbackProvider
+  integrations={{
+    jira: {
+      endpoint: '/api/feedback/jira',
+      mode: 'server',
+    },
+    sheets: {
+      endpoint: '/api/feedback/sheets',
+      mode: 'server',
+    },
+  }}
+>
+  {children}
+</FeedbackProvider>
+```
+
+Server-side handlers keep credentials secure:
+
+```typescript
+// app/api/feedback/jira/route.ts
+import { createJiraNextAppHandler } from 'react-visual-feedback/server';
+
+export const POST = createJiraNextAppHandler({
+  host: process.env.JIRA_HOST!,
+  email: process.env.JIRA_EMAIL!,
+  apiToken: process.env.JIRA_API_TOKEN!,
+  projectKey: 'FEEDBACK',
+});
+```
+
+See [Integrations Guide](./docs/integrations/README.md) for details.
 
 ## ⌨️ Keyboard Shortcuts
 

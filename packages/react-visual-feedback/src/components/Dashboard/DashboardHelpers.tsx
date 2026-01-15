@@ -46,4 +46,3 @@ export const TypeIcon: React.FC<TypeIconProps> = ({ type }) => {
  * @deprecated Import from '../../utils/dateUtils' directly.
  */
 export const formatRelativeDate = formatRelativeDateUtil;
-
