@@ -995,6 +995,7 @@ export const selectFailedSubmissions = (state: FeedbackState) =>
 **Priority**: 🟢 High
 
 **Implementation Notes**:
+
 - Installed `xstate@5.25.0` and `@xstate/react@6.0.0`
 - Created `src/state/feedbackMachine.ts` (533 lines) with XState v5 `setup()` API
 - All 23 action types mapped to XState events with corresponding actions

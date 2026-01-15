@@ -42,14 +42,14 @@ export type FeedbackContext = FeedbackState;
 export type FeedbackEvent =
   | { type: 'SET_STATE'; payload: Partial<FeedbackState> }
   | {
-      type: 'START_HOVERING';
-      payload: {
-        element: HTMLElement;
-        componentInfo: ReactComponentInfo | null;
-        highlightStyle: HighlightStyle;
-        tooltipStyle: TooltipStyle;
-      };
-    }
+    type: 'START_HOVERING';
+    payload: {
+      element: HTMLElement;
+      componentInfo: ReactComponentInfo | null;
+      highlightStyle: HighlightStyle;
+      tooltipStyle: TooltipStyle;
+    };
+  }
   | { type: 'STOP_HOVERING' }
   | { type: 'START_CAPTURE'; payload: HTMLElement }
   | { type: 'COMPLETE_CAPTURE'; payload: string | null }
@@ -67,9 +67,9 @@ export type FeedbackEvent =
   | { type: 'STOP_RECORDING'; payload: RecordingResult }
   | { type: 'RESET_MODAL' }
   | {
-      type: 'INTEGRATION_START';
-      payload: { jira?: boolean | undefined; sheets?: boolean | undefined };
-    }
+    type: 'INTEGRATION_START';
+    payload: { jira?: boolean | undefined; sheets?: boolean | undefined };
+  }
   | { type: 'INTEGRATION_SUCCESS'; payload: IntegrationResults }
   | { type: 'INTEGRATION_ERROR'; payload: Partial<IntegrationResults> }
   | { type: 'INTEGRATION_RESET' }
