@@ -205,7 +205,7 @@ export interface Integration<TConfig = unknown, TResult = unknown> {
  * Constructor type for creating integrations.
  */
 export interface IntegrationConstructor<TConfig = unknown, TResult = unknown> {
-  new (config?: TConfig | undefined): Integration<TConfig, TResult>;
+  new(config?: TConfig | undefined): Integration<TConfig, TResult>;
 }
 
 // ============================================
