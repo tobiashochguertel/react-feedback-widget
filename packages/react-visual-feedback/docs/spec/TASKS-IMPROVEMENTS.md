@@ -12,7 +12,7 @@
 
 The Improvement tasks address SOLID principle violations and code smells identified in the architecture analysis.
 
-**Status**: Set 7 (Shared Components Extraction) - COMPLETE ✅
+**Status**: Set 8 (Overlay Components) - COMPLETE ✅
 
 - Set 1 (Foundation Setup) - COMPLETE ✅
 - Set 2 (Service Layer Extraction) - COMPLETE ✅
@@ -20,6 +20,7 @@ The Improvement tasks address SOLID principle violations and code smells identif
 - Set 5 (Dashboard Component Refactoring) - COMPLETE ✅
 - Set 6 (Integration System Refactoring I020-I024) - COMPLETE ✅
 - Set 7 (Shared Components I025-I028) - COMPLETE ✅
+- Set 8 (Overlay Components I029-I031) - COMPLETE ✅
 
 - **SRP Violations**: FeedbackDashboard (1,158 lines), FeedbackProvider (899 lines), jira.ts (1,062 lines), sheets.ts (1,035 lines)
 - **DIP Violations**: Direct dependencies on localStorage, IndexedDB, navigator.mediaDevices
@@ -1598,11 +1599,20 @@ src/integrations/jira/
 
 ### I029 - Create SelectionOverlay Component
 
-**Status**: 🔲 TODO
+**Status**: ✅ Done
 **Priority**: 🔴 Low
 
 **Description**:
 Extract selection overlay from FeedbackProvider.
+
+**Implementation Notes**:
+
+- Created `src/components/Overlay/SelectionOverlay.tsx` with full TypeScript types
+- Implements portal rendering to document.body
+- Supports keyboard events (Escape to cancel)
+- Includes helper functions: `calculateHighlightStyle`, `calculateTooltipStyle`, `getComponentInfo`, `shouldIgnoreElement`
+- Theme integration via styled-components
+- Comprehensive test coverage (21 tests)
 
 **Dependencies**: T005
 
@@ -1610,11 +1620,20 @@ Extract selection overlay from FeedbackProvider.
 
 ### I030 - Create ElementHighlight Component
 
-**Status**: 🔲 TODO
+**Status**: ✅ Done
 **Priority**: 🔴 Low
 
 **Description**:
 Extract element highlight from FeedbackProvider.
+
+**Implementation Notes**:
+
+- Created `src/components/Overlay/ElementHighlight.tsx` with full TypeScript types
+- Supports variants: hover, selected, error, success
+- Supports animations: none, pulse, glow, bounce
+- Includes corner markers for enhanced visibility
+- Theme integration and custom color overrides
+- Comprehensive test coverage (29 tests)
 
 **Dependencies**: T005
 
@@ -1622,11 +1641,20 @@ Extract element highlight from FeedbackProvider.
 
 ### I031 - Create ElementTooltip Component
 
-**Status**: 🔲 TODO
+**Status**: ✅ Done
 **Priority**: 🔴 Low
 
 **Description**:
 Extract element tooltip from FeedbackProvider.
+
+**Implementation Notes**:
+
+- Created `src/components/Overlay/ElementTooltip.tsx` with full TypeScript types
+- Displays element info: tagName, componentName, id, classList, dimensions, dataAttributes
+- Supports variants: default, dark, light, info, success, warning, error
+- Includes `extractElementInfo` helper function
+- Theme integration via styled-components
+- Comprehensive test coverage (44 tests)
 
 **Dependencies**: T005
 
@@ -1714,9 +1742,9 @@ Final cleanup of FeedbackProvider after all hooks extracted.
 | I026 | Create Form Validation Utilities         | 🟡 Medium  | ✅ Done    | 7    |
 | I027 | Create ErrorBoundary Component           | 🟡 Medium  | ✅ Done    | 7    |
 | I028 | Create Theme Hooks                       | 🟡 Medium  | ✅ Done    | 7    |
-| I029 | Create SelectionOverlay Component        | 🔴 Low     | 🔲 TODO    | 8    |
-| I030 | Create ElementHighlight Component        | 🔴 Low     | 🔲 TODO    | 8    |
-| I031 | Create ElementTooltip Component          | 🔴 Low     | 🔲 TODO    | 8    |
+| I029 | Create SelectionOverlay Component        | 🔴 Low     | ✅ Done    | 8    |
+| I030 | Create ElementHighlight Component        | 🔴 Low     | ✅ Done    | 8    |
+| I031 | Create ElementTooltip Component          | 🔴 Low     | ✅ Done    | 8    |
 | I032 | Extract Date Utilities                   | 🔴 Low     | 🔲 TODO    | -    |
 | I033 | Create Status Registry                   | 🔴 Low     | 🔲 TODO    | -    |
 | I034 | Consolidate Magic Numbers/Strings        | 🟢 High    | 🔲 TODO    | -    |

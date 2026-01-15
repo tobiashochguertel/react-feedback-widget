@@ -3,7 +3,8 @@
     "id": "builtin_group_id",
     "name": "Currently Open Files",
     "files": [
-      "packages/react-visual-feedback/src/components/Dashboard/DashboardHeaderComponent.tsx"
+      "packages/react-visual-feedback/docs/spec/TASKS-OVERVIEW.md",
+      "packages/react-visual-feedback/docs/spec/TASKS-IMPROVEMENTS.md"
     ],
     "builtIn": true,
     "bookmarks": {}

@@ -28,9 +28,9 @@
 |----------------|-------|------|-------------|------|--------|
 | Fixes          | 0     | 0    | 0           | 0    | 0      |
 | Features       | 8     | 0    | 0           | 8    | 0      |
-| Improvements   | 35    | 28   | 0           | 7    | 0      |
+| Improvements   | 35    | 31   | 0           | 4    | 0      |
 | Documentation  | 5     | 0    | 0           | 5    | 0      |
-| **TOTAL**      | **48**| **28**| **0**       | **20**| **0** |
+| **TOTAL**      | **48**| **31**| **0**       | **17**| **0** |
 
 ---
 
@@ -203,12 +203,12 @@
 
 | Order | Task ID | Title                                    | Status     |
 |-------|---------|------------------------------------------|------------|
-| 1     | I029    | Create SelectionOverlay Component        | 🔲 TODO    |
-| 2     | I030    | Create ElementHighlight Component        | 🔲 TODO    |
-| 3     | I031    | Create ElementTooltip Component          | 🔲 TODO    |
+| 1     | I029    | Create SelectionOverlay Component        | ✅ Done    |
+| 2     | I030    | Create ElementHighlight Component        | ✅ Done    |
+| 3     | I031    | Create ElementTooltip Component          | ✅ Done    |
 
 **Dependencies**: Set 4 (Custom Hooks Extraction)
-**Notes**: These components are currently embedded within FeedbackProvider.
+**Notes**: Overlay components extracted to src/components/Overlay/ with full TypeScript types, theme integration, portal rendering, and comprehensive test coverage (94 tests).
 
 ---
 
@@ -262,9 +262,9 @@
 | I026 | Improvement | Create Form Validation Utilities         | 🟡 Medium  | ✅ Done    | I001             |
 | I027 | Improvement | Create ErrorBoundary Component           | 🟡 Medium  | ✅ Done    | I001             |
 | I028 | Improvement | Create Theme Hooks                       | 🟡 Medium  | ✅ Done    | I001             |
-| I029 | Improvement | Create SelectionOverlay Component        | 🔴 Low     | 🔲 TODO    | T005             |
-| I030 | Improvement | Create ElementHighlight Component        | 🔴 Low     | 🔲 TODO    | T005             |
-| I031 | Improvement | Create ElementTooltip Component          | 🔴 Low     | 🔲 TODO    | T005             |
+| I029 | Improvement | Create SelectionOverlay Component        | 🔴 Low     | ✅ Done    | T005             |
+| I030 | Improvement | Create ElementHighlight Component        | 🔴 Low     | ✅ Done    | T005             |
+| I031 | Improvement | Create ElementTooltip Component          | 🔴 Low     | ✅ Done    | T005             |
 | I032 | Improvement | Extract Date Utilities                   | 🔴 Low     | 🔲 TODO    | I003             |
 | I033 | Improvement | Create Status Registry                   | 🔴 Low     | 🔲 TODO    | I001             |
 | I034 | Improvement | Consolidate Magic Numbers/Strings        | 🟢 High    | 🔲 TODO    | I002             |

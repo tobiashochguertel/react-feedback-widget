@@ -224,8 +224,8 @@ export class JiraClient {
     const formData = Buffer.concat([
       Buffer.from(
         `--${boundary}\r\n` +
-          `Content-Disposition: form-data; name="file"; filename="${filename}"\r\n` +
-          `Content-Type: ${contentType}\r\n\r\n`
+        `Content-Disposition: form-data; name="file"; filename="${filename}"\r\n` +
+        `Content-Type: ${contentType}\r\n\r\n`
       ),
       buffer,
       Buffer.from(`\r\n--${boundary}--\r\n`),

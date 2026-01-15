@@ -12,6 +12,8 @@ export * from './Dashboard';
 // Modal components
 export * from './Modal';
 
+// Overlay components
+export * from './Overlay';
+
 // Shared components
 export * from './shared';
-
