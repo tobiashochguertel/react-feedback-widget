@@ -125,7 +125,7 @@
 
 | Order | Task ID | Title                                    | Status     |
 |-------|---------|------------------------------------------|------------|
-| 1     | T001    | Create useActivation Hook                | 🔲 TODO    |
+| 1     | T001    | Create useActivation Hook                | ✅ Done    |
 | 2     | T002    | Create useDashboard Hook                 | 🔲 TODO    |
 | 3     | T003    | Create useRecording Hook                 | 🔲 TODO    |
 | 4     | T004    | Create useScreenCapture Hook             | 🔲 TODO    |
