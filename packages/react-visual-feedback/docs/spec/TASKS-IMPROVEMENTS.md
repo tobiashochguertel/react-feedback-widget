@@ -752,7 +752,7 @@ export function FeedbackProvider({
 
 ### I010 - Extract Reducer to Separate File
 
-**Status**: 🔲 TODO
+**Status**: ✅ Done
 **Priority**: 🟢 High
 
 **Description**:
@@ -856,7 +856,7 @@ export type FeedbackAction =
 
 ### I011 - Create Action Creators
 
-**Status**: 🔲 TODO
+**Status**: ✅ Done
 **Priority**: 🟢 High
 
 **Description**:
@@ -918,7 +918,7 @@ export type ActionCreators = typeof actions;
 
 ### I012 - Create Selectors
 
-**Status**: 🔲 TODO
+**Status**: ✅ Done
 **Priority**: 🟢 High
 
 **Description**:

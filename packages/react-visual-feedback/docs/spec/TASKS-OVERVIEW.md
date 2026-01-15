@@ -28,9 +28,9 @@
 |----------------|-------|------|-------------|------|--------|
 | Fixes          | 0     | 0    | 0           | 0    | 0      |
 | Features       | 8     | 0    | 0           | 8    | 0      |
-| Improvements   | 35    | 9    | 0           | 26   | 0      |
+| Improvements   | 35    | 12   | 0           | 23   | 0      |
 | Documentation  | 5     | 0    | 0           | 5    | 0      |
-| **TOTAL**      | **48**| **9**| **0**       | **39**| **0** |
+| **TOTAL**      | **48**| **12**| **0**       | **36**| **0** |
 
 ---
 
@@ -107,10 +107,10 @@
 **Description**: Refactor the complex reducer in FeedbackProvider by migrating to XState state machine. The current 25+ action types with complex nested conditions are a clear signal that a proper state machine is needed. XState provides explicit state transitions, prevents invalid states, and enables visual debugging.
 
 | Order | Task ID | Title                                    | Status     |
-|-------|---------|------------------------------------------|-----------|
-| 1     | I010    | Extract Reducer to Separate File         | 🔲 TODO    |
-| 2     | I011    | Create Action Creators                   | 🔲 TODO    |
-| 3     | I012    | Create Selectors                         | 🔲 TODO    |
+|-------|---------|------------------------------------------|------------|
+| 1     | I010    | Extract Reducer to Separate File         | ✅ Done    |
+| 2     | I011    | Create Action Creators                   | ✅ Done    |
+| 3     | I012    | Create Selectors                         | ✅ Done    |
 | 4     | I013    | Implement XState State Machine           | 🔲 TODO    |
 
 **Dependencies**: Set 1 (Foundation Setup)
