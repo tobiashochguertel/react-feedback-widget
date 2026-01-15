@@ -2,7 +2,9 @@
   {
     "id": "builtin_group_id",
     "name": "Currently Open Files",
-    "files": [],
+    "files": [
+      "packages/react-visual-feedback/docs/spec/TASKS-OVERVIEW.md"
+    ],
     "builtIn": true,
     "bookmarks": {}
   }

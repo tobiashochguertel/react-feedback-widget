@@ -88,5 +88,18 @@ export {
   type SubmissionService,
 } from './useFeedbackSubmission.js';
 
-// Integration hooks - TODO: Implement in T008
-// export { useIntegrations } from './useIntegrations';
+// Integration hooks (T008)
+export {
+  useIntegrations,
+  type UseIntegrationsOptions,
+  type UseIntegrationsReturn,
+  type IntegrationType,
+  type IntegrationResult,
+  type IntegrationStatus,
+  type IntegrationStatusMap,
+  type IntegrationConfig,
+  type IntegrationService,
+  type JiraConfig,
+  type SheetsConfig,
+  type FeedbackData as IntegrationFeedbackData,
+} from './useIntegrations.js';
