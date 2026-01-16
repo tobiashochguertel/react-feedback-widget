@@ -2,7 +2,9 @@
   {
     "id": "builtin_group_id",
     "name": "Currently Open Files",
-    "files": [],
+    "files": [
+      "packages/react-visual-feedback/tests/bdd/steps/theming.steps.ts"
+    ],
     "builtIn": true,
     "bookmarks": {}
   }
