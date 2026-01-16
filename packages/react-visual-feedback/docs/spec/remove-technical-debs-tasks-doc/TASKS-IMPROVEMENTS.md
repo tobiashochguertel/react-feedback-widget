@@ -17,6 +17,7 @@ Multiple hook files contain duplicate `export type { X }` statements for the sam
 
 **Resolution:**
 Removed duplicate `export type { }` blocks at the end of 7 hook files:
+
 - `src/hooks/useActivation.ts`
 - `src/hooks/useDashboard.ts`
 - `src/hooks/useElementSelection.ts`
@@ -28,6 +29,7 @@ Removed duplicate `export type { }` blocks at the end of 7 hook files:
 Also removed duplicate `StatusKey` export from `src/index.ts` (exported from both `./registry` and `./types`).
 
 **Verification:**
+
 - ✅ No TS2484 warnings during build
 - ✅ All types still accessible from expected import paths
 - ✅ No breaking changes to public API
@@ -46,6 +48,7 @@ Some component files import `React` explicitly, but with the new JSX runtime (Re
 
 **Resolution:**
 Removed unused `React` import from 3 Overlay components:
+
 - `src/components/Overlay/ElementHighlight.tsx`
 - `src/components/Overlay/ElementTooltip.tsx`
 - `src/components/Overlay/SelectionOverlay.tsx`
@@ -53,6 +56,7 @@ Removed unused `React` import from 3 Overlay components:
 Changed from `import React, { forwardRef, useMemo } from 'react'` to `import { forwardRef, useMemo } from 'react'`.
 
 **Verification:**
+
 - ✅ No TS6133 warnings for React imports
 - ✅ All components render correctly
 - ✅ All 449 tests pass
@@ -70,15 +74,17 @@ TypeScript's `exactOptionalPropertyTypes` strict mode flag causes warnings when 
 
 **Deferral Reason:**
 The `exactOptionalPropertyTypes` warnings are caused by styled-components type definitions not being fully compatible with strict TypeScript mode. Fixing these would require:
+
 1. Modifying styled-components' type exports (upstream issue)
-2. Adding explicit type assertions throughout the codebase  
+2. Adding explicit type assertions throughout the codebase
 3. Disabling `exactOptionalPropertyTypes` in tsconfig.json
 
 These warnings do not affect runtime behavior and the build completes successfully. Deferred until styled-components improves TypeScript support.
 
 **Affected Files:**
+
 - `src/components/Overlay/ElementHighlight.tsx` - `$customBorderColor` prop
-- `src/components/Overlay/ElementTooltip.tsx` - `id` property  
+- `src/components/Overlay/ElementTooltip.tsx` - `id` property
 - `src/components/Overlay/SelectionOverlay.tsx` - `componentInfo`, `$backgroundColor` props
 - `src/hooks/useFeedbackSubmission.ts` - `error` property
 
@@ -136,11 +142,13 @@ Hook files have inconsistent export patterns. Some use named exports, some use d
 
 **Resolution:**
 Removed redundant `export type { }` blocks from all 7 hook files as part of I001. All hooks now follow the pattern:
+
 - Named function export at definition
 - Types exported inline with definition
 - No duplicate re-exports at end of file
 
 **Verification:**
+
 - ✅ All hooks follow same export pattern
 - ✅ Types exported from single source
 - ✅ No duplicate exports
@@ -214,6 +222,7 @@ The `statusRegistry.ts` file imports icon components that are declared but not u
 Removed unused `Ban` import from `src/registry/statusRegistry.ts`.
 
 Changed from:
+
 ```typescript
 import {
   Inbox, AlertCircle, Play, Eye, PauseCircle,
@@ -223,6 +232,7 @@ import {
 ```
 
 To:
+
 ```typescript
 import {
   Inbox, AlertCircle, Play, Eye, PauseCircle,
@@ -232,6 +242,7 @@ import {
 ```
 
 **Verification:**
+
 - ✅ No unused import warnings for registry file
 - ✅ Registry functionality unchanged
 - ✅ All 449 tests pass
