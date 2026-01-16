@@ -1,7 +1,7 @@
 # Data Persistence API - BDD Testing Documentation
 
 **Source Specification**: [008.data-persistence-api/README.md](../008.data-persistence-api/README.md)
-**User Stories**: [008.data-persistence-api.user-stories/](../008.data-persistence-api.user-stories/)
+**User Stories**: [008.data-persistence-api.user-stories/](../010.data-persistence-api.user-stories)
 **Created**: 2026-01-16
 **Updated**: 2026-01-16
 

@@ -1,7 +1,7 @@
 # Data Persistence API - User Stories
 
 **Source Specification**: [008.data-persistence-api/README.md](../008.data-persistence-api/README.md)
-**Task Documentation**: [008.data-persistence-api.tasks-doc/](../008.data-persistence-api.tasks-doc/)
+**Task Documentation**: [008.data-persistence-api.tasks-doc/](../009.data-persistence-api.tasks-doc)
 **Created**: 2026-01-16
 **Updated**: 2026-01-16
 
@@ -92,8 +92,8 @@ And downloaded file contains only videos for selected items
 ### Related Documentation
 
 - Specification: [Export Architecture](../008.data-persistence-api/README.md#export-workflow)
-- Tasks: [T002 - ExportService](../008.data-persistence-api.tasks-doc/TASKS-FEATURES.md#t002---exportservice)
-- UI: [I001 - Dashboard Export Button](../008.data-persistence-api.tasks-doc/TASKS-IMPROVEMENTS.md#i001---dashboard-export-button)
+- Tasks: [T002 - ExportService](../009.data-persistence-api.tasks-doc/TASKS-FEATURES.md#t002---exportservice)
+- UI: [I001 - Dashboard Export Button](../009.data-persistence-api.tasks-doc/TASKS-IMPROVEMENTS.md#i001---dashboard-export-button)
 
 ---
 
@@ -158,8 +158,8 @@ And user can try with a different file
 ### Related Documentation
 
 - Specification: [Import Architecture](../008.data-persistence-api/README.md#import-workflow)
-- Tasks: [T003 - ImportService](../008.data-persistence-api.tasks-doc/TASKS-FEATURES.md#t003---importservice)
-- UI: [I002 - Dashboard Import Button](../008.data-persistence-api.tasks-doc/TASKS-IMPROVEMENTS.md#i002---dashboard-import-button)
+- Tasks: [T003 - ImportService](../009.data-persistence-api.tasks-doc/TASKS-FEATURES.md#t003---importservice)
+- UI: [I002 - Dashboard Import Button](../009.data-persistence-api.tasks-doc/TASKS-IMPROVEMENTS.md#i002---dashboard-import-button)
 
 ---
 
@@ -209,8 +209,8 @@ And BDD tests can verify Session Replay functionality
 ### Related Documentation
 
 - Specification: [Bundle Format](../008.data-persistence-api/README.md#bundle-format)
-- Tasks: [T001 - BundleSerializer](../008.data-persistence-api.tasks-doc/TASKS-FEATURES.md#t001---bundleserializer)
-- Guide: [Test Fixtures Guide](../008.data-persistence-api.tasks-doc/TASKS-DOCUMENTATION.md#d002---test-fixtures-guide)
+- Tasks: [T001 - BundleSerializer](../009.data-persistence-api.tasks-doc/TASKS-FEATURES.md#t001---bundleserializer)
+- Guide: [Test Fixtures Guide](../009.data-persistence-api.tasks-doc/TASKS-DOCUMENTATION.md#d002---test-fixtures-guide)
 
 ---
 
@@ -266,8 +266,8 @@ And tests can verify empty state behavior
 
 ### Related Documentation
 
-- Guide: [Loading Fixtures in Tests](../008.data-persistence-api.tasks-doc/TASKS-DOCUMENTATION.md#d002---test-fixtures-guide)
-- BDD: [Fixture Step Definitions](../008.data-persistence-api.bdd/)
+- Guide: [Loading Fixtures in Tests](../009.data-persistence-api.tasks-doc/TASKS-DOCUMENTATION.md#d002---test-fixtures-guide)
+- BDD: [Fixture Step Definitions](../011.data-persistence-api.bdd)
 
 ---
 
