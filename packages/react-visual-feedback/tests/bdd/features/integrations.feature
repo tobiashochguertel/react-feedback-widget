@@ -19,3 +19,8 @@ Feature: Integrations UI
   @integrations @local
   Scenario: Local storage toggle is visible by default
     Then the local storage toggle should be visible
+
+  @integrations @sheets @submit
+  Scenario: Send to Sheets button is interactive
+    Then the Send to Sheets button should be visible
+    And the Send to Sheets button should be clickable

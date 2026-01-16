@@ -31,3 +31,14 @@ Then('the local storage toggle should be visible', async ({ page }) => {
   const submitButton = page.getByRole('button', { name: /send feedback/i });
   await expect(submitButton).toBeVisible({ timeout: 10000 });
 });
+
+Then('the Send to Sheets button should be visible', async ({ page }) => {
+  const sheetsButton = page.locator('button[title="Send to Sheets"]');
+  await expect(sheetsButton).toBeVisible({ timeout: 10000 });
+});
+
+Then('the Send to Sheets button should be clickable', async ({ page }) => {
+  const sheetsButton = page.locator('button[title="Send to Sheets"]');
+  // Verify button is enabled (not disabled)
+  await expect(sheetsButton).toBeEnabled({ timeout: 5000 });
+});
