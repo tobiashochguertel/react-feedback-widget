@@ -156,10 +156,10 @@ npx bddgen && npx playwright test
 
 ### 🔲 Planned Tests (remaining - requires test fixtures/data)
 
-| User Story | Feature File | Scenarios | Status    | Notes                                  |
-| ---------- | ------------ | --------- | --------- | -------------------------------------- |
-| US008      | dashboard    | 2         | 🔲 FUTURE | Requires pre-populated feedback items  |
-| US009      | dashboard    | 2         | 🔲 FUTURE | Requires recorded sessions with logs   |
+| User Story | Feature File | Scenarios | Status    | Notes                                 |
+| ---------- | ------------ | --------- | --------- | ------------------------------------- |
+| US008      | dashboard    | 2         | 🔲 FUTURE | Requires pre-populated feedback items |
+| US009      | dashboard    | 2         | 🔲 FUTURE | Requires recorded sessions with logs  |
 
 > **Note:** US008 (Update Feedback Status) and US009 (Replay User Session) require test fixtures with pre-populated feedback data and recorded sessions. These scenarios would be implemented as part of integration testing with mock data.
 
