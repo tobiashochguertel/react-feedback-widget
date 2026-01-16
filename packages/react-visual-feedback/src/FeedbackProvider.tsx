@@ -587,7 +587,7 @@ export const FeedbackProvider: React.FC<FeedbackProviderProps> = ({
 
         {isActive && !isCanvasActive && !isModalOpen && createPortal(
           <>
-            <Overlay ref={overlayRef} />
+            <Overlay ref={overlayRef} data-testid="selection-overlay" />
 
             {hoveredElement && (
               <>

@@ -1,4 +1,17 @@
 import { defineConfig, devices } from '@playwright/test';
+import { defineBddConfig } from 'playwright-bdd';
+
+/**
+ * BDD Test Directory Configuration
+ *
+ * This generates test files from Gherkin feature files using playwright-bdd.
+ * The generated files are placed in .features-gen directory.
+ */
+const bddTestDir = defineBddConfig({
+  features: './tests/bdd/features/**/*.feature',
+  steps: ['./tests/bdd/steps/**/*.ts', './tests/bdd/fixtures.ts'],
+  outputDir: './.features-gen',
+});
 
 /**
  * Playwright configuration for end-to-end tests.
@@ -9,8 +22,8 @@ import { defineConfig, devices } from '@playwright/test';
  * @see https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
-  // Test directory
-  testDir: './tests/e2e',
+  // Test directory - use BDD generated tests
+  testDir: bddTestDir,
 
   // Run tests in files in parallel
   fullyParallel: true,
@@ -26,7 +39,7 @@ export default defineConfig({
 
   // Reporter
   reporter: [
-    ['html', { outputFolder: './playwright-report' }],
+    ['html', { outputFolder: './playwright-report', open: 'never' }],
     ['list'],
     process.env.CI ? ['github'] : ['dot'],
   ],

@@ -7,4 +7,10 @@ example/dist/
 .env
 # Test outputs
 test-results/
+test-results-e2e/
 coverage/
+playwright-report/
+playwright-report-e2e/
+
+# BDD generated tests
+.features-gen/

@@ -417,6 +417,21 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
     };
   }, [videoBlob, manualVideo]);
 
+  // Handle Escape key to close modal
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        onClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   useEffect(() => {
     if (isOpen) {
       setFeedbackType('bug');
@@ -501,13 +516,13 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
   return createPortal(
     <ThemeProvider theme={theme}>
       <ModalBackdrop onClick={onClose} />
-      <ModalContainer>
+      <ModalContainer role="dialog" aria-modal="true" aria-label="Send feedback">
         <ModalHeader>
           <TitleGroup>
             <MessageSquare size={18} color={theme.colors.textSecondary} />
             <ModalTitle>Send Feedback</ModalTitle>
           </TitleGroup>
-          <CloseButton onClick={onClose}><X size={16} /></CloseButton>
+          <CloseButton onClick={onClose} aria-label="Close feedback modal" title="Close"><X size={16} /></CloseButton>
         </ModalHeader>
 
         <ModalBody>
