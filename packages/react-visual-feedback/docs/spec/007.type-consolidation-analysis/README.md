@@ -16,24 +16,24 @@ This analysis evaluates whether the context-specific prefixed types created duri
 
 ### Types Created in I007
 
-| Original Name | Renamed To | Location |
-|---------------|-----------|----------|
-| `ElementInfo` | `SelectionElementInfo` | `useElementSelection.ts` |
-| `ElementInfo` | `TooltipElementInfo` | `ElementTooltip.tsx` |
-| `HighlightStyle` | `SelectionHighlightStyle` | `useElementSelection.ts` |
-| `HighlightStyle` | `OverlayHighlightStyle` | `SelectionOverlay.tsx` |
-| `TooltipStyle` | `SelectionTooltipStyle` | `useElementSelection.ts` |
-| `TooltipStyle` | `OverlayTooltipStyle` | `SelectionOverlay.tsx` |
-| `RecordingResult` | `ServiceRecordingResult` | `RecorderService.ts` |
+| Original Name     | Renamed To                | Location                 |
+| ----------------- | ------------------------- | ------------------------ |
+| `ElementInfo`     | `SelectionElementInfo`    | `useElementSelection.ts` |
+| `ElementInfo`     | `TooltipElementInfo`      | `ElementTooltip.tsx`     |
+| `HighlightStyle`  | `SelectionHighlightStyle` | `useElementSelection.ts` |
+| `HighlightStyle`  | `OverlayHighlightStyle`   | `SelectionOverlay.tsx`   |
+| `TooltipStyle`    | `SelectionTooltipStyle`   | `useElementSelection.ts` |
+| `TooltipStyle`    | `OverlayTooltipStyle`     | `SelectionOverlay.tsx`   |
+| `RecordingResult` | `ServiceRecordingResult`  | `RecorderService.ts`     |
 
 ### Central Types in `types/index.ts`
 
-| Type | Definition |
-|------|------------|
-| `ElementInfo` | Full metadata: `tagName`, `id`, `className`, `textContent`, `selector`, `position`, `styles`, `reactComponent`, `componentStack`, `sourceFile` |
-| `HighlightStyle` | Extends `CSSProperties` with optional `top`, `left`, `width`, `height` |
-| `TooltipStyle` | Extends `CSSProperties` with optional `top`, `left` |
-| `RecordingResult` | `blob`, `events` (EventLog[]) |
+| Type              | Definition                                                                                                                                     |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ElementInfo`     | Full metadata: `tagName`, `id`, `className`, `textContent`, `selector`, `position`, `styles`, `reactComponent`, `componentStack`, `sourceFile` |
+| `HighlightStyle`  | Extends `CSSProperties` with optional `top`, `left`, `width`, `height`                                                                         |
+| `TooltipStyle`    | Extends `CSSProperties` with optional `top`, `left`                                                                                            |
+| `RecordingResult` | `blob`, `events` (EventLog[])                                                                                                                  |
 
 ---
 
@@ -58,9 +58,9 @@ interface ElementInfo {
 
 // Selection Hook: Runtime element reference with computed info
 interface SelectionElementInfo {
-  element: HTMLElement;         // ← Actual DOM reference
+  element: HTMLElement; // ← Actual DOM reference
   componentInfo: ComponentInfo | null;
-  rect: DOMRect;               // ← Live bounding rect
+  rect: DOMRect; // ← Live bounding rect
   selector?: string;
 }
 
@@ -90,8 +90,8 @@ interface HighlightStyle extends CSSProperties {
 
 // Selection/Overlay: Numeric values for arithmetic
 interface SelectionHighlightStyle {
-  left: number;   // Required, not optional
-  top: number;    // Required, not optional
+  left: number; // Required, not optional
+  top: number; // Required, not optional
   width: number;
   height: number;
 }
@@ -132,16 +132,19 @@ interface ServiceRecordingResult {
 The current type separation is **intentional good design** that follows:
 
 1. **Interface Segregation Principle (ISP)**
+
    - Each type contains only what its consumers need
    - `TooltipElementInfo` doesn't need position data
    - `SelectionElementInfo` includes DOM reference that central `ElementInfo` doesn't
 
 2. **Layered Architecture**
+
    - Central types are for public API and state
    - Context-specific types are for internal implementation
    - Service types are for low-level operations
 
 3. **Type Safety**
+
    - Numeric types (`left: number`) for arithmetic operations
    - CSS-flexible types (`left?: number | undefined`) for style assignment
    - These serve different needs and should not be unified
@@ -153,6 +156,7 @@ The current type separation is **intentional good design** that follows:
 ### What I007 Achieved
 
 I007 correctly:
+
 - ✅ Identified duplicate type names with different shapes
 - ✅ Renamed them with clear context prefixes
 - ✅ Added backwards compatibility re-exports

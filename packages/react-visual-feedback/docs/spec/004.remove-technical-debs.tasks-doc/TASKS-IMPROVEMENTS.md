@@ -169,6 +169,7 @@ Some exported functions and types lacked JSDoc documentation. Adding documentati
 
 **Resolution:**
 Added comprehensive JSDoc documentation to `src/types/index.ts` with:
+
 - Description for all exported types and interfaces
 - `@param` documentation for properties
 - `@example` usage examples for key types
@@ -232,20 +233,39 @@ Changed from:
 
 ```typescript
 import {
-  Inbox, AlertCircle, Play, Eye, PauseCircle,
-  CheckCircle, Archive, Ban, XCircle, Lightbulb, Bug, Zap,
+  Inbox,
+  AlertCircle,
+  Play,
+  Eye,
+  PauseCircle,
+  CheckCircle,
+  Archive,
+  Ban,
+  XCircle,
+  Lightbulb,
+  Bug,
+  Zap,
   type LucideIcon,
-} from 'lucide-react';
+} from "lucide-react";
 ```
 
 To:
 
 ```typescript
 import {
-  Inbox, AlertCircle, Play, Eye, PauseCircle,
-  CheckCircle, Archive, XCircle, Lightbulb, Bug, Zap,
+  Inbox,
+  AlertCircle,
+  Play,
+  Eye,
+  PauseCircle,
+  CheckCircle,
+  Archive,
+  XCircle,
+  Lightbulb,
+  Bug,
+  Zap,
   type LucideIcon,
-} from 'lucide-react';
+} from "lucide-react";
 ```
 
 **Verification:**
@@ -269,19 +289,23 @@ Types were re-exported from multiple locations with same names but different sha
 Renamed duplicate types with context-specific prefixes and added backwards compatibility re-exports:
 
 **Overlay components:**
+
 - `HighlightStyle` → `OverlayHighlightStyle` (SelectionOverlay.tsx)
 - `TooltipStyle` → `OverlayTooltipStyle` (SelectionOverlay.tsx)
 - `ElementInfo` → `TooltipElementInfo` (ElementTooltip.tsx)
 
 **Hooks:**
+
 - `ElementInfo` → `SelectionElementInfo` (useElementSelection.ts)
 - `HighlightStyle` → `SelectionHighlightStyle` (useElementSelection.ts)
 - `TooltipStyle` → `SelectionTooltipStyle` (useElementSelection.ts)
 
 **Services:**
+
 - `RecordingResult` → `ServiceRecordingResult` (RecorderService.ts)
 
 **Files Modified:**
+
 - `src/components/Overlay/SelectionOverlay.tsx`
 - `src/components/Overlay/ElementHighlight.tsx`
 - `src/components/Overlay/ElementTooltip.tsx`
