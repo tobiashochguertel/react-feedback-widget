@@ -126,29 +126,38 @@ npx bddgen && npx playwright test
 
 ## 📋 Test Coverage Matrix
 
-### ✅ Implemented Tests (12 scenarios, 60 tests across 5 browsers)
+### ✅ Implemented Tests (24 scenarios, 120 tests across 5 browsers)
 
-| Feature                | Scenarios | Status       | Browsers                                                |
-| ---------------------- | --------- | ------------ | ------------------------------------------------------- |
-| **Feedback Modal**     | 4         | ✅ PASSING   | All 5                                                   |
-| **Feedback Form**      | 6         | ✅ PASSING   | All 5                                                   |
-| **Screenshot Capture** | 2         | ✅ PASSING   | All 5                                                   |
-| **Total**              | **12**    | ✅ **60/60** | Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari |
+| Feature                    | Scenarios | Status       | Browsers                                                |
+| -------------------------- | --------- | ------------ | ------------------------------------------------------- |
+| **Feedback Modal**         | 4         | ✅ PASSING   | All 5                                                   |
+| **Feedback Form**          | 6         | ✅ PASSING   | All 5                                                   |
+| **Screenshot Capture**     | 2         | ✅ PASSING   | All 5                                                   |
+| **Keyboard Shortcuts**     | 3         | ✅ PASSING   | All 5                                                   |
+| **Feedback Submission**    | 3         | ✅ PASSING   | All 5                                                   |
+| **Dashboard**              | 3         | ✅ PASSING   | All 5                                                   |
+| **Integrations**           | 3         | ✅ PASSING   | All 5                                                   |
+| **Total**                  | **24**    | ✅ **120/120** | Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari |
 
-### 🔲 Planned Tests (from user stories)
+### ✅ Completed User Story Coverage
 
-| User Story | Feature File        | Scenarios | Automated |
-| ---------- | ------------------- | --------- | --------- |
-| US001      | feedback-submission | 3         | 🔲 TODO   |
-| US003      | screen-recording    | 3         | 🔲 TODO   |
-| US005      | keyboard-shortcuts  | 3         | 🔲 TODO   |
-| US006      | dashboard           | 3         | 🔲 TODO   |
-| US007      | dashboard           | 2         | 🔲 TODO   |
-| US008      | dashboard           | 2         | 🔲 TODO   |
-| US009      | dashboard           | 2         | 🔲 TODO   |
-| US010      | integrations        | 2         | 🔲 TODO   |
-| US011      | integrations        | 1         | 🔲 TODO   |
-| US012      | theming             | 2         | 🔲 TODO   |
+| User Story | Feature File        | Scenarios | Status         |
+| ---------- | ------------------- | --------- | -------------- |
+| US001      | feedback-submission | 3         | ✅ IMPLEMENTED |
+| US005      | keyboard-shortcuts  | 3         | ✅ IMPLEMENTED |
+| US006      | dashboard           | 3         | ✅ IMPLEMENTED |
+| US010      | integrations        | 3         | ✅ IMPLEMENTED |
+
+### 🔲 Planned Tests (remaining)
+
+| User Story | Feature File     | Scenarios | Status    |
+| ---------- | ---------------- | --------- | --------- |
+| US003      | screen-recording | 3         | 🔲 TODO   |
+| US007      | dashboard        | 2         | 🔲 TODO   |
+| US008      | dashboard        | 2         | 🔲 TODO   |
+| US009      | dashboard        | 2         | 🔲 TODO   |
+| US011      | integrations     | 1         | 🔲 TODO   |
+| US012      | theming          | 2         | 🔲 TODO   |
 
 ---
 
