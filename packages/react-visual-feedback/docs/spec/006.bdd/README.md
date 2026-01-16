@@ -126,38 +126,42 @@ npx bddgen && npx playwright test
 
 ## 📋 Test Coverage Matrix
 
-### ✅ Implemented Tests (24 scenarios, 120 tests across 5 browsers)
+### ✅ Implemented Tests (32 scenarios, 160 tests across 5 browsers)
 
 | Feature                 | Scenarios | Status         | Browsers                                                |
 | ----------------------- | --------- | -------------- | ------------------------------------------------------- |
 | **Feedback Modal**      | 4         | ✅ PASSING     | All 5                                                   |
 | **Feedback Form**       | 6         | ✅ PASSING     | All 5                                                   |
 | **Screenshot Capture**  | 2         | ✅ PASSING     | All 5                                                   |
+| **Screen Recording**    | 3         | ✅ PASSING     | All 5                                                   |
 | **Keyboard Shortcuts**  | 3         | ✅ PASSING     | All 5                                                   |
 | **Feedback Submission** | 3         | ✅ PASSING     | All 5                                                   |
-| **Dashboard**           | 3         | ✅ PASSING     | All 5                                                   |
-| **Integrations**        | 3         | ✅ PASSING     | All 5                                                   |
-| **Total**               | **24**    | ✅ **120/120** | Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari |
+| **Dashboard**           | 5         | ✅ PASSING     | All 5                                                   |
+| **Integrations**        | 4         | ✅ PASSING     | All 5                                                   |
+| **Theming**             | 2         | ✅ PASSING     | All 5                                                   |
+| **Total**               | **32**    | ✅ **160/160** | Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari |
 
 ### ✅ Completed User Story Coverage
 
 | User Story | Feature File        | Scenarios | Status         |
 | ---------- | ------------------- | --------- | -------------- |
 | US001      | feedback-submission | 3         | ✅ IMPLEMENTED |
+| US003      | screen-recording    | 3         | ✅ IMPLEMENTED |
 | US005      | keyboard-shortcuts  | 3         | ✅ IMPLEMENTED |
 | US006      | dashboard           | 3         | ✅ IMPLEMENTED |
+| US007      | dashboard           | 2         | ✅ IMPLEMENTED |
 | US010      | integrations        | 3         | ✅ IMPLEMENTED |
+| US011      | integrations        | 1         | ✅ IMPLEMENTED |
+| US012      | theming             | 2         | ✅ IMPLEMENTED |
 
-### 🔲 Planned Tests (remaining)
+### 🔲 Planned Tests (remaining - requires test fixtures/data)
 
-| User Story | Feature File     | Scenarios | Status  |
-| ---------- | ---------------- | --------- | ------- |
-| US003      | screen-recording | 3         | 🔲 TODO |
-| US007      | dashboard        | 2         | 🔲 TODO |
-| US008      | dashboard        | 2         | 🔲 TODO |
-| US009      | dashboard        | 2         | 🔲 TODO |
-| US011      | integrations     | 1         | 🔲 TODO |
-| US012      | theming          | 2         | 🔲 TODO |
+| User Story | Feature File | Scenarios | Status    | Notes                                  |
+| ---------- | ------------ | --------- | --------- | -------------------------------------- |
+| US008      | dashboard    | 2         | 🔲 FUTURE | Requires pre-populated feedback items  |
+| US009      | dashboard    | 2         | 🔲 FUTURE | Requires recorded sessions with logs   |
+
+> **Note:** US008 (Update Feedback Status) and US009 (Replay User Session) require test fixtures with pre-populated feedback data and recorded sessions. These scenarios would be implemented as part of integration testing with mock data.
 
 ---
 
@@ -187,4 +191,4 @@ npx playwright show-report
 
 ---
 
-**Last Updated:** January 16, 2026
+**Last Updated:** January 17, 2026
