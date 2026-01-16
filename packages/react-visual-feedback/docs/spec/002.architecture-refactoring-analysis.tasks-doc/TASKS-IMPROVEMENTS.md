@@ -1805,4 +1805,4 @@ Final cleanup of FeedbackProvider after all hooks extracted.
 - [TASKS-OVERVIEW.md](./TASKS-OVERVIEW.md) - Main task overview
 - [TASKS-FEATURES.md](./TASKS-FEATURES.md) - Feature tasks (hooks)
 - [TASKS-DOCUMENTATION.md](./TASKS-DOCUMENTATION.md) - Documentation tasks
-- [Architecture Refactoring Analysis](../architecture-refactoring-analysis.md) - Source specification
+- [Architecture Refactoring Analysis](architecture-refactoring-analysis/architecture-refactoring-analysis.md) - Source specification

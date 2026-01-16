@@ -315,7 +315,7 @@ jobs:
 
 - **BDD Overview**: [./README.md](./README.md)
 - **Feature Files**: [./features/](./features/)
-- **User Stories**: [../user-stories/README.md](../user-stories/README.md)
+- **User Stories**: [../user-stories/README.md](../spec/005.user-stories/README.md)
 - **Playwright Docs**: <https://playwright.dev/>
 - **playwright-bdd Docs**: <https://vitalets.github.io/playwright-bdd/>
 

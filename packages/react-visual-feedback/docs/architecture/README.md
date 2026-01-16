@@ -44,11 +44,11 @@ React Visual Feedback is a comprehensive React library for collecting visual fee
 
 ## Architecture Documents
 
-| Document | Description |
-|----------|-------------|
+| Document                                        | Description                                        |
+| ----------------------------------------------- | -------------------------------------------------- |
 | [Directory Structure](./directory-structure.md) | Complete directory layout with module descriptions |
-| [Component Hierarchy](./component-hierarchy.md) | Component relationships and data flow |
-| [Data Flow](./data-flow.md) | State management and data flow patterns |
+| [Component Hierarchy](./component-hierarchy.md) | Component relationships and data flow              |
+| [Data Flow](./data-flow.md)                     | State management and data flow patterns            |
 
 ## Design Patterns Used
 
@@ -57,14 +57,14 @@ React Visual Feedback is a comprehensive React library for collecting visual fee
 Services are injected into the FeedbackProvider, allowing easy testing and customization:
 
 ```tsx
-import { FeedbackProvider, createTestServices } from 'react-visual-feedback';
+import { FeedbackProvider, createTestServices } from "react-visual-feedback";
 
 // Production (default services)
-<FeedbackProvider>{children}</FeedbackProvider>
+<FeedbackProvider>{children}</FeedbackProvider>;
 
 // Testing (mock services)
 const testServices = createTestServicesSync();
-<FeedbackProvider services={testServices}>{children}</FeedbackProvider>
+<FeedbackProvider services={testServices}>{children}</FeedbackProvider>;
 ```
 
 ### 2. Factory Pattern
@@ -76,7 +76,7 @@ const factory = new IntegrationFactory();
 factory.register(JiraIntegration, jiraMetadata);
 factory.register(SheetsIntegration, sheetsMetadata);
 
-const jira = factory.create('jira', config);
+const jira = factory.create("jira", config);
 ```
 
 ### 3. State Machine (XState)
@@ -114,16 +114,16 @@ interface Integration<TConfig, TResult> {
 Status management uses a central registry:
 
 ```typescript
-import { defaultStatusRegistry, StatusRegistry } from 'react-visual-feedback';
+import { defaultStatusRegistry, StatusRegistry } from "react-visual-feedback";
 
 // Normalize status strings
-const status = defaultStatusRegistry.normalize('bug'); // → 'open'
+const status = defaultStatusRegistry.normalize("bug"); // → 'open'
 
 // Register custom status
-defaultStatusRegistry.registerStatus('custom-status', {
-  label: 'Custom',
-  color: '#ff00ff',
-  icon: 'star',
+defaultStatusRegistry.registerStatus("custom-status", {
+  label: "Custom",
+  color: "#ff00ff",
+  icon: "star",
 });
 ```
 
@@ -131,44 +131,44 @@ defaultStatusRegistry.registerStatus('custom-status', {
 
 ### Core Components
 
-| Component | Purpose | Lines |
-|-----------|---------|-------|
-| `FeedbackProvider` | Context provider, state machine integration | ~685 |
-| `FeedbackModal` | Feedback submission form with annotations | ~450 |
-| `FeedbackDashboard` | Feedback management dashboard | ~695 |
-| `FeedbackTrigger` | Floating action button for activation | ~200 |
+| Component           | Purpose                                     | Lines |
+| ------------------- | ------------------------------------------- | ----- |
+| `FeedbackProvider`  | Context provider, state machine integration | ~685  |
+| `FeedbackModal`     | Feedback submission form with annotations   | ~450  |
+| `FeedbackDashboard` | Feedback management dashboard               | ~695  |
+| `FeedbackTrigger`   | Floating action button for activation       | ~200  |
 
 ### Services (`src/services/`)
 
-| Service | Interface | Production | Test |
-|---------|-----------|------------|------|
-| Storage | `StorageService` | `LocalStorageService` | `InMemoryStorageService` |
+| Service       | Interface             | Production                     | Test                          |
+| ------------- | --------------------- | ------------------------------ | ----------------------------- |
+| Storage       | `StorageService`      | `LocalStorageService`          | `InMemoryStorageService`      |
 | Video Storage | `VideoStorageService` | `IndexedDBVideoStorageService` | `InMemoryVideoStorageService` |
-| Recording | `RecorderService` | `MediaRecorderService` | `MockRecorderService` |
-| Screenshot | `ScreenshotService` | `ModernScreenshotService` | `MockScreenshotService` |
+| Recording     | `RecorderService`     | `MediaRecorderService`         | `MockRecorderService`         |
+| Screenshot    | `ScreenshotService`   | `ModernScreenshotService`      | `MockScreenshotService`       |
 
 ### Hooks (`src/hooks/`)
 
-| Hook | Purpose |
-|------|---------|
-| `useActivation` | Manage feedback mode activation |
-| `useDashboard` | Dashboard state and operations |
-| `useRecording` | Video recording functionality |
-| `useScreenCapture` | Screenshot capture |
-| `useElementSelection` | Element selection and hover |
-| `useKeyboardShortcuts` | Keyboard shortcut handling |
-| `useFeedbackSubmission` | Feedback submission |
-| `useIntegrations` | Integration management |
-| `useTheme` | Theme access and utilities |
+| Hook                    | Purpose                         |
+| ----------------------- | ------------------------------- |
+| `useActivation`         | Manage feedback mode activation |
+| `useDashboard`          | Dashboard state and operations  |
+| `useRecording`          | Video recording functionality   |
+| `useScreenCapture`      | Screenshot capture              |
+| `useElementSelection`   | Element selection and hover     |
+| `useKeyboardShortcuts`  | Keyboard shortcut handling      |
+| `useFeedbackSubmission` | Feedback submission             |
+| `useIntegrations`       | Integration management          |
+| `useTheme`              | Theme access and utilities      |
 
 ### State (`src/state/`)
 
-| Module | Purpose |
-|--------|---------|
-| `feedbackMachine.ts` | XState v5 state machine (533 lines) |
+| Module               | Purpose                                |
+| -------------------- | -------------------------------------- |
+| `feedbackMachine.ts` | XState v5 state machine (533 lines)    |
 | `feedbackReducer.ts` | Legacy reducer (for migration support) |
-| `actions.ts` | 23 type-safe action creators |
-| `selectors.ts` | 35+ state selectors |
+| `actions.ts`         | 23 type-safe action creators           |
+| `selectors.ts`       | 35+ state selectors                    |
 
 ## Technology Stack
 
@@ -188,5 +188,5 @@ defaultStatusRegistry.registerStatus('custom-status', {
 
 ---
 
-*Architecture documentation compiled by GitHub Copilot*
-*For project: react-visual-feedback*
+_Architecture documentation compiled by GitHub Copilot_
+_For project: react-visual-feedback_

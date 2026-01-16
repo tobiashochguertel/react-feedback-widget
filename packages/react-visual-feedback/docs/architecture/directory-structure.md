@@ -158,19 +158,19 @@ src/
 
 The main components that form the user-facing API:
 
-| File | Description |
-|------|-------------|
-| `FeedbackProvider.tsx` | React context provider that wraps the application and provides feedback functionality to all children |
-| `FeedbackProvider.styles.ts` | Extracted styled components for the provider's overlay UI |
-| `FeedbackModal.tsx` | Modal dialog for composing and submitting feedback with annotation tools |
-| `FeedbackDashboard.tsx` | Dashboard for viewing, filtering, and managing submitted feedback |
-| `FeedbackTrigger.tsx` | Customizable floating action button for triggering feedback mode |
-| `CanvasOverlay.tsx` | Canvas layer for drawing annotations on screenshots |
-| `RecordingOverlay.tsx` | Visual indicator shown during screen recording |
-| `SessionReplay.tsx` | Component for replaying recorded sessions with event timeline |
-| `SubmissionQueue.tsx` | Manages offline feedback queue with retry logic |
-| `UpdatesModal.tsx` | Modal for displaying changelogs and release notes |
-| `ErrorToast.tsx` | Toast notification system for errors and messages |
+| File                         | Description                                                                                           |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `FeedbackProvider.tsx`       | React context provider that wraps the application and provides feedback functionality to all children |
+| `FeedbackProvider.styles.ts` | Extracted styled components for the provider's overlay UI                                             |
+| `FeedbackModal.tsx`          | Modal dialog for composing and submitting feedback with annotation tools                              |
+| `FeedbackDashboard.tsx`      | Dashboard for viewing, filtering, and managing submitted feedback                                     |
+| `FeedbackTrigger.tsx`        | Customizable floating action button for triggering feedback mode                                      |
+| `CanvasOverlay.tsx`          | Canvas layer for drawing annotations on screenshots                                                   |
+| `RecordingOverlay.tsx`       | Visual indicator shown during screen recording                                                        |
+| `SessionReplay.tsx`          | Component for replaying recorded sessions with event timeline                                         |
+| `SubmissionQueue.tsx`        | Manages offline feedback queue with retry logic                                                       |
+| `UpdatesModal.tsx`           | Modal for displaying changelogs and release notes                                                     |
+| `ErrorToast.tsx`             | Toast notification system for errors and messages                                                     |
 
 ### Components (`src/components/`)
 
@@ -224,41 +224,41 @@ interface StorageService {
 
 Custom React hooks implementing the Interface Segregation Principle:
 
-| Hook | Purpose | Key Methods |
-|------|---------|-------------|
-| `useActivation` | Toggle feedback mode | `isActive`, `toggle`, `activate`, `deactivate` |
-| `useDashboard` | Dashboard operations | `feedbackItems`, `filter`, `updateStatus` |
-| `useRecording` | Video recording | `start`, `stop`, `pause`, `resume` |
-| `useScreenCapture` | Screenshots | `capture`, `captureViewport` |
-| `useElementSelection` | Element hover | `hoveredElement`, `selectElement` |
-| `useKeyboardShortcuts` | Shortcuts | `registerShortcut`, `unregisterShortcut` |
-| `useFeedbackSubmission` | Submit feedback | `submit`, `queue`, `retry` |
-| `useIntegrations` | Manage integrations | `submit`, `configure`, `status` |
-| `useTheme` | Theme utilities | `theme`, `colors`, `cssVar` |
+| Hook                    | Purpose              | Key Methods                                    |
+| ----------------------- | -------------------- | ---------------------------------------------- |
+| `useActivation`         | Toggle feedback mode | `isActive`, `toggle`, `activate`, `deactivate` |
+| `useDashboard`          | Dashboard operations | `feedbackItems`, `filter`, `updateStatus`      |
+| `useRecording`          | Video recording      | `start`, `stop`, `pause`, `resume`             |
+| `useScreenCapture`      | Screenshots          | `capture`, `captureViewport`                   |
+| `useElementSelection`   | Element hover        | `hoveredElement`, `selectElement`              |
+| `useKeyboardShortcuts`  | Shortcuts            | `registerShortcut`, `unregisterShortcut`       |
+| `useFeedbackSubmission` | Submit feedback      | `submit`, `queue`, `retry`                     |
+| `useIntegrations`       | Manage integrations  | `submit`, `configure`, `status`                |
+| `useTheme`              | Theme utilities      | `theme`, `colors`, `cssVar`                    |
 
 ### State (`src/state/`)
 
 Centralized state management with XState:
 
-| File | Description |
-|------|-------------|
+| File                 | Description                                                     |
+| -------------------- | --------------------------------------------------------------- |
 | `feedbackMachine.ts` | XState v5 state machine with 23 events and explicit transitions |
-| `feedbackReducer.ts` | Legacy reducer for migration support |
-| `actions.ts` | 23 type-safe action creators organized by category |
-| `selectors.ts` | 35+ memoized selectors for state access |
+| `feedbackReducer.ts` | Legacy reducer for migration support                            |
+| `actions.ts`         | 23 type-safe action creators organized by category              |
+| `selectors.ts`       | 35+ memoized selectors for state access                         |
 
 ### Integrations (`src/integrations/`)
 
 External service connections:
 
-| Module | Description |
-|--------|-------------|
-| `types.ts` | Core interfaces (`Integration`, `ValidationResult`, `SubmissionResult`) |
-| `IntegrationFactory.ts` | Factory for creating integration instances |
-| `IntegrationRegistry.ts` | Registry for managing enabled integrations |
-| `jira/` | Modular Jira integration (6 modules) |
-| `sheets/` | Modular Sheets integration (5 modules) |
-| `server/` | Server-side API handlers |
+| Module                   | Description                                                             |
+| ------------------------ | ----------------------------------------------------------------------- |
+| `types.ts`               | Core interfaces (`Integration`, `ValidationResult`, `SubmissionResult`) |
+| `IntegrationFactory.ts`  | Factory for creating integration instances                              |
+| `IntegrationRegistry.ts` | Registry for managing enabled integrations                              |
+| `jira/`                  | Modular Jira integration (6 modules)                                    |
+| `sheets/`                | Modular Sheets integration (5 modules)                                  |
+| `server/`                | Server-side API handlers                                                |
 
 ### Registry (`src/registry/`)
 
@@ -267,31 +267,31 @@ Status management system:
 ```typescript
 // Centralized status registry with normalization
 const registry = new StatusRegistry();
-registry.registerStatus('custom', { label: 'Custom', color: '#ff00ff' });
-const normalizedStatus = registry.normalize('feature'); // → 'open'
+registry.registerStatus("custom", { label: "Custom", color: "#ff00ff" });
+const normalizedStatus = registry.normalize("feature"); // → 'open'
 ```
 
 ### Constants (`src/constants/`)
 
 Eliminated magic numbers and strings:
 
-| File | Contents |
-|------|----------|
+| File          | Contents                                                        |
+| ------------- | --------------------------------------------------------------- |
 | `keyboard.ts` | `KEYBOARD_SHORTCUTS` — Ctrl+Shift+F to toggle, Escape to cancel |
-| `media.ts` | `MAX_VIDEO_SIZE_MB`, `VIDEO_MIME_TYPE`, `VIDEO_BITRATE` |
-| `status.ts` | `STATUS_COLORS`, `DEFAULT_STATUSES` |
-| `storage.ts` | `STORAGE_KEYS.FEEDBACK_LIST`, `VIDEO_DB_NAME` |
-| `ui.ts` | `Z_INDEX.MODAL`, `ANIMATION.DURATION`, `TOOLTIP_OFFSET` |
+| `media.ts`    | `MAX_VIDEO_SIZE_MB`, `VIDEO_MIME_TYPE`, `VIDEO_BITRATE`         |
+| `status.ts`   | `STATUS_COLORS`, `DEFAULT_STATUSES`                             |
+| `storage.ts`  | `STORAGE_KEYS.FEEDBACK_LIST`, `VIDEO_DB_NAME`                   |
+| `ui.ts`       | `Z_INDEX.MODAL`, `ANIMATION.DURATION`, `TOOLTIP_OFFSET`         |
 
 ### Utils (`src/utils/`)
 
 Shared utility functions:
 
-| File | Functions |
-|------|-----------|
-| `dateUtils.ts` | `formatRelativeDate`, `formatTimestamp`, `formatDuration`, `formatTime`, `formatDate`, `formatShortDate` |
-| `elementUtils.ts` | `getElementSelector`, `getElementInfo`, `getReactComponentInfo` |
-| `validation.ts` | `required`, `email`, `url`, `validateField`, `validateForm` |
+| File              | Functions                                                                                                |
+| ----------------- | -------------------------------------------------------------------------------------------------------- |
+| `dateUtils.ts`    | `formatRelativeDate`, `formatTimestamp`, `formatDuration`, `formatTime`, `formatDate`, `formatShortDate` |
+| `elementUtils.ts` | `getElementSelector`, `getElementInfo`, `getReactComponentInfo`                                          |
+| `validation.ts`   | `required`, `email`, `url`, `validateField`, `validateForm`                                              |
 
 ## Documentation Structure
 
@@ -314,5 +314,5 @@ docs/
 
 ---
 
-*Documentation compiled by GitHub Copilot*
-*For project: react-visual-feedback*
+_Documentation compiled by GitHub Copilot_
+_For project: react-visual-feedback_

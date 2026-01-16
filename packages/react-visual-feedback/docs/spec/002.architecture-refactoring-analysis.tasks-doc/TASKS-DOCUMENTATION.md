@@ -675,4 +675,4 @@ docs/
 - [TASKS-OVERVIEW.md](./TASKS-OVERVIEW.md) - Main task overview
 - [TASKS-FEATURES.md](./TASKS-FEATURES.md) - Feature tasks (hooks)
 - [TASKS-IMPROVEMENTS.md](./TASKS-IMPROVEMENTS.md) - Improvement tasks
-- [Architecture Refactoring Analysis](../architecture-refactoring-analysis.md) - Source specification
+- [Architecture Refactoring Analysis](architecture-refactoring-analysis/architecture-refactoring-analysis.md) - Source specification

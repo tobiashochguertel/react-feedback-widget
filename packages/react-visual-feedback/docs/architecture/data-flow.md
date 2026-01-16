@@ -56,13 +56,13 @@ The feedback state machine has the following states:
 
 ```typescript
 type FeedbackState =
-  | 'idle'           // No feedback activity
-  | 'hovering'       // User hovering over elements
-  | 'capturing'      // Screenshot capture in progress
-  | 'modal_open'     // Feedback modal is open
-  | 'recording'      // Screen recording active
-  | 'submitting'     // Submitting feedback
-  | 'complete';      // Submission complete
+  | "idle" // No feedback activity
+  | "hovering" // User hovering over elements
+  | "capturing" // Screenshot capture in progress
+  | "modal_open" // Feedback modal is open
+  | "recording" // Screen recording active
+  | "submitting" // Submitting feedback
+  | "complete"; // Submission complete
 ```
 
 ### State Transitions
@@ -90,63 +90,63 @@ The state machine responds to these events:
 
 ### Activation Events
 
-| Event | Description | Payload |
-|-------|-------------|---------|
+| Event       | Description          | Payload                  |
+| ----------- | -------------------- | ------------------------ |
 | `SET_STATE` | Partial state update | `Partial<FeedbackState>` |
 
 ### Element Selection Events
 
-| Event | Description | Payload |
-|-------|-------------|---------|
+| Event            | Description         | Payload                                                    |
+| ---------------- | ------------------- | ---------------------------------------------------------- |
 | `START_HOVERING` | Begin element hover | `{ element, componentInfo, highlightStyle, tooltipStyle }` |
-| `STOP_HOVERING` | End element hover | — |
+| `STOP_HOVERING`  | End element hover   | —                                                          |
 
 ### Capture Events
 
-| Event | Description | Payload |
-|-------|-------------|---------|
-| `START_CAPTURE` | Begin screenshot capture | `HTMLElement` |
-| `COMPLETE_CAPTURE` | Capture completed | `string \| null` (base64) |
-| `CANCEL_CAPTURE` | Cancel capture | — |
+| Event              | Description              | Payload                   |
+| ------------------ | ------------------------ | ------------------------- |
+| `START_CAPTURE`    | Begin screenshot capture | `HTMLElement`             |
+| `COMPLETE_CAPTURE` | Capture completed        | `string \| null` (base64) |
+| `CANCEL_CAPTURE`   | Cancel capture           | —                         |
 
 ### Modal Events
 
-| Event | Description | Payload |
-|-------|-------------|---------|
-| `OPEN_DASHBOARD` | Open dashboard | — |
-| `CLOSE_DASHBOARD` | Close dashboard | — |
-| `OPEN_MANUAL_FEEDBACK` | Open modal without capture | — |
-| `CLOSE_MANUAL_FEEDBACK` | Close modal | — |
-| `RESET_MODAL` | Reset modal state | — |
+| Event                   | Description                | Payload |
+| ----------------------- | -------------------------- | ------- |
+| `OPEN_DASHBOARD`        | Open dashboard             | —       |
+| `CLOSE_DASHBOARD`       | Close dashboard            | —       |
+| `OPEN_MANUAL_FEEDBACK`  | Open modal without capture | —       |
+| `CLOSE_MANUAL_FEEDBACK` | Close modal                | —       |
+| `RESET_MODAL`           | Reset modal state          | —       |
 
 ### Recording Events
 
-| Event | Description | Payload |
-|-------|-------------|---------|
-| `START_RECORDING_INIT` | Begin recording initialization | — |
-| `START_RECORDING_SUCCESS` | Recording started successfully | — |
-| `START_RECORDING_FAILURE` | Recording failed to start | — |
-| `PAUSE_RECORDING` | Pause recording | — |
-| `RESUME_RECORDING` | Resume recording | — |
-| `CANCEL_RECORDING` | Cancel recording | — |
-| `STOP_RECORDING` | Stop and save recording | `RecordingResult` |
+| Event                     | Description                    | Payload           |
+| ------------------------- | ------------------------------ | ----------------- |
+| `START_RECORDING_INIT`    | Begin recording initialization | —                 |
+| `START_RECORDING_SUCCESS` | Recording started successfully | —                 |
+| `START_RECORDING_FAILURE` | Recording failed to start      | —                 |
+| `PAUSE_RECORDING`         | Pause recording                | —                 |
+| `RESUME_RECORDING`        | Resume recording               | —                 |
+| `CANCEL_RECORDING`        | Cancel recording               | —                 |
+| `STOP_RECORDING`          | Stop and save recording        | `RecordingResult` |
 
 ### Integration Events
 
-| Event | Description | Payload |
-|-------|-------------|---------|
-| `INTEGRATION_START` | Begin integration submission | `{ jira?: boolean, sheets?: boolean }` |
-| `INTEGRATION_SUCCESS` | Integration succeeded | `IntegrationResults` |
-| `INTEGRATION_ERROR` | Integration failed | `Partial<IntegrationResults>` |
-| `INTEGRATION_RESET` | Reset integration state | — |
+| Event                 | Description                  | Payload                                |
+| --------------------- | ---------------------------- | -------------------------------------- |
+| `INTEGRATION_START`   | Begin integration submission | `{ jira?: boolean, sheets?: boolean }` |
+| `INTEGRATION_SUCCESS` | Integration succeeded        | `IntegrationResults`                   |
+| `INTEGRATION_ERROR`   | Integration failed           | `Partial<IntegrationResults>`          |
+| `INTEGRATION_RESET`   | Reset integration state      | —                                      |
 
 ### Queue Events
 
-| Event | Description | Payload |
-|-------|-------------|---------|
-| `ADD_SUBMISSION` | Add to offline queue | `QueuedSubmission` |
-| `UPDATE_SUBMISSION` | Update queued item | `Partial<QueuedSubmission> & { id: string }` |
-| `REMOVE_SUBMISSION` | Remove from queue | `string` (id) |
+| Event               | Description          | Payload                                      |
+| ------------------- | -------------------- | -------------------------------------------- |
+| `ADD_SUBMISSION`    | Add to offline queue | `QueuedSubmission`                           |
+| `UPDATE_SUBMISSION` | Update queued item   | `Partial<QueuedSubmission> & { id: string }` |
+| `REMOVE_SUBMISSION` | Remove from queue    | `string` (id)                                |
 
 ## Context (Extended State)
 
@@ -199,7 +199,7 @@ Selectors provide read access to specific parts of state:
 
 ```typescript
 // Usage
-import { selectIsActive, selectScreenshot } from 'react-visual-feedback';
+import { selectIsActive, selectScreenshot } from "react-visual-feedback";
 
 const isActive = selectIsActive(state);
 const screenshot = selectScreenshot(state);
@@ -207,23 +207,23 @@ const screenshot = selectScreenshot(state);
 
 ### Available Selectors
 
-| Category | Selectors |
-|----------|-----------|
-| Activation | `selectIsActive` |
-| Element Selection | `selectIsHovering`, `selectHoveredElement`, `selectSelectedElement`, `selectComponentInfo`, `selectHighlightStyle`, `selectTooltipStyle` |
-| Modal | `selectIsModalOpen`, `selectIsManualFeedback` |
-| Capture | `selectIsCapturing`, `selectScreenshot`, `selectHasScreenshot`, `selectIsCanvasActive` |
-| Recording | `selectIsRecordingInitializing`, `selectIsRecording`, `selectRecordingPaused`, `selectVideoBlob`, `selectVideoDuration`, `selectEventLogs` |
-| Dashboard | `selectIsDashboardOpen` |
-| Integrations | `selectIntegrationStatus`, `selectIntegrationResults` |
-| Queue | `selectSubmissionQueue`, `selectHasQueuedSubmissions`, `selectQueuedSubmissionCount` |
+| Category          | Selectors                                                                                                                                  |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Activation        | `selectIsActive`                                                                                                                           |
+| Element Selection | `selectIsHovering`, `selectHoveredElement`, `selectSelectedElement`, `selectComponentInfo`, `selectHighlightStyle`, `selectTooltipStyle`   |
+| Modal             | `selectIsModalOpen`, `selectIsManualFeedback`                                                                                              |
+| Capture           | `selectIsCapturing`, `selectScreenshot`, `selectHasScreenshot`, `selectIsCanvasActive`                                                     |
+| Recording         | `selectIsRecordingInitializing`, `selectIsRecording`, `selectRecordingPaused`, `selectVideoBlob`, `selectVideoDuration`, `selectEventLogs` |
+| Dashboard         | `selectIsDashboardOpen`                                                                                                                    |
+| Integrations      | `selectIntegrationStatus`, `selectIntegrationResults`                                                                                      |
+| Queue             | `selectSubmissionQueue`, `selectHasQueuedSubmissions`, `selectQueuedSubmissionCount`                                                       |
 
 ## Action Creators
 
 Type-safe action creators for dispatching events:
 
 ```typescript
-import { actions } from 'react-visual-feedback';
+import { actions } from "react-visual-feedback";
 
 // Usage
 send(actions.startCapture(element));
@@ -339,7 +339,7 @@ Services handle external I/O with dependency injection:
 ```typescript
 // Writing feedback
 const storage = new LocalStorageService();
-const feedback = { id: '123', type: 'bug', description: '...' };
+const feedback = { id: "123", type: "bug", description: "..." };
 storage.set(STORAGE_KEYS.FEEDBACK_LIST, feedbackList);
 
 // Reading feedback
@@ -420,5 +420,5 @@ send(actions.openModal());
 
 ---
 
-*Documentation compiled by GitHub Copilot*
-*For project: react-visual-feedback*
+_Documentation compiled by GitHub Copilot_
+_For project: react-visual-feedback_

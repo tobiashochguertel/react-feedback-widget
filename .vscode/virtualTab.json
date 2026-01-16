@@ -3,7 +3,7 @@
     "id": "builtin_group_id",
     "name": "Currently Open Files",
     "files": [
-      "packages/react-visual-feedback/docs/bdd/README.md"
+      "packages/react-visual-feedback/docs/spec/006.bdd/README.md"
     ],
     "builtIn": true,
     "bookmarks": {}

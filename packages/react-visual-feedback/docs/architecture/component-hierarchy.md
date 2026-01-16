@@ -103,41 +103,41 @@ graph TB
 
 ### Core Components
 
-| Component | Responsibility | Key Props |
-|-----------|----------------|-----------|
-| `FeedbackProvider` | Context provider, state machine, service injection | `onSubmit`, `integrations`, `theme`, `services` |
-| `FeedbackTrigger` | Activation button, customizable UI | `position`, `icon`, `label`, `className` |
-| `FeedbackModal` | Feedback form, annotations, submission | `onClose`, `initialType`, `allowRecording` |
-| `FeedbackDashboard` | Feedback management, filtering, status updates | `statuses`, `onStatusChange`, `integrations` |
+| Component           | Responsibility                                     | Key Props                                       |
+| ------------------- | -------------------------------------------------- | ----------------------------------------------- |
+| `FeedbackProvider`  | Context provider, state machine, service injection | `onSubmit`, `integrations`, `theme`, `services` |
+| `FeedbackTrigger`   | Activation button, customizable UI                 | `position`, `icon`, `label`, `className`        |
+| `FeedbackModal`     | Feedback form, annotations, submission             | `onClose`, `initialType`, `allowRecording`      |
+| `FeedbackDashboard` | Feedback management, filtering, status updates     | `statuses`, `onStatusChange`, `integrations`    |
 
 ### Overlay Components
 
-| Component | Responsibility | Key Props |
-|-----------|----------------|-----------|
+| Component          | Responsibility                       | Key Props                        |
+| ------------------ | ------------------------------------ | -------------------------------- |
 | `SelectionOverlay` | Element hover/selection highlighting | `highlightStyle`, `tooltipStyle` |
-| `CanvasOverlay` | Drawing annotations on screenshots | `screenshot`, `onSave`, `tools` |
-| `RecordingOverlay` | Recording status indicator | `duration`, `onStop`, `onPause` |
+| `CanvasOverlay`    | Drawing annotations on screenshots   | `screenshot`, `onSave`, `tools`  |
+| `RecordingOverlay` | Recording status indicator           | `duration`, `onStop`, `onPause`  |
 
 ### Dashboard Sub-Components
 
-| Component | Responsibility | Key Props |
-|-----------|----------------|-----------|
-| `DashboardContainer` | Orchestrates dashboard state | `feedbackItems`, `onItemSelect` |
-| `DashboardHeader` | Search, filter, title | `searchQuery`, `onSearch`, `filterStatus` |
-| `FeedbackList` | Renders list of feedback cards | `items`, `selectedId`, `onSelect` |
-| `FeedbackCard` | Individual feedback display | `feedback`, `onStatusChange`, `expanded` |
-| `VideoMode` | Fullscreen video with logs | `videoBlob`, `eventLogs`, `onClose` |
+| Component            | Responsibility                 | Key Props                                 |
+| -------------------- | ------------------------------ | ----------------------------------------- |
+| `DashboardContainer` | Orchestrates dashboard state   | `feedbackItems`, `onItemSelect`           |
+| `DashboardHeader`    | Search, filter, title          | `searchQuery`, `onSearch`, `filterStatus` |
+| `FeedbackList`       | Renders list of feedback cards | `items`, `selectedId`, `onSelect`         |
+| `FeedbackCard`       | Individual feedback display    | `feedback`, `onStatusChange`, `expanded`  |
+| `VideoMode`          | Fullscreen video with logs     | `videoBlob`, `eventLogs`, `onClose`       |
 
 ### Shared Components
 
-| Component | Responsibility | Key Props |
-|-----------|----------------|-----------|
-| `BaseModal` | Reusable modal with animations, focus trap | `isOpen`, `onClose`, `title`, `size` |
-| `ErrorBoundary` | Error catching with fallback UI | `fallback`, `onError`, `onReset` |
-| `StatusBadge` | Status indicator with color | `status`, `statuses`, `size` |
-| `StatusDropdown` | Status selection dropdown | `value`, `onChange`, `statuses` |
-| `LogEntry` | Event log display | `log`, `expanded`, `onToggle` |
-| `ErrorToast` | Toast notification | `message`, `type`, `duration` |
+| Component        | Responsibility                             | Key Props                            |
+| ---------------- | ------------------------------------------ | ------------------------------------ |
+| `BaseModal`      | Reusable modal with animations, focus trap | `isOpen`, `onClose`, `title`, `size` |
+| `ErrorBoundary`  | Error catching with fallback UI            | `fallback`, `onError`, `onReset`     |
+| `StatusBadge`    | Status indicator with color                | `status`, `statuses`, `size`         |
+| `StatusDropdown` | Status selection dropdown                  | `value`, `onChange`, `statuses`      |
+| `LogEntry`       | Event log display                          | `log`, `expanded`, `onToggle`        |
+| `ErrorToast`     | Toast notification                         | `message`, `type`, `duration`        |
 
 ## Context Access
 
@@ -212,7 +212,7 @@ function MyComponent() {
 ```tsx
 // FeedbackTrigger updates context
 const { setIsActive } = useFeedback();
-<button onClick={() => setIsActive(true)}>Feedback</button>
+<button onClick={() => setIsActive(true)}>Feedback</button>;
 
 // FeedbackModal reads context
 const { isActive, screenshot } = useFeedback();
@@ -236,7 +236,7 @@ if (!isActive) return null;
 ```tsx
 <FeedbackProvider
   render={({ isActive, toggle }) => (
-    <button onClick={toggle}>{isActive ? 'Cancel' : 'Feedback'}</button>
+    <button onClick={toggle}>{isActive ? "Cancel" : "Feedback"}</button>
   )}
 />
 ```
@@ -244,10 +244,10 @@ if (!isActive) return null;
 ### HOC Pattern
 
 ```tsx
-import { withErrorBoundary } from 'react-visual-feedback';
+import { withErrorBoundary } from "react-visual-feedback";
 
 const SafeFeedbackModal = withErrorBoundary(FeedbackModal, {
-  fallback: <ErrorFallback />
+  fallback: <ErrorFallback />,
 });
 ```
 
@@ -257,11 +257,11 @@ Components use styled-components with theme access:
 
 ```tsx
 // Theme flows from FeedbackProvider
-<ThemeProvider theme={getTheme('light')}>
+<ThemeProvider theme={getTheme("light")}>
   <FeedbackProvider>
     {/* All components have theme access */}
-    <FeedbackModal />  {/* Uses theme.colors.primary */}
-    <FeedbackDashboard />  {/* Uses theme.spacing */}
+    <FeedbackModal /> {/* Uses theme.colors.primary */}
+    <FeedbackDashboard /> {/* Uses theme.spacing */}
   </FeedbackProvider>
 </ThemeProvider>
 ```
@@ -283,5 +283,5 @@ Error boundaries wrap critical components:
 
 ---
 
-*Documentation compiled by GitHub Copilot*
-*For project: react-visual-feedback*
+_Documentation compiled by GitHub Copilot_
+_For project: react-visual-feedback_

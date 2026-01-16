@@ -828,4 +828,4 @@ This hook should work with the new IntegrationFactory once it's implemented.
 
 - [TASKS-OVERVIEW.md](./TASKS-OVERVIEW.md) - Main task overview
 - [TASKS-IMPROVEMENTS.md](./TASKS-IMPROVEMENTS.md) - Improvement tasks including I010, I007, I008, I020
-- [Architecture Refactoring Analysis](../architecture-refactoring-analysis.md) - Source specification
+- [Architecture Refactoring Analysis](architecture-refactoring-analysis/architecture-refactoring-analysis.md) - Source specification

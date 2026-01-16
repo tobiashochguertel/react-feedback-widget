@@ -30,7 +30,7 @@ bdd/
 
 ## 🎯 Purpose
 
-BDD tests verify that the feedback widget behaves correctly from the user's perspective. Tests are written in Gherkin syntax (Given/When/Then) and derived from [User Stories](../user-stories/USER-STORIES.md).
+BDD tests verify that the feedback widget behaves correctly from the user's perspective. Tests are written in Gherkin syntax (Given/When/Then) and derived from [User Stories](../spec/005.user-stories/USER-STORIES.md).
 
 ---
 
@@ -128,16 +128,16 @@ npx bddgen && npx playwright test
 
 ### ✅ Implemented Tests (24 scenarios, 120 tests across 5 browsers)
 
-| Feature                    | Scenarios | Status       | Browsers                                                |
-| -------------------------- | --------- | ------------ | ------------------------------------------------------- |
-| **Feedback Modal**         | 4         | ✅ PASSING   | All 5                                                   |
-| **Feedback Form**          | 6         | ✅ PASSING   | All 5                                                   |
-| **Screenshot Capture**     | 2         | ✅ PASSING   | All 5                                                   |
-| **Keyboard Shortcuts**     | 3         | ✅ PASSING   | All 5                                                   |
-| **Feedback Submission**    | 3         | ✅ PASSING   | All 5                                                   |
-| **Dashboard**              | 3         | ✅ PASSING   | All 5                                                   |
-| **Integrations**           | 3         | ✅ PASSING   | All 5                                                   |
-| **Total**                  | **24**    | ✅ **120/120** | Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari |
+| Feature                 | Scenarios | Status         | Browsers                                                |
+| ----------------------- | --------- | -------------- | ------------------------------------------------------- |
+| **Feedback Modal**      | 4         | ✅ PASSING     | All 5                                                   |
+| **Feedback Form**       | 6         | ✅ PASSING     | All 5                                                   |
+| **Screenshot Capture**  | 2         | ✅ PASSING     | All 5                                                   |
+| **Keyboard Shortcuts**  | 3         | ✅ PASSING     | All 5                                                   |
+| **Feedback Submission** | 3         | ✅ PASSING     | All 5                                                   |
+| **Dashboard**           | 3         | ✅ PASSING     | All 5                                                   |
+| **Integrations**        | 3         | ✅ PASSING     | All 5                                                   |
+| **Total**               | **24**    | ✅ **120/120** | Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari |
 
 ### ✅ Completed User Story Coverage
 
@@ -150,20 +150,20 @@ npx bddgen && npx playwright test
 
 ### 🔲 Planned Tests (remaining)
 
-| User Story | Feature File     | Scenarios | Status    |
-| ---------- | ---------------- | --------- | --------- |
-| US003      | screen-recording | 3         | 🔲 TODO   |
-| US007      | dashboard        | 2         | 🔲 TODO   |
-| US008      | dashboard        | 2         | 🔲 TODO   |
-| US009      | dashboard        | 2         | 🔲 TODO   |
-| US011      | integrations     | 1         | 🔲 TODO   |
-| US012      | theming          | 2         | 🔲 TODO   |
+| User Story | Feature File     | Scenarios | Status  |
+| ---------- | ---------------- | --------- | ------- |
+| US003      | screen-recording | 3         | 🔲 TODO |
+| US007      | dashboard        | 2         | 🔲 TODO |
+| US008      | dashboard        | 2         | 🔲 TODO |
+| US009      | dashboard        | 2         | 🔲 TODO |
+| US011      | integrations     | 1         | 🔲 TODO |
+| US012      | theming          | 2         | 🔲 TODO |
 
 ---
 
 ## 🔗 Related Documentation
 
-- **User Stories**: [../user-stories/README.md](../user-stories/README.md)
+- **User Stories**: [../user-stories/README.md](../spec/005.user-stories/README.md)
 - **Setup Guide**: [./SETUP.md](./SETUP.md)
 - **Architecture**: [../architecture/README.md](../architecture/README.md)
 

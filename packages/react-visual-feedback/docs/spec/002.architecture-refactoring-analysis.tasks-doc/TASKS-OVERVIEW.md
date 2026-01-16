@@ -3,7 +3,7 @@
 **Created:** 2026-01-15
 **Updated:** 2025-01-16
 **Status:** In Progress
-**Specification Source:** [architecture-refactoring-analysis.md](../architecture-refactoring-analysis.md)
+**Specification Source:** [architecture-refactoring-analysis.md](architecture-refactoring-analysis/architecture-refactoring-analysis.md)
 
 > This document tracks all tasks required to refactor the react-visual-feedback codebase following SOLID principles and addressing identified code smells. Tasks are organized by category and tracked with simple status indicators.
 
@@ -340,7 +340,7 @@
 
 ## Related Documents
 
-- [Architecture Refactoring Analysis](../architecture-refactoring-analysis.md) - Source specification
+- [Architecture Refactoring Analysis](architecture-refactoring-analysis/architecture-refactoring-analysis.md) - Source specification
 - [TASKS-FEATURES.md](./TASKS-FEATURES.md) - Detailed feature tasks (hooks)
 - [TASKS-IMPROVEMENTS.md](./TASKS-IMPROVEMENTS.md) - Detailed improvement tasks
 - [TASKS-DOCUMENTATION.md](./TASKS-DOCUMENTATION.md) - Documentation tasks
