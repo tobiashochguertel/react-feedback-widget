@@ -4,6 +4,7 @@
 
 **Package:** react-visual-feedback v2.2.5
 **Created:** January 16, 2026
+**Status:** ✅ IMPLEMENTED (Core scenarios)
 
 ---
 
@@ -125,12 +126,21 @@ npx bddgen && npx playwright test
 
 ## 📋 Test Coverage Matrix
 
+### ✅ Implemented Tests (12 scenarios, 60 tests across 5 browsers)
+
+| Feature                | Scenarios | Status      | Browsers                 |
+| ---------------------- | --------- | ----------- | ------------------------ |
+| **Feedback Modal**     | 4         | ✅ PASSING  | All 5                    |
+| **Feedback Form**      | 6         | ✅ PASSING  | All 5                    |
+| **Screenshot Capture** | 2         | ✅ PASSING  | All 5                    |
+| **Total**              | **12**    | ✅ **60/60** | Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari |
+
+### 🔲 Planned Tests (from user stories)
+
 | User Story | Feature File        | Scenarios | Automated |
 | ---------- | ------------------- | --------- | --------- |
 | US001      | feedback-submission | 3         | 🔲 TODO   |
-| US002      | screenshot-capture  | 3         | 🔲 TODO   |
 | US003      | screen-recording    | 3         | 🔲 TODO   |
-| US004      | element-selection   | 3         | 🔲 TODO   |
 | US005      | keyboard-shortcuts  | 3         | 🔲 TODO   |
 | US006      | dashboard           | 3         | 🔲 TODO   |
 | US007      | dashboard           | 2         | 🔲 TODO   |
@@ -147,6 +157,24 @@ npx bddgen && npx playwright test
 - **User Stories**: [../user-stories/README.md](../user-stories/README.md)
 - **Setup Guide**: [./SETUP.md](./SETUP.md)
 - **Architecture**: [../architecture/README.md](../architecture/README.md)
+
+---
+
+## 🚀 Running the Tests
+
+```bash
+# Run all BDD tests
+bun run test:bdd
+
+# Run on specific browser
+bun run test:bdd -- --project=chromium
+
+# Run specific feature
+bun run test:bdd -- --grep "Feedback Modal"
+
+# View HTML report
+npx playwright show-report
+```
 
 ---
 
