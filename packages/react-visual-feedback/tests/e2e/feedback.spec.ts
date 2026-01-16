@@ -14,6 +14,8 @@ test.describe('Feedback Widget', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the example app
     await page.goto('/');
+    // Wait for page to be fully loaded (Next.js hydration)
+    await page.waitForLoadState('networkidle');
   });
 
   test.describe('Opening Feedback Modal', () => {
@@ -30,8 +32,8 @@ test.describe('Feedback Widget', () => {
       // Press Alt+A to open feedback
       await page.keyboard.press('Alt+a');
 
-      // Verify modal is visible
-      await expect(page.getByRole('dialog')).toBeVisible();
+      // Verify modal is visible (allow time for animation)
+      await expect(page.getByRole('dialog')).toBeVisible({ timeout: 10000 });
     });
 
     test('closes modal via close button', async ({ page }) => {
