@@ -11,7 +11,7 @@ import type {
   RecorderService,
   RecordingState,
   RecordingOptions,
-  RecordingResult,
+  ServiceRecordingResult,
   RecordingProgress,
 } from './RecorderService';
 import {
@@ -172,7 +172,7 @@ export class MediaRecorderService implements RecorderService {
   /**
    * Stop recording and get the result
    */
-  async stop(): Promise<RecordingResult> {
+  async stop(): Promise<ServiceRecordingResult> {
     if (this._state !== 'recording' && this._state !== 'paused') {
       return {
         success: false,

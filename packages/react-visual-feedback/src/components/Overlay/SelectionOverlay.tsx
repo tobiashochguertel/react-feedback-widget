@@ -25,9 +25,10 @@ export interface Position {
 }
 
 /**
- * Style properties for the highlight box
+ * Style properties for the highlight box in selection mode.
+ * Uses numeric pixel values for positioning.
  */
-export interface HighlightStyle {
+export interface OverlayHighlightStyle {
   top: number;
   left: number;
   width: number;
@@ -35,20 +36,21 @@ export interface HighlightStyle {
 }
 
 /**
- * Style properties for the tooltip
+ * Style properties for the tooltip in selection mode.
+ * Uses numeric pixel values for positioning.
  */
-export interface TooltipStyle {
+export interface OverlayTooltipStyle {
   top: number;
   left: number;
 }
 
 /**
- * Information about a hovered element
+ * Information about a hovered element in the selection overlay
  */
 export interface HoveredElementInfo {
   element: HTMLElement;
-  highlightStyle: HighlightStyle;
-  tooltipStyle: TooltipStyle;
+  highlightStyle: OverlayHighlightStyle;
+  tooltipStyle: OverlayTooltipStyle;
   componentInfo?: {
     componentName: string;
     props?: Record<string, unknown>;
@@ -151,7 +153,7 @@ const InteractiveLayer = styled.div<{ $zIndex: number }>`
 /**
  * Calculate highlight box position and dimensions for an element
  */
-export function calculateHighlightStyle(element: HTMLElement): HighlightStyle {
+export function calculateHighlightStyle(element: HTMLElement): OverlayHighlightStyle {
   const rect = element.getBoundingClientRect();
   const padding = 4; // Small padding around the element
 
@@ -171,7 +173,7 @@ export function calculateTooltipStyle(
   element: HTMLElement,
   tooltipHeight: number = 36,
   tooltipOffset: number = 8
-): TooltipStyle {
+): OverlayTooltipStyle {
   const rect = element.getBoundingClientRect();
   const viewportHeight = window.innerHeight;
   const viewportWidth = window.innerWidth;

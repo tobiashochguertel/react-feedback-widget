@@ -60,11 +60,16 @@ export {
   useElementSelection,
   type UseElementSelectionOptions,
   type UseElementSelectionReturn,
-  type ElementInfo,
+  type SelectionElementInfo,
   type ComponentInfo,
-  type HighlightStyle,
-  type TooltipStyle,
+  type SelectionHighlightStyle,
+  type SelectionTooltipStyle,
 } from './useElementSelection.js';
+
+// Re-export with legacy names for backwards compatibility
+export type { SelectionElementInfo as ElementInfo } from './useElementSelection.js';
+export type { SelectionHighlightStyle as HighlightStyle } from './useElementSelection.js';
+export type { SelectionTooltipStyle as TooltipStyle } from './useElementSelection.js';
 
 // UI hooks - Keyboard shortcuts (T006)
 export {

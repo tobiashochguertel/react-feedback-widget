@@ -29,9 +29,12 @@ export type {
   RecorderService,
   RecordingState,
   RecordingOptions,
-  RecordingResult,
+  ServiceRecordingResult,
   RecordingProgress,
 } from './recording/RecorderService';
+
+// Re-export with legacy name for backwards compatibility
+export type { ServiceRecordingResult as RecordingResult } from './recording/RecorderService';
 
 // Recording services - implementations
 export { MediaRecorderService } from './recording/MediaRecorderService';

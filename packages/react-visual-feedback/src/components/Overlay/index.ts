@@ -22,10 +22,14 @@ export {
 export type {
   SelectionOverlayProps,
   Position,
-  HighlightStyle,
-  TooltipStyle,
+  OverlayHighlightStyle,
+  OverlayTooltipStyle,
   HoveredElementInfo,
 } from './SelectionOverlay';
+
+// Re-export with legacy names for backwards compatibility
+export type { OverlayHighlightStyle as HighlightStyle } from './SelectionOverlay';
+export type { OverlayTooltipStyle as TooltipStyle } from './SelectionOverlay';
 
 // ============================================
 // ELEMENT HIGHLIGHT
@@ -52,7 +56,10 @@ export {
 
 export type {
   ElementTooltipProps,
-  ElementInfo,
+  TooltipElementInfo,
   TooltipVariant,
   TooltipPosition,
 } from './ElementTooltip';
+
+// Re-export with legacy name for backwards compatibility
+export type { TooltipElementInfo as ElementInfo } from './ElementTooltip';

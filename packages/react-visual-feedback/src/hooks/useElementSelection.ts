@@ -27,9 +27,11 @@ export interface ComponentInfo {
 }
 
 /**
- * Information about a selected or hovered element
+ * Information about a selected or hovered element in the selection hook.
+ * This is a simplified version for the selection hook, containing the DOM element and computed info.
+ * For the full element metadata type, see {@link ElementInfo} in types/index.ts.
  */
-export interface ElementInfo {
+export interface SelectionElementInfo {
   /** The DOM element */
   element: HTMLElement;
   /** React component info if available */
@@ -41,9 +43,11 @@ export interface ElementInfo {
 }
 
 /**
- * Style object for element highlight overlay
+ * Style object for element highlight overlay positioning.
+ * Uses numeric values for direct pixel positioning.
+ * For the full CSS style type, see {@link HighlightStyle} in types/index.ts.
  */
-export interface HighlightStyle {
+export interface SelectionHighlightStyle {
   left: number;
   top: number;
   width: number;
@@ -51,9 +55,11 @@ export interface HighlightStyle {
 }
 
 /**
- * Style object for tooltip positioning
+ * Style object for tooltip positioning in the selection overlay.
+ * Uses numeric values for direct pixel positioning.
+ * For the full CSS style type, see {@link TooltipStyle} in types/index.ts.
  */
-export interface TooltipStyle {
+export interface SelectionTooltipStyle {
   left: number;
   top: number;
 }
@@ -72,10 +78,10 @@ export interface UseElementSelectionOptions {
   containerRef?: React.RefObject<HTMLElement | null>;
 
   /** Callback when an element is hovered */
-  onElementHover?: (info: ElementInfo | null) => void;
+  onElementHover?: (info: SelectionElementInfo | null) => void;
 
   /** Callback when an element is selected (clicked) */
-  onElementSelect?: (info: ElementInfo) => void;
+  onElementSelect?: (info: SelectionElementInfo) => void;
 
   /** Elements to exclude from selection (e.g., feedback UI elements) */
   excludeSelector?: string;
@@ -101,13 +107,13 @@ export interface UseElementSelectionReturn {
   selectedComponentInfo: ComponentInfo | null;
 
   /** Element info for hovered element */
-  hoveredElementInfo: ElementInfo | null;
+  hoveredElementInfo: SelectionElementInfo | null;
 
   /** Style for highlight overlay */
-  highlightStyle: HighlightStyle | null;
+  highlightStyle: SelectionHighlightStyle | null;
 
   /** Style for tooltip positioning */
-  tooltipStyle: TooltipStyle | null;
+  tooltipStyle: SelectionTooltipStyle | null;
 
   /** Enable element selection */
   enable: () => void;
@@ -190,7 +196,7 @@ function generateSelector(element: HTMLElement): string {
 /**
  * Create element info object from a DOM element
  */
-function createElementInfo(element: HTMLElement): ElementInfo {
+function createElementInfo(element: HTMLElement): SelectionElementInfo {
   return {
     element,
     componentInfo: extractComponentInfo(element),
@@ -277,8 +283,8 @@ export function useElementSelection(
   const [isEnabled, setIsEnabled] = useState(initialEnabled);
   const [hoveredElement, setHoveredElement] = useState<HTMLElement | null>(null);
   const [selectedElement, setSelectedElement] = useState<HTMLElement | null>(null);
-  const [hoveredElementInfo, setHoveredElementInfo] = useState<ElementInfo | null>(null);
-  const [tooltipPosition, setTooltipPosition] = useState<TooltipStyle | null>(null);
+  const [hoveredElementInfo, setHoveredElementInfo] = useState<SelectionElementInfo | null>(null);
+  const [tooltipPosition, setTooltipPosition] = useState<SelectionTooltipStyle | null>(null);
 
   // Refs for throttling and cleanup
   const lastMoveTimeRef = useRef<number>(0);
@@ -290,7 +296,7 @@ export function useElementSelection(
   }, [initialEnabled]);
 
   // Calculate highlight style from hovered element
-  const highlightStyle = useMemo((): HighlightStyle | null => {
+  const highlightStyle = useMemo((): SelectionHighlightStyle | null => {
     if (!hoveredElement) {
       return null;
     }

@@ -10,7 +10,7 @@
 import { forwardRef, useMemo } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import { createPortal } from 'react-dom';
-import type { TooltipStyle } from './SelectionOverlay';
+import type { OverlayTooltipStyle } from './SelectionOverlay';
 
 // ============================================
 // TYPES
@@ -27,9 +27,11 @@ export type TooltipVariant = 'default' | 'dark' | 'light' | 'info' | 'success' |
 export type TooltipPosition = 'auto' | 'top' | 'bottom' | 'left' | 'right';
 
 /**
- * Information to display in the tooltip
+ * Information to display in the tooltip.
+ * This is a simplified structure for tooltip display purposes.
+ * For the full element metadata type, see {@link ElementInfo} in types/index.ts.
  */
-export interface ElementInfo {
+export interface TooltipElementInfo {
   /** HTML tag name (e.g., 'div', 'button') */
   tagName: string;
   /** React component name if available */
@@ -52,9 +54,9 @@ export interface ElementInfo {
  */
 export interface ElementTooltipProps {
   /** Position of the tooltip */
-  style: TooltipStyle;
+  style: OverlayTooltipStyle;
   /** Element information to display */
-  elementInfo: ElementInfo;
+  elementInfo: TooltipElementInfo;
   /** Tooltip variant/appearance */
   variant?: TooltipVariant;
   /** Whether to show element dimensions */
@@ -278,7 +280,7 @@ const DataAttribute = styled.span`
 /**
  * Extract element information from a DOM element
  */
-export function extractElementInfo(element: HTMLElement): ElementInfo {
+export function extractElementInfo(element: HTMLElement): TooltipElementInfo {
   const rect = element.getBoundingClientRect();
 
   // Get data attributes

@@ -11,7 +11,7 @@ import type {
   RecorderService,
   RecordingState,
   RecordingOptions,
-  RecordingResult,
+  ServiceRecordingResult,
   RecordingProgress,
 } from './RecorderService';
 
@@ -94,7 +94,7 @@ export class MockRecorderService implements RecorderService {
   /**
    * Stop mock recording
    */
-  async stop(): Promise<RecordingResult> {
+  async stop(): Promise<ServiceRecordingResult> {
     if (this._state !== 'recording' && this._state !== 'paused') {
       return {
         success: false,

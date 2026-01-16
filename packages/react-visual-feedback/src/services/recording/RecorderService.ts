@@ -39,9 +39,11 @@ export interface RecordingOptions {
 }
 
 /**
- * Recording result after completion
+ * Recording result from the service after completion.
+ * This is the low-level result from the RecorderService.
+ * For the high-level result used in FeedbackProvider, see RecordingResult in types/index.ts.
  */
-export interface RecordingResult {
+export interface ServiceRecordingResult {
   /** Success status */
   success: boolean;
   /** Recorded video blob */
@@ -101,7 +103,7 @@ export interface RecorderService {
    *
    * @returns Promise resolving to the recording result
    */
-  stop(): Promise<RecordingResult>;
+  stop(): Promise<ServiceRecordingResult>;
 
   /**
    * Pause recording

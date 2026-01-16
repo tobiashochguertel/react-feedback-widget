@@ -10,7 +10,7 @@
 import { forwardRef, useMemo } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import { createPortal } from 'react-dom';
-import type { HighlightStyle } from './SelectionOverlay';
+import type { OverlayHighlightStyle } from './SelectionOverlay';
 
 // ============================================
 // TYPES
@@ -31,7 +31,7 @@ export type HighlightAnimation = 'none' | 'pulse' | 'glow' | 'bounce';
  */
 export interface ElementHighlightProps {
   /** Position and dimensions of the highlight */
-  style: HighlightStyle;
+  style: OverlayHighlightStyle;
   /** Variant/appearance of the highlight */
   variant?: HighlightVariant;
   /** Animation type */
