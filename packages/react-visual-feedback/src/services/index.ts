@@ -68,3 +68,34 @@ export {
   isBrowserEnvironment,
   checkBrowserApiAvailability,
 } from './ServiceFactory';
+
+// Persistence services - Data import/export
+export type {
+  SerializedVideo,
+  BundleMetadata,
+  FeedbackBundle,
+  ExportOptions,
+  ImportOptions,
+  ImportResult,
+  ExportService,
+  ImportService,
+  PersistenceServices,
+  PersistenceConfig,
+  TestPersistenceServices,
+} from './persistence';
+
+export {
+  BUNDLE_VERSION,
+  BUNDLE_SOURCE,
+  MAX_FEEDBACK_ITEMS,
+  serializeBlob,
+  deserializeBlob,
+  createBundle,
+  parseBundle,
+  validateBundle,
+  stringifyBundle,
+  createExportService,
+  createImportService,
+  createPersistenceServices,
+  createTestPersistenceServices,
+} from './persistence';
