@@ -2,10 +2,7 @@
   {
     "id": "builtin_group_id",
     "name": "Currently Open Files",
-    "files": [
-      "docs/research/task-docs-sync-tool/README.md",
-      "packages/react-visual-feedback/docs/spec/remove-technical-debs-tasks-doc/TASKS-OVERVIEW.md"
-    ],
+    "files": [],
     "builtIn": true,
     "bookmarks": {}
   }

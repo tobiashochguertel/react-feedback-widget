@@ -128,11 +128,11 @@ npx bddgen && npx playwright test
 
 ### ✅ Implemented Tests (12 scenarios, 60 tests across 5 browsers)
 
-| Feature                | Scenarios | Status      | Browsers                 |
-| ---------------------- | --------- | ----------- | ------------------------ |
-| **Feedback Modal**     | 4         | ✅ PASSING  | All 5                    |
-| **Feedback Form**      | 6         | ✅ PASSING  | All 5                    |
-| **Screenshot Capture** | 2         | ✅ PASSING  | All 5                    |
+| Feature                | Scenarios | Status       | Browsers                                                |
+| ---------------------- | --------- | ------------ | ------------------------------------------------------- |
+| **Feedback Modal**     | 4         | ✅ PASSING   | All 5                                                   |
+| **Feedback Form**      | 6         | ✅ PASSING   | All 5                                                   |
+| **Screenshot Capture** | 2         | ✅ PASSING   | All 5                                                   |
 | **Total**              | **12**    | ✅ **60/60** | Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari |
 
 ### 🔲 Planned Tests (from user stories)

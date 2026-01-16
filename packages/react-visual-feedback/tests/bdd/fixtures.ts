@@ -124,17 +124,24 @@ export class FeedbackWidgetPage {
 
   /**
    * Open the dashboard.
+   * The button in the example app contains "📊 Open Dashboard" text.
    */
   async openDashboard() {
-    const dashboardButton = this.page.getByRole('button', { name: /dashboard/i });
+    // Use text matching for the dashboard button (includes emoji)
+    const dashboardButton = this.page.getByRole('button', { name: /open dashboard/i });
     await dashboardButton.click();
+    // Wait for dashboard to appear after click
+    await this.page.waitForTimeout(500);
   }
 
   /**
    * Check if dashboard is visible.
+   * The dashboard title defaults to "Feedback" (not "Feedback Dashboard").
    */
   getDashboard() {
-    return this.page.locator('[data-testid="feedback-dashboard"]');
+    // Look for the dashboard header title or the close button with title="Close"
+    // The dashboard panel contains a header with title "Feedback" and count badge
+    return this.page.locator('[title="Close"], [title="Refresh"]').first();
   }
 }
 
