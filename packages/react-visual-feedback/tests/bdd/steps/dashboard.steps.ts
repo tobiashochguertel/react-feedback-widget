@@ -31,6 +31,14 @@ When('I close the dashboard', async ({ page }) => {
   await closeButton.click();
 });
 
+When('I click the status filter dropdown', async ({ page }) => {
+  // The filter dropdown is a select element in the dashboard
+  const filterDropdown = page.locator('select').first();
+  await expect(filterDropdown).toBeVisible({ timeout: 5000 });
+  // Use force: true to bypass overlay interception on mobile
+  await filterDropdown.click({ force: true });
+});
+
 // ============================================================================
 // Then Steps
 // ============================================================================
@@ -47,4 +55,26 @@ Then('an empty state message should be displayed', async ({ page }) => {
   // The dashboard shows "No feedback found" when empty
   const emptyState = page.locator('text="No feedback found"');
   await expect(emptyState).toBeVisible({ timeout: 10000 });
+});
+
+Then('the search input should be visible', async ({ page }) => {
+  // Search input has placeholder "Search feedback..."
+  const searchInput = page.locator('input[placeholder*="Search"]');
+  await expect(searchInput).toBeVisible({ timeout: 5000 });
+});
+
+Then('the status filter dropdown should be visible', async ({ page }) => {
+  // Filter dropdown is a select element in the dashboard
+  const filterDropdown = page.locator('select').first();
+  await expect(filterDropdown).toBeVisible({ timeout: 5000 });
+});
+
+Then('filter options should be available', async ({ page }) => {
+  // Check that the filter dropdown has options
+  const filterDropdown = page.locator('select').first();
+  const options = filterDropdown.locator('option');
+  const count = await options.count();
+
+  // Should have at least "All" and some status options
+  expect(count).toBeGreaterThanOrEqual(2);
 });

@@ -23,3 +23,15 @@ Feature: Feedback Dashboard
     When I click the dashboard button
     Then the feedback dashboard should be visible
     And an empty state message should be displayed
+
+  @dashboard @filter @search
+  Scenario: Dashboard has search and filter controls
+    Given the feedback dashboard is open
+    Then the search input should be visible
+    And the status filter dropdown should be visible
+
+  @dashboard @filter @interaction
+  Scenario: Dashboard filter dropdown is interactive
+    Given the feedback dashboard is open
+    When I click the status filter dropdown
+    Then filter options should be available

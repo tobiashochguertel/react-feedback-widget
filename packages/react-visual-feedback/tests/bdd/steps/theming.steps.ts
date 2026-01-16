@@ -2,11 +2,11 @@
  * Step definitions for theming feature.
  *
  * These steps implement the Gherkin scenarios in theming.feature
- * 
+ *
  * The feedback widget supports light and dark themes via React props.
  * Since the example app has mode="light" hardcoded, we test visual
  * consistency and styling rather than theme switching.
- * 
+ *
  * Note: "I open the feedback modal" step is defined in screen-recording.steps.ts
  */
 
