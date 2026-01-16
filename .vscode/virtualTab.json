@@ -3,7 +3,11 @@
     "id": "builtin_group_id",
     "name": "Currently Open Files",
     "files": [
-      "packages/react-visual-feedback/src/services/persistence/types.ts"
+      "packages/react-visual-feedback/src/services/persistence/types.ts",
+      "packages/react-visual-feedback/src/services/persistence/index.ts",
+      "packages/react-visual-feedback/src/services/persistence/ImportService.ts",
+      "packages/react-visual-feedback/src/services/persistence/ExportService.ts",
+      "packages/react-visual-feedback/src/services/persistence/BundleSerializer.ts"
     ],
     "builtIn": true,
     "bookmarks": {}

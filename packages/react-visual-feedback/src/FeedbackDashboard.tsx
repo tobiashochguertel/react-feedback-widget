@@ -6,7 +6,8 @@ import {
   RefreshCw, Loader2, MessageSquare, Inbox,
   Video,
   Search, FileCode, Layers, Monitor, Globe,
-  Maximize2, Minimize2, Copy
+  Maximize2, Minimize2, Copy,
+  Download, Upload
 } from 'lucide-react';
 import { getTheme } from './theme';
 import { formatPath } from './utils';
@@ -68,6 +69,7 @@ import type {
   EventLog,
   IntegrationsConfig,
 } from './types';
+import { createPersistenceServices } from './services/persistence';
 
 // ============================================
 // TYPE DEFINITIONS
@@ -354,6 +356,9 @@ export const FeedbackDashboard: React.FC<FeedbackDashboardProps> = ({
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [isExporting, setIsExporting] = useState<boolean>(false);
+  const [isImporting, setIsImporting] = useState<boolean>(false);
+  const importInputRef = useRef<HTMLInputElement>(null);
   const [videoModeItem, setVideoModeItem] = useState<FeedbackData | null>(null);
   const [videoModeVisibleLogs, setVideoModeVisibleLogs] = useState<EventLog[]>([]);
   const videoModeLogsRef = useRef<HTMLDivElement>(null);
@@ -398,6 +403,55 @@ export const FeedbackDashboard: React.FC<FeedbackDashboardProps> = ({
     }
   };
 
+  const handleExport = async (): Promise<void> => {
+    if (isExporting) return;
+    setIsExporting(true);
+    try {
+      const persistence = createPersistenceServices();
+      await persistence.exportService.exportToFile({ includeVideos: true });
+    } catch (error) {
+      console.error('Export failed:', error);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handleImportClick = (): void => {
+    importInputRef.current?.click();
+  };
+
+  const handleImportFile = async (event: ChangeEvent<HTMLInputElement>): Promise<void> => {
+    const file = event.target.files?.[0];
+    if (!file || isImporting) return;
+
+    setIsImporting(true);
+    try {
+      const persistence = createPersistenceServices();
+      const result = await persistence.importService.importFromFile(file, {
+        duplicateHandling: 'skip',
+        includeVideos: true,
+      });
+
+      if (result.success) {
+        // Refresh the feedback list after import
+        handleRefresh();
+        if (result.warnings.length > 0) {
+          console.warn('Import warnings:', result.warnings);
+        }
+      } else {
+        console.error('Import failed:', result.errors);
+      }
+    } catch (error) {
+      console.error('Import error:', error);
+    } finally {
+      setIsImporting(false);
+      // Reset file input so the same file can be imported again
+      if (importInputRef.current) {
+        importInputRef.current.value = '';
+      }
+    }
+  };
+
   const handleDelete = (id: string): void => {
     if (!window.confirm("Delete this feedback?")) return;
     const updated = feedbackList.filter(item => item.id !== id);
@@ -438,6 +492,20 @@ export const FeedbackDashboard: React.FC<FeedbackDashboardProps> = ({
               <CountBadge>{feedbackList.length}</CountBadge>
             </TitleGroup>
             <ActionsGroup>
+              <ActionButton onClick={handleExport} title="Export feedback" disabled={isExporting}>
+                {isExporting ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
+              </ActionButton>
+              <ActionButton onClick={handleImportClick} title="Import feedback" disabled={isImporting}>
+                {isImporting ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
+              </ActionButton>
+              <input
+                ref={importInputRef}
+                type="file"
+                accept=".json"
+                onChange={handleImportFile}
+                style={{ display: 'none' }}
+                aria-label="Import feedback file"
+              />
               <ActionButton onClick={handleRefresh} title="Refresh">
                 <RefreshCw size={16} className={isLoading ? 'animate-spin' : ''} />
               </ActionButton>
