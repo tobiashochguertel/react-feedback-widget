@@ -29,7 +29,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": false,
-    "sourceMap": true
+    "sourceMap": true,
+    "composite": true
   },
   "include": [ "src/**/*" ],
   "exclude": [ "node_modules", "dist", "tests", "**/*.test.ts", "**/*.test.tsx" ]

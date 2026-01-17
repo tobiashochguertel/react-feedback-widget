@@ -9,8 +9,11 @@
     "build": "bun run --filter react-visual-feedback build",
     "dev": "bun run --filter feedback-integrations-example dev",
     "typecheck": "bun run typecheck:react-visual-feedback || bun run typecheck:feedback-integrations-example",
-    "typecheck:react-visual-feedback": "bun run --filter react-visual-feedback typecheck",
-    "typecheck:feedback-integrations-example": "bun run --filter feedback-integrations-example typecheck"
+    "typecheck:react-visual-feedback": "bun run --cwd packages/react-visual-feedback typecheck",
+    "typecheck:feedback-integrations-example": "bun run --cwd packages/feedback-example typecheck",
+    "_typecheck": "bun run _typecheck:react-visual-feedback || bun run _typecheck:feedback-integrations-example",
+    "_typecheck:react-visual-feedback": "bun run --elide-lines 0 --filter react-visual-feedback typecheck",
+    "_typecheck:feedback-integrations-example": "bun run --elide-lines 0 --filter feedback-integrations-example typecheck"
   },
   "devDependencies": {
     "react-visual-feedback": "workspace:*"

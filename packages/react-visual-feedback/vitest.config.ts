@@ -76,7 +76,6 @@ export default defineConfig({
 
     // Watch mode options
     watch: false,
-    watchExclude: ['node_modules/**', 'dist/**'],
 
     // Threading (Vitest 4+ uses top-level pool options)
     pool: 'threads',
@@ -85,13 +84,9 @@ export default defineConfig({
     mockReset: true,
     restoreMocks: true,
     clearMocks: true,
-  },
 
-  // Thread pool options (moved to top level in Vitest 4)
-  poolOptions: {
-    threads: {
-      singleThread: false,
-    },
+    maxWorkers: '50%',
+    vmMemoryLimit: '50%',
   },
 
   // Path resolution

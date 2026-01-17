@@ -3,7 +3,10 @@
     "id": "builtin_group_id",
     "name": "Currently Open Files",
     "files": [
-      "package.json"
+      "tsconfig.json",
+      "bunfig.toml",
+      "package.json",
+      "packages/feedback-example/tsconfig.json"
     ],
     "builtIn": true,
     "bookmarks": {}
