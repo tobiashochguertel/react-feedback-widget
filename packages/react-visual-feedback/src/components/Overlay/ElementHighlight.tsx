@@ -159,8 +159,8 @@ interface StyledHighlightProps {
   $zIndex: number;
   $variant: HighlightVariant;
   $animation: HighlightAnimation;
-  $customBorderColor?: string;
-  $customBackgroundColor?: string;
+  $customBorderColor?: string | undefined;
+  $customBackgroundColor?: string | undefined;
 }
 
 const StyledHighlight = styled.div<StyledHighlightProps>`
@@ -185,7 +185,7 @@ const StyledHighlight = styled.div<StyledHighlightProps>`
   z-index: ${props => props.$zIndex};
 
   /* Variant styles */
-  ${props => variantStyles[props.$variant]}
+  ${props => css`${variantStyles[props.$variant]}`}
 
   /* Animation */
   ${props => animationStyles[props.$animation]}

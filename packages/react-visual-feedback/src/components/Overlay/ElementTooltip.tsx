@@ -35,18 +35,18 @@ export interface TooltipElementInfo {
   /** HTML tag name (e.g., 'div', 'button') */
   tagName: string;
   /** React component name if available */
-  componentName?: string;
+  componentName?: string | undefined;
   /** Element ID if present */
-  id?: string;
+  id?: string | undefined;
   /** Element class list */
-  classList?: string[];
+  classList?: string[] | undefined;
   /** Element dimensions */
   dimensions?: {
     width: number;
     height: number;
-  };
+  } | undefined;
   /** Additional data attributes */
-  dataAttributes?: Record<string, string>;
+  dataAttributes?: Record<string, string> | undefined;
 }
 
 /**
@@ -178,7 +178,7 @@ const StyledTooltip = styled.div<StyledTooltipProps>`
   z-index: ${props => props.$zIndex};
 
   /* Variant styles */
-  ${props => variantStyles[props.$variant]}
+  ${props => css`${variantStyles[props.$variant]}`}
 `;
 
 const TooltipContent = styled.div`

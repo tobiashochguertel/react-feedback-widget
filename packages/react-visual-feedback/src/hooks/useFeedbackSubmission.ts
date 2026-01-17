@@ -302,8 +302,8 @@ export function useFeedbackSubmission(
           timeout
         );
 
-        // Success
-        updateSubmission(item.id, { status: 'success', error: undefined });
+        // Success - note: we explicitly don't set error here to clear it
+        updateSubmission(item.id, { status: 'success' });
         onComplete?.(item.id, result);
       } catch (error) {
         const errorMessage =

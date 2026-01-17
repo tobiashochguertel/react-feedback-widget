@@ -54,7 +54,7 @@ export interface HoveredElementInfo {
   componentInfo?: {
     componentName: string;
     props?: Record<string, unknown>;
-  } | null;
+  } | null | undefined;
 }
 
 /**
@@ -113,9 +113,9 @@ const fadeOut = keyframes`
 
 interface StyledOverlayProps {
   $zIndex: number;
-  $backgroundColor?: string;
+  $backgroundColor?: string | undefined;
   $cursor: string;
-  $isExiting?: boolean;
+  $isExiting?: boolean | undefined;
 }
 
 const StyledOverlay = styled.div<StyledOverlayProps>`
