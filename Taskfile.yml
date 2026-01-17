@@ -4,6 +4,15 @@ vars:
   ROOT_DIR: '{{.ROOT_DIR}}'
   LIB_DIR: '{{.ROOT_DIR}}/packages/react-visual-feedback'
   EXAMPLE_DIR: '{{.ROOT_DIR}}/packages/feedback-example'
+  API_DIR: '{{.ROOT_DIR}}/packages/feedback-server-api'
+  GENERATED_DIR: '{{.ROOT_DIR}}/packages/generated'
+
+# Include child Taskfiles
+includes:
+  api:
+    taskfile: ./packages/feedback-server-api/Taskfile.yml
+    dir: ./packages/feedback-server-api
+    optional: true
 
 tasks:
   default:
@@ -12,7 +21,40 @@ tasks:
       - task --list
     silent: true
 
+  # ============================================================================
+  # Code Generation (API-First)
+  # ============================================================================
+
+  generate:
+    desc: Generate all API artifacts from TypeSpec
+    summary: |
+      Generates all code artifacts from the TypeSpec API specification:
+      - OpenAPI 3.1 specification
+      - TypeScript types (@feedback/api-types)
+      - JavaScript client SDK (@feedback/api-client-js)
+      - JSON Schemas (@feedback/api-schemas)
+    cmds:
+      - task: api:generate:all
+
+  generate:types:
+    desc: Generate TypeScript types only
+    cmds:
+      - task: api:generate:types
+
+  generate:check:
+    desc: Verify all generated files are up to date
+    cmds:
+      - task: api:check
+
+  clean:generate:
+    desc: Clean all generated files
+    cmds:
+      - task: api:clean
+
+  # ============================================================================
   # Installation
+  # ============================================================================
+
   install:
     desc: Install all workspace dependencies
     cmds:
@@ -93,11 +135,52 @@ tasks:
       - task: install
       - task: build
 
+  # ============================================================================
+  # CI/CD
+  # ============================================================================
+
+  ci:
+    desc: Run full CI pipeline
+    summary: |
+      Runs the complete CI pipeline:
+      1. Install dependencies
+      2. Generate API types
+      3. Type check
+      4. Lint
+      5. Test
+    cmds:
+      - bun install --frozen-lockfile
+      - task: generate
+      - bun run --filter "*" typecheck
+      - bun run --filter "*" lint
+      - bun run --filter "*" test
+
+  # ============================================================================
+  # Server Tasks
+  # ============================================================================
+
+  server:dev:
+    desc: Start feedback-server in development mode
+    cmds:
+      - bun run --filter "@react-visual-feedback/server" dev
+
+  server:test:
+    desc: Run feedback-server tests
+    cmds:
+      - bun run --filter "@react-visual-feedback/server" test
+
+  server:build:
+    desc: Build feedback-server
+    cmds:
+      - bun run --filter "@react-visual-feedback/server" build
+
   # Info
   info:
     desc: Show project information
     cmds:
       - echo "Workspace root = {{.ROOT_DIR}}"
+      - echo "API package = {{.API_DIR}}"
+      - echo "Generated packages = {{.GENERATED_DIR}}"
       - echo "Library = {{.LIB_DIR}}"
       - echo "Example = {{.EXAMPLE_DIR}}"
       - echo "Bun version = $(bun --version)"

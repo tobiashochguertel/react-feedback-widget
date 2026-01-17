@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "packages/generated/*"
   ],
   "scripts": {
     "build": "bun run --filter react-visual-feedback build",
