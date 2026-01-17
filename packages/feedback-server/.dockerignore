@@ -1,0 +1,51 @@
+# Dependencies
+node_modules
+bun.lockb
+
+# Build output (rebuild in container)
+dist
+
+# Development files
+*.test.ts
+*.spec.ts
+tests/
+__tests__/
+coverage/
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# TypeSpec sources (generated files are in src/generated)
+typespec/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Git
+.git
+.gitignore
+
+# Environment files (use Docker secrets instead)
+.env
+.env.*
+!.env.example
+
+# macOS
+.DS_Store
+
+# Local data (will be mounted as volumes)
+data/
+uploads/
+*.db
+*.db-journal
+*.sqlite
+*.sqlite-journal
+
+# Logs
+*.log
+logs/

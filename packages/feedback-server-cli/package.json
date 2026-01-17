@@ -1,0 +1,61 @@
+{
+  "name": "@react-visual-feedback/cli",
+  "version": "0.1.0",
+  "description": "Command-line interface for Feedback Server",
+  "type": "module",
+  "bin": {
+    "feedback-cli": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "start": "bun run ./dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src --ext ts",
+    "prepublishOnly": "bun run build"
+  },
+  "dependencies": {
+    "commander": "^12.0.0",
+    "chalk": "^5.3.0",
+    "inquirer": "^10.0.0",
+    "ora": "^8.0.0",
+    "cli-table3": "^0.6.0",
+    "conf": "^13.0.0",
+    "keytar": "^7.9.0",
+    "boxen": "^8.0.0",
+    "figures": "^6.0.0",
+    "date-fns": "^4.1.0",
+    "zod": "^3.23.0",
+    "yaml": "^2.5.0",
+    "csv-stringify": "^6.5.0",
+    "update-notifier": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^9.0.0",
+    "@types/update-notifier": "^6.0.0",
+    "typescript": "^5.6.0",
+    "tsup": "^8.3.0",
+    "vitest": "^2.1.0",
+    "@vitest/coverage-v8": "^2.1.0",
+    "eslint": "^9.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "keywords": [
+    "cli",
+    "feedback",
+    "feedback-server",
+    "command-line"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
