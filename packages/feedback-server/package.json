@@ -32,6 +32,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@feedback/api-types": "workspace:*",
     "@hono/swagger-ui": "^0.5.3",
     "@hono/zod-validator": "^0.7.6",
     "better-sqlite3": "^12.6.2",
