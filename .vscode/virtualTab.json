@@ -2,9 +2,7 @@
   {
     "id": "builtin_group_id",
     "name": "Currently Open Files",
-    "files": [
-      "packages/feedback-server/tests/integration/feedback-api.test.ts"
-    ],
+    "files": [],
     "builtIn": true,
     "bookmarks": {}
   }

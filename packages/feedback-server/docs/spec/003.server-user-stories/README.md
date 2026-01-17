@@ -2,20 +2,82 @@
 
 **Source Specification**: [001.server-software-specification/README.md](../001.server-software-specification/README.md)
 **Created**: 2026-01-16
-**Updated**: 2026-01-16
+**Updated**: 2026-01-17
 
 ---
 
-## 📋 User Story Overview
+## 📋 Quick Status Overview
 
-| Epic                      | Stories | Priority  | Status  |
-| ------------------------- | ------- | --------- | ------- |
-| E001: Feedback Submission | 3       | 🟢 High   | 🔲 TODO |
-| E002: Feedback Management | 4       | 🟢 High   | 🔲 TODO |
-| E003: Real-time Sync      | 2       | 🟡 Medium | 🔲 TODO |
-| E004: Data Portability    | 3       | 🟡 Medium | 🔲 TODO |
-| E005: Security            | 2       | 🟡 Medium | 🔲 TODO |
-| E006: Deployment          | 2       | 🟢 High   | 🔲 TODO |
+| Epic                      | Stories | Done | TODO | Status  |
+| ------------------------- | ------- | ---- | ---- | ------- |
+| E001: Feedback Submission | 3       | 3    | 0    | ✅ Done |
+| E002: Feedback Management | 4       | 4    | 0    | ✅ Done |
+| E003: Real-time Sync      | 2       | 2    | 0    | ✅ Done |
+| E004: Data Portability    | 3       | 3    | 0    | ✅ Done |
+| E005: Security            | 2       | 2    | 0    | ✅ Done |
+| E006: Deployment          | 2       | 2    | 0    | ✅ Done |
+| **Total**                 | **16**  | 16   | 0    | ✅ Done |
+
+---
+
+## 🎯 User Story Summary by Epic
+
+### Epic E001: Feedback Submission
+
+| Story | Name                         | Priority  | Status  | BDD Tests |
+| ----- | ---------------------------- | --------- | ------- | --------- |
+| US001 | Submit Feedback via API      | 🟢 High   | ✅ Done | 3/3       |
+| US002 | Submit Video Recording       | 🟢 High   | ✅ Done | 3/3       |
+| US003 | Identify Client Application  | 🟡 Medium | ✅ Done | 2/2       |
+
+### Epic E002: Feedback Management
+
+| Story | Name                  | Priority | Status  | BDD Tests |
+| ----- | --------------------- | -------- | ------- | --------- |
+| US004 | List All Feedback     | 🟢 High  | ✅ Done | 2/2       |
+| US005 | View Single Feedback  | 🟢 High  | ✅ Done | 2/2       |
+| US006 | Update Feedback Status| 🟢 High  | ✅ Done | 2/2       |
+| US007 | Delete Feedback       | 🟡 Medium| ✅ Done | 2/2       |
+
+### Epic E003: Real-time Sync
+
+| Story | Name                     | Priority  | Status  | BDD Tests |
+| ----- | ------------------------ | --------- | ------- | --------- |
+| US008 | List Connected Clients   | 🟡 Medium | ✅ Done | 3/3       |
+| US009 | Receive Feedback Updates | 🔴 Low    | ✅ Done | 3/3       |
+
+### Epic E004: Data Portability
+
+| Story | Name                   | Priority  | Status  | BDD Tests |
+| ----- | ---------------------- | --------- | ------- | --------- |
+| US010 | Export All Feedback    | 🟡 Medium | ✅ Done | 2/2       |
+| US011 | Import Feedback Bundle | 🟡 Medium | ✅ Done | 2/2       |
+| US012 | Bulk Delete Feedback   | 🟡 Medium | ✅ Done | 2/2       |
+
+### Epic E005: Security
+
+| Story | Name                    | Priority  | Status  | BDD Tests |
+| ----- | ----------------------- | --------- | ------- | --------- |
+| US013 | Authenticate with API Key | 🟡 Medium | ✅ Done | 4/4       |
+| US014 | Rate Limit Requests     | 🔴 Low    | ✅ Done | 4/4       |
+
+### Epic E006: Deployment
+
+| Story | Name                        | Priority | Status  | BDD Tests |
+| ----- | --------------------------- | -------- | ------- | --------- |
+| US015 | Health Check Endpoint       | 🟢 High  | ✅ Done | 6/6       |
+| US016 | Graceful Shutdown           | 🟢 High  | ✅ Done | 5/5       |
+
+---
+
+## 📊 Test Coverage Summary
+
+| Test Type   | Files | Tests | Status  |
+| ----------- | ----- | ----- | ------- |
+| BDD         | 6     | 49    | ✅ Pass |
+| Unit        | 3     | 62    | ✅ Pass |
+| Integration | 2     | 20    | ✅ Pass |
+| **Total**   | **11**| **131**| ✅ Pass |
 
 ---
 
@@ -527,9 +589,10 @@ Scenario: Health check fails
 
 - **Software Specification**: [001.server-software-specification/README.md](../001.server-software-specification/README.md)
 - **Tasks**: [002.server-tasks/TASKS-OVERVIEW.md](../002.server-tasks/TASKS-OVERVIEW.md)
+- **BDD Tests**: [../../../tests/bdd/](../../../tests/bdd/)
 
 ---
 
 **Documentation compiled by:** GitHub Copilot
 **For project:** react-visual-feedback / feedback-server
-**Date:** January 16, 2026
+**Date:** January 17, 2026
