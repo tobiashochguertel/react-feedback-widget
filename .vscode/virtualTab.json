@@ -3,8 +3,7 @@
     "id": "builtin_group_id",
     "name": "Currently Open Files",
     "files": [
-      "packages/feedback-server/docs/DEPLOYMENT.md",
-      "packages/feedback-server/docs/spec/Conversation-1.md"
+      "packages/feedback-server/tests/integration/feedback-api.test.ts"
     ],
     "builtIn": true,
     "bookmarks": {}
