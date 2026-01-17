@@ -11,13 +11,13 @@
 | Category       | Total  | Done | In Progress | TODO |
 | -------------- | ------ | ---- | ----------- | ---- |
 | Setup          | 3      | 3    | 0           | 0    |
-| Core Features  | 6      | 4    | 0           | 2    |
+| Core Features  | 6      | 5    | 0           | 1    |
 | Storage        | 3      | 2    | 0           | 1    |
 | Real-time Sync | 2      | 0    | 0           | 2    |
 | Authentication | 2      | 0    | 0           | 2    |
 | DevOps         | 3      | 1    | 0           | 2    |
 | Documentation  | 2      | 0    | 0           | 2    |
-| **Total**      | **21** | 10   | 0           | 11   |
+| **Total**      | **21** | 11   | 0           | 10   |
 
 ---
 
@@ -44,7 +44,7 @@
 | F003 | Video Upload API    | ✅ Done | 🟢 High   | S002, S003   | 2026-01-18 |
 | F004 | Bulk Import API     | 🔲 TODO | 🟡 Medium | F002         | -          |
 | F005 | Bulk Export API     | ✅ Done | 🟡 Medium | F002         | 2026-01-17 |
-| F006 | Search & Filter API | 🔲 TODO | 🟡 Medium | F002         | -          |
+| F006 | Search & Filter API | ✅ Done | 🟡 Medium | F002         | 2026-01-18 |
 
 ### Set 3: Storage Adapters
 
@@ -103,7 +103,7 @@
 | 2     | S002, S003, D001       | TypeSpec setup, database schema, Dockerfile         | ✅ Complete     |
 | 3     | F001, T001, T003       | Health endpoint, SQLite adapter, blob storage       | ✅ Complete     |
 | 4     | F002, F003             | Core feedback and video CRUD APIs                   | ✅ Complete     |
-| 5     | F004, F005, F006, A001 | Bulk operations, search, API key auth               | 🟡 1/4 Complete |
+| 5     | F004, F005, F006, A001 | Bulk operations, search, API key auth               | 🟡 2/4 Complete |
 | 6     | R001, R002, T002       | WebSocket sync, PostgreSQL adapter                  | 🔲 Not Started  |
 | 7     | D002, D003, A002       | Docker Compose, CI/CD, JWT auth                     | 🔲 Not Started  |
 | 8     | O001, O002             | Documentation                                       | 🔲 Not Started  |

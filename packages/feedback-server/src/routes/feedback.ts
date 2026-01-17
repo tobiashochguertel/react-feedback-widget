@@ -289,6 +289,267 @@ feedbackRouter.get("/export", async (c) => {
   return c.text(csvRows.join("\n"));
 });
 
+// Advanced search schema
+const advancedSearchSchema = z.object({
+  // Text search
+  query: z.string().optional(),
+  searchFields: z.array(z.enum(["title", "description", "tags", "userEmail", "userName"])).default(["title", "description"]),
+  
+  // Filters
+  projectId: z.string().optional(),
+  sessionId: z.string().optional(),
+  status: z.union([feedbackStatusEnum, z.array(feedbackStatusEnum)]).optional(),
+  type: z.union([feedbackTypeEnum, z.array(feedbackTypeEnum)]).optional(),
+  priority: z.union([feedbackPriorityEnum, z.array(feedbackPriorityEnum)]).optional(),
+  tags: z.array(z.string()).optional(),
+  userEmail: z.string().optional(),
+  
+  // Date range
+  startDate: z.string().datetime().optional(),
+  endDate: z.string().datetime().optional(),
+  dateField: z.enum(["createdAt", "updatedAt"]).default("createdAt"),
+  
+  // Has filters
+  hasScreenshots: z.boolean().optional(),
+  hasVideo: z.boolean().optional(),
+  hasConsoleLogs: z.boolean().optional(),
+  hasNetworkRequests: z.boolean().optional(),
+  
+  // Pagination and sorting
+  page: z.coerce.number().min(1).default(1),
+  pageSize: z.coerce.number().min(1).max(100).default(20),
+  sortBy: z.enum(["createdAt", "updatedAt", "priority", "title", "type", "status"]).default("createdAt"),
+  sortOrder: z.enum(["asc", "desc"]).default("desc"),
+});
+
+/**
+ * Advanced search endpoint
+ * 
+ * Supports:
+ * - Full-text search across multiple fields
+ * - Multi-value filters (e.g., multiple statuses)
+ * - Date range filtering
+ * - Has* filters (hasScreenshots, hasVideo, etc.)
+ * - Tag filtering
+ */
+feedbackRouter.post("/search", zValidator("json", advancedSearchSchema), async (c) => {
+  const search = c.req.valid("json");
+  
+  // Build where conditions
+  const conditions: ReturnType<typeof eq>[] = [];
+  
+  // Project and session filters
+  if (search.projectId) {
+    conditions.push(eq(schema.feedback.projectId, search.projectId));
+  }
+  if (search.sessionId) {
+    conditions.push(eq(schema.feedback.sessionId, search.sessionId));
+  }
+  
+  // Status filter (single or multiple)
+  if (search.status) {
+    const statuses = Array.isArray(search.status) ? search.status : [search.status];
+    if (statuses.length === 1) {
+      conditions.push(eq(schema.feedback.status, statuses[0]));
+    } else if (statuses.length > 1) {
+      conditions.push(sql`${schema.feedback.status} IN (${sql.join(statuses.map(s => sql`${s}`), sql`, `)})`);
+    }
+  }
+  
+  // Type filter (single or multiple)
+  if (search.type) {
+    const types = Array.isArray(search.type) ? search.type : [search.type];
+    if (types.length === 1) {
+      conditions.push(eq(schema.feedback.type, types[0]));
+    } else if (types.length > 1) {
+      conditions.push(sql`${schema.feedback.type} IN (${sql.join(types.map(t => sql`${t}`), sql`, `)})`);
+    }
+  }
+  
+  // Priority filter (single or multiple)
+  if (search.priority) {
+    const priorities = Array.isArray(search.priority) ? search.priority : [search.priority];
+    if (priorities.length === 1) {
+      conditions.push(eq(schema.feedback.priority, priorities[0]));
+    } else if (priorities.length > 1) {
+      conditions.push(sql`${schema.feedback.priority} IN (${sql.join(priorities.map(p => sql`${p}`), sql`, `)})`);
+    }
+  }
+  
+  // User email filter
+  if (search.userEmail) {
+    conditions.push(like(schema.feedback.userEmail, `%${search.userEmail}%`));
+  }
+  
+  // Date range filter
+  if (search.startDate) {
+    const dateColumn = search.dateField === "updatedAt" ? schema.feedback.updatedAt : schema.feedback.createdAt;
+    conditions.push(sql`${dateColumn} >= ${search.startDate}`);
+  }
+  if (search.endDate) {
+    const dateColumn = search.dateField === "updatedAt" ? schema.feedback.updatedAt : schema.feedback.createdAt;
+    conditions.push(sql`${dateColumn} <= ${search.endDate}`);
+  }
+  
+  // Text search across multiple fields
+  if (search.query && search.query.trim()) {
+    const searchTerm = `%${search.query.trim()}%`;
+    const searchConditions: ReturnType<typeof sql>[] = [];
+    
+    for (const field of search.searchFields) {
+      switch (field) {
+        case "title":
+          searchConditions.push(sql`${schema.feedback.title} LIKE ${searchTerm}`);
+          break;
+        case "description":
+          searchConditions.push(sql`${schema.feedback.description} LIKE ${searchTerm}`);
+          break;
+        case "tags":
+          searchConditions.push(sql`${schema.feedback.tags} LIKE ${searchTerm}`);
+          break;
+        case "userEmail":
+          searchConditions.push(sql`${schema.feedback.userEmail} LIKE ${searchTerm}`);
+          break;
+        case "userName":
+          searchConditions.push(sql`${schema.feedback.userName} LIKE ${searchTerm}`);
+          break;
+      }
+    }
+    
+    if (searchConditions.length > 0) {
+      conditions.push(sql`(${sql.join(searchConditions, sql` OR `)})`);
+    }
+  }
+  
+  // Tag filter (all tags must match)
+  if (search.tags && search.tags.length > 0) {
+    for (const tag of search.tags) {
+      conditions.push(sql`${schema.feedback.tags} LIKE ${`%"${tag}"%`}`);
+    }
+  }
+  
+  // Build final where clause
+  const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+  
+  // Get total count
+  const [{ total }] = await db
+    .select({ total: count() })
+    .from(schema.feedback)
+    .where(whereClause);
+  
+  // Sorting
+  const orderByColumn = (() => {
+    switch (search.sortBy) {
+      case "updatedAt": return schema.feedback.updatedAt;
+      case "priority": return schema.feedback.priority;
+      case "title": return schema.feedback.title;
+      case "type": return schema.feedback.type;
+      case "status": return schema.feedback.status;
+      default: return schema.feedback.createdAt;
+    }
+  })();
+  
+  const orderByFn = search.sortOrder === "asc" ? asc : desc;
+  
+  // Get paginated results
+  const offset = (search.page - 1) * search.pageSize;
+  
+  let items = await db
+    .select()
+    .from(schema.feedback)
+    .where(whereClause)
+    .orderBy(orderByFn(orderByColumn))
+    .limit(search.pageSize)
+    .offset(offset);
+  
+  // Apply "has" filters (requires checking related tables)
+  if (search.hasScreenshots !== undefined || search.hasVideo !== undefined || 
+      search.hasConsoleLogs !== undefined || search.hasNetworkRequests !== undefined) {
+    const itemIds = items.map(i => i.id);
+    
+    if (itemIds.length > 0) {
+      // Get related data counts for filtering
+      const [screenshotCounts, videoIds, consoleLogCounts, networkRequestCounts] = await Promise.all([
+        search.hasScreenshots !== undefined 
+          ? db.select({ feedbackId: schema.screenshots.feedbackId, count: count() })
+              .from(schema.screenshots)
+              .where(sql`${schema.screenshots.feedbackId} IN (${sql.join(itemIds.map(id => sql`${id}`), sql`, `)})`)
+              .groupBy(schema.screenshots.feedbackId)
+          : Promise.resolve([]),
+        search.hasVideo !== undefined
+          ? db.select({ feedbackId: schema.videos.feedbackId })
+              .from(schema.videos)
+              .where(and(
+                sql`${schema.videos.feedbackId} IN (${sql.join(itemIds.map(id => sql`${id}`), sql`, `)})`,
+                eq(schema.videos.status, "ready")
+              ))
+          : Promise.resolve([]),
+        search.hasConsoleLogs !== undefined
+          ? db.select({ feedbackId: schema.consoleLogs.feedbackId, count: count() })
+              .from(schema.consoleLogs)
+              .where(sql`${schema.consoleLogs.feedbackId} IN (${sql.join(itemIds.map(id => sql`${id}`), sql`, `)})`)
+              .groupBy(schema.consoleLogs.feedbackId)
+          : Promise.resolve([]),
+        search.hasNetworkRequests !== undefined
+          ? db.select({ feedbackId: schema.networkRequests.feedbackId, count: count() })
+              .from(schema.networkRequests)
+              .where(sql`${schema.networkRequests.feedbackId} IN (${sql.join(itemIds.map(id => sql`${id}`), sql`, `)})`)
+              .groupBy(schema.networkRequests.feedbackId)
+          : Promise.resolve([]),
+      ]);
+      
+      const screenshotMap = new Set(screenshotCounts.map(s => s.feedbackId));
+      const videoMap = new Set(videoIds.map(v => v.feedbackId));
+      const consoleLogMap = new Set(consoleLogCounts.map(c => c.feedbackId));
+      const networkRequestMap = new Set(networkRequestCounts.map(n => n.feedbackId));
+      
+      items = items.filter(item => {
+        if (search.hasScreenshots !== undefined) {
+          const has = screenshotMap.has(item.id);
+          if (search.hasScreenshots !== has) return false;
+        }
+        if (search.hasVideo !== undefined) {
+          const has = videoMap.has(item.id);
+          if (search.hasVideo !== has) return false;
+        }
+        if (search.hasConsoleLogs !== undefined) {
+          const has = consoleLogMap.has(item.id);
+          if (search.hasConsoleLogs !== has) return false;
+        }
+        if (search.hasNetworkRequests !== undefined) {
+          const has = networkRequestMap.has(item.id);
+          if (search.hasNetworkRequests !== has) return false;
+        }
+        return true;
+      });
+    }
+  }
+  
+  return c.json({
+    items,
+    pagination: {
+      page: search.page,
+      pageSize: search.pageSize,
+      total,
+      totalPages: Math.ceil(total / search.pageSize),
+      hasMore: search.page * search.pageSize < total,
+    },
+    filters: {
+      query: search.query,
+      searchFields: search.searchFields,
+      projectId: search.projectId,
+      sessionId: search.sessionId,
+      status: search.status,
+      type: search.type,
+      priority: search.priority,
+      tags: search.tags,
+      startDate: search.startDate,
+      endDate: search.endDate,
+      dateField: search.dateField,
+    },
+  });
+});
+
 /**
  * Get single feedback by ID
  */
