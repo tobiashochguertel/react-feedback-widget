@@ -29,13 +29,13 @@ The Data Persistence API provides a robust system for exporting and importing fe
 
 ### Key Features
 
-| Feature | Description |
-|---------|-------------|
-| Complete Export | Export all feedback items with associated videos |
-| Selective Export | Filter exports by feedback type or specific IDs |
-| Duplicate Handling | Configurable merge strategies on import |
-| Validation | Type-safe bundle validation and parsing |
-| Versioning | Bundle format versioning for compatibility |
+| Feature            | Description                                      |
+| ------------------ | ------------------------------------------------ |
+| Complete Export    | Export all feedback items with associated videos |
+| Selective Export   | Filter exports by feedback type or specific IDs  |
+| Duplicate Handling | Configurable merge strategies on import          |
+| Validation         | Type-safe bundle validation and parsing          |
+| Versioning         | Bundle format versioning for compatibility       |
 
 ---
 
@@ -51,7 +51,7 @@ npm install react-visual-feedback
 
 ```typescript
 // Factory function (recommended)
-import { createPersistenceServices } from 'react-visual-feedback';
+import { createPersistenceServices } from "react-visual-feedback";
 
 // Individual utilities
 import {
@@ -60,7 +60,7 @@ import {
   validateBundle,
   serializeBlob,
   deserializeBlob,
-} from 'react-visual-feedback';
+} from "react-visual-feedback";
 
 // Types
 import type {
@@ -71,7 +71,7 @@ import type {
   ExportService,
   ImportService,
   PersistenceServices,
-} from 'react-visual-feedback';
+} from "react-visual-feedback";
 ```
 
 ---
@@ -81,7 +81,7 @@ import type {
 ### Export Feedback
 
 ```typescript
-import { createPersistenceServices } from 'react-visual-feedback';
+import { createPersistenceServices } from "react-visual-feedback";
 
 // Create services
 const { exportService } = createPersistenceServices();
@@ -92,8 +92,8 @@ await exportService.exportToFile();
 // Export with options
 await exportService.exportToFile({
   includeVideos: true,
-  filename: 'my-feedback-backup.json',
-  typeFilter: ['bug', 'feedback'],
+  filename: "my-feedback-backup.json",
+  typeFilter: ["bug", "feedback"],
 });
 
 // Export to bundle (for programmatic use)
@@ -104,25 +104,25 @@ console.log(`Exported ${bundle.metadata.feedbackCount} items`);
 ### Import Feedback
 
 ```typescript
-import { createPersistenceServices } from 'react-visual-feedback';
+import { createPersistenceServices } from "react-visual-feedback";
 
 const { importService } = createPersistenceServices();
 
 // Import from file (e.g., from file input)
-const fileInput = document.querySelector<HTMLInputElement>('#file-input');
+const fileInput = document.querySelector<HTMLInputElement>("#file-input");
 const file = fileInput?.files?.[0];
 
 if (file) {
   const result = await importService.importFromFile(file, {
     includeVideos: true,
-    duplicateHandling: 'skip', // 'skip' | 'replace' | 'keep-both'
+    duplicateHandling: "skip", // 'skip' | 'replace' | 'keep-both'
   });
 
   if (result.success) {
     console.log(`Imported ${result.importedCount} items`);
     console.log(`Skipped ${result.skippedCount} duplicates`);
   } else {
-    console.error('Import failed:', result.errors);
+    console.error("Import failed:", result.errors);
   }
 }
 ```
@@ -180,11 +180,11 @@ Videos are serialized as base64-encoded data URLs:
 
 ```typescript
 interface SerializedVideo {
-  id: string;           // Video ID matching feedback reference
-  data: string;         // Base64 data URL
-  mimeType: string;     // e.g., 'video/webm'
-  size: number;         // Original blob size in bytes
-  duration?: number;    // Video duration in seconds
+  id: string; // Video ID matching feedback reference
+  data: string; // Base64 data URL
+  mimeType: string; // e.g., 'video/webm'
+  size: number; // Original blob size in bytes
+  duration?: number; // Video duration in seconds
 }
 ```
 
@@ -205,7 +205,7 @@ interface FeedbackBundle {
   timestamp: number;
 
   /** Source identifier */
-  source: 'react-visual-feedback';
+  source: "react-visual-feedback";
 
   /** Array of feedback items */
   feedback: FeedbackData[];
@@ -291,7 +291,7 @@ Configuration for import operations:
 ```typescript
 interface ImportOptions {
   /** How to handle duplicate feedback IDs */
-  duplicateHandling?: 'skip' | 'replace' | 'keep-both';
+  duplicateHandling?: "skip" | "replace" | "keep-both";
 
   /** Include video recordings (default: true) */
   includeVideos?: boolean;
@@ -300,11 +300,11 @@ interface ImportOptions {
 
 **Duplicate Handling Strategies:**
 
-| Strategy | Behavior |
-|----------|----------|
-| `skip` | Skip items with existing IDs (default) |
-| `replace` | Overwrite existing items with imported data |
-| `keep-both` | Keep both, assign new ID to imported item |
+| Strategy    | Behavior                                    |
+| ----------- | ------------------------------------------- |
+| `skip`      | Skip items with existing IDs (default)      |
+| `replace`   | Overwrite existing items with imported data |
+| `keep-both` | Keep both, assign new ID to imported item   |
 
 ### ImportResult
 
@@ -333,10 +333,10 @@ interface ImportResult {
 
 ```typescript
 /** Current bundle format version */
-export const BUNDLE_VERSION = '1.0.0';
+export const BUNDLE_VERSION = "1.0.0";
 
 /** Source identifier for bundles */
-export const BUNDLE_SOURCE = 'react-visual-feedback';
+export const BUNDLE_SOURCE = "react-visual-feedback";
 
 /** Maximum feedback items per export */
 export const MAX_FEEDBACK_ITEMS = 50;
@@ -376,8 +376,8 @@ const bundle = await exportService.exportToBundle();
 // Export with options
 const filteredBundle = await exportService.exportToBundle({
   includeVideos: true,
-  typeFilter: ['bug'],
-  feedbackIds: ['id-1', 'id-2'],
+  typeFilter: ["bug"],
+  feedbackIds: ["id-1", "id-2"],
 });
 
 console.log(`Exported ${bundle.metadata.feedbackCount} items`);
@@ -394,7 +394,7 @@ await exportService.exportToFile();
 
 // Custom filename and options
 await exportService.exportToFile({
-  filename: 'feedback-backup-2024-01-01.json',
+  filename: "feedback-backup-2024-01-01.json",
   includeVideos: true,
 });
 ```
@@ -408,7 +408,7 @@ const bundle = await exportService.exportToBundle();
 
 // Modify or process bundle...
 
-exportService.downloadBundle(bundle, 'processed-feedback.json');
+exportService.downloadBundle(bundle, "processed-feedback.json");
 ```
 
 ### ImportService
@@ -421,7 +421,10 @@ interface ImportService {
   importFromFile(file: File, options?: ImportOptions): Promise<ImportResult>;
 
   /** Import feedback from a bundle object */
-  importFromBundle(bundle: FeedbackBundle, options?: ImportOptions): Promise<ImportResult>;
+  importFromBundle(
+    bundle: FeedbackBundle,
+    options?: ImportOptions,
+  ): Promise<ImportResult>;
 
   /** Validate a bundle object */
   validateBundle(bundle: unknown): bundle is FeedbackBundle;
@@ -443,14 +446,14 @@ async function handleFileSelect(event: Event) {
   if (!file) return;
 
   const result = await importService.importFromFile(file, {
-    duplicateHandling: 'skip',
+    duplicateHandling: "skip",
     includeVideos: true,
   });
 
   if (result.success) {
     alert(`Imported ${result.importedCount} items`);
   } else {
-    console.error('Errors:', result.errors);
+    console.error("Errors:", result.errors);
   }
 }
 ```
@@ -461,13 +464,13 @@ Imports feedback from an existing bundle object:
 
 ```typescript
 // Fetch bundle from API
-const response = await fetch('/api/feedback-backup.json');
+const response = await fetch("/api/feedback-backup.json");
 const bundle = await response.json();
 
 // Validate before import
 if (importService.validateBundle(bundle)) {
   const result = await importService.importFromBundle(bundle, {
-    duplicateHandling: 'replace',
+    duplicateHandling: "replace",
   });
   console.log(`Imported ${result.importedCount} items`);
 }
@@ -484,7 +487,7 @@ if (importService.validateBundle(data)) {
   // data is now typed as FeedbackBundle
   console.log(`Valid bundle with ${data.feedback.length} items`);
 } else {
-  console.error('Invalid bundle format');
+  console.error("Invalid bundle format");
 }
 ```
 
@@ -497,9 +500,9 @@ if (importService.validateBundle(data)) {
 Convert a Blob to a base64 data URL:
 
 ```typescript
-import { serializeBlob } from 'react-visual-feedback';
+import { serializeBlob } from "react-visual-feedback";
 
-const videoBlob = new Blob([videoData], { type: 'video/webm' });
+const videoBlob = new Blob([videoData], { type: "video/webm" });
 const dataUrl = await serializeBlob(videoBlob);
 // "data:video/webm;base64,..."
 ```
@@ -509,11 +512,11 @@ const dataUrl = await serializeBlob(videoBlob);
 Convert a data URL back to a Blob:
 
 ```typescript
-import { deserializeBlob } from 'react-visual-feedback';
+import { deserializeBlob } from "react-visual-feedback";
 
 const blob = await deserializeBlob(
-  'data:video/webm;base64,SGVsbG8gV29ybGQ=',
-  'video/webm'
+  "data:video/webm;base64,SGVsbG8gV29ybGQ=",
+  "video/webm",
 );
 ```
 
@@ -522,7 +525,7 @@ const blob = await deserializeBlob(
 Create a bundle from feedback and video data:
 
 ```typescript
-import { createBundle } from 'react-visual-feedback';
+import { createBundle } from "react-visual-feedback";
 
 const bundle = createBundle(feedbackItems, serializedVideos);
 ```
@@ -532,7 +535,7 @@ const bundle = createBundle(feedbackItems, serializedVideos);
 Parse a JSON string into a bundle (with validation):
 
 ```typescript
-import { parseBundle } from 'react-visual-feedback';
+import { parseBundle } from "react-visual-feedback";
 
 const jsonString = await file.text();
 const bundle = parseBundle(jsonString);
@@ -540,7 +543,7 @@ const bundle = parseBundle(jsonString);
 if (bundle) {
   console.log(`Parsed ${bundle.feedback.length} items`);
 } else {
-  console.error('Invalid bundle JSON');
+  console.error("Invalid bundle JSON");
 }
 ```
 
@@ -549,7 +552,7 @@ if (bundle) {
 Type guard for bundle validation:
 
 ```typescript
-import { validateBundle } from 'react-visual-feedback';
+import { validateBundle } from "react-visual-feedback";
 
 const data = JSON.parse(jsonString);
 
@@ -564,7 +567,7 @@ if (validateBundle(data)) {
 Convert a bundle to JSON string:
 
 ```typescript
-import { stringifyBundle } from 'react-visual-feedback';
+import { stringifyBundle } from "react-visual-feedback";
 
 // Minified JSON
 const json = stringifyBundle(bundle);
@@ -582,9 +585,9 @@ const prettyJson = stringifyBundle(bundle, true);
 Creates isolated persistence services for testing:
 
 ```typescript
-import { createTestPersistenceServices } from 'react-visual-feedback';
+import { createTestPersistenceServices } from "react-visual-feedback";
 
-describe('Persistence Tests', () => {
+describe("Persistence Tests", () => {
   let testPersistence: TestPersistenceServices;
 
   beforeEach(async () => {
@@ -595,13 +598,11 @@ describe('Persistence Tests', () => {
     await testPersistence.clearTestData();
   });
 
-  it('should export seeded data', async () => {
+  it("should export seeded data", async () => {
     // Seed test data
-    const mockFeedback = [
-      { id: 'test-1', type: 'bug', message: 'Test bug' },
-    ];
+    const mockFeedback = [{ id: "test-1", type: "bug", message: "Test bug" }];
     const mockVideos = new Map([
-      ['video-1', new Blob(['test'], { type: 'video/webm' })],
+      ["video-1", new Blob(["test"], { type: "video/webm" })],
     ]);
 
     await testPersistence.seedTestData(mockFeedback, mockVideos);
@@ -627,7 +628,7 @@ interface TestPersistenceServices extends PersistenceServices {
   /** Helper to seed test data */
   seedTestData(
     feedback: FeedbackData[],
-    videos?: Map<string, Blob>
+    videos?: Map<string, Blob>,
   ): Promise<void>;
 
   /** Helper to clear all test data */
@@ -644,11 +645,11 @@ interface TestPersistenceServices extends PersistenceServices {
 Configure persistence services with custom storage:
 
 ```typescript
-import { createPersistenceServices } from 'react-visual-feedback';
+import { createPersistenceServices } from "react-visual-feedback";
 
 const persistence = createPersistenceServices({
-  storagePrefix: 'my-app-feedback',
-  storageKey: 'custom-feedback-key',
+  storagePrefix: "my-app-feedback",
+  storageKey: "custom-feedback-key",
 });
 ```
 
@@ -667,7 +668,7 @@ async function exportWithProgress(onProgress: (percent: number) => void) {
   // Process or validate bundle...
 
   onProgress(90);
-  exportService.downloadBundle(bundle, 'backup.json');
+  exportService.downloadBundle(bundle, "backup.json");
 
   onProgress(100);
   return bundle;
@@ -679,21 +680,19 @@ async function exportWithProgress(onProgress: (percent: number) => void) {
 Combine multiple bundles:
 
 ```typescript
-import { createBundle, validateBundle } from 'react-visual-feedback';
+import { createBundle, validateBundle } from "react-visual-feedback";
 
-function mergeBundles(
-  bundles: FeedbackBundle[]
-): FeedbackBundle {
-  const allFeedback = bundles.flatMap(b => b.feedback);
-  const allVideos = bundles.flatMap(b => b.videos);
+function mergeBundles(bundles: FeedbackBundle[]): FeedbackBundle {
+  const allFeedback = bundles.flatMap((b) => b.feedback);
+  const allVideos = bundles.flatMap((b) => b.videos);
 
   // Deduplicate by ID
-  const feedbackMap = new Map(allFeedback.map(f => [f.id, f]));
-  const videoMap = new Map(allVideos.map(v => [v.id, v]));
+  const feedbackMap = new Map(allFeedback.map((f) => [f.id, f]));
+  const videoMap = new Map(allVideos.map((v) => [v.id, v]));
 
   return createBundle(
     Array.from(feedbackMap.values()),
-    Array.from(videoMap.values())
+    Array.from(videoMap.values()),
   );
 }
 ```
@@ -704,21 +703,21 @@ Send bundles to a backend API:
 
 ```typescript
 async function uploadToServer(bundle: FeedbackBundle) {
-  const response = await fetch('/api/feedback/backup', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+  const response = await fetch("/api/feedback/backup", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(bundle),
   });
 
   if (!response.ok) {
-    throw new Error('Upload failed');
+    throw new Error("Upload failed");
   }
 
   return response.json();
 }
 
 async function downloadFromServer(): Promise<ImportResult> {
-  const response = await fetch('/api/feedback/backup');
+  const response = await fetch("/api/feedback/backup");
   const bundle = await response.json();
 
   const { importService } = createPersistenceServices();
@@ -731,7 +730,7 @@ async function downloadFromServer(): Promise<ImportResult> {
     success: false,
     importedCount: 0,
     skippedCount: 0,
-    errors: ['Invalid bundle from server'],
+    errors: ["Invalid bundle from server"],
     warnings: [],
   };
 }
@@ -743,12 +742,12 @@ async function downloadFromServer(): Promise<ImportResult> {
 
 ### Common Errors
 
-| Error | Cause | Solution |
-|-------|-------|----------|
-| `Invalid bundle format` | Bundle doesn't match schema | Use `validateBundle()` before import |
-| `Version mismatch` | Unsupported bundle version | Check `BUNDLE_VERSION` constant |
-| `Video not found` | Referenced video missing | Export with `includeVideos: true` |
-| `Storage quota exceeded` | Too much data | Clear old feedback or export/clear |
+| Error                    | Cause                       | Solution                             |
+| ------------------------ | --------------------------- | ------------------------------------ |
+| `Invalid bundle format`  | Bundle doesn't match schema | Use `validateBundle()` before import |
+| `Version mismatch`       | Unsupported bundle version  | Check `BUNDLE_VERSION` constant      |
+| `Video not found`        | Referenced video missing    | Export with `includeVideos: true`    |
+| `Storage quota exceeded` | Too much data               | Clear old feedback or export/clear   |
 
 ### Error Handling Pattern
 
@@ -760,8 +759,8 @@ async function safeImport(file: File): Promise<ImportResult> {
     const result = await importService.importFromFile(file);
 
     if (!result.success) {
-      console.error('Import errors:', result.errors);
-      result.warnings.forEach(w => console.warn(w));
+      console.error("Import errors:", result.errors);
+      result.warnings.forEach((w) => console.warn(w));
     }
 
     return result;
@@ -771,9 +770,7 @@ async function safeImport(file: File): Promise<ImportResult> {
       importedCount: 0,
       skippedCount: 0,
       errors: [
-        error instanceof Error
-          ? error.message
-          : 'Unknown error during import',
+        error instanceof Error ? error.message : "Unknown error during import",
       ],
       warnings: [],
     };
@@ -791,10 +788,10 @@ If you previously exported feedback manually:
 
 ```typescript
 // Old approach
-const oldData = localStorage.getItem('feedback');
+const oldData = localStorage.getItem("feedback");
 
 // New approach
-import { createPersistenceServices, createBundle } from 'react-visual-feedback';
+import { createPersistenceServices, createBundle } from "react-visual-feedback";
 
 const feedback = JSON.parse(oldData);
 const bundle = createBundle(feedback, []);
@@ -805,9 +802,9 @@ await importService.importFromBundle(bundle);
 
 ### Bundle Version Compatibility
 
-| Bundle Version | Library Version | Notes |
-|----------------|-----------------|-------|
-| 1.0.0 | 2.0.0+ | Current version |
+| Bundle Version | Library Version | Notes           |
+| -------------- | --------------- | --------------- |
+| 1.0.0          | 2.0.0+          | Current version |
 
 ---
 
@@ -820,4 +817,4 @@ await importService.importFromBundle(bundle);
 
 ---
 
-*Last updated: January 2025*
+_Last updated: January 2025_

@@ -2,16 +2,7 @@
   {
     "id": "builtin_group_id",
     "name": "Currently Open Files",
-    "files": [
-      "packages/react-visual-feedback/src/services/persistence/types.ts",
-      "packages/react-visual-feedback/src/services/persistence/index.ts",
-      "packages/react-visual-feedback/tests/bdd/steps/data-persistence.steps.ts",
-      "packages/react-visual-feedback/tests/bdd/test-fixtures-helper.ts",
-      "packages/react-visual-feedback/tests/bdd/features/data-persistence.feature",
-      "packages/react-visual-feedback/src/services/persistence/ImportService.ts",
-      "packages/react-visual-feedback/src/services/persistence/ExportService.ts",
-      "packages/react-visual-feedback/src/services/persistence/BundleSerializer.ts"
-    ],
+    "files": [],
     "builtIn": true,
     "bookmarks": {}
   }

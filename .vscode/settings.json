@@ -1,0 +1,71 @@
+{
+  /*
+   VsCode extension: `alexkrechik.cucumberautocomplete`
+  */
+  "cucumberautocomplete.steps": [
+    "packages/react-visual-feedback/tests/bdd/steps/*.ts",
+  ],
+  "cucumberautocomplete.syncfeatures": "packages/react-visual-feedback/tests/bdd/features/*.feature",
+  "cucumberautocomplete.strictGherkinCompletion": true,
+  "cucumberautocomplete.strictGherkinValidation": true,
+  "cucumberautocomplete.smartSnippets": false,
+  "cucumberautocomplete.stepsInvariants": false,
+  // "cucumberautocomplete.customParameters": [
+  //   {
+  //     "parameter": "{ab}",
+  //     "value": "(a|b)"
+  //   },
+  //   {
+  //     "parameter": "/{a.*}/",
+  //     "value": "a"
+  //   },
+  // ],
+  // "cucumberautocomplete.pages": {
+  //   "users": "test/features/page_objects/users.storage.js",
+  //   "pathes": "test/features/page_objects/pathes.storage.js",
+  //   "main": "test/features/support/page_objects/main.page.js"
+  // },
+  "cucumberautocomplete.skipDocStringsFormat": true,
+  // "cucumberautocomplete.formatConfOverride": {
+  //   "And": 3,
+  //   "But": "relative",
+  // },
+  "cucumberautocomplete.onTypeFormat": true,
+  // "editor.quickSuggestions": {
+  //   "comments": false,
+  //   "strings": true,
+  //   "other": true
+  // },
+  "cucumberautocomplete.gherkinDefinitionPart": "(Given|When|Then)\\(",
+  "cucumberautocomplete.stepRegExSymbol": "'",
+  "cucumberautocomplete.pureTextSteps": true,
+
+  /*
+   VsCode extension: `cucumberopen.cucumber-official`
+  */
+  "cucumber.features": [
+    "packages/react-visual-feedback/tests/bdd/features/*.feature",
+    // "src/test/**/*.feature",
+    // "features/**/*.feature",
+    // "tests/**/*.feature",
+    // "*specs*/**/*.feature"
+  ],
+  "cucumber.glue": [
+    "packages/react-visual-feedback/tests/bdd/steps/*.ts",
+    // "*specs*/**/*.cs",
+    // "features/**/*.js",
+    // "features/**/*.jsx",
+    // "features/**/*.php",
+    // "features/**/*.py",
+    // "features/**/*.rs",
+    // "features/**/*.rb",
+    // "features/**/*.ts",
+    // "features/**/*.ts",
+    // "features/**/*.tsx",
+    // "features/**/*_test.go",
+    // "src/test/**/*.java",
+    // "tests/**/*.py",
+    // "tests/**/*.rs"
+  ],
+  "cucumber.parameterTypes": [ ]
+}
