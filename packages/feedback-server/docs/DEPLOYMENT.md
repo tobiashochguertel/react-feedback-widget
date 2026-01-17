@@ -151,10 +151,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2'
+          cpus: "2"
           memory: 2G
         reservations:
-          cpus: '0.5'
+          cpus: "0.5"
           memory: 512M
 
   db:
@@ -162,7 +162,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1'
+          cpus: "1"
           memory: 1G
 ```
 
@@ -185,43 +185,43 @@ docker compose up -d --scale feedback-server=3
 
 ### Required Variables
 
-| Variable | Description | Default | Required |
-|----------|-------------|---------|----------|
-| `PORT` | HTTP server port | `3000` | No |
-| `HOST` | Server bind address | `0.0.0.0` | No |
-| `DATABASE_URL` | Database connection string | `file:./data/feedback.db` | Yes |
+| Variable       | Description                | Default                   | Required |
+| -------------- | -------------------------- | ------------------------- | -------- |
+| `PORT`         | HTTP server port           | `3000`                    | No       |
+| `HOST`         | Server bind address        | `0.0.0.0`                 | No       |
+| `DATABASE_URL` | Database connection string | `file:./data/feedback.db` | Yes      |
 
 ### Security Variables
 
-| Variable | Description | Default | Required |
-|----------|-------------|---------|----------|
-| `AUTH_ENABLED` | Enable authentication | `false` | Production: Yes |
-| `AUTH_TYPE` | Auth type: `apikey` or `jwt` | `apikey` | No |
-| `API_KEY` | API key for authentication | - | If `AUTH_TYPE=apikey` |
-| `JWT_SECRET` | Secret for JWT signing | - | If `AUTH_TYPE=jwt` |
-| `API_KEY_SALT` | Salt for API key hashing | - | No |
+| Variable       | Description                  | Default  | Required              |
+| -------------- | ---------------------------- | -------- | --------------------- |
+| `AUTH_ENABLED` | Enable authentication        | `false`  | Production: Yes       |
+| `AUTH_TYPE`    | Auth type: `apikey` or `jwt` | `apikey` | No                    |
+| `API_KEY`      | API key for authentication   | -        | If `AUTH_TYPE=apikey` |
+| `JWT_SECRET`   | Secret for JWT signing       | -        | If `AUTH_TYPE=jwt`    |
+| `API_KEY_SALT` | Salt for API key hashing     | -        | No                    |
 
 ### Storage Variables
 
-| Variable | Description | Default | Required |
-|----------|-------------|---------|----------|
-| `UPLOAD_DIR` | Directory for file uploads | `./uploads` | No |
-| `MAX_UPLOAD_SIZE` | Max upload size in bytes | `104857600` (100MB) | No |
+| Variable          | Description                | Default             | Required |
+| ----------------- | -------------------------- | ------------------- | -------- |
+| `UPLOAD_DIR`      | Directory for file uploads | `./uploads`         | No       |
+| `MAX_UPLOAD_SIZE` | Max upload size in bytes   | `104857600` (100MB) | No       |
 
 ### Video Variables
 
-| Variable | Description | Default | Required |
-|----------|-------------|---------|----------|
-| `VIDEO_CHUNK_SIZE` | Chunk size for video uploads | `1048576` (1MB) | No |
-| `VIDEO_MAX_DURATION` | Max video duration in seconds | `300` (5 min) | No |
-| `ENABLE_VIDEO_UPLOAD` | Enable video uploads | `true` | No |
+| Variable              | Description                   | Default         | Required |
+| --------------------- | ----------------------------- | --------------- | -------- |
+| `VIDEO_CHUNK_SIZE`    | Chunk size for video uploads  | `1048576` (1MB) | No       |
+| `VIDEO_MAX_DURATION`  | Max video duration in seconds | `300` (5 min)   | No       |
+| `ENABLE_VIDEO_UPLOAD` | Enable video uploads          | `true`          | No       |
 
 ### Database Variables
 
-| Variable | Description | Default | Required |
-|----------|-------------|---------|----------|
-| `DATABASE_URL` | Connection string | `file:./data/feedback.db` | Yes |
-| `POSTGRES_PASSWORD` | PostgreSQL password (Docker Compose) | `feedback` | Production: Yes |
+| Variable            | Description                          | Default                   | Required        |
+| ------------------- | ------------------------------------ | ------------------------- | --------------- |
+| `DATABASE_URL`      | Connection string                    | `file:./data/feedback.db` | Yes             |
+| `POSTGRES_PASSWORD` | PostgreSQL password (Docker Compose) | `feedback`                | Production: Yes |
 
 **Connection String Formats:**
 
@@ -236,26 +236,26 @@ DATABASE_URL=postgresql://user:password@host:5432/database?sslmode=require
 
 ### Network Variables
 
-| Variable | Description | Default | Required |
-|----------|-------------|---------|----------|
-| `CORS_ORIGINS` | Allowed CORS origins | `*` | Production: Yes |
-| `RATE_LIMIT_WINDOW_MS` | Rate limit window | `60000` (1 min) | No |
-| `RATE_LIMIT_MAX_REQUESTS` | Max requests per window | `100` | No |
+| Variable                  | Description             | Default         | Required        |
+| ------------------------- | ----------------------- | --------------- | --------------- |
+| `CORS_ORIGINS`            | Allowed CORS origins    | `*`             | Production: Yes |
+| `RATE_LIMIT_WINDOW_MS`    | Rate limit window       | `60000` (1 min) | No              |
+| `RATE_LIMIT_MAX_REQUESTS` | Max requests per window | `100`           | No              |
 
 ### Feature Flags
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `ENABLE_VIDEO_UPLOAD` | Enable video uploads | `true` |
-| `ENABLE_WEBSOCKET` | Enable WebSocket sync | `true` |
-| `ENABLE_COMPRESSION` | Enable response compression | `true` |
+| Variable              | Description                 | Default |
+| --------------------- | --------------------------- | ------- |
+| `ENABLE_VIDEO_UPLOAD` | Enable video uploads        | `true`  |
+| `ENABLE_WEBSOCKET`    | Enable WebSocket sync       | `true`  |
+| `ENABLE_COMPRESSION`  | Enable response compression | `true`  |
 
 ### Logging Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `LOG_LEVEL` | Log level: `debug`, `info`, `warn`, `error` | `info` |
-| `LOG_FORMAT` | Log format: `json` or `pretty` | `json` |
+| Variable     | Description                                 | Default |
+| ------------ | ------------------------------------------- | ------- |
+| `LOG_LEVEL`  | Log level: `debug`, `info`, `warn`, `error` | `info`  |
+| `LOG_FORMAT` | Log format: `json` or `pretty`              | `json`  |
 
 ---
 
@@ -611,4 +611,4 @@ docker exec feedback-db psql -U feedback -c "SELECT * FROM pg_stat_statements OR
 
 ---
 
-*Last updated: January 2025*
+_Last updated: January 2025_

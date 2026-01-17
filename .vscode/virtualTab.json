@@ -3,8 +3,8 @@
     "id": "builtin_group_id",
     "name": "Currently Open Files",
     "files": [
-      "packages/feedback-server/docs/spec/002.server-tasks/TASKS-OVERVIEW.md",
-      "packages/feedback-server/docs/DEPLOYMENT.md"
+      "packages/feedback-server/docs/DEPLOYMENT.md",
+      "packages/feedback-server/docs/spec/001.server-software-specification/README.md"
     ],
     "builtIn": true,
     "bookmarks": {}
