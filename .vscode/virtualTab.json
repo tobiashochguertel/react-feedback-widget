@@ -4,7 +4,7 @@
     "name": "Currently Open Files",
     "files": [
       "packages/feedback-server/src/db/schema.ts",
-      "packages/feedback-server/docs/spec/002.server-tasks/TASKS-OVERVIEW.md",
+      ".github/workflows/feedback-server.yml",
       "packages/feedback-server/docker-compose.yml",
       "packages/feedback-server/src/middleware/auth.ts",
       "packages/feedback-server/src/storage.ts",
