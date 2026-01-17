@@ -40,7 +40,8 @@ videoRouter.get("/:videoId/thumbnail", (c) => {
 
 videoRouter.delete("/:videoId", (c) => {
   const videoId = c.req.param("videoId");
-  return c.json({ message: `Delete video ${videoId} - TODO` }, 204);
+  // 204 No Content - return empty response
+  return c.body(null, 204);
 });
 
 videoRouter.get("/", (c) => {

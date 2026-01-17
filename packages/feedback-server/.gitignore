@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Data and uploads
+data/
+uploads/
+
+# Environment
+.env
+.env.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# TypeSpec generated files
+src/generated/
+
+# Test output
+coverage/
+
+# OS files
+.DS_Store
+Thumbs.db

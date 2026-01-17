@@ -14,12 +14,7 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "types": [ "bun-types" ],
-    "lib": [ "ESNext" ],
-    "baseUrl": ".",
-    "paths": {
-      "@/*": [ "./src/*" ],
-      "@generated/*": [ "./src/generated/*" ]
-    }
+    "lib": [ "ESNext", "DOM" ]
   },
   "include": [ "src/**/*.ts" ],
   "exclude": [ "node_modules", "dist", "**/*.test.ts" ]

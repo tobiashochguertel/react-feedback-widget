@@ -3,7 +3,7 @@
  */
 
 import type { Context } from "hono";
-import type { StatusCode } from "hono/utils/http-status";
+import type { ContentfulStatusCode } from "hono/utils/http-status";
 import { config } from "../config";
 
 /**
@@ -11,7 +11,7 @@ import { config } from "../config";
  */
 export class AppError extends Error {
   constructor(
-    public statusCode: StatusCode,
+    public statusCode: ContentfulStatusCode,
     public message: string,
     public code?: string,
     public details?: unknown
