@@ -216,6 +216,43 @@ export const apiKeys = sqliteTable("api_keys", {
   revokedAt: text("revoked_at"),
 });
 
+/**
+ * Video chunks table (for chunked uploads)
+ */
+export const videoChunks = sqliteTable("video_chunks", {
+  id: text("id").primaryKey(),
+  videoId: text("video_id")
+    .notNull()
+    .references(() => videos.id, { onDelete: "cascade" }),
+  chunkIndex: integer("chunk_index").notNull(),
+  size: integer("size").notNull(),
+  storagePath: text("storage_path").notNull(),
+  checksum: text("checksum"),
+  uploadedAt: text("uploaded_at")
+    .notNull()
+    .default(sql`(datetime('now'))`),
+});
+
+/**
+ * Sync queue table (for offline sync)
+ */
+export const syncQueue = sqliteTable("sync_queue", {
+  id: text("id").primaryKey(),
+  feedbackId: text("feedback_id")
+    .notNull()
+    .references(() => feedback.id, { onDelete: "cascade" }),
+  operation: text("operation", {
+    enum: ["create", "update", "delete"],
+  }).notNull(),
+  payload: text("payload", { mode: "json" }).$type<Record<string, unknown>>(),
+  retryCount: integer("retry_count").notNull().default(0),
+  lastError: text("last_error"),
+  createdAt: text("created_at")
+    .notNull()
+    .default(sql`(datetime('now'))`),
+  processedAt: text("processed_at"),
+});
+
 // Type exports
 export type Feedback = typeof feedback.$inferSelect;
 export type NewFeedback = typeof feedback.$inferInsert;
@@ -229,3 +266,7 @@ export type Video = typeof videos.$inferSelect;
 export type NewVideo = typeof videos.$inferInsert;
 export type ApiKey = typeof apiKeys.$inferSelect;
 export type NewApiKey = typeof apiKeys.$inferInsert;
+export type VideoChunk = typeof videoChunks.$inferSelect;
+export type NewVideoChunk = typeof videoChunks.$inferInsert;
+export type SyncQueueItem = typeof syncQueue.$inferSelect;
+export type NewSyncQueueItem = typeof syncQueue.$inferInsert;

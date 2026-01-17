@@ -18,6 +18,7 @@ import { timing } from "hono/timing";
 import { feedbackRouter } from "./routes/feedback";
 import { videoRouter } from "./routes/video";
 import { healthRouter } from "./routes/health";
+import { sync } from "./routes/sync";
 import { websocketConfig, getWebSocketStats } from "./websocket";
 import { errorHandler } from "./middleware/error-handler";
 import { rateLimiter } from "./middleware/rate-limiter";
@@ -63,10 +64,12 @@ app.route("/api/v1/health", healthRouter);
 // Applied after health routes so health checks don't require auth
 app.use("/api/v1/feedback/*", apiKeyAuth());
 app.use("/api/v1/videos/*", apiKeyAuth());
+app.use("/api/v1/sync/*", apiKeyAuth());
 
 // API routes
 app.route("/api/v1/feedback", feedbackRouter);
 app.route("/api/v1/videos", videoRouter);
+app.route("/api/v1/sync", sync);
 
 // WebSocket stats endpoint (HTTP)
 app.get("/ws", (c) => {

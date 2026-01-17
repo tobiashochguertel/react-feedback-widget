@@ -7,6 +7,7 @@
 
 import type { Server, ServerWebSocket } from "bun";
 import type { Feedback } from "./db/schema";
+import { getServerChanges } from "./sync/protocol";
 
 // Client data attached to each WebSocket connection
 export interface ClientData {
@@ -23,7 +24,9 @@ export type ClientMessage =
   | { type: "subscribe"; projectId: string; sessionId?: string }
   | { type: "unsubscribe"; projectId: string }
   | { type: "ping" }
-  | { type: "auth"; token: string };
+  | { type: "auth"; token: string }
+  | { type: "sync:request"; lastSyncTimestamp?: string }
+  | { type: "sync:ack"; syncTimestamp: string };
 
 export type ServerMessage =
   | { type: "welcome"; clientId: string; timestamp: string }
@@ -34,7 +37,9 @@ export type ServerMessage =
   | { type: "feedback:created"; feedback: Partial<Feedback> }
   | { type: "feedback:updated"; feedback: Partial<Feedback> }
   | { type: "feedback:deleted"; feedbackId: string }
-  | { type: "feedback:status"; feedbackId: string; oldStatus: string; newStatus: string };
+  | { type: "feedback:status"; feedbackId: string; oldStatus: string; newStatus: string }
+  | { type: "sync:changes"; changes: unknown[]; timestamp: string }
+  | { type: "sync:complete"; timestamp: string; count: number };
 
 // Connected clients storage
 const clients = new Map<string, ServerWebSocket<ClientData>>();
@@ -204,6 +209,49 @@ function handleUnsubscribe(ws: ServerWebSocket<ClientData>, projectId: string): 
 }
 
 /**
+ * Handle sync request from client via WebSocket
+ */
+async function handleSyncRequest(
+  ws: ServerWebSocket<ClientData>,
+  lastSyncTimestamp?: string
+): Promise<void> {
+  const data = ws.data;
+
+  // Get changes for all subscribed projects
+  const allChanges: unknown[] = [];
+
+  for (const projectId of data.subscribedProjects) {
+    try {
+      const changes = await getServerChanges(projectId, lastSyncTimestamp);
+      allChanges.push(...changes);
+    } catch (error) {
+      console.error(`[WS] Error getting changes for project ${projectId}:`, error);
+    }
+  }
+
+  // Send changes to client
+  const timestamp = new Date().toISOString();
+  ws.send(
+    JSON.stringify({
+      type: "sync:changes",
+      changes: allChanges,
+      timestamp,
+    } satisfies ServerMessage)
+  );
+
+  // Send completion message
+  ws.send(
+    JSON.stringify({
+      type: "sync:complete",
+      timestamp,
+      count: allChanges.length,
+    } satisfies ServerMessage)
+  );
+
+  console.log(`[WS] Sent ${allChanges.length} sync changes to client ${data.id}`);
+}
+
+/**
  * Handle incoming message from client
  */
 function handleMessage(ws: ServerWebSocket<ClientData>, message: string): void {
@@ -232,6 +280,15 @@ function handleMessage(ws: ServerWebSocket<ClientData>, message: string): void {
       case "auth":
         // TODO: Implement authentication if needed
         console.log(`[WS] Client ${ws.data.id} sent auth token`);
+        break;
+
+      case "sync:request":
+        handleSyncRequest(ws, parsed.lastSyncTimestamp);
+        break;
+
+      case "sync:ack":
+        // Client acknowledged sync, update last sync time
+        console.log(`[WS] Client ${ws.data.id} acknowledged sync at ${parsed.syncTimestamp}`);
         break;
 
       default:
