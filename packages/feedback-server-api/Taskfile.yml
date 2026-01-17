@@ -41,7 +41,7 @@ tasks:
     cmds:
       - |
         mkdir -p {{.OUTPUT_DIR}}/feedback-api-types/src
-        openapi-typescript {{.OUTPUT_DIR}}/openapi/openapi.yaml -o {{.OUTPUT_DIR}}/feedback-api-types/src/api-types.d.ts
+        bunx openapi-typescript {{.OUTPUT_DIR}}/openapi/openapi.yaml -o {{.OUTPUT_DIR}}/feedback-api-types/src/api-types.d.ts
 
   generate:client-js:
     desc: Generate JavaScript client SDK using @typespec/http-client-js

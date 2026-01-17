@@ -27,7 +27,8 @@
     "@typespec/openapi3": "^1.8.0",
     "@typespec/rest": "^0.78.0",
     "@typespec/json-schema": "^1.0.0",
-    "@typespec/http-client-js": "^0.38.0",
+    "@typespec/http-client-js": "^0.13.0",
+    "@typespec/ts-http-runtime": "1.0.0-alpha.20241202.2",
     "openapi-typescript": "^7.10.1",
     "typescript": "^5.9.3"
   },
