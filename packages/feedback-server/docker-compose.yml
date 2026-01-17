@@ -1,0 +1,95 @@
+# Docker Compose configuration for feedback-server
+#
+# Usage:
+#   Development:  docker compose up
+#   Production:   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#   With rebuild: docker compose up --build
+#
+# Services:
+#   - feedback-server: The main API server (Bun + Hono)
+#   - db: PostgreSQL database
+#
+# Volumes:
+#   - feedback-data: Blob storage for videos and screenshots
+#   - postgres-data: PostgreSQL data persistence
+
+services:
+  feedback-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: feedback-server
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - PORT=3000
+      - HOST=0.0.0.0
+      # Database configuration
+      - DATABASE_URL=postgres://feedback:${POSTGRES_PASSWORD:-feedback}@db:5432/feedback
+      # Blob storage configuration
+      - UPLOAD_DIR=/data/uploads
+      - MAX_UPLOAD_SIZE=${MAX_UPLOAD_SIZE:-104857600}
+      # Video configuration
+      - VIDEO_CHUNK_SIZE=${VIDEO_CHUNK_SIZE:-1048576}
+      - VIDEO_MAX_DURATION=${VIDEO_MAX_DURATION:-300}
+      # Security
+      - AUTH_ENABLED=${AUTH_ENABLED:-false}
+      - AUTH_TYPE=${AUTH_TYPE:-apikey}
+      - API_KEY=${API_KEY:-}
+      - JWT_SECRET=${JWT_SECRET:-}
+      # CORS
+      - CORS_ORIGINS=${CORS_ORIGINS:-*}
+      # Rate limiting
+      - RATE_LIMIT_WINDOW_MS=${RATE_LIMIT_WINDOW_MS:-60000}
+      - RATE_LIMIT_MAX_REQUESTS=${RATE_LIMIT_MAX_REQUESTS:-100}
+      # Logging
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - LOG_FORMAT=${LOG_FORMAT:-json}
+      # Features
+      - ENABLE_VIDEO_UPLOAD=${ENABLE_VIDEO_UPLOAD:-true}
+      - ENABLE_WEBSOCKET=${ENABLE_WEBSOCKET:-true}
+      - ENABLE_COMPRESSION=${ENABLE_COMPRESSION:-true}
+    volumes:
+      - feedback-data:/data
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - feedback-network
+
+  db:
+    image: postgres:16-alpine
+    container_name: feedback-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=feedback
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-feedback}
+      - POSTGRES_DB=feedback
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U feedback -d feedback"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - feedback-network
+
+volumes:
+  feedback-data:
+    driver: local
+  postgres-data:
+    driver: local
+
+networks:
+  feedback-network:
+    driver: bridge

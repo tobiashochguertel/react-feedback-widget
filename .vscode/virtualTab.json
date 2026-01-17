@@ -3,7 +3,13 @@
     "id": "builtin_group_id",
     "name": "Currently Open Files",
     "files": [
-      "packages/feedback-server/src/db/schema.ts"
+      "packages/feedback-server/src/db/schema.ts",
+      "packages/feedback-server/docs/spec/002.server-tasks/TASKS-OVERVIEW.md",
+      "packages/feedback-server/docker-compose.yml",
+      "packages/feedback-server/src/middleware/auth.ts",
+      "packages/feedback-server/src/storage.ts",
+      "packages/feedback-server/src/db/migrate.ts",
+      "packages/feedback-server/src/db/index.ts"
     ],
     "builtIn": true,
     "bookmarks": {}
