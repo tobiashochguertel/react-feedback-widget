@@ -4,7 +4,7 @@ FROM oven/bun:1.3-debian AS builder
 WORKDIR /app
 
 # Copy package files
-COPY package.json bun.lockb* ./
+COPY package.json bun.lock* ./
 
 # Install dependencies
 RUN bun install --frozen-lockfile --production=false
@@ -21,17 +21,19 @@ FROM oven/bun:1.3-debian AS production
 
 WORKDIR /app
 
-# Create non-root user
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+# Install curl for health checks and create non-root user
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd -r appgroup && useradd -r -g appgroup appuser
 
 # Copy package files and install production dependencies
-COPY package.json bun.lockb* ./
+COPY package.json bun.lock* ./
 RUN bun install --frozen-lockfile --production
 
 # Copy built files from builder
 COPY --from=builder /app/dist ./dist
 
-# Create data directory for SQLite
+# Create data directory for SQLite and uploads
 RUN mkdir -p /app/data /app/uploads && \
     chown -R appuser:appgroup /app/data /app/uploads
 
@@ -41,9 +43,9 @@ USER appuser
 # Expose port
 EXPOSE 3000
 
-# Health check
+# Health check - uses curl to hit the health endpoint
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD bun run dist/healthcheck.js || exit 1
+    CMD curl -f http://localhost:3000/api/v1/health || exit 1
 
 # Set environment variables
 ENV NODE_ENV=production
