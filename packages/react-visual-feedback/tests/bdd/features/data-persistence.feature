@@ -6,7 +6,6 @@ Feature: Data Persistence - Export and Import
 
   Background:
     Given I am on the example app homepage
-
   # ============================================
   # EXPORT SCENARIOS
   # ============================================
@@ -38,7 +37,6 @@ Feature: Data Persistence - Export and Import
     When I click the export button
     Then a bundle file should be downloaded
     And the bundle should contain video data
-
   # ============================================
   # IMPORT SCENARIOS
   # ============================================
@@ -69,7 +67,6 @@ Feature: Data Persistence - Export and Import
     When I try to import an invalid file
     Then an error message should appear
     And no feedback should be added
-
   # ============================================
   # ROUNDTRIP SCENARIOS
   # ============================================
@@ -91,7 +88,6 @@ Feature: Data Persistence - Export and Import
     And I clear all feedback
     And I import the exported bundle
     Then the feedback should have a playable video
-
   # ============================================
   # TEST FIXTURE SCENARIOS (for BDD infrastructure)
   # ============================================
@@ -108,9 +104,9 @@ Feature: Data Persistence - Export and Import
   Scenario: Test fixtures include various statuses
     Given I load the standard test fixtures
     When I open the feedback dashboard
-    Then feedback with status "pending" should exist
-    And feedback with status "in-progress" should exist
-    And feedback with status "completed" should exist
+    Then feedback with status "new" should exist
+    And feedback with status "open" should exist
+    And feedback with status "resolved" should exist
 
   @persistence @fixtures @types @test-infrastructure
   Scenario: Test fixtures include various feedback types

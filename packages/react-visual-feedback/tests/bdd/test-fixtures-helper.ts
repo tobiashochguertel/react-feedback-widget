@@ -8,7 +8,7 @@
  */
 
 import type { Page } from '@playwright/test';
-import type { FeedbackData, FeedbackType, EventLog } from '../../src/types';
+import type { FeedbackData, FeedbackType, EventLog, ConsoleEventLog, NetworkEventLog } from '../../src/types';
 import type { FeedbackBundle, SerializedVideo } from '../../src/services/persistence/types';
 import {
   BUNDLE_VERSION,
@@ -35,43 +35,48 @@ export function generateTestId(prefix = 'test'): string {
  */
 export function createMockFeedback(overrides: Partial<FeedbackData> = {}): FeedbackData {
   const id = overrides.id || generateTestId('feedback');
-  const now = Date.now();
+  const now = new Date().toISOString();
 
   return {
     id,
     type: 'bug' as FeedbackType,
-    description: `Test feedback description for ${id}`,
-    status: 'pending',
+    feedback: `Test feedback for ${id}`,
+    status: 'new',
     timestamp: now,
     url: 'http://localhost:3000/',
     userAgent: 'Mozilla/5.0 (Test Browser)',
+    viewport: { width: 1920, height: 1080, scrollX: 0, scrollY: 0, devicePixelRatio: 1 },
     screenshot: undefined,
     video: undefined,
-    events: [],
-    metadata: {
-      viewport: { width: 1920, height: 1080 },
-      screen: { width: 1920, height: 1080 },
-      devicePixelRatio: 1,
-      language: 'en-US',
-      platform: 'Test Platform',
-      cookiesEnabled: true,
-    },
+    eventLogs: [],
     ...overrides,
   };
 }
 
 /**
- * Create a mock event log entry
+ * Create a mock console event log entry
  */
-export function createMockEventLog(overrides: Partial<EventLog> = {}): EventLog {
+export function createMockConsoleEventLog(overrides: Partial<ConsoleEventLog> = {}): ConsoleEventLog {
   return {
-    type: 'click',
+    type: 'console',
     timestamp: Date.now(),
-    data: {
-      target: 'button.test-button',
-      x: 100,
-      y: 200,
-    },
+    level: 'log',
+    message: 'Test console message',
+    ...overrides,
+  };
+}
+
+/**
+ * Create a mock network event log entry
+ */
+export function createMockNetworkEventLog(overrides: Partial<NetworkEventLog> = {}): NetworkEventLog {
+  return {
+    type: 'network',
+    timestamp: Date.now(),
+    source: 'fetch',
+    method: 'GET',
+    url: 'http://localhost:3000/api/test',
+    status: 200,
     ...overrides,
   };
 }
@@ -97,8 +102,18 @@ export function createMockVideoBlob(): Blob {
 
 /**
  * Serialize a Blob to base64 data URL
+ * Note: This only works in browser context (inside page.evaluate)
+ * For Node.js context, use createMockVideoDataUrl() instead
  */
 export async function blobToDataUrl(blob: Blob): Promise<string> {
+  // Check if we're in a browser environment
+  if (typeof FileReader === 'undefined') {
+    // In Node.js, use Buffer instead
+    const arrayBuffer = await blob.arrayBuffer();
+    const base64 = Buffer.from(arrayBuffer).toString('base64');
+    return `data:${blob.type};base64,${base64}`;
+  }
+
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -113,6 +128,20 @@ export async function blobToDataUrl(blob: Blob): Promise<string> {
   });
 }
 
+/**
+ * Create a mock video data URL directly (works in Node.js context)
+ * Returns a minimal valid WebM header as base64 data URL
+ */
+export function createMockVideoDataUrl(): string {
+  // Minimal WebM EBML header bytes
+  const webmHeader = new Uint8Array([
+    0x1a, 0x45, 0xdf, 0xa3, 0x93, 0x42, 0x82, 0x88, 0x6d, 0x61, 0x74, 0x72, 0x6f, 0x73, 0x6b, 0x61,
+    0x42, 0x87, 0x81, 0x01, 0x42, 0x85, 0x81, 0x01,
+  ]);
+  const base64 = Buffer.from(webmHeader).toString('base64');
+  return `data:video/webm;base64,${base64}`;
+}
+
 // ============================================
 // STANDARD TEST FIXTURES
 // ============================================
@@ -125,19 +154,19 @@ export const STANDARD_FIXTURES = {
    * Feedback items for testing different statuses
    */
   statusFeedback: [
-    createMockFeedback({ id: 'status-pending', status: 'pending', description: 'Pending feedback item' }),
-    createMockFeedback({ id: 'status-in-progress', status: 'in-progress', description: 'In-progress feedback item' }),
-    createMockFeedback({ id: 'status-completed', status: 'completed', description: 'Completed feedback item' }),
-    createMockFeedback({ id: 'status-rejected', status: 'rejected', description: 'Rejected feedback item' }),
+    createMockFeedback({ id: 'status-new', status: 'new', feedback: 'New feedback item' }),
+    createMockFeedback({ id: 'status-open', status: 'open', feedback: 'Open feedback item' }),
+    createMockFeedback({ id: 'status-inProgress', status: 'inProgress', feedback: 'In-progress feedback item' }),
+    createMockFeedback({ id: 'status-resolved', status: 'resolved', feedback: 'Resolved feedback item' }),
   ],
 
   /**
    * Feedback items for testing different types
    */
   typeFeedback: [
-    createMockFeedback({ id: 'type-bug', type: 'bug' as FeedbackType, description: 'Bug report' }),
-    createMockFeedback({ id: 'type-feature', type: 'feature' as FeedbackType, description: 'Feature request' }),
-    createMockFeedback({ id: 'type-improvement', type: 'improvement' as FeedbackType, description: 'Improvement suggestion' }),
+    createMockFeedback({ id: 'type-bug', type: 'bug' as FeedbackType, feedback: 'Bug report' }),
+    createMockFeedback({ id: 'type-feature', type: 'feature' as FeedbackType, feedback: 'Feature request' }),
+    createMockFeedback({ id: 'type-improvement', type: 'improvement' as FeedbackType, feedback: 'Improvement suggestion' }),
   ],
 
   /**
@@ -145,7 +174,7 @@ export const STANDARD_FIXTURES = {
    */
   videoFeedback: createMockFeedback({
     id: 'feedback-with-video',
-    description: 'Feedback with video recording',
+    feedback: 'Feedback with video recording',
     video: 'video:test-video-001',
   }),
 
@@ -154,11 +183,11 @@ export const STANDARD_FIXTURES = {
    */
   eventsFeedback: createMockFeedback({
     id: 'feedback-with-events',
-    description: 'Feedback with event logs',
-    events: [
-      createMockEventLog({ type: 'click', data: { target: 'button.submit' } }),
-      createMockEventLog({ type: 'input', data: { target: 'input.email', value: 'test@example.com' } }),
-      createMockEventLog({ type: 'scroll', data: { scrollY: 500 } }),
+    feedback: 'Feedback with event logs',
+    eventLogs: [
+      createMockConsoleEventLog({ message: 'Button clicked' }),
+      createMockConsoleEventLog({ level: 'warn', message: 'Warning message' }),
+      createMockNetworkEventLog({ url: 'http://localhost:3000/api/submit', method: 'POST', status: 200 }),
     ],
   }),
 };

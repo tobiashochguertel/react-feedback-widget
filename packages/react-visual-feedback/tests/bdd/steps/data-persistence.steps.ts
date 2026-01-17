@@ -217,9 +217,19 @@ When('I clear all feedback', async ({ page }) => {
   await page.waitForLoadState('networkidle');
 });
 
-When('I import the exported bundle', async ({ page }) => {
+When('I import the exported bundle', async ({ page, feedbackWidget }) => {
   if (!lastExportedBundle) {
     throw new Error('No exported bundle available to import');
+  }
+
+  // Ensure the dashboard is open (it may have been closed by page reload)
+  // Use the "Feedback" heading to detect if dashboard is visible
+  const dashboardHeader = page.locator('h2:has-text("Feedback")');
+  const isDashboardVisible = await dashboardHeader.isVisible().catch(() => false);
+
+  if (!isDashboardVisible) {
+    await feedbackWidget.openDashboard();
+    await page.waitForTimeout(500);
   }
 
   const bundleJson = JSON.stringify(lastExportedBundle);
@@ -272,7 +282,7 @@ Then('the bundle should contain zero feedback items', async () => {
   expect(capturedDownload?.bundle?.feedback).toHaveLength(0);
 });
 
-Then('the bundle should contain {int} feedback items', async ({}, count: number) => {
+Then('the bundle should contain {int} feedback items', async ({ }, count: number) => {
   expect(capturedDownload?.bundle).not.toBeNull();
   expect(capturedDownload?.bundle?.feedback).toHaveLength(count);
 });
@@ -286,19 +296,43 @@ Then('the bundle should contain video data', async () => {
   expect(video?.data).toMatch(/^data:video\//);
 });
 
-Then('the dashboard should show {int} feedback items', async ({ page }, count: number) => {
-  // Wait for dashboard to update
-  await page.waitForTimeout(500);
+Then('the dashboard should show {int} feedback items', async ({ page, feedbackWidget }, count: number) => {
+  // Check if the dashboard is already visible by looking for the "Feedback" heading
+  const dashboardHeader = page.locator('h2:has-text("Feedback")');
+  const isDashboardVisible = await dashboardHeader.isVisible().catch(() => false);
 
-  // Count feedback cards in the dashboard
-  const feedbackCards = page.locator('[data-testid="feedback-card"], .feedback-card, [class*="Card"]');
-  await expect(feedbackCards).toHaveCount(count, { timeout: 5000 });
+  if (!isDashboardVisible) {
+    // Dashboard is not open - need to open it
+    await feedbackWidget.openDashboard();
+  } else {
+    // Dashboard is already open - wait for it to refresh with new data
+    await page.waitForTimeout(1000);
+  }
+
+  // Look for the feedback count in the dashboard header (next to "Feedback" heading)
+  // The count is displayed in a sibling element to the h2 heading
+  const countElement = page.locator('h2:has-text("Feedback") + *');
+  await expect(countElement).toBeVisible({ timeout: 5000 });
+  const displayedCount = await countElement.textContent();
+  const actualCount = parseInt(displayedCount || '0', 10);
+  expect(actualCount).toBe(count);
+});
+
+Then('the dashboard should show {int} feedback item', async ({ page }, count: number) => {
+  // Singular variant for "1 feedback item"
+  await page.waitForTimeout(500);
+  const countElement = page.locator('h2:has-text("Feedback") + *');
+  const displayedCount = await countElement.textContent();
+  const actualCount = parseInt(displayedCount || '0', 10);
+  expect(actualCount).toBe(count);
 });
 
 Then('the dashboard should show multiple feedback items', async ({ page }) => {
-  const feedbackCards = page.locator('[data-testid="feedback-card"], .feedback-card, [class*="Card"]');
-  const count = await feedbackCards.count();
-  expect(count).toBeGreaterThan(1);
+  // Check the count shown in the header is > 1
+  const countElement = page.locator('h2:has-text("Feedback") + *');
+  const displayedCount = await countElement.textContent();
+  const actualCount = parseInt(displayedCount || '0', 10);
+  expect(actualCount).toBeGreaterThan(1);
 });
 
 Then('a success message should appear', async ({ page }) => {
@@ -324,14 +358,39 @@ Then('no feedback should be added', async ({ page }) => {
   expect(feedback.length).toBe(0);
 });
 
-Then('the feedback should have a playable video', async ({ page }) => {
+Then('the feedback should have a playable video', async ({ page, feedbackWidget }) => {
+  // Check if the dashboard is already visible by looking for the "Feedback" heading
+  const dashboardHeader = page.locator('h2:has-text("Feedback")');
+  const isDashboardVisible = await dashboardHeader.isVisible().catch(() => false);
+
+  if (!isDashboardVisible) {
+    // Dashboard is not open - need to open it
+    await feedbackWidget.openDashboard();
+  } else {
+    // Dashboard is already open - wait for IndexedDB operations to complete
+    await page.waitForTimeout(1000);
+  }
+
   // Verify video exists in IndexedDB
   const hasVideo = await page.evaluate(async () => {
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
       const request = indexedDB.open('FeedbackVideoDB', 1);
       request.onerror = () => reject(request.error);
       request.onsuccess = () => resolve(request.result);
+      request.onupgradeneeded = (event) => {
+        // Create store if it doesn't exist
+        const db = (event.target as IDBOpenDBRequest).result;
+        if (!db.objectStoreNames.contains('videos')) {
+          db.createObjectStore('videos', { keyPath: 'id' });
+        }
+      };
     });
+
+    // Check if the videos store exists
+    if (!db.objectStoreNames.contains('videos')) {
+      db.close();
+      return false;
+    }
 
     return new Promise<boolean>((resolve) => {
       const transaction = db.transaction(['videos'], 'readonly');
@@ -359,7 +418,7 @@ Then('feedback with video should be available', async ({ page }) => {
 
 Then('feedback with events should be available', async ({ page }) => {
   const feedback = await getFeedbackData(page);
-  const hasEvents = feedback.some((f) => f.events && f.events.length > 0);
+  const hasEvents = feedback.some((f) => f.eventLogs && f.eventLogs.length > 0);
   expect(hasEvents).toBe(true);
 });
 
