@@ -289,6 +289,412 @@ feedbackRouter.get("/export", async (c) => {
   return c.text(csvRows.join("\n"));
 });
 
+// Bulk import schemas
+const bulkImportItemSchema = z.object({
+  projectId: z.string().min(1),
+  sessionId: z.string().min(1).optional().default(() => nanoid()),
+  title: z.string().min(1).max(200),
+  description: z.string().optional(),
+  type: feedbackTypeEnum.default("bug"),
+  priority: feedbackPriorityEnum.default("medium"),
+  status: feedbackStatusEnum.default("pending"),
+  userEmail: z.string().email().optional(),
+  userName: z.string().optional(),
+  tags: z.array(z.string()).optional(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
+  environment: z.object({
+    userAgent: z.string(),
+    browser: z.string().optional(),
+    browserVersion: z.string().optional(),
+    os: z.string().optional(),
+    viewportWidth: z.number().optional(),
+    viewportHeight: z.number().optional(),
+    devicePixelRatio: z.number().optional(),
+    url: z.string(),
+    pageTitle: z.string().optional(),
+  }).optional(),
+  screenshots: z.array(z.object({
+    mimeType: z.string(),
+    data: z.string(),
+    width: z.number().optional(),
+    height: z.number().optional(),
+    annotations: z.array(z.any()).optional(),
+  })).optional(),
+  consoleLogs: z.array(z.object({
+    level: z.enum(["log", "info", "warn", "error", "debug"]),
+    message: z.string(),
+    timestamp: z.string(),
+    data: z.array(z.any()).optional(),
+  })).optional(),
+  networkRequests: z.array(z.object({
+    url: z.string(),
+    method: z.string(),
+    status: z.number().optional(),
+    duration: z.number().optional(),
+    timestamp: z.string(),
+    success: z.boolean(),
+    error: z.string().optional(),
+  })).optional(),
+});
+
+const bulkImportJsonSchema = z.object({
+  items: z.array(bulkImportItemSchema),
+  skipErrors: z.boolean().default(false),
+});
+
+/**
+ * Parse CSV string into array of objects
+ */
+function parseCSV(csvContent: string): Record<string, string>[] {
+  const lines = csvContent.trim().split("\n");
+  if (lines.length < 2) {
+    return [];
+  }
+
+  // Parse header row
+  const headers = lines[0].split(",").map(h => h.trim().replace(/^"|"$/g, ""));
+
+  const results: Record<string, string>[] = [];
+
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i];
+    const values: string[] = [];
+    let current = "";
+    let inQuotes = false;
+
+    for (let j = 0; j < line.length; j++) {
+      const char = line[j];
+      if (char === '"') {
+        if (inQuotes && line[j + 1] === '"') {
+          // Escaped quote
+          current += '"';
+          j++;
+        } else {
+          inQuotes = !inQuotes;
+        }
+      } else if (char === "," && !inQuotes) {
+        values.push(current);
+        current = "";
+      } else {
+        current += char;
+      }
+    }
+    values.push(current); // Last value
+
+    // Create object from header/value pairs
+    const obj: Record<string, string> = {};
+    for (let k = 0; k < headers.length; k++) {
+      obj[headers[k]] = values[k] || "";
+    }
+    results.push(obj);
+  }
+
+  return results;
+}
+
+/**
+ * Convert CSV row to feedback item format
+ */
+function csvRowToFeedbackItem(row: Record<string, string>): Record<string, unknown> {
+  return {
+    projectId: row.projectId || "",
+    sessionId: row.sessionId || nanoid(),
+    title: row.title || "",
+    description: row.description || undefined,
+    type: row.type || "bug",
+    status: row.status || "pending",
+    priority: row.priority || "medium",
+    userEmail: row.userEmail || undefined,
+    userName: row.userName || undefined,
+    tags: row.tags ? row.tags.split(";").map(t => t.trim()).filter(Boolean) : undefined,
+  };
+}
+
+/**
+ * Bulk import feedback items
+ *
+ * Accepts JSON array or CSV format.
+ * Validates each item and returns summary of import results.
+ *
+ * JSON format:
+ * {
+ *   "items": [{ ... }, { ... }],
+ *   "skipErrors": true  // Optional: continue on validation errors
+ * }
+ *
+ * CSV format:
+ * Content-Type: text/csv
+ * id,projectId,title,description,type,status,priority,userEmail,userName,tags
+ * ...
+ */
+feedbackRouter.post("/import", async (c) => {
+  const contentType = c.req.header("Content-Type") || "";
+
+  let itemsToImport: Record<string, unknown>[] = [];
+  let skipErrors = false;
+
+  // Determine format and parse
+  if (contentType.includes("text/csv")) {
+    // CSV format
+    const csvContent = await c.req.text();
+    const parsedRows = parseCSV(csvContent);
+    itemsToImport = parsedRows.map(csvRowToFeedbackItem);
+    skipErrors = c.req.query("skipErrors") === "true";
+  } else {
+    // JSON format (default)
+    try {
+      const body = await c.req.json();
+      const parsed = bulkImportJsonSchema.safeParse(body);
+
+      if (!parsed.success) {
+        return c.json({
+          success: false,
+          error: "Invalid request format",
+          details: parsed.error.issues,
+        }, 400);
+      }
+
+      itemsToImport = parsed.data.items;
+      skipErrors = parsed.data.skipErrors;
+    } catch {
+      return c.json({
+        success: false,
+        error: "Invalid JSON",
+      }, 400);
+    }
+  }
+
+  if (itemsToImport.length === 0) {
+    return c.json({
+      success: true,
+      imported: 0,
+      failed: 0,
+      errors: [],
+      message: "No items to import",
+    });
+  }
+
+  // Validate and import each item
+  const results = {
+    imported: 0,
+    failed: 0,
+    errors: [] as Array<{ index: number; error: string; details?: unknown }>,
+    importedIds: [] as string[],
+  };
+
+  const now = new Date().toISOString();
+
+  for (let i = 0; i < itemsToImport.length; i++) {
+    const item = itemsToImport[i];
+
+    // Validate the item
+    const validationResult = bulkImportItemSchema.safeParse(item);
+
+    if (!validationResult.success) {
+      results.failed++;
+      results.errors.push({
+        index: i,
+        error: "Validation failed",
+        details: validationResult.error.issues,
+      });
+
+      if (!skipErrors) {
+        // Return early with error
+        return c.json({
+          success: false,
+          imported: results.imported,
+          failed: results.failed,
+          errors: results.errors,
+          importedIds: results.importedIds,
+          message: `Import aborted at item ${i} due to validation error. Use skipErrors=true to continue on errors.`,
+        }, 400);
+      }
+
+      continue;
+    }
+
+    const validItem = validationResult.data;
+
+    // Insert the feedback item
+    try {
+      const id = nanoid();
+      const sessionId = validItem.sessionId || nanoid();
+
+      await db.insert(schema.feedback).values({
+        id,
+        projectId: validItem.projectId,
+        sessionId,
+        title: validItem.title,
+        description: validItem.description ?? null,
+        type: validItem.type,
+        status: validItem.status,
+        priority: validItem.priority,
+        userEmail: validItem.userEmail ?? null,
+        userName: validItem.userName ?? null,
+        environment: validItem.environment as typeof schema.feedback.$inferInsert.environment,
+        tags: validItem.tags ?? null,
+        metadata: validItem.metadata as typeof schema.feedback.$inferInsert.metadata,
+        createdAt: now,
+        updatedAt: now,
+      });
+
+      // Insert screenshots if provided
+      if (validItem.screenshots?.length) {
+        await db.insert(schema.screenshots).values(
+          validItem.screenshots.map((s) => ({
+            id: nanoid(),
+            feedbackId: id,
+            mimeType: s.mimeType,
+            data: s.data,
+            width: s.width,
+            height: s.height,
+            capturedAt: now,
+            annotations: s.annotations,
+          }))
+        );
+      }
+
+      // Insert console logs if provided
+      if (validItem.consoleLogs?.length) {
+        await db.insert(schema.consoleLogs).values(
+          validItem.consoleLogs.map((log) => ({
+            id: nanoid(),
+            feedbackId: id,
+            level: log.level,
+            message: log.message,
+            timestamp: log.timestamp,
+            data: log.data,
+          }))
+        );
+      }
+
+      // Insert network requests if provided
+      if (validItem.networkRequests?.length) {
+        await db.insert(schema.networkRequests).values(
+          validItem.networkRequests.map((req) => ({
+            id: nanoid(),
+            feedbackId: id,
+            url: req.url,
+            method: req.method,
+            status: req.status,
+            duration: req.duration,
+            timestamp: req.timestamp,
+            success: req.success,
+            error: req.error,
+          }))
+        );
+      }
+
+      results.imported++;
+      results.importedIds.push(id);
+    } catch (error) {
+      results.failed++;
+      const errorMessage = error instanceof Error ? error.message : "Unknown database error";
+      results.errors.push({
+        index: i,
+        error: errorMessage,
+      });
+
+      if (!skipErrors) {
+        return c.json({
+          success: false,
+          imported: results.imported,
+          failed: results.failed,
+          errors: results.errors,
+          importedIds: results.importedIds,
+          message: `Import aborted at item ${i} due to database error. Use skipErrors=true to continue on errors.`,
+        }, 500);
+      }
+    }
+  }
+
+  return c.json({
+    success: results.failed === 0,
+    imported: results.imported,
+    failed: results.failed,
+    errors: results.errors.length > 0 ? results.errors : undefined,
+    importedIds: results.importedIds,
+    message: results.failed === 0
+      ? `Successfully imported ${results.imported} items`
+      : `Imported ${results.imported} items with ${results.failed} failures`,
+  }, results.failed > 0 && !skipErrors ? 400 : results.failed > 0 ? 207 : 201);
+});
+
+/**
+ * Bulk update feedback items
+ */
+const bulkUpdateSchema = z.object({
+  ids: z.array(z.string()).min(1),
+  update: updateFeedbackSchema,
+});
+
+feedbackRouter.patch("/bulk", zValidator("json", bulkUpdateSchema), async (c) => {
+  const { ids, update } = c.req.valid("json");
+
+  const now = new Date().toISOString();
+
+  // Build update data
+  const updateData: Record<string, unknown> = {
+    updatedAt: now,
+  };
+
+  if (update.title !== undefined) updateData.title = update.title;
+  if (update.description !== undefined) updateData.description = update.description;
+  if (update.type !== undefined) updateData.type = update.type;
+  if (update.status !== undefined) updateData.status = update.status;
+  if (update.priority !== undefined) updateData.priority = update.priority;
+  if (update.tags !== undefined) updateData.tags = JSON.stringify(update.tags);
+  if (update.metadata !== undefined) updateData.metadata = JSON.stringify(update.metadata);
+
+  // Update all items with matching IDs
+  const updatedIds: string[] = [];
+
+  for (const id of ids) {
+    const result = await db
+      .update(schema.feedback)
+      .set(updateData)
+      .where(eq(schema.feedback.id, id))
+      .returning({ id: schema.feedback.id });
+
+    if (result.length > 0) {
+      updatedIds.push(id);
+    }
+  }
+
+  return c.json({
+    updated: updatedIds.length,
+    updatedIds,
+  });
+});
+
+/**
+ * Bulk delete feedback items
+ */
+const bulkDeleteSchema = z.object({
+  ids: z.array(z.string()).min(1),
+});
+
+feedbackRouter.delete("/bulk", zValidator("json", bulkDeleteSchema), async (c) => {
+  const { ids } = c.req.valid("json");
+
+  let deleted = 0;
+
+  for (const id of ids) {
+    const result = await db
+      .delete(schema.feedback)
+      .where(eq(schema.feedback.id, id))
+      .returning({ id: schema.feedback.id });
+
+    if (result.length > 0) {
+      deleted++;
+    }
+  }
+
+  return c.json({
+    deleted,
+  });
+});
+
 // Advanced search schema
 const advancedSearchSchema = z.object({
   // Text search
