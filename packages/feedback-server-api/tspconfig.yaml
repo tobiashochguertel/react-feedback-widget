@@ -1,0 +1,19 @@
+emit:
+  - '@typespec/openapi3'
+  - '@typespec/json-schema'
+  # - '@typespec/http-client-js'  # Uncomment when ready for client SDK generation
+
+options:
+  '@typespec/openapi3':
+    emitter-output-dir: '{project-root}/../generated/openapi'
+    output-file: 'openapi.yaml'
+    
+  '@typespec/json-schema':
+    emitter-output-dir: '{project-root}/../generated/feedback-api-schemas/schemas'
+    bundleId: 'https://feedback.api/schemas'
+    
+  # '@typespec/http-client-js':
+  #   emitter-output-dir: '{project-root}/../generated/feedback-api-client-js/src'
+  #   packageDetails:
+  #     name: '@feedback/api-client-js'
+  #     version: '1.0.0'

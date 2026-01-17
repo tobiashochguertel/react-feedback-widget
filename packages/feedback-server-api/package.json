@@ -1,0 +1,37 @@
+{
+  "name": "@feedback/server-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "TypeSpec API specification for feedback-server - Single source of truth for API contracts",
+  "type": "module",
+  "scripts": {
+    "generate": "task generate:all",
+    "generate:openapi": "tsp compile typespec/main.tsp",
+    "generate:types": "openapi-typescript ../generated/openapi/openapi.yaml -o ../generated/feedback-api-types/src/api-types.d.ts",
+    "typecheck": "tsc --noEmit",
+    "clean": "task clean"
+  },
+  "keywords": [
+    "typespec",
+    "api",
+    "openapi",
+    "feedback-server",
+    "code-generation"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@typespec/compiler": "^1.8.0",
+    "@typespec/http": "^1.8.0",
+    "@typespec/openapi": "^1.8.0",
+    "@typespec/openapi3": "^1.8.0",
+    "@typespec/rest": "^0.78.0",
+    "@typespec/json-schema": "^1.0.0",
+    "@typespec/http-client-js": "^0.38.0",
+    "openapi-typescript": "^7.10.1",
+    "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "typescript": ">=5.9.3"
+  }
+}

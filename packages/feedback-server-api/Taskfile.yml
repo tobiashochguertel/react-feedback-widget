@@ -1,0 +1,102 @@
+# Taskfile for feedback-server-api
+# https://taskfile.dev/
+version: '3'
+
+vars:
+  TYPESPEC_DIR: ./typespec
+  OUTPUT_DIR: ../generated
+
+tasks:
+  default:
+    desc: Show available tasks
+    cmds:
+      - task --list
+
+  generate:all:
+    desc: Generate all outputs from TypeSpec
+    deps:
+      - generate:openapi
+    cmds:
+      - task: generate:types
+      # - task: generate:client-js  # Uncomment when ready
+      # - task: generate:schemas    # Uncomment when ready
+
+  generate:openapi:
+    desc: Generate OpenAPI 3.1 specification from TypeSpec
+    sources:
+      - "{{.TYPESPEC_DIR}}/**/*.tsp"
+      - tspconfig.yaml
+    generates:
+      - "{{.OUTPUT_DIR}}/openapi/openapi.yaml"
+    cmds:
+      - tsp compile {{.TYPESPEC_DIR}}/main.tsp
+
+  generate:types:
+    desc: Generate TypeScript types from OpenAPI using openapi-typescript
+    deps: [generate:openapi]
+    sources:
+      - "{{.OUTPUT_DIR}}/openapi/openapi.yaml"
+    generates:
+      - "{{.OUTPUT_DIR}}/feedback-api-types/src/api-types.d.ts"
+    cmds:
+      - |
+        mkdir -p {{.OUTPUT_DIR}}/feedback-api-types/src
+        openapi-typescript {{.OUTPUT_DIR}}/openapi/openapi.yaml -o {{.OUTPUT_DIR}}/feedback-api-types/src/api-types.d.ts
+
+  generate:client-js:
+    desc: Generate JavaScript client SDK using @typespec/http-client-js
+    sources:
+      - "{{.TYPESPEC_DIR}}/**/*.tsp"
+    cmds:
+      - tsp compile {{.TYPESPEC_DIR}}/main.tsp --emit @typespec/http-client-js
+
+  generate:schemas:
+    desc: Generate JSON Schemas using @typespec/json-schema
+    sources:
+      - "{{.TYPESPEC_DIR}}/**/*.tsp"
+    cmds:
+      - tsp compile {{.TYPESPEC_DIR}}/main.tsp --emit @typespec/json-schema
+
+  clean:
+    desc: Clean all generated files (preserves skeleton files)
+    cmds:
+      - rm -f {{.OUTPUT_DIR}}/feedback-api-types/src/api-types.d.ts
+      - rm -rf {{.OUTPUT_DIR}}/feedback-api-client-js/src/*.ts
+      - rm -rf {{.OUTPUT_DIR}}/feedback-api-schemas/schemas/*.json
+      - rm -rf {{.OUTPUT_DIR}}/openapi
+
+  version:
+    desc: Update version in all generated packages
+    summary: |
+      Updates the version field in all generated package.json files.
+      
+      Usage: task version -- 1.2.3
+    cmds:
+      - |
+        VERSION="{{.CLI_ARGS}}"
+        if [ -z "$VERSION" ]; then
+          echo "Usage: task version -- <version>"
+          exit 1
+        fi
+        for pkg in feedback-api-types feedback-api-client-js feedback-api-schemas; do
+          if [ -f "{{.OUTPUT_DIR}}/$pkg/package.json" ]; then
+            jq ".version = \"$VERSION\"" "{{.OUTPUT_DIR}}/$pkg/package.json" > tmp.json
+            mv tmp.json "{{.OUTPUT_DIR}}/$pkg/package.json"
+            echo "Updated $pkg to version $VERSION"
+          fi
+        done
+
+  check:
+    desc: Verify all generated files are up to date
+    cmds:
+      - |
+        echo "Checking if generated files exist..."
+        if [ ! -f "{{.OUTPUT_DIR}}/openapi/openapi.yaml" ]; then
+          echo "❌ OpenAPI spec not found. Run 'task generate:openapi'"
+          exit 1
+        fi
+        if [ ! -f "{{.OUTPUT_DIR}}/feedback-api-types/src/api-types.d.ts" ]; then
+          echo "❌ TypeScript types not found. Run 'task generate:types'"
+          exit 1
+        fi
+        echo "✅ All generated files present"
