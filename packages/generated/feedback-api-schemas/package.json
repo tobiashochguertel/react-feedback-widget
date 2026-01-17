@@ -1,0 +1,24 @@
+{
+  "name": "@feedback/api-schemas",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Generated JSON Schemas for feedback-server API validation",
+  "type": "module",
+  "main": "./schemas/index.json",
+  "exports": {
+    ".": "./schemas/index.json",
+    "./schemas/*": "./schemas/*"
+  },
+  "files": [
+    "schemas"
+  ],
+  "keywords": [
+    "json-schema",
+    "validation",
+    "api",
+    "feedback-server",
+    "generated"
+  ],
+  "author": "",
+  "license": "MIT"
+}

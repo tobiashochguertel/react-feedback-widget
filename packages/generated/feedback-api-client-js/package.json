@@ -1,0 +1,36 @@
+{
+  "name": "@feedback/api-client-js",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Generated JavaScript client SDK for feedback-server API",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    }
+  },
+  "files": [
+    "src"
+  ],
+  "keywords": [
+    "client",
+    "sdk",
+    "api",
+    "feedback-server",
+    "generated"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@typespec/ts-http-runtime": "^1.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "typescript": ">=5.9.3"
+  }
+}

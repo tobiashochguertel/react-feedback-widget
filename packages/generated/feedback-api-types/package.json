@@ -1,0 +1,33 @@
+{
+  "name": "@feedback/api-types",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Generated TypeScript types from feedback-server API specification",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    }
+  },
+  "files": [
+    "src"
+  ],
+  "keywords": [
+    "types",
+    "typescript",
+    "api",
+    "feedback-server",
+    "generated"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "typescript": ">=5.9.3"
+  }
+}
