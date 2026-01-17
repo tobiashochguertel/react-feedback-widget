@@ -18,7 +18,7 @@ import { timing } from "hono/timing";
 import { feedbackRouter } from "./routes/feedback";
 import { videoRouter } from "./routes/video";
 import { healthRouter } from "./routes/health";
-import { websocketHandler } from "./websocket";
+import { websocketConfig, getWebSocketStats } from "./websocket";
 import { errorHandler } from "./middleware/error-handler";
 import { rateLimiter } from "./middleware/rate-limiter";
 import { apiKeyAuth } from "./middleware/auth";
@@ -68,8 +68,14 @@ app.use("/api/v1/videos/*", apiKeyAuth());
 app.route("/api/v1/feedback", feedbackRouter);
 app.route("/api/v1/videos", videoRouter);
 
-// WebSocket endpoint
-app.get("/ws", websocketHandler);
+// WebSocket stats endpoint (HTTP)
+app.get("/ws", (c) => {
+  return c.json({
+    message: "WebSocket endpoint. Connect using ws:// or wss:// protocol.",
+    stats: getWebSocketStats(),
+    upgradeRequired: true,
+  });
+});
 
 // 404 handler
 app.notFound((c) => {
@@ -94,12 +100,16 @@ app.get("/", (c) => {
   });
 });
 
-// Export for Bun server
+// Export for Bun server with WebSocket support
 export default {
   port: config.port,
   hostname: config.host,
   fetch: app.fetch,
+  websocket: websocketConfig,
 };
 
 // Also export app for testing
 export { app };
+
+// Export WebSocket utilities for route handlers
+export { websocketConfig, getWebSocketStats } from "./websocket";
