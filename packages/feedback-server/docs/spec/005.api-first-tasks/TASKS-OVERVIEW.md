@@ -2,7 +2,7 @@
 
 **Source Specification**: [004.api-first-technical-debt/README.md](../004.api-first-technical-debt/README.md)
 **Created**: 2026-01-17
-**Updated**: 2026-01-17
+**Updated**: 2026-01-18
 
 ---
 
@@ -10,13 +10,13 @@
 
 | Category          | Total  | Done | In Progress | TODO |
 | ----------------- | ------ | ---- | ----------- | ---- |
-| Setup             | 2      | 0    | 0           | 2    |
-| Type Generation   | 3      | 0    | 0           | 3    |
+| Setup             | 2      | 2    | 0           | 0    |
+| Type Generation   | 3      | 2    | 0           | 1    |
 | Handler Migration | 3      | 0    | 0           | 3    |
 | Test Migration    | 2      | 0    | 0           | 2    |
 | Client SDK        | 2      | 0    | 0           | 2    |
 | CI/CD Integration | 2      | 0    | 0           | 2    |
-| **Total**         | **14** | 0    | 0           | 14   |
+| **Total**         | **14** | 4    | 0           | 10   |
 
 ---
 
@@ -26,10 +26,10 @@
 
 **Description**: Install dependencies and configure build tools for API-First development.
 
-| Task | Name                       | Status  | Priority | Dependencies | Completed |
-| ---- | -------------------------- | ------- | -------- | ------------ | --------- |
-| A001 | Install openapi-typescript | 🔲 TODO | 🟢 High  | -            | -         |
-| A002 | Add Generation Scripts     | 🔲 TODO | 🟢 High  | A001         | -         |
+| Task | Name                       | Status  | Priority | Dependencies | Completed  |
+| ---- | -------------------------- | ------- | -------- | ------------ | ---------- |
+| A001 | Install openapi-typescript | ✅ Done | 🟢 High  | -            | 2026-01-18 |
+| A002 | Add Generation Scripts     | ✅ Done | 🟢 High  | A001         | 2026-01-18 |
 
 ---
 
@@ -37,11 +37,11 @@
 
 **Description**: Generate TypeScript types from OpenAPI specification.
 
-| Task | Name                   | Status  | Priority  | Dependencies | Completed |
-| ---- | ---------------------- | ------- | --------- | ------------ | --------- |
-| T001 | Generate Initial Types | 🔲 TODO | 🟢 High   | A002         | -         |
-| T002 | Create Type Aliases    | 🔲 TODO | 🟡 Medium | T001         | -         |
-| T003 | Deprecate Manual Types | 🔲 TODO | 🟡 Medium | T002         | -         |
+| Task | Name                   | Status  | Priority  | Dependencies | Completed  |
+| ---- | ---------------------- | ------- | --------- | ------------ | ---------- |
+| T001 | Generate Initial Types | ✅ Done | 🟢 High   | A002         | 2026-01-18 |
+| T002 | Create Type Aliases    | ✅ Done | 🟡 Medium | T001         | 2026-01-18 |
+| T003 | Deprecate Manual Types | 🔲 TODO | 🟡 Medium | T002         | -          |
 
 ---
 
