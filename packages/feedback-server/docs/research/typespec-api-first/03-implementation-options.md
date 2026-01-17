@@ -15,6 +15,7 @@ TypeSpec → OpenAPI → openapi-typescript → TypeScript Types
 ```
 
 ### Pros
+
 - ✅ Stable, production-ready tooling
 - ✅ Zero runtime overhead (types only)
 - ✅ Works with any HTTP framework
@@ -22,6 +23,7 @@ TypeSpec → OpenAPI → openapi-typescript → TypeScript Types
 - ✅ Minimal changes to existing code
 
 ### Cons
+
 - ❌ No generated router (manual wiring)
 - ❌ Types must be manually applied
 - ❌ No runtime validation (types only)
@@ -29,12 +31,14 @@ TypeSpec → OpenAPI → openapi-typescript → TypeScript Types
 ### Implementation Steps
 
 1. **Install dependencies**
+
 ```bash
 bun add -D openapi-typescript
 bun add openapi-fetch  # For clients
 ```
 
 2. **Add generation script**
+
 ```json
 {
   "scripts": {
@@ -46,11 +50,13 @@ bun add openapi-fetch  # For clients
 ```
 
 3. **Apply types to handlers**
+
 ```typescript
 import type { components, operations } from "./generated/api-types";
 
 type FeedbackItem = components["schemas"]["FeedbackItem"];
-type ListFeedbackResponse = operations["listFeedback"]["responses"]["200"]["content"]["application/json"];
+type ListFeedbackResponse =
+  operations["listFeedback"]["responses"]["200"]["content"]["application/json"];
 
 app.get("/api/v1/feedback", async (c): Promise<Response> => {
   const response: ListFeedbackResponse = { items: [], pagination: {} };
@@ -73,11 +79,13 @@ http-client-js → Client SDK Package
 ```
 
 ### Pros
+
 - ✅ Type-safe server code
 - ✅ Full-featured client SDK
 - ✅ Client SDK can be shared across packages
 
 ### Cons
+
 - ❌ http-client-js is in preview
 - ❌ More complex build pipeline
 - ❌ Two generation tools
@@ -85,12 +93,14 @@ http-client-js → Client SDK Package
 ### Implementation Steps
 
 1. **Install dependencies**
+
 ```bash
 bun add -D openapi-typescript @typespec/http-client-js
 bun add openapi-fetch
 ```
 
 2. **Update tspconfig.yaml**
+
 ```yaml
 emit:
   - "@typespec/openapi3"
@@ -108,6 +118,7 @@ options:
 ```
 
 3. **Create client package structure**
+
 ```
 packages/
 ├── feedback-server/          # Existing
@@ -138,11 +149,13 @@ packages/feedback-api-types/
 ```
 
 ### Pros
+
 - ✅ Full control over types
 - ✅ No build tool dependencies
 - ✅ Works immediately
 
 ### Cons
+
 - ❌ Manual synchronization required
 - ❌ Types can drift from spec
 - ❌ Defeats purpose of API-First
@@ -150,6 +163,7 @@ packages/feedback-api-types/
 ### Implementation Steps
 
 1. **Create package**
+
 ```bash
 mkdir packages/feedback-api-types
 cd packages/feedback-api-types
@@ -157,6 +171,7 @@ bun init
 ```
 
 2. **Define types manually**
+
 ```typescript
 // packages/feedback-api-types/src/models.ts
 export interface FeedbackItem {
@@ -172,6 +187,7 @@ export interface FeedbackItem {
 ```
 
 3. **Import in other packages**
+
 ```typescript
 import { FeedbackItem } from "@feedback/api-types";
 ```
@@ -193,11 +209,13 @@ TypeSpec → http-server-js → Express Router
 ```
 
 ### Pros
+
 - ✅ Full TypeSpec integration
 - ✅ Generated type-safe router
 - ✅ Official Microsoft support
 
 ### Cons
+
 - ❌ Major refactor required
 - ❌ Lose Hono benefits (speed, edge runtime)
 - ❌ Breaking change for deployment
@@ -219,11 +237,13 @@ TypeSpec → OpenAPI → openapi-typescript → Types
 ```
 
 ### Pros
+
 - ✅ Type safety at compile time
 - ✅ Validation at runtime
 - ✅ Automatic error responses
 
 ### Cons
+
 - ❌ Additional tooling required
 - ❌ More complex build
 - ❌ Runtime overhead
@@ -241,14 +261,10 @@ const feedbackSchema = z.object({
   projectId: z.string().min(1),
 });
 
-app.post(
-  "/api/v1/feedback",
-  zValidator("json", feedbackSchema),
-  async (c) => {
-    const data = c.req.valid("json"); // Typed!
-    // ...
-  }
-);
+app.post("/api/v1/feedback", zValidator("json", feedbackSchema), async (c) => {
+  const data = c.req.valid("json"); // Typed!
+  // ...
+});
 ```
 
 ### Effort: 🟡 Medium (2 days)
@@ -257,13 +273,13 @@ app.post(
 
 ## Comparison Matrix
 
-| Option | Type Safety | Runtime Validation | Effort | Recommended |
-|--------|-------------|-------------------|--------|-------------|
-| 1. openapi-typescript | ✅ Compile | ❌ No | 🟢 Low | ⭐⭐⭐⭐⭐ |
-| 2. + http-client-js | ✅ Compile | ❌ No | 🟡 Medium | ⭐⭐⭐⭐ |
-| 3. Manual Types | ⚠️ Drift risk | ❌ No | 🟢 Low | ⭐ |
-| 4. Switch to Express | ✅ Full | ✅ Optional | 🔴 High | ❌ |
-| 5. Zod Validation | ✅ Compile | ✅ Yes | 🟡 Medium | ⭐⭐⭐ |
+| Option                | Type Safety   | Runtime Validation | Effort    | Recommended |
+| --------------------- | ------------- | ------------------ | --------- | ----------- |
+| 1. openapi-typescript | ✅ Compile    | ❌ No              | 🟢 Low    | ⭐⭐⭐⭐⭐  |
+| 2. + http-client-js   | ✅ Compile    | ❌ No              | 🟡 Medium | ⭐⭐⭐⭐    |
+| 3. Manual Types       | ⚠️ Drift risk | ❌ No              | 🟢 Low    | ⭐          |
+| 4. Switch to Express  | ✅ Full       | ✅ Optional        | 🔴 High   | ❌          |
+| 5. Zod Validation     | ✅ Compile    | ✅ Yes             | 🟡 Medium | ⭐⭐⭐      |
 
 ## Final Recommendation
 

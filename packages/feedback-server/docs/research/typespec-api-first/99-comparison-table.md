@@ -8,40 +8,41 @@ Detailed comparison of code generation approaches for implementing API-First dev
 
 ### TypeSpec Emitters
 
-| Feature | openapi3 | http-server-js | http-client-js |
-|---------|----------|----------------|----------------|
-| **Status** | ✅ 1.0 GA | 🟡 Preview | 🟡 Preview |
-| **Output** | OpenAPI YAML | TS Server Code | TS Client SDK |
-| **Express** | N/A | ✅ Yes | N/A |
-| **Hono** | N/A | ❌ No | N/A |
-| **Types** | Schema | Full | Full |
-| **Router** | N/A | ✅ Generated | N/A |
-| **Validation** | N/A | ❌ No | N/A |
-| **Effort** | 🟢 Low | 🟡 Medium | 🟡 Medium |
+| Feature        | openapi3     | http-server-js | http-client-js |
+| -------------- | ------------ | -------------- | -------------- |
+| **Status**     | ✅ 1.0 GA    | 🟡 Preview     | 🟡 Preview     |
+| **Output**     | OpenAPI YAML | TS Server Code | TS Client SDK  |
+| **Express**    | N/A          | ✅ Yes         | N/A            |
+| **Hono**       | N/A          | ❌ No          | N/A            |
+| **Types**      | Schema       | Full           | Full           |
+| **Router**     | N/A          | ✅ Generated   | N/A            |
+| **Validation** | N/A          | ❌ No          | N/A            |
+| **Effort**     | 🟢 Low       | 🟡 Medium      | 🟡 Medium      |
 
 ### OpenAPI-based Tools
 
-| Feature | openapi-typescript | openapi-fetch | zod-openapi |
-|---------|-------------------|---------------|-------------|
-| **Status** | ✅ Stable | ✅ Stable | ✅ Stable |
-| **Output** | TS Types | TS Client | Zod Schemas |
-| **Runtime** | ❌ No | ✅ Yes | ✅ Yes |
-| **Validation** | ❌ No | ❌ No | ✅ Yes |
-| **Framework** | Any | Any | Any |
-| **Effort** | 🟢 Low | 🟢 Low | 🟡 Medium |
+| Feature        | openapi-typescript | openapi-fetch | zod-openapi |
+| -------------- | ------------------ | ------------- | ----------- |
+| **Status**     | ✅ Stable          | ✅ Stable     | ✅ Stable   |
+| **Output**     | TS Types           | TS Client     | Zod Schemas |
+| **Runtime**    | ❌ No              | ✅ Yes        | ✅ Yes      |
+| **Validation** | ❌ No              | ❌ No         | ✅ Yes      |
+| **Framework**  | Any                | Any           | Any         |
+| **Effort**     | 🟢 Low             | 🟢 Low        | 🟡 Medium   |
 
 ## Feature Matrix
 
-| Requirement | Option 1 | Option 2 | Option 3 | Option 4 |
-|-------------|----------|----------|----------|----------|
-| **Compile-time types** | ✅ | ✅ | ⚠️ | ✅ |
-| **Runtime validation** | ❌ | ❌ | ❌ | ✅ |
-| **Hono compatible** | ✅ | ✅ | ✅ | ✅ |
-| **Client SDK** | ⚠️ | ✅ | ❌ | ⚠️ |
-| **Low effort** | ✅ | ⚠️ | ✅ | ⚠️ |
-| **Future-proof** | ✅ | ✅ | ❌ | ✅ |
+| Requirement            | Option 1 | Option 2 | Option 3 | Option 4 |
+| ---------------------- | -------- | -------- | -------- | -------- |
+| **Compile-time types** | ✅       | ✅       | ⚠️       | ✅       |
+| **Runtime validation** | ❌       | ❌       | ❌       | ✅       |
+| **Hono compatible**    | ✅       | ✅       | ✅       | ✅       |
+| **Client SDK**         | ⚠️       | ✅       | ❌       | ⚠️       |
+| **Low effort**         | ✅       | ⚠️       | ✅       | ⚠️       |
+| **Future-proof**       | ✅       | ✅       | ❌       | ✅       |
 
 **Legend:**
+
 - Option 1: openapi-typescript only
 - Option 2: openapi-typescript + http-client-js
 - Option 3: Manual types package
@@ -60,6 +61,7 @@ graph LR
 ```
 
 **Commands:**
+
 ```bash
 tsp compile typespec/
 openapi-typescript src/generated/openapi.yaml -o src/generated/api-types.d.ts
@@ -79,6 +81,7 @@ graph LR
 ```
 
 **Commands:**
+
 ```bash
 tsp compile typespec/  # Generates both OpenAPI and Client SDK
 openapi-typescript src/generated/openapi.yaml -o src/generated/api-types.d.ts
@@ -86,31 +89,32 @@ openapi-typescript src/generated/openapi.yaml -o src/generated/api-types.d.ts
 
 ## Cost-Benefit Analysis
 
-| Factor | Option 1 | Option 2 | Option 3 | Option 4 |
-|--------|----------|----------|----------|----------|
-| **Setup Time** | 1 hour | 3 hours | 30 min | 4 hours |
-| **Migration Time** | 4 hours | 6 hours | 2 hours | 8 hours |
-| **Maintenance** | 🟢 Low | 🟡 Medium | 🔴 High | 🟡 Medium |
-| **Type Safety** | 🟢 High | 🟢 High | 🟡 Medium | 🟢 High |
-| **Runtime Safety** | ❌ None | ❌ None | ❌ None | ✅ Full |
-| **Learning Curve** | 🟢 Low | 🟡 Medium | 🟢 Low | 🟡 Medium |
+| Factor             | Option 1 | Option 2  | Option 3  | Option 4  |
+| ------------------ | -------- | --------- | --------- | --------- |
+| **Setup Time**     | 1 hour   | 3 hours   | 30 min    | 4 hours   |
+| **Migration Time** | 4 hours  | 6 hours   | 2 hours   | 8 hours   |
+| **Maintenance**    | 🟢 Low   | 🟡 Medium | 🔴 High   | 🟡 Medium |
+| **Type Safety**    | 🟢 High  | 🟢 High   | 🟡 Medium | 🟢 High   |
+| **Runtime Safety** | ❌ None  | ❌ None   | ❌ None   | ✅ Full   |
+| **Learning Curve** | 🟢 Low   | 🟡 Medium | 🟢 Low    | 🟡 Medium |
 
 ## Decision Matrix
 
 ### Weighted Scoring
 
-| Criteria | Weight | Opt 1 | Opt 2 | Opt 3 | Opt 4 |
-|----------|--------|-------|-------|-------|-------|
-| **Effort** | 30% | 10 | 7 | 9 | 5 |
-| **Type Safety** | 25% | 9 | 10 | 5 | 10 |
-| **Maintenance** | 20% | 9 | 8 | 4 | 7 |
-| **Future-proof** | 15% | 8 | 10 | 3 | 9 |
-| **Runtime Safety** | 10% | 0 | 0 | 0 | 10 |
-| **Total** | 100% | **8.15** | **7.75** | **5.05** | **7.55** |
+| Criteria           | Weight | Opt 1    | Opt 2    | Opt 3    | Opt 4    |
+| ------------------ | ------ | -------- | -------- | -------- | -------- |
+| **Effort**         | 30%    | 10       | 7        | 9        | 5        |
+| **Type Safety**    | 25%    | 9        | 10       | 5        | 10       |
+| **Maintenance**    | 20%    | 9        | 8        | 4        | 7        |
+| **Future-proof**   | 15%    | 8        | 10       | 3        | 9        |
+| **Runtime Safety** | 10%    | 0        | 0        | 0        | 10       |
+| **Total**          | 100%   | **8.15** | **7.75** | **5.05** | **7.55** |
 
 ### Recommendation
 
 **Option 1 (openapi-typescript)** scores highest due to:
+
 - Lowest implementation effort
 - Good type safety
 - Minimal maintenance overhead

@@ -10,15 +10,16 @@ Analysis of the current TypeSpec and OpenAPI setup in the feedback-server packag
 
 ```yaml
 emit:
-  - '@typespec/openapi3'
+  - "@typespec/openapi3"
 
 options:
-  '@typespec/openapi3':
-    emitter-output-dir: '{project-root}/../src/generated'
-    output-file: 'openapi.yaml'
+  "@typespec/openapi3":
+    emitter-output-dir: "{project-root}/../src/generated"
+    output-file: "openapi.yaml"
 ```
 
 **Analysis:**
+
 - ✅ Generates OpenAPI 3.x YAML
 - ❌ No server code generation
 - ❌ No client code generation
@@ -64,6 +65,7 @@ interface FeedbackItem {
 ### Issue 2: Response Format Mismatch
 
 **TypeSpec (presumed):**
+
 ```tsp
 model FeedbackListResponse {
   items: FeedbackItem[];
@@ -72,6 +74,7 @@ model FeedbackListResponse {
 ```
 
 **Actual Implementation:**
+
 ```typescript
 // routes/feedback.ts
 return c.json({
@@ -81,6 +84,7 @@ return c.json({
 ```
 
 **Test Expectation (before fix):**
+
 ```typescript
 // Expected: response.data (wrong)
 // Actual: response.items (correct per implementation)
@@ -92,14 +96,15 @@ return c.json({
 
 The import endpoint expected different field names than the export endpoint produced:
 
-| Operation | Expected Field | Actual Field |
-|-----------|----------------|--------------|
-| Export | `data` or `items` | CSV format |
-| Import | `data` | `items` |
+| Operation | Expected Field    | Actual Field |
+| --------- | ----------------- | ------------ |
+| Export    | `data` or `items` | CSV format   |
+| Import    | `data`            | `items`      |
 
 ### Issue 4: OpenAPI Only Used for Swagger
 
 The generated OpenAPI YAML is mounted as Swagger documentation but not used for:
+
 - Runtime request validation
 - Response type checking
 - Client generation
@@ -136,11 +141,11 @@ model FeedbackListResponse {
 // routes/feedback.ts
 app.get("/api/v1/feedback", async (c) => {
   const feedbackItems = await feedbackService.list();
-  
+
   // No type checking against TypeSpec
   return c.json({
     items: feedbackItems,
-    pagination: { page: 1, limit: 20, total: feedbackItems.length }
+    pagination: { page: 1, limit: 20, total: feedbackItems.length },
   });
 });
 ```
@@ -170,7 +175,7 @@ app.get("/api/v1/feedback", async (c) => {
 ```json
 {
   "devDependencies": {
-    "openapi-typescript": "^7.0.0",      // Generate types from OpenAPI
+    "openapi-typescript": "^7.0.0", // Generate types from OpenAPI
     "@typespec/http-client-js": "^0.38.1" // Generate client SDK
   }
 }
@@ -190,6 +195,7 @@ app.get("/api/openapi.yaml", (c) => c.text(openApiSpec));
 ```
 
 **Analysis:**
+
 - ✅ Swagger UI available at `/api/docs`
 - ✅ OpenAPI spec available at `/api/openapi.yaml`
 - ❌ Spec not used for validation
@@ -197,15 +203,15 @@ app.get("/api/openapi.yaml", (c) => c.text(openApiSpec));
 
 ## Gap Analysis Summary
 
-| Capability | Current | Recommended | Gap |
-|------------|---------|-------------|-----|
-| API Specification | ✅ TypeSpec | ✅ TypeSpec | None |
-| OpenAPI Generation | ✅ Yes | ✅ Yes | None |
-| Swagger Documentation | ✅ Yes | ✅ Yes | None |
-| Server Type Generation | ❌ No | ✅ openapi-typescript | **Major** |
-| Client SDK Generation | ❌ No | ✅ http-client-js | **Major** |
-| Request Validation | ❌ Manual | ✅ Zod from OpenAPI | **Medium** |
-| Response Validation | ❌ None | ✅ Type checking | **Medium** |
+| Capability             | Current     | Recommended           | Gap        |
+| ---------------------- | ----------- | --------------------- | ---------- |
+| API Specification      | ✅ TypeSpec | ✅ TypeSpec           | None       |
+| OpenAPI Generation     | ✅ Yes      | ✅ Yes                | None       |
+| Swagger Documentation  | ✅ Yes      | ✅ Yes                | None       |
+| Server Type Generation | ❌ No       | ✅ openapi-typescript | **Major**  |
+| Client SDK Generation  | ❌ No       | ✅ http-client-js     | **Major**  |
+| Request Validation     | ❌ Manual   | ✅ Zod from OpenAPI   | **Medium** |
+| Response Validation    | ❌ None     | ✅ Type checking      | **Medium** |
 
 ## Conclusion
 

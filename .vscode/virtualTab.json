@@ -3,7 +3,13 @@
     "id": "builtin_group_id",
     "name": "Currently Open Files",
     "files": [
-      "packages/feedback-server/docs/research/typespec-api-first/README.md"
+      "packages/feedback-server/docs/research/typespec-api-first/README.md",
+      "packages/feedback-server/docs/research/typespec-api-first/99-comparison-table.md",
+      "packages/feedback-server/docs/spec/004.api-first-technical-debt/README.md",
+      "packages/feedback-server/docs/research/typespec-api-first/03-implementation-options.md",
+      "packages/feedback-server/docs/research/typespec-api-first/02-typespec-capabilities.md",
+      "packages/feedback-server/docs/research/typespec-api-first/01-current-state.md",
+      "packages/feedback-server/docs/research/typespec-api-first/00-overview.md"
     ],
     "builtIn": true,
     "bookmarks": {}

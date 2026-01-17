@@ -8,26 +8,26 @@ TypeSpec 1.0 was released as Generally Available (GA), providing a stable founda
 
 ### Stable (1.0 GA)
 
-| Package | Version | Purpose |
-|---------|---------|---------|
-| @typespec/compiler | 1.0.x | Core TypeSpec language compiler |
-| @typespec/http | 1.0.x | HTTP protocol decorators and types |
-| @typespec/openapi | 1.0.x | OpenAPI-specific decorators |
-| @typespec/openapi3 | 1.0.x | OpenAPI 3.x schema generation |
-| @typespec/json-schema | 1.0.x | JSON Schema output |
-| typespec-vscode | 1.0.x | VS Code extension |
+| Package               | Version | Purpose                            |
+| --------------------- | ------- | ---------------------------------- |
+| @typespec/compiler    | 1.0.x   | Core TypeSpec language compiler    |
+| @typespec/http        | 1.0.x   | HTTP protocol decorators and types |
+| @typespec/openapi     | 1.0.x   | OpenAPI-specific decorators        |
+| @typespec/openapi3    | 1.0.x   | OpenAPI 3.x schema generation      |
+| @typespec/json-schema | 1.0.x   | JSON Schema output                 |
+| typespec-vscode       | 1.0.x   | VS Code extension                  |
 
 ### Preview (Actively Developed)
 
-| Package | Version | Purpose |
-|---------|---------|---------|
-| @typespec/http-server-js | 0.x | JavaScript/TypeScript server stubs |
-| @typespec/http-client-js | 0.38.x | JavaScript/TypeScript client SDK |
-| @typespec/http-server-csharp | 0.x | C# server stubs |
-| @typespec/http-client-csharp | 0.x | C# client SDK |
-| @typespec/http-client-java | 0.x | Java client SDK |
-| @typespec/http-client-python | 0.x | Python client SDK |
-| @typespec/protobuf | 0.x | Protocol Buffers output |
+| Package                      | Version | Purpose                            |
+| ---------------------------- | ------- | ---------------------------------- |
+| @typespec/http-server-js     | 0.x     | JavaScript/TypeScript server stubs |
+| @typespec/http-client-js     | 0.38.x  | JavaScript/TypeScript client SDK   |
+| @typespec/http-server-csharp | 0.x     | C# server stubs                    |
+| @typespec/http-client-csharp | 0.x     | C# client SDK                      |
+| @typespec/http-client-java   | 0.x     | Java client SDK                    |
+| @typespec/http-client-python | 0.x     | Python client SDK                  |
+| @typespec/protobuf           | 0.x     | Protocol Buffers output            |
 
 ## Server Code Generation (http-server-js)
 
@@ -71,7 +71,7 @@ import { createFeedbackRouter } from "../tsp-output/@typespec/http-server-js/htt
 import { FeedbackController } from "./controllers/feedback";
 
 const router = createFeedbackRouter({
-  feedback: new FeedbackController()
+  feedback: new FeedbackController(),
 });
 
 const app = express();
@@ -138,7 +138,7 @@ const client = new FeedbackClient({
 const feedback = await client.feedback.list({
   projectId: "my-project",
   page: 1,
-  limit: 20
+  limit: 20,
 });
 
 console.log(feedback.items); // TypeScript knows this is FeedbackItem[]
@@ -221,14 +221,14 @@ const app = new Hono();
 
 app.get("/api/v1/feedback", async (c) => {
   const items: FeedbackItem[] = await feedbackService.list();
-  
+
   // TypeScript enforces correct structure
   const response: FeedbackListResponse = {
-    items: items,  // ✅ Correct
+    items: items, // ✅ Correct
     // data: items  // ❌ TypeScript Error!
-    pagination: { page: 1, limit: 20, total: items.length }
+    pagination: { page: 1, limit: 20, total: items.length },
   };
-  
+
   return c.json(response);
 });
 ```
@@ -239,15 +239,15 @@ app.get("/api/v1/feedback", async (c) => {
 import createClient from "openapi-fetch";
 import type { paths } from "./generated/api-types";
 
-const client = createClient<paths>({ 
-  baseUrl: "http://localhost:3000" 
+const client = createClient<paths>({
+  baseUrl: "http://localhost:3000",
 });
 
 // Fully typed request and response
 const { data, error } = await client.GET("/api/v1/feedback", {
   params: {
-    query: { projectId: "my-project", page: 1 }
-  }
+    query: { projectId: "my-project", page: 1 },
+  },
 });
 
 if (data) {
@@ -257,15 +257,15 @@ if (data) {
 
 ## Comparison
 
-| Feature | http-server-js | openapi-typescript |
-|---------|----------------|-------------------|
-| Type Generation | ✅ Models + Operations | ✅ Types only |
-| Server Stubs | ✅ Yes | ❌ No |
-| Router | ✅ Express, Node | ❌ Manual |
-| Hono Support | ❌ No | ✅ Yes (manual) |
-| Runtime Code | ✅ Yes (router) | ❌ Types only |
-| Maturity | 🟡 Preview | ✅ Stable |
-| Client SDK | Separate (http-client-js) | ✅ openapi-fetch |
+| Feature         | http-server-js            | openapi-typescript |
+| --------------- | ------------------------- | ------------------ |
+| Type Generation | ✅ Models + Operations    | ✅ Types only      |
+| Server Stubs    | ✅ Yes                    | ❌ No              |
+| Router          | ✅ Express, Node          | ❌ Manual          |
+| Hono Support    | ❌ No                     | ✅ Yes (manual)    |
+| Runtime Code    | ✅ Yes (router)           | ❌ Types only      |
+| Maturity        | 🟡 Preview                | ✅ Stable          |
+| Client SDK      | Separate (http-client-js) | ✅ openapi-fetch   |
 
 ## Recommendation for feedback-server
 

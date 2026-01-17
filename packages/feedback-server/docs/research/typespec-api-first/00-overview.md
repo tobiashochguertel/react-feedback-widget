@@ -8,12 +8,12 @@ This research investigates the technical debt identified in the feedback-server'
 
 During BDD test development, multiple API contract mismatches were discovered:
 
-| Issue | Specification | Implementation | Impact |
-|-------|---------------|----------------|--------|
-| List response field | Unknown | `items` | Tests failed expecting `data` |
-| Import request field | Unknown | `items` | Tests failed sending `data` |
-| Bulk delete method | Unknown | Body with `ids` | Tests failed using query params |
-| Export format | Unknown | CSV only | Tests expected JSON |
+| Issue                | Specification | Implementation  | Impact                          |
+| -------------------- | ------------- | --------------- | ------------------------------- |
+| List response field  | Unknown       | `items`         | Tests failed expecting `data`   |
+| Import request field | Unknown       | `items`         | Tests failed sending `data`     |
+| Bulk delete method   | Unknown       | Body with `ids` | Tests failed using query params |
+| Export format        | Unknown       | CSV only        | Tests expected JSON             |
 
 **Root Cause:** The TypeSpec specification is only used to generate OpenAPI YAML for Swagger documentation. There is no runtime or compile-time enforcement of the API contract.
 
@@ -58,6 +58,7 @@ openapi-typescript    @typespec/http-client-js
 ## Key Benefits
 
 ### 1. Compile-Time Type Safety
+
 ```typescript
 // ❌ Current: Manual types, can drift
 const handler = async (c: Context) => {
@@ -73,33 +74,37 @@ const handler = async (c: Context) => {
 ```
 
 ### 2. Single Source of Truth
+
 - TypeSpec is the authoritative API definition
 - All code derived from it
 - Changes propagate automatically
 
 ### 3. Breaking Change Detection
+
 - Changing TypeSpec triggers regeneration
 - Type errors highlight breaking changes
 - Forces intentional API versioning
 
 ## Implementation Effort
 
-| Phase | Effort | Description |
-|-------|--------|-------------|
-| 1. Setup | 🟢 Low | Add openapi-typescript, configure build |
-| 2. Generate Types | 🟢 Low | Run generation, create types package |
-| 3. Update Handlers | 🟡 Medium | Add type annotations to all handlers |
-| 4. Update Tests | 🟡 Medium | Import types in test files |
-| 5. Client SDK | 🟡 Medium | Generate and integrate client |
+| Phase              | Effort    | Description                             |
+| ------------------ | --------- | --------------------------------------- |
+| 1. Setup           | 🟢 Low    | Add openapi-typescript, configure build |
+| 2. Generate Types  | 🟢 Low    | Run generation, create types package    |
+| 3. Update Handlers | 🟡 Medium | Add type annotations to all handlers    |
+| 4. Update Tests    | 🟡 Medium | Import types in test files              |
+| 5. Client SDK      | 🟡 Medium | Generate and integrate client           |
 
 **Estimated Total:** 1-2 days of focused work
 
 ## Risks
 
 1. **Preview Status:** TypeSpec client/server emitters are in preview
+
    - Mitigation: openapi-typescript is stable (1.0+)
 
 2. **Hono Not Natively Supported:** http-server-js doesn't support Hono
+
    - Mitigation: Use type-only approach with openapi-typescript
 
 3. **Breaking Changes:** Existing code may not match spec

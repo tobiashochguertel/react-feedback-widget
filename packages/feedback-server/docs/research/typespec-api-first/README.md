@@ -23,28 +23,31 @@ Research on implementing proper API-First development using TypeSpec code genera
 ### TL;DR: Implement TypeSpec Code Generation ✅
 
 The current implementation only generates OpenAPI YAML for documentation, missing the key benefits of API-First development. TypeSpec 1.0 (GA) now provides **official emitters** for generating:
+
 - **Server stubs** (`@typespec/http-server-js`)
 - **Client SDKs** (`@typespec/http-client-js`)
 
 ### Key Metrics Comparison
 
-| Aspect | Current State | Recommended State |
-|--------|---------------|-------------------|
-| OpenAPI Generation | ✅ Yes | ✅ Yes |
-| Server Type Safety | ❌ Manual | ✅ Generated |
-| Client Type Safety | ❌ Manual | ✅ Generated |
-| API-Spec Sync | ❌ Manual | ✅ Automatic |
-| Breaking Change Detection | ❌ None | ✅ Compile-time |
+| Aspect                    | Current State | Recommended State |
+| ------------------------- | ------------- | ----------------- |
+| OpenAPI Generation        | ✅ Yes        | ✅ Yes            |
+| Server Type Safety        | ❌ Manual     | ✅ Generated      |
+| Client Type Safety        | ❌ Manual     | ✅ Generated      |
+| API-Spec Sync             | ❌ Manual     | ✅ Automatic      |
+| Breaking Change Detection | ❌ None       | ✅ Compile-time   |
 
 ## 🔍 Research Methodology
 
 ### Criteria Evaluated
 
 1. **TypeSpec 1.0 GA Status** ⭐⭐⭐⭐⭐
+
    - Core compiler is stable (1.0)
    - Code generation emitters are in "Preview"
 
 2. **Code Generation Options** ⭐⭐⭐⭐⭐
+
    - Native TypeSpec emitters (http-server-js, http-client-js)
    - OpenAPI → TypeScript via openapi-typescript
 
@@ -64,24 +67,24 @@ The current implementation only generates OpenAPI YAML for documentation, missin
 
 ### TypeSpec 1.0 Components
 
-| Component | Status | Purpose |
-|-----------|--------|---------|
-| @typespec/compiler | ✅ 1.0 GA | Core TypeSpec compiler |
-| @typespec/http | ✅ 1.0 GA | HTTP protocol support |
-| @typespec/openapi3 | ✅ 1.0 GA | OpenAPI 3.x output |
+| Component                | Status     | Purpose                |
+| ------------------------ | ---------- | ---------------------- |
+| @typespec/compiler       | ✅ 1.0 GA  | Core TypeSpec compiler |
+| @typespec/http           | ✅ 1.0 GA  | HTTP protocol support  |
+| @typespec/openapi3       | ✅ 1.0 GA  | OpenAPI 3.x output     |
 | @typespec/http-server-js | 🟡 Preview | Server code generation |
-| @typespec/http-client-js | 🟡 Preview | Client SDK generation |
+| @typespec/http-client-js | 🟡 Preview | Client SDK generation  |
 
 **Finding:** Server and client emitters are in preview but actively developed and recommended for API-First.
 
 ### Framework Support
 
-| Framework | http-server-js | Alternative |
-|-----------|----------------|-------------|
-| Express.js | ✅ Native | - |
-| Node.js HTTP | ✅ Native | - |
-| Hono | ❌ Not native | openapi-typescript |
-| Fastify | ❌ Not native | openapi-typescript |
+| Framework    | http-server-js | Alternative        |
+| ------------ | -------------- | ------------------ |
+| Express.js   | ✅ Native      | -                  |
+| Node.js HTTP | ✅ Native      | -                  |
+| Hono         | ❌ Not native  | openapi-typescript |
+| Fastify      | ❌ Not native  | openapi-typescript |
 
 **Finding:** For Hono, use `openapi-typescript` to generate types from OpenAPI, then use types manually.
 
@@ -146,6 +149,7 @@ Using TypeSpec → OpenAPI → openapi-typescript gives type safety without requ
 **Conducted:** January 17, 2026
 
 **Next Review:** Recommended when:
+
 - TypeSpec http-server-js supports more frameworks
 - Major version updates to TypeSpec
 - Starting new API projects
