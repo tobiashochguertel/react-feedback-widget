@@ -24,20 +24,20 @@
 
 ### Epic E001: Feedback Submission
 
-| Story | Name                         | Priority  | Status  | BDD Tests |
-| ----- | ---------------------------- | --------- | ------- | --------- |
-| US001 | Submit Feedback via API      | 🟢 High   | ✅ Done | 3/3       |
-| US002 | Submit Video Recording       | 🟢 High   | ✅ Done | 3/3       |
-| US003 | Identify Client Application  | 🟡 Medium | ✅ Done | 2/2       |
+| Story | Name                        | Priority  | Status  | BDD Tests |
+| ----- | --------------------------- | --------- | ------- | --------- |
+| US001 | Submit Feedback via API     | 🟢 High   | ✅ Done | 3/3       |
+| US002 | Submit Video Recording      | 🟢 High   | ✅ Done | 3/3       |
+| US003 | Identify Client Application | 🟡 Medium | ✅ Done | 2/2       |
 
 ### Epic E002: Feedback Management
 
-| Story | Name                  | Priority | Status  | BDD Tests |
-| ----- | --------------------- | -------- | ------- | --------- |
-| US004 | List All Feedback     | 🟢 High  | ✅ Done | 2/2       |
-| US005 | View Single Feedback  | 🟢 High  | ✅ Done | 2/2       |
-| US006 | Update Feedback Status| 🟢 High  | ✅ Done | 2/2       |
-| US007 | Delete Feedback       | 🟡 Medium| ✅ Done | 2/2       |
+| Story | Name                   | Priority  | Status  | BDD Tests |
+| ----- | ---------------------- | --------- | ------- | --------- |
+| US004 | List All Feedback      | 🟢 High   | ✅ Done | 2/2       |
+| US005 | View Single Feedback   | 🟢 High   | ✅ Done | 2/2       |
+| US006 | Update Feedback Status | 🟢 High   | ✅ Done | 2/2       |
+| US007 | Delete Feedback        | 🟡 Medium | ✅ Done | 2/2       |
 
 ### Epic E003: Real-time Sync
 
@@ -56,28 +56,28 @@
 
 ### Epic E005: Security
 
-| Story | Name                    | Priority  | Status  | BDD Tests |
-| ----- | ----------------------- | --------- | ------- | --------- |
+| Story | Name                      | Priority  | Status  | BDD Tests |
+| ----- | ------------------------- | --------- | ------- | --------- |
 | US013 | Authenticate with API Key | 🟡 Medium | ✅ Done | 4/4       |
-| US014 | Rate Limit Requests     | 🔴 Low    | ✅ Done | 4/4       |
+| US014 | Rate Limit Requests       | 🔴 Low    | ✅ Done | 4/4       |
 
 ### Epic E006: Deployment
 
-| Story | Name                        | Priority | Status  | BDD Tests |
-| ----- | --------------------------- | -------- | ------- | --------- |
-| US015 | Health Check Endpoint       | 🟢 High  | ✅ Done | 6/6       |
-| US016 | Graceful Shutdown           | 🟢 High  | ✅ Done | 5/5       |
+| Story | Name                  | Priority | Status  | BDD Tests |
+| ----- | --------------------- | -------- | ------- | --------- |
+| US015 | Health Check Endpoint | 🟢 High  | ✅ Done | 6/6       |
+| US016 | Graceful Shutdown     | 🟢 High  | ✅ Done | 5/5       |
 
 ---
 
 ## 📊 Test Coverage Summary
 
-| Test Type   | Files | Tests | Status  |
-| ----------- | ----- | ----- | ------- |
-| BDD         | 6     | 49    | ✅ Pass |
-| Unit        | 3     | 62    | ✅ Pass |
-| Integration | 2     | 20    | ✅ Pass |
-| **Total**   | **11**| **131**| ✅ Pass |
+| Test Type   | Files  | Tests   | Status  |
+| ----------- | ------ | ------- | ------- |
+| BDD         | 6      | 49      | ✅ Pass |
+| Unit        | 3      | 62      | ✅ Pass |
+| Integration | 2      | 20      | ✅ Pass |
+| **Total**   | **11** | **131** | ✅ Pass |
 
 ---
 
