@@ -59,32 +59,32 @@ Based on research from [typespec.io](https://typespec.io), the following emitter
 
 ### Core Emitters (Production Ready)
 
-| Emitter             | Output          | Status   | Use Case                        |
-| ------------------- | --------------- | -------- | ------------------------------- |
-| `@typespec/openapi3`| OpenAPI 3.x     | ✅ 1.0 GA| API documentation, tooling      |
-| `@typespec/json-schema` | JSON Schema | ✅ 1.0 GA| Data validation, form generation|
+| Emitter                 | Output      | Status    | Use Case                         |
+| ----------------------- | ----------- | --------- | -------------------------------- |
+| `@typespec/openapi3`    | OpenAPI 3.x | ✅ 1.0 GA | API documentation, tooling       |
+| `@typespec/json-schema` | JSON Schema | ✅ 1.0 GA | Data validation, form generation |
 
 ### Client Emitters (Preview)
 
-| Emitter                     | Language   | Status    | Use Case                |
-| --------------------------- | ---------- | --------- | ----------------------- |
-| `@typespec/http-client-js`  | JavaScript | 🟡 Preview| Browser/Node.js clients |
-| `@typespec/http-client-python` | Python  | 🟡 Preview| Python clients          |
-| `@typespec/http-client-java`   | Java    | 🟡 Preview| Java clients            |
-| `@typespec/http-client-csharp` | C#      | 🟡 Preview| .NET clients            |
+| Emitter                        | Language   | Status     | Use Case                |
+| ------------------------------ | ---------- | ---------- | ----------------------- |
+| `@typespec/http-client-js`     | JavaScript | 🟡 Preview | Browser/Node.js clients |
+| `@typespec/http-client-python` | Python     | 🟡 Preview | Python clients          |
+| `@typespec/http-client-java`   | Java       | 🟡 Preview | Java clients            |
+| `@typespec/http-client-csharp` | C#         | 🟡 Preview | .NET clients            |
 
 ### Server Emitters (Preview)
 
-| Emitter                     | Framework  | Status    | Use Case                |
-| --------------------------- | ---------- | --------- | ----------------------- |
-| `@typespec/http-server-js`  | Express.js | 🟡 Preview| Node.js servers         |
-| `@typespec/http-server-csharp` | ASP.NET | 🟡 Preview| .NET servers            |
+| Emitter                        | Framework  | Status     | Use Case        |
+| ------------------------------ | ---------- | ---------- | --------------- |
+| `@typespec/http-server-js`     | Express.js | 🟡 Preview | Node.js servers |
+| `@typespec/http-server-csharp` | ASP.NET    | 🟡 Preview | .NET servers    |
 
 ### Special Emitters
 
-| Emitter                | Output   | Status    | Use Case                    |
-| ---------------------- | -------- | --------- | --------------------------- |
-| `@typespec/protobuf`   | Protobuf | 🟡 Preview| gRPC services, WebSockets   |
+| Emitter              | Output   | Status     | Use Case                  |
+| -------------------- | -------- | ---------- | ------------------------- |
+| `@typespec/protobuf` | Protobuf | 🟡 Preview | gRPC services, WebSockets |
 
 ---
 
@@ -135,12 +135,12 @@ graph TD
 
 ```yaml
 # packages/feedback-server-api/Taskfile.yml
-version: '3'
+version: "3"
 
 vars:
   TYPESPEC_DIR: ./typespec
   OUTPUT_DIR: ../generated
-  
+
 tasks:
   default:
     desc: Build all generated packages
@@ -196,7 +196,7 @@ tasks:
   version:
     desc: Update version in generated packages
     vars:
-      VERSION: '{{.CLI_ARGS}}'
+      VERSION: "{{.CLI_ARGS}}"
     cmds:
       - |
         for pkg in feedback-api-types feedback-api-client-js; do
@@ -209,7 +209,7 @@ tasks:
 
 ```yaml
 # Taskfile.yml (monorepo root)
-version: '3'
+version: "3"
 
 includes:
   api: ./packages/feedback-server-api
@@ -287,7 +287,7 @@ packages/generated/feedback-api-types/
 
 ```typescript
 // Re-export generated types
-export * from './api-types';
+export * from "./api-types";
 ```
 
 ---
@@ -317,10 +317,7 @@ export * from './api-types';
 
 ```json
 {
-  "workspaces": [
-    "packages/*",
-    "packages/generated/*"
-  ]
+  "workspaces": ["packages/*", "packages/generated/*"]
 }
 ```
 
@@ -409,15 +406,15 @@ This means we can leverage:
 
 ## 📊 Comparison: Bundled vs. Standalone API Package
 
-| Aspect                  | Bundled (Current) | Standalone (Proposed) |
-| ----------------------- | ----------------- | --------------------- |
-| **Reusability**         | ❌ Limited        | ✅ Full               |
-| **Separation of Concerns** | ❌ Mixed       | ✅ Clear              |
-| **Multi-language SDKs** | ❌ Difficult      | ✅ Easy               |
-| **Build Complexity**    | 🟢 Simple         | 🟡 Medium             |
-| **Maintenance**         | 🟡 Coupled        | ✅ Independent        |
-| **Versioning**          | ❌ With server    | ✅ Independent        |
-| **CI/CD**               | 🟡 Coupled        | ✅ Separate pipelines |
+| Aspect                     | Bundled (Current) | Standalone (Proposed) |
+| -------------------------- | ----------------- | --------------------- |
+| **Reusability**            | ❌ Limited        | ✅ Full               |
+| **Separation of Concerns** | ❌ Mixed          | ✅ Clear              |
+| **Multi-language SDKs**    | ❌ Difficult      | ✅ Easy               |
+| **Build Complexity**       | 🟢 Simple         | 🟡 Medium             |
+| **Maintenance**            | 🟡 Coupled        | ✅ Independent        |
+| **Versioning**             | ❌ With server    | ✅ Independent        |
+| **CI/CD**                  | 🟡 Coupled        | ✅ Separate pipelines |
 
 ---
 

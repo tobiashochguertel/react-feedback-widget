@@ -66,11 +66,11 @@ task generate:schemas
 
 Generated artifacts are placed in `packages/generated/`:
 
-| Package                      | Content                    | Path                          |
-| ---------------------------- | -------------------------- | ----------------------------- |
-| `@feedback/api-types`        | TypeScript type definitions | `../generated/feedback-api-types/` |
-| `@feedback/api-client-js`    | JavaScript client SDK       | `../generated/feedback-api-client-js/` |
-| `@feedback/api-schemas`      | JSON Schema definitions     | `../generated/feedback-api-schemas/` |
+| Package                   | Content                     | Path                                   |
+| ------------------------- | --------------------------- | -------------------------------------- |
+| `@feedback/api-types`     | TypeScript type definitions | `../generated/feedback-api-types/`     |
+| `@feedback/api-client-js` | JavaScript client SDK       | `../generated/feedback-api-client-js/` |
+| `@feedback/api-schemas`   | JSON Schema definitions     | `../generated/feedback-api-schemas/`   |
 
 ## 🔧 Configuration
 
@@ -92,10 +92,7 @@ options:
 
 ```typescript
 // Import types in feedback-server
-import type { 
-  FeedbackItem, 
-  CreateFeedbackRequest 
-} from "@feedback/api-types";
+import type { FeedbackItem, CreateFeedbackRequest } from "@feedback/api-types";
 
 // Import client in CLI/WebUI
 import { FeedbackClient } from "@feedback/api-client-js";

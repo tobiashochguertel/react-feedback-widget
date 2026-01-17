@@ -35,33 +35,33 @@ Implement a **standalone API specification package** (`feedback-server-api`) tha
 
 ### Key Benefits
 
-| Benefit               | Current            | After Implementation      |
-| --------------------- | ------------------ | ------------------------- |
-| Type Safety           | ⚠️ Manual          | ✅ Generated              |
-| Spec Sync             | ❌ Manual          | ✅ Automatic              |
-| Breaking Changes      | ❌ Runtime errors  | ✅ Compile-time errors    |
-| Client SDK            | ❌ None            | ✅ Generated (JS/Python)  |
-| API Reusability       | ❌ Bundled         | ✅ Standalone package     |
-| Multi-client Support  | ❌ Manual          | ✅ Generated SDKs         |
-| Build Automation      | ⚠️ package.json    | ✅ Taskfile.yml           |
-| Documentation         | ✅ OpenAPI/Swagger | ✅ OpenAPI/Swagger        |
+| Benefit              | Current            | After Implementation     |
+| -------------------- | ------------------ | ------------------------ |
+| Type Safety          | ⚠️ Manual          | ✅ Generated             |
+| Spec Sync            | ❌ Manual          | ✅ Automatic             |
+| Breaking Changes     | ❌ Runtime errors  | ✅ Compile-time errors   |
+| Client SDK           | ❌ None            | ✅ Generated (JS/Python) |
+| API Reusability      | ❌ Bundled         | ✅ Standalone package    |
+| Multi-client Support | ❌ Manual          | ✅ Generated SDKs        |
+| Build Automation     | ⚠️ package.json    | ✅ Taskfile.yml          |
+| Documentation        | ✅ OpenAPI/Swagger | ✅ OpenAPI/Swagger       |
 
 ---
 
 ## 📊 Feature Matrix
 
-| Feature                    | Included | Technology               | Notes                           |
-| -------------------------- | -------- | ------------------------ | ------------------------------- |
-| Standalone API Package     | ✅       | TypeSpec + Taskfile      | Central source of truth         |
-| TypeScript type generation | ✅       | openapi-typescript       | From OpenAPI YAML               |
-| JavaScript Client SDK      | ✅       | @typespec/http-client-js | Preview but stable              |
-| JSON Schema generation     | ✅       | @typespec/json-schema    | For runtime validation          |
-| Protobuf generation        | ⚠️       | @typespec/protobuf       | Future WebSocket support        |
-| Python Client SDK          | ⚠️       | @typespec/http-client-python | Optional, on-demand          |
-| Server type application    | ✅       | Manual application       | Types in handlers               |
-| Runtime validation         | ⚠️       | JSON Schema + Ajv        | Optional future enhancement     |
-| CI type checking           | ✅       | TypeScript compiler      | Fail on type drift              |
-| Taskfile automation        | ✅       | Taskfile.dev             | Complex build workflows         |
+| Feature                    | Included | Technology                   | Notes                       |
+| -------------------------- | -------- | ---------------------------- | --------------------------- |
+| Standalone API Package     | ✅       | TypeSpec + Taskfile          | Central source of truth     |
+| TypeScript type generation | ✅       | openapi-typescript           | From OpenAPI YAML           |
+| JavaScript Client SDK      | ✅       | @typespec/http-client-js     | Preview but stable          |
+| JSON Schema generation     | ✅       | @typespec/json-schema        | For runtime validation      |
+| Protobuf generation        | ⚠️       | @typespec/protobuf           | Future WebSocket support    |
+| Python Client SDK          | ⚠️       | @typespec/http-client-python | Optional, on-demand         |
+| Server type application    | ✅       | Manual application           | Types in handlers           |
+| Runtime validation         | ⚠️       | JSON Schema + Ajv            | Optional future enhancement |
+| CI type checking           | ✅       | TypeScript compiler          | Fail on type drift          |
+| Taskfile automation        | ✅       | Taskfile.dev                 | Complex build workflows     |
 
 **Legend**: ✅ Included | ⚠️ Optional/Future | ❌ Not Included
 
@@ -181,11 +181,11 @@ options:
   "@typespec/openapi3":
     emitter-output-dir: "{project-root}/../generated/openapi"
     output-file: "openapi.yaml"
-    
+
   "@typespec/json-schema":
     emitter-output-dir: "{project-root}/../generated/feedback-api-schemas/schemas"
     bundleId: "https://feedback.api/schemas"
-    
+
   "@typespec/http-client-js":
     emitter-output-dir: "{project-root}/../generated/feedback-api-client-js/src"
     packageDetails:
@@ -197,7 +197,7 @@ options:
 
 ```yaml
 # packages/feedback-server-api/Taskfile.yml
-version: '3'
+version: "3"
 
 vars:
   TYPESPEC_DIR: ./typespec
@@ -251,7 +251,7 @@ tasks:
   version:
     desc: Update version in generated packages
     vars:
-      VERSION: '{{.CLI_ARGS}}'
+      VERSION: "{{.CLI_ARGS}}"
     cmds:
       - |
         for pkg in feedback-api-types feedback-api-client-js feedback-api-schemas; do
@@ -264,7 +264,7 @@ tasks:
 
 ```yaml
 # Taskfile.yml (monorepo root)
-version: '3'
+version: "3"
 
 includes:
   api: ./packages/feedback-server-api
@@ -304,10 +304,7 @@ tasks:
 ```json
 // package.json (root)
 {
-  "workspaces": [
-    "packages/*",
-    "packages/generated/*"
-  ]
+  "workspaces": ["packages/*", "packages/generated/*"]
 }
 ```
 
@@ -333,17 +330,17 @@ tasks:
 
 ```typescript
 // packages/feedback-server/src/routes/feedback.ts
-import type { 
-  Feedback, 
+import type {
+  Feedback,
   CreateFeedbackRequest,
-  FeedbackListResponse 
+  FeedbackListResponse,
 } from "@feedback/api-types";
 
 app.get("/api/v1/feedback", async (c): Promise<Response> => {
   const items: Feedback[] = await service.listAll();
   const response: FeedbackListResponse = {
     items,
-    pagination: { page: 1, limit: 20, total: items.length, totalPages: 1 }
+    pagination: { page: 1, limit: 20, total: items.length, totalPages: 1 },
   };
   return c.json(response);
 });
@@ -402,7 +399,7 @@ app.get("/api/v1/feedback", async (c): Promise<Response> => {
 
 - Keep skeleton files in git (package.json, tsconfig.json, index.ts)
 - Gitignore generated source files
-- Enables workspace:* dependencies
+- Enables workspace:\* dependencies
 - Clean regeneration without losing package metadata
 
 **Consequences**:
@@ -451,43 +448,43 @@ app.get("/api/v1/feedback", async (c): Promise<Response> => {
 
 ### Packages to Create
 
-| Package                          | Purpose                           |
-| -------------------------------- | --------------------------------- |
-| `packages/feedback-server-api/`  | Standalone API specification      |
-| `packages/generated/feedback-api-types/` | Generated TypeScript types |
-| `packages/generated/feedback-api-client-js/` | Generated JS client SDK |
-| `packages/generated/feedback-api-schemas/` | Generated JSON Schemas   |
+| Package                                      | Purpose                      |
+| -------------------------------------------- | ---------------------------- |
+| `packages/feedback-server-api/`              | Standalone API specification |
+| `packages/generated/feedback-api-types/`     | Generated TypeScript types   |
+| `packages/generated/feedback-api-client-js/` | Generated JS client SDK      |
+| `packages/generated/feedback-api-schemas/`   | Generated JSON Schemas       |
 
 ### Files to Create
 
-| File                            | Purpose                            |
-| ------------------------------- | ---------------------------------- |
-| `Taskfile.yml` (root)           | Monorepo build orchestration       |
-| `packages/feedback-server-api/Taskfile.yml` | API generation tasks   |
-| `packages/generated/.gitignore` | Gitignore generated source files   |
+| File                                        | Purpose                          |
+| ------------------------------------------- | -------------------------------- |
+| `Taskfile.yml` (root)                       | Monorepo build orchestration     |
+| `packages/feedback-server-api/Taskfile.yml` | API generation tasks             |
+| `packages/generated/.gitignore`             | Gitignore generated source files |
 
 ### Files to Migrate
 
-| From                                    | To                                        |
-| --------------------------------------- | ----------------------------------------- |
-| `feedback-server/typespec/`             | `feedback-server-api/typespec/`           |
-| `feedback-server/tspconfig.yaml`        | `feedback-server-api/tspconfig.yaml`      |
+| From                             | To                                   |
+| -------------------------------- | ------------------------------------ |
+| `feedback-server/typespec/`      | `feedback-server-api/typespec/`      |
+| `feedback-server/tspconfig.yaml` | `feedback-server-api/tspconfig.yaml` |
 
 ### Files to Modify
 
-| File                                | Changes                            |
-| ----------------------------------- | ---------------------------------- |
-| `package.json` (root)               | Add generated/* to workspaces     |
-| `feedback-server/package.json`      | Add @feedback/api-types dependency |
-| `feedback-server/src/routes/*.ts`   | Import from @feedback/api-types   |
-| `feedback-server-cli/package.json`  | Add @feedback/api-client-js dependency |
+| File                               | Changes                                |
+| ---------------------------------- | -------------------------------------- |
+| `package.json` (root)              | Add generated/\* to workspaces         |
+| `feedback-server/package.json`     | Add @feedback/api-types dependency     |
+| `feedback-server/src/routes/*.ts`  | Import from @feedback/api-types        |
+| `feedback-server-cli/package.json` | Add @feedback/api-client-js dependency |
 
 ### Files to Remove
 
-| File                                  | Reason                              |
-| ------------------------------------- | ----------------------------------- |
-| `feedback-server/src/generated/`      | Types now in workspace package      |
-| `feedback-server/typespec/`           | Migrated to API package             |
+| File                             | Reason                         |
+| -------------------------------- | ------------------------------ |
+| `feedback-server/src/generated/` | Types now in workspace package |
+| `feedback-server/typespec/`      | Migrated to API package        |
 
 ---
 
@@ -500,7 +497,7 @@ app.get("/api/v1/feedback", async (c): Promise<Response> => {
 - [ ] Root Taskfile.yml for build orchestration
 - [ ] Generated packages directory with proper gitignore
 - [ ] At least TypeScript types generated and usable
-- [ ] feedback-server uses @feedback/api-types via workspace:*
+- [ ] feedback-server uses @feedback/api-types via workspace:\*
 - [ ] `task generate` works from root
 - [ ] CI pipeline updated to run generation
 
@@ -523,13 +520,13 @@ app.get("/api/v1/feedback", async (c): Promise<Response> => {
 
 ## ⚠️ Risks and Mitigations
 
-| Risk                                  | Likelihood | Impact    | Mitigation                   |
-| ------------------------------------- | ---------- | --------- | ---------------------------- |
-| TypeSpec emitter changes              | 🟡 Medium  | 🟡 Medium | Pin versions, test upgrades  |
-| Taskfile learning curve               | 🟡 Medium  | 🟢 Low    | Add documentation, examples  |
-| Build order complexity                | 🟢 Low     | 🟡 Medium | Clear deps in Taskfile       |
-| Generated code breaks                 | 🟢 Low     | 🟡 Medium | CI type checking             |
-| Workspace resolution issues           | 🟢 Low     | 🟡 Medium | Test with bun install        |
+| Risk                        | Likelihood | Impact    | Mitigation                  |
+| --------------------------- | ---------- | --------- | --------------------------- |
+| TypeSpec emitter changes    | 🟡 Medium  | 🟡 Medium | Pin versions, test upgrades |
+| Taskfile learning curve     | 🟡 Medium  | 🟢 Low    | Add documentation, examples |
+| Build order complexity      | 🟢 Low     | 🟡 Medium | Clear deps in Taskfile      |
+| Generated code breaks       | 🟢 Low     | 🟡 Medium | CI type checking            |
+| Workspace resolution issues | 🟢 Low     | 🟡 Medium | Test with bun install       |
 
 ---
 
@@ -546,14 +543,14 @@ app.get("/api/v1/feedback", async (c): Promise<Response> => {
 
 ## 📊 Success Metrics
 
-| Metric                      | Current         | Target               |
-| --------------------------- | --------------- | -------------------- |
-| Packages with shared types  | 0               | 3 (server, cli, webui) |
-| Manual type definitions     | ~15 types       | 0 API types          |
-| Client SDKs generated       | 0               | 1+ (JS required)     |
-| Compile-time API errors     | 0               | All type errors      |
-| Build automation            | package.json    | Taskfile.yml         |
-| API spec location           | Bundled         | Standalone package   |
+| Metric                     | Current      | Target                 |
+| -------------------------- | ------------ | ---------------------- |
+| Packages with shared types | 0            | 3 (server, cli, webui) |
+| Manual type definitions    | ~15 types    | 0 API types            |
+| Client SDKs generated      | 0            | 1+ (JS required)       |
+| Compile-time API errors    | 0            | All type errors        |
+| Build automation           | package.json | Taskfile.yml           |
+| API spec location          | Bundled      | Standalone package     |
 
 ---
 

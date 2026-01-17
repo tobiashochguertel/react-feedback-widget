@@ -172,13 +172,13 @@ graph TD
 
 ### Emitters Used
 
-| Emitter                  | Output              | Package                  |
-| ------------------------ | ------------------- | ------------------------ |
-| `@typespec/openapi3`     | OpenAPI 3.1 YAML    | (internal)               |
-| `openapi-typescript`     | TypeScript types    | `@feedback/api-types`    |
-| `@typespec/http-client-js` | JS Client SDK     | `@feedback/api-client-js`|
-| `@typespec/json-schema`  | JSON Schemas        | `@feedback/api-schemas`  |
-| `@typespec/protobuf`     | Protobuf (optional) | Future WebSocket support |
+| Emitter                    | Output              | Package                   |
+| -------------------------- | ------------------- | ------------------------- |
+| `@typespec/openapi3`       | OpenAPI 3.1 YAML    | (internal)                |
+| `openapi-typescript`       | TypeScript types    | `@feedback/api-types`     |
+| `@typespec/http-client-js` | JS Client SDK       | `@feedback/api-client-js` |
+| `@typespec/json-schema`    | JSON Schemas        | `@feedback/api-schemas`   |
+| `@typespec/protobuf`       | Protobuf (optional) | Future WebSocket support  |
 
 ### Pros
 

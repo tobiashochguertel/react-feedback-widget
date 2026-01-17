@@ -24,10 +24,10 @@ tasks:
   generate:openapi:
     desc: Generate OpenAPI 3.1 specification from TypeSpec
     sources:
-      - "{{.TYPESPEC_DIR}}/**/*.tsp"
+      - '{{.TYPESPEC_DIR}}/**/*.tsp'
       - tspconfig.yaml
     generates:
-      - "{{.OUTPUT_DIR}}/openapi/openapi.yaml"
+      - '{{.OUTPUT_DIR}}/openapi/openapi.yaml'
     cmds:
       - tsp compile {{.TYPESPEC_DIR}}/main.tsp
 
@@ -35,9 +35,9 @@ tasks:
     desc: Generate TypeScript types from OpenAPI using openapi-typescript
     deps: [generate:openapi]
     sources:
-      - "{{.OUTPUT_DIR}}/openapi/openapi.yaml"
+      - '{{.OUTPUT_DIR}}/openapi/openapi.yaml'
     generates:
-      - "{{.OUTPUT_DIR}}/feedback-api-types/src/api-types.d.ts"
+      - '{{.OUTPUT_DIR}}/feedback-api-types/src/api-types.d.ts'
     cmds:
       - |
         mkdir -p {{.OUTPUT_DIR}}/feedback-api-types/src
@@ -46,14 +46,14 @@ tasks:
   generate:client-js:
     desc: Generate JavaScript client SDK using @typespec/http-client-js
     sources:
-      - "{{.TYPESPEC_DIR}}/**/*.tsp"
+      - '{{.TYPESPEC_DIR}}/**/*.tsp'
     cmds:
       - tsp compile {{.TYPESPEC_DIR}}/main.tsp --emit @typespec/http-client-js
 
   generate:schemas:
     desc: Generate JSON Schemas using @typespec/json-schema
     sources:
-      - "{{.TYPESPEC_DIR}}/**/*.tsp"
+      - '{{.TYPESPEC_DIR}}/**/*.tsp'
     cmds:
       - tsp compile {{.TYPESPEC_DIR}}/main.tsp --emit @typespec/json-schema
 
@@ -69,7 +69,7 @@ tasks:
     desc: Update version in all generated packages
     summary: |
       Updates the version field in all generated package.json files.
-      
+
       Usage: task version -- 1.2.3
     cmds:
       - |
