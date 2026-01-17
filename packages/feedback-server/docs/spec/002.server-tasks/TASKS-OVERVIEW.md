@@ -14,10 +14,10 @@
 | Core Features  | 6      | 6    | 0           | 0    |
 | Storage        | 3      | 2    | 0           | 1    |
 | Real-time Sync | 2      | 0    | 0           | 2    |
-| Authentication | 2      | 0    | 0           | 2    |
+| Authentication | 2      | 1    | 0           | 1    |
 | DevOps         | 3      | 1    | 0           | 2    |
 | Documentation  | 2      | 0    | 0           | 2    |
-| **Total**      | **21** | 12   | 0           | 9    |
+| **Total**      | **21** | 13   | 0           | 8    |
 
 ---
 
@@ -69,10 +69,10 @@
 
 **Description**: Optional authentication and security features
 
-| Task | Name                   | Status  | Priority  | Dependencies |
-| ---- | ---------------------- | ------- | --------- | ------------ |
-| A001 | API Key Authentication | 🔲 TODO | 🟡 Medium | F002         |
-| A002 | JWT Authentication     | 🔲 TODO | 🔴 Low    | A001         |
+| Task | Name                   | Status  | Priority  | Dependencies | Completed  |
+| ---- | ---------------------- | ------- | --------- | ------------ | ---------- |
+| A001 | API Key Authentication | ✅ Done | 🟡 Medium | F002         | 2026-01-18 |
+| A002 | JWT Authentication     | 🔲 TODO | 🔴 Low    | A001         | -          |
 
 ### Set 6: DevOps & Deployment
 
@@ -103,7 +103,7 @@
 | 2     | S002, S003, D001       | TypeSpec setup, database schema, Dockerfile         | ✅ Complete     |
 | 3     | F001, T001, T003       | Health endpoint, SQLite adapter, blob storage       | ✅ Complete     |
 | 4     | F002, F003             | Core feedback and video CRUD APIs                   | ✅ Complete     |
-| 5     | F004, F005, F006, A001 | Bulk operations, search, API key auth               | 🟡 3/4 Complete |
+| 5     | F004, F005, F006, A001 | Bulk operations, search, API key auth               | ✅ Complete     |
 | 6     | R001, R002, T002       | WebSocket sync, PostgreSQL adapter                  | 🔲 Not Started  |
 | 7     | D002, D003, A002       | Docker Compose, CI/CD, JWT auth                     | 🔲 Not Started  |
 | 8     | O001, O002             | Documentation                                       | 🔲 Not Started  |

@@ -21,6 +21,7 @@ import { healthRouter } from "./routes/health";
 import { websocketHandler } from "./websocket";
 import { errorHandler } from "./middleware/error-handler";
 import { rateLimiter } from "./middleware/rate-limiter";
+import { apiKeyAuth } from "./middleware/auth";
 import { config } from "./config";
 
 // Create Hono app
@@ -57,6 +58,11 @@ app.onError(errorHandler);
 
 // Health routes (no auth required)
 app.route("/api/v1/health", healthRouter);
+
+// API Key authentication for protected routes
+// Applied after health routes so health checks don't require auth
+app.use("/api/v1/feedback/*", apiKeyAuth());
+app.use("/api/v1/videos/*", apiKeyAuth());
 
 // API routes
 app.route("/api/v1/feedback", feedbackRouter);

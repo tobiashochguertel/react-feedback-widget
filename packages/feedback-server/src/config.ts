@@ -29,6 +29,13 @@ const envSchema = z.object({
     .default("300")
     .transform(Number),
 
+  // Authentication
+  AUTH_ENABLED: z
+    .string()
+    .default("false")
+    .transform((s) => s === "true"),
+  AUTH_TYPE: z.enum(["apikey", "jwt"]).default("apikey"),
+  API_KEY: z.string().optional(),
   JWT_SECRET: z.string().optional(),
   API_KEY_SALT: z.string().optional(),
 
@@ -90,6 +97,9 @@ export const config = {
   videoMaxDuration: env.VIDEO_MAX_DURATION,
 
   // Security
+  authEnabled: env.AUTH_ENABLED,
+  authType: env.AUTH_TYPE,
+  apiKey: env.API_KEY,
   jwtSecret: env.JWT_SECRET,
   apiKeySalt: env.API_KEY_SALT,
 
