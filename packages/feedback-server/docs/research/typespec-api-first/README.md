@@ -13,6 +13,7 @@ Research on implementing proper API-First development using TypeSpec code genera
 1. **[01-current-state.md](01-current-state.md)** - Analysis of current implementation gaps
 2. **[02-typespec-capabilities.md](02-typespec-capabilities.md)** - TypeSpec 1.0 code generation features
 3. **[03-implementation-options.md](03-implementation-options.md)** - Available approaches for API-First
+4. **[04-modular-api-package-architecture.md](04-modular-api-package-architecture.md)** - Standalone API package with Taskfile automation 🆕
 
 ### Comprehensive Comparison
 
