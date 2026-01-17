@@ -12,8 +12,8 @@
 | ------------- | ----- | ---- | ----------- | ---- |
 | Features      | 4     | 4    | 0           | 0    |
 | Improvements  | 2     | 2    | 0           | 0    |
-| Documentation | 2     | 1    | 0           | 1    |
-| **Total**     | **8** | 7    | 0           | 1    |
+| Documentation | 2     | 2    | 0           | 0    |
+| **Total**     | **8** | 8    | 0           | 0    |
 
 ---
 
@@ -45,7 +45,7 @@
 
 | Task | Name                | Status  | Priority  |
 | ---- | ------------------- | ------- | --------- |
-| D001 | API Documentation   | 🔲 TODO | 🟡 Medium |
+| D001 | API Documentation   | ✅ DONE | 🟡 Medium |
 | D002 | Test Fixtures Guide | ✅ DONE | 🟢 High   |
 
 ---
@@ -60,7 +60,7 @@
 | T004 | PersistenceFactory      | ✅ DONE | 🟢 High   | T002, T003   |
 | I001 | Dashboard Export Button | ✅ DONE | 🟡 Medium | T002         |
 | I002 | Dashboard Import Button | ✅ DONE | 🟡 Medium | T003         |
-| D001 | API Documentation       | 🔲 TODO | 🟡 Medium | T001-T004    |
+| D001 | API Documentation       | ✅ DONE | 🟡 Medium | T001-T004    |
 | D002 | Test Fixtures Guide     | ✅ DONE | 🟢 High   | T001         |
 
 ---
