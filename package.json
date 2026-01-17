@@ -7,7 +7,10 @@
   ],
   "scripts": {
     "build": "bun run --filter react-visual-feedback build",
-    "dev": "bun run --filter feedback-example dev"
+    "dev": "bun run --filter feedback-integrations-example dev",
+    "typecheck": "bun run typecheck:react-visual-feedback || bun run typecheck:feedback-integrations-example",
+    "typecheck:react-visual-feedback": "bun run --filter react-visual-feedback typecheck",
+    "typecheck:feedback-integrations-example": "bun run --filter feedback-integrations-example typecheck"
   },
   "devDependencies": {
     "react-visual-feedback": "workspace:*"
