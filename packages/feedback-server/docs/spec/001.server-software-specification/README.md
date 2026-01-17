@@ -34,22 +34,22 @@ The **Feedback Server** is a centralized backend service that:
 
 ## 📊 Feature Matrix
 
-| Feature                     | Included | Technology           | Notes                                |
-| --------------------------- | -------- | -------------------- | ------------------------------------ |
-| REST API                    | ✅        | Bun + Hono           | Fast, lightweight HTTP framework     |
-| Feedback CRUD               | ✅        | REST endpoints       | Create, Read, Update, Delete         |
-| Video blob storage          | ✅        | File system / S3     | Store video recordings               |
-| Screenshot storage          | ✅        | File system / S3     | Store screenshot images              |
-| WebSocket sync              | ✅        | Bun WebSocket        | Real-time client updates             |
-| TypeSpec API definition     | ✅        | TypeSpec → OpenAPI   | Single source of truth for API       |
-| SQLite support              | ✅        | Drizzle ORM          | Lightweight, file-based database     |
-| PostgreSQL support          | ✅        | Drizzle ORM          | Production-ready database            |
-| Docker deployment           | ✅        | Dockerfile           | Container-ready from start           |
-| Authentication              | ⚠️        | JWT / API Keys       | Optional, configurable               |
-| Rate limiting               | ⚠️        | Middleware           | Optional, configurable               |
-| CORS configuration          | ✅        | Middleware           | Required for browser clients         |
-| Health checks               | ✅        | Endpoint             | For container orchestration          |
-| Metrics/observability       | ⚠️        | OpenTelemetry        | Optional, for production monitoring  |
+| Feature                 | Included | Technology         | Notes                               |
+| ----------------------- | -------- | ------------------ | ----------------------------------- |
+| REST API                | ✅       | Bun + Hono         | Fast, lightweight HTTP framework    |
+| Feedback CRUD           | ✅       | REST endpoints     | Create, Read, Update, Delete        |
+| Video blob storage      | ✅       | File system / S3   | Store video recordings              |
+| Screenshot storage      | ✅       | File system / S3   | Store screenshot images             |
+| WebSocket sync          | ✅       | Bun WebSocket      | Real-time client updates            |
+| TypeSpec API definition | ✅       | TypeSpec → OpenAPI | Single source of truth for API      |
+| SQLite support          | ✅       | Drizzle ORM        | Lightweight, file-based database    |
+| PostgreSQL support      | ✅       | Drizzle ORM        | Production-ready database           |
+| Docker deployment       | ✅       | Dockerfile         | Container-ready from start          |
+| Authentication          | ⚠️       | JWT / API Keys     | Optional, configurable              |
+| Rate limiting           | ⚠️       | Middleware         | Optional, configurable              |
+| CORS configuration      | ✅       | Middleware         | Required for browser clients        |
+| Health checks           | ✅       | Endpoint           | For container orchestration         |
+| Metrics/observability   | ⚠️       | OpenTelemetry      | Optional, for production monitoring |
 
 **Legend**: ✅ Included | ⚠️ Optional/Configurable | ❌ Not Included
 
@@ -95,16 +95,16 @@ graph TB
 
 ### Technology Stack
 
-| Layer           | Technology            | Rationale                                        |
-| --------------- | --------------------- | ------------------------------------------------ |
-| Runtime         | Bun                   | Fast, modern, TypeScript-native                  |
-| HTTP Framework  | Hono                  | Lightweight, fast, multi-runtime                 |
-| API Definition  | TypeSpec              | Generate OpenAPI + TypeScript types              |
-| ORM             | Drizzle               | Type-safe, SQL-first, lightweight                |
-| Database        | SQLite / PostgreSQL   | SQLite for dev, Postgres for production          |
-| Blob Storage    | File System / S3      | Local files for dev, S3-compatible for prod      |
-| Testing         | Vitest                | Fast, Bun-compatible, modern                     |
-| Container       | Docker                | Universal deployment                             |
+| Layer          | Technology          | Rationale                                   |
+| -------------- | ------------------- | ------------------------------------------- |
+| Runtime        | Bun                 | Fast, modern, TypeScript-native             |
+| HTTP Framework | Hono                | Lightweight, fast, multi-runtime            |
+| API Definition | TypeSpec            | Generate OpenAPI + TypeScript types         |
+| ORM            | Drizzle             | Type-safe, SQL-first, lightweight           |
+| Database       | SQLite / PostgreSQL | SQLite for dev, Postgres for production     |
+| Blob Storage   | File System / S3    | Local files for dev, S3-compatible for prod |
+| Testing        | Vitest              | Fast, Bun-compatible, modern                |
+| Container      | Docker              | Universal deployment                        |
 
 ### Directory Structure
 
@@ -243,29 +243,29 @@ model FeedbackMetadata {
 
 ### REST API Endpoints
 
-| Method | Endpoint                | Description             | Auth Required |
-| ------ | ----------------------- | ----------------------- | ------------- |
-| GET    | `/api/health`           | Health check            | No            |
-| GET    | `/api/feedback`         | List all feedback       | Optional      |
-| GET    | `/api/feedback/:id`     | Get single feedback     | Optional      |
-| POST   | `/api/feedback`         | Create new feedback     | Optional      |
-| PATCH  | `/api/feedback/:id`     | Update feedback         | Optional      |
-| DELETE | `/api/feedback/:id`     | Delete feedback         | Optional      |
-| POST   | `/api/feedback/bulk`    | Bulk import             | Optional      |
-| GET    | `/api/feedback/export`  | Bulk export             | Optional      |
-| POST   | `/api/video`            | Upload video blob       | Optional      |
-| GET    | `/api/video/:id`        | Get video blob          | No            |
-| DELETE | `/api/video/:id`        | Delete video            | Optional      |
+| Method | Endpoint               | Description         | Auth Required |
+| ------ | ---------------------- | ------------------- | ------------- |
+| GET    | `/api/health`          | Health check        | No            |
+| GET    | `/api/feedback`        | List all feedback   | Optional      |
+| GET    | `/api/feedback/:id`    | Get single feedback | Optional      |
+| POST   | `/api/feedback`        | Create new feedback | Optional      |
+| PATCH  | `/api/feedback/:id`    | Update feedback     | Optional      |
+| DELETE | `/api/feedback/:id`    | Delete feedback     | Optional      |
+| POST   | `/api/feedback/bulk`   | Bulk import         | Optional      |
+| GET    | `/api/feedback/export` | Bulk export         | Optional      |
+| POST   | `/api/video`           | Upload video blob   | Optional      |
+| GET    | `/api/video/:id`       | Get video blob      | No            |
+| DELETE | `/api/video/:id`       | Delete video        | Optional      |
 
 ### WebSocket Events
 
-| Event             | Direction | Description                      |
-| ----------------- | --------- | -------------------------------- |
-| `feedback:created`| Server→Client | New feedback was created      |
-| `feedback:updated`| Server→Client | Feedback was updated          |
-| `feedback:deleted`| Server→Client | Feedback was deleted          |
-| `client:register` | Client→Server | Register client for updates   |
-| `ping`            | Both      | Keep-alive                       |
+| Event              | Direction     | Description                 |
+| ------------------ | ------------- | --------------------------- |
+| `feedback:created` | Server→Client | New feedback was created    |
+| `feedback:updated` | Server→Client | Feedback was updated        |
+| `feedback:deleted` | Server→Client | Feedback was deleted        |
+| `client:register`  | Client→Server | Register client for updates |
+| `ping`             | Both          | Keep-alive                  |
 
 ---
 
@@ -311,7 +311,7 @@ RATE_LIMIT_WINDOW=60000        # Window in ms
 ### Docker Compose Example
 
 ```yaml
-version: '3.8'
+version: "3.8"
 
 services:
   feedback-server:
@@ -351,7 +351,7 @@ volumes:
 The react-visual-feedback widget can be configured to send feedback to this server:
 
 ```typescript
-import { FeedbackProvider } from 'react-visual-feedback';
+import { FeedbackProvider } from "react-visual-feedback";
 
 function App() {
   return (
@@ -371,17 +371,17 @@ function App() {
 ### Real-time Updates
 
 ```typescript
-import { useFeedbackSync } from 'react-visual-feedback';
+import { useFeedbackSync } from "react-visual-feedback";
 
 function FeedbackDashboard() {
   const { feedbackItems, isConnected } = useFeedbackSync({
-    serverUrl: 'ws://localhost:3000',
-    clientId: 'my-app',
+    serverUrl: "ws://localhost:3000",
+    clientId: "my-app",
   });
 
   return (
     <div>
-      {feedbackItems.map(item => (
+      {feedbackItems.map((item) => (
         <FeedbackCard key={item.id} feedback={item} />
       ))}
     </div>
@@ -415,25 +415,25 @@ function FeedbackDashboard() {
 
 ## 📦 Related Packages
 
-| Package | Description | Status |
-| ------- | ----------- | ------ |
-| `packages/feedback-server` | This package - REST API server | 🔲 Planned |
-| `packages/server-webui` | Admin dashboard for managing feedback | 🔲 Planned |
-| `packages/server-cli` | CLI tool for server interaction | 🔲 Planned |
-| `packages/shared-types` | Shared TypeScript types | 🔲 Planned |
-| `packages/react-visual-feedback` | Client widget | ✅ Active |
+| Package                          | Description                           | Status     |
+| -------------------------------- | ------------------------------------- | ---------- |
+| `packages/feedback-server`       | This package - REST API server        | 🔲 Planned |
+| `packages/server-webui`          | Admin dashboard for managing feedback | 🔲 Planned |
+| `packages/server-cli`            | CLI tool for server interaction       | 🔲 Planned |
+| `packages/shared-types`          | Shared TypeScript types               | 🔲 Planned |
+| `packages/react-visual-feedback` | Client widget                         | ✅ Active  |
 
 ---
 
 ## 📊 Success Metrics
 
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| Response time | < 100ms | p95 latency |
-| Startup time | < 2s | Container ready |
-| Memory usage | < 256MB | Idle memory |
-| Test coverage | > 80% | Unit + Integration |
-| API compliance | 100% | TypeSpec validation |
+| Metric         | Target  | Measurement         |
+| -------------- | ------- | ------------------- |
+| Response time  | < 100ms | p95 latency         |
+| Startup time   | < 2s    | Container ready     |
+| Memory usage   | < 256MB | Idle memory         |
+| Test coverage  | > 80%   | Unit + Integration  |
+| API compliance | 100%    | TypeSpec validation |
 
 ---
 

@@ -2,9 +2,7 @@
   {
     "id": "builtin_group_id",
     "name": "Currently Open Files",
-    "files": [
-      "untitled:Untitled-1"
-    ],
+    "files": [],
     "builtIn": true,
     "bookmarks": {}
   }

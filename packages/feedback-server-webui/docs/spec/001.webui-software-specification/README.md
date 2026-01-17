@@ -38,12 +38,12 @@ The **Feedback Server WebUI** is an administrative dashboard for managing feedba
 
 ### Target Users
 
-| User Type | Description |
-|-----------|-------------|
-| **Developers** | View bug reports with screenshots, console logs, network requests |
-| **QA Engineers** | Manage feedback status, reproduce issues from session replays |
-| **Product Managers** | Review feature requests, analyze feedback trends |
-| **Administrators** | Manage projects, users, and API keys |
+| User Type            | Description                                                       |
+| -------------------- | ----------------------------------------------------------------- |
+| **Developers**       | View bug reports with screenshots, console logs, network requests |
+| **QA Engineers**     | Manage feedback status, reproduce issues from session replays     |
+| **Product Managers** | Review feature requests, analyze feedback trends                  |
+| **Administrators**   | Manage projects, users, and API keys                              |
 
 ### Relationship to Other Packages
 
@@ -96,37 +96,37 @@ graph TD
 
 ## Feature Matrix
 
-| Feature | Priority | Status |
-|---------|----------|--------|
-| **Dashboard** | P0 | 🔲 Planned |
-| Overview statistics | P0 | 🔲 |
-| Recent feedback list | P0 | 🔲 |
-| Quick filters | P1 | 🔲 |
-| **Feedback List** | P0 | 🔲 Planned |
-| Table/Grid view | P0 | 🔲 |
-| Sorting & filtering | P0 | 🔲 |
-| Pagination | P0 | 🔲 |
-| Bulk actions | P1 | 🔲 |
-| Saved filters | P2 | 🔲 |
-| **Feedback Detail** | P0 | 🔲 Planned |
-| Metadata display | P0 | 🔲 |
-| Screenshot viewer | P0 | 🔲 |
-| Video player | P0 | 🔲 |
-| Console logs viewer | P1 | 🔲 |
-| Network requests viewer | P1 | 🔲 |
-| Status/Priority editor | P0 | 🔲 |
-| **Real-time Updates** | P1 | 🔲 Planned |
-| WebSocket connection | P1 | 🔲 |
-| Toast notifications | P1 | 🔲 |
-| Auto-refresh list | P1 | 🔲 |
-| **Settings** | P2 | 🔲 Planned |
-| Project management | P2 | 🔲 |
-| API key management | P2 | 🔲 |
-| Theme preferences | P2 | 🔲 |
-| **Authentication** | P0 | 🔲 Planned |
-| Login page | P0 | 🔲 |
-| Session management | P0 | 🔲 |
-| Role-based access | P2 | 🔲 |
+| Feature                 | Priority | Status     |
+| ----------------------- | -------- | ---------- |
+| **Dashboard**           | P0       | 🔲 Planned |
+| Overview statistics     | P0       | 🔲         |
+| Recent feedback list    | P0       | 🔲         |
+| Quick filters           | P1       | 🔲         |
+| **Feedback List**       | P0       | 🔲 Planned |
+| Table/Grid view         | P0       | 🔲         |
+| Sorting & filtering     | P0       | 🔲         |
+| Pagination              | P0       | 🔲         |
+| Bulk actions            | P1       | 🔲         |
+| Saved filters           | P2       | 🔲         |
+| **Feedback Detail**     | P0       | 🔲 Planned |
+| Metadata display        | P0       | 🔲         |
+| Screenshot viewer       | P0       | 🔲         |
+| Video player            | P0       | 🔲         |
+| Console logs viewer     | P1       | 🔲         |
+| Network requests viewer | P1       | 🔲         |
+| Status/Priority editor  | P0       | 🔲         |
+| **Real-time Updates**   | P1       | 🔲 Planned |
+| WebSocket connection    | P1       | 🔲         |
+| Toast notifications     | P1       | 🔲         |
+| Auto-refresh list       | P1       | 🔲         |
+| **Settings**            | P2       | 🔲 Planned |
+| Project management      | P2       | 🔲         |
+| API key management      | P2       | 🔲         |
+| Theme preferences       | P2       | 🔲         |
+| **Authentication**      | P0       | 🔲 Planned |
+| Login page              | P0       | 🔲         |
+| Session management      | P0       | 🔲         |
+| Role-based access       | P2       | 🔲         |
 
 ---
 
@@ -168,7 +168,7 @@ graph TD
     B --> H
     B --> J
     C --> I
-    
+
     K --> O
     L --> N
 ```
@@ -205,28 +205,28 @@ sequenceDiagram
 
 ### Core Technologies
 
-| Category | Technology | Version | Purpose |
-|----------|------------|---------|---------|
-| **Framework** | React | 18.x | UI framework |
-| **Build Tool** | Vite | 6.x | Fast development and builds |
-| **Language** | TypeScript | 5.x | Type safety |
-| **Styling** | Tailwind CSS | 3.x | Utility-first CSS |
-| **UI Components** | shadcn/ui | latest | Accessible components |
-| **State Management** | Zustand | 4.x | Simple state management |
-| **Data Fetching** | TanStack Query | 5.x | Server state management |
-| **Routing** | React Router | 6.x | Client-side routing |
-| **Charts** | Recharts | 2.x | Data visualization |
-| **Icons** | Lucide React | latest | Icon library |
+| Category             | Technology     | Version | Purpose                     |
+| -------------------- | -------------- | ------- | --------------------------- |
+| **Framework**        | React          | 18.x    | UI framework                |
+| **Build Tool**       | Vite           | 6.x     | Fast development and builds |
+| **Language**         | TypeScript     | 5.x     | Type safety                 |
+| **Styling**          | Tailwind CSS   | 3.x     | Utility-first CSS           |
+| **UI Components**    | shadcn/ui      | latest  | Accessible components       |
+| **State Management** | Zustand        | 4.x     | Simple state management     |
+| **Data Fetching**    | TanStack Query | 5.x     | Server state management     |
+| **Routing**          | React Router   | 6.x     | Client-side routing         |
+| **Charts**           | Recharts       | 2.x     | Data visualization          |
+| **Icons**            | Lucide React   | latest  | Icon library                |
 
 ### Development Tools
 
-| Tool | Purpose |
-|------|---------|
-| ESLint | Code linting |
-| Prettier | Code formatting |
-| Vitest | Unit testing |
-| Playwright | E2E testing |
-| Storybook | Component documentation |
+| Tool       | Purpose                 |
+| ---------- | ----------------------- |
+| ESLint     | Code linting            |
+| Prettier   | Code formatting         |
+| Vitest     | Unit testing            |
+| Playwright | E2E testing             |
+| Storybook  | Component documentation |
 
 ---
 
@@ -256,6 +256,7 @@ sequenceDiagram
 ### Color Scheme
 
 **Light Theme:**
+
 - Background: `#ffffff`
 - Surface: `#f8fafc`
 - Primary: `#3b82f6` (Blue)
@@ -265,6 +266,7 @@ sequenceDiagram
 - Error: `#ef4444` (Red)
 
 **Dark Theme:**
+
 - Background: `#0f172a`
 - Surface: `#1e293b`
 - Primary: `#60a5fa` (Light Blue)
@@ -285,12 +287,14 @@ sequenceDiagram
 **Purpose:** Overview of feedback statistics and recent activity
 
 **Components:**
+
 - `StatCard` - Display key metrics (total, by status, by type)
 - `FeedbackChart` - Line chart of feedback over time
 - `RecentFeedbackList` - Last 10 feedback items
 - `QuickFilters` - One-click filters
 
 **Wireframe:**
+
 ```
 ┌─────────────────────────────────────────────────────────┐
 │  Dashboard                                              │
@@ -319,6 +323,7 @@ sequenceDiagram
 **Purpose:** Browse and filter all feedback submissions
 
 **Components:**
+
 - `FilterBar` - Type, status, priority, date range filters
 - `SearchInput` - Full-text search
 - `FeedbackTable` - Sortable data table
@@ -330,6 +335,7 @@ sequenceDiagram
 **Purpose:** View complete feedback details and media
 
 **Components:**
+
 - `FeedbackHeader` - Title, status, priority badges
 - `MetadataPanel` - Environment info, user details
 - `ScreenshotViewer` - Zoomable screenshot with annotations
@@ -344,6 +350,7 @@ sequenceDiagram
 **Purpose:** Configure projects and API access
 
 **Sections:**
+
 - Projects management
 - API key generation
 - User preferences
@@ -354,6 +361,7 @@ sequenceDiagram
 **Purpose:** Authentication entry point
 
 **Components:**
+
 - Login form (email/password)
 - "Remember me" option
 - Error messages
@@ -367,13 +375,13 @@ sequenceDiagram
 ```typescript
 interface AppState {
   // UI State
-  theme: 'light' | 'dark' | 'system';
+  theme: "light" | "dark" | "system";
   sidebarOpen: boolean;
-  
+
   // Real-time State
   wsConnected: boolean;
   notifications: Notification[];
-  
+
   // Actions
   setTheme: (theme: Theme) => void;
   toggleSidebar: () => void;
@@ -386,9 +394,9 @@ interface AppState {
 
 ```typescript
 // Queries
-useQuery(['feedback', filters], fetchFeedbackList);
-useQuery(['feedback', id], fetchFeedbackById);
-useQuery(['stats'], fetchStats);
+useQuery(["feedback", filters], fetchFeedbackList);
+useQuery(["feedback", id], fetchFeedbackById);
+useQuery(["stats"], fetchStats);
 
 // Mutations
 useMutation(updateFeedbackStatus);
@@ -404,14 +412,14 @@ useMutation(bulkUpdateFeedback);
 
 ```typescript
 // src/lib/api/client.ts
-import { hc } from 'hono/client';
-import type { AppType } from '@react-visual-feedback/server';
+import { hc } from "hono/client";
+import type { AppType } from "@react-visual-feedback/server";
 
 export const api = hc<AppType>(import.meta.env.VITE_API_URL);
 
 // Usage
 const feedback = await api.feedback.$get({ query: { page: 1 } });
-const detail = await api.feedback[':id'].$get({ param: { id: '123' } });
+const detail = await api.feedback[":id"].$get({ param: { id: "123" } });
 ```
 
 ### WebSocket Integration
@@ -421,7 +429,7 @@ const detail = await api.feedback[':id'].$get({ param: { id: '123' } });
 export class FeedbackWebSocket {
   private ws: WebSocket;
   private handlers: Map<string, Handler[]>;
-  
+
   connect(projectId: string): void;
   disconnect(): void;
   on(event: string, handler: Handler): void;
@@ -454,7 +462,7 @@ sequenceDiagram
     S-->>A: JWT Token
     A-->>W: Set token in cookie
     W-->>U: Redirect to Dashboard
-    
+
     Note over W: Subsequent requests
     W->>S: Request with JWT
     S-->>W: Protected data
@@ -462,11 +470,11 @@ sequenceDiagram
 
 ### Role-Based Access
 
-| Role | Permissions |
-|------|-------------|
-| **Viewer** | Read feedback, view media |
-| **Editor** | + Update status, add tags |
-| **Admin** | + Delete, manage projects, API keys |
+| Role       | Permissions                         |
+| ---------- | ----------------------------------- |
+| **Viewer** | Read feedback, view media           |
+| **Editor** | + Update status, add tags           |
+| **Admin**  | + Delete, manage projects, API keys |
 
 ---
 
@@ -555,12 +563,12 @@ services:
 
 ### Coverage Targets
 
-| Type | Target |
-|------|--------|
-| Statements | 80% |
-| Branches | 75% |
-| Functions | 80% |
-| Lines | 80% |
+| Type       | Target |
+| ---------- | ------ |
+| Statements | 80%    |
+| Branches   | 75%    |
+| Functions  | 80%    |
+| Lines      | 80%    |
 
 ---
 

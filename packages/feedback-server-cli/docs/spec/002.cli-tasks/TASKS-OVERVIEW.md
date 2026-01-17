@@ -5,17 +5,17 @@
 
 ## 📋 Task Summary
 
-| Category | Total | Not Started | In Progress | Done |
-|----------|-------|-------------|-------------|------|
-| Setup | 3 | 3 | 0 | 0 |
-| Core Commands | 6 | 6 | 0 | 0 |
-| Authentication | 3 | 3 | 0 | 0 |
-| Data Export | 3 | 3 | 0 | 0 |
-| Configuration | 3 | 3 | 0 | 0 |
-| Shell Integration | 2 | 2 | 0 | 0 |
-| Testing | 2 | 2 | 0 | 0 |
-| Distribution | 2 | 2 | 0 | 0 |
-| **Total** | **24** | **24** | **0** | **0** |
+| Category          | Total  | Not Started | In Progress | Done  |
+| ----------------- | ------ | ----------- | ----------- | ----- |
+| Setup             | 3      | 3           | 0           | 0     |
+| Core Commands     | 6      | 6           | 0           | 0     |
+| Authentication    | 3      | 3           | 0           | 0     |
+| Data Export       | 3      | 3           | 0           | 0     |
+| Configuration     | 3      | 3           | 0           | 0     |
+| Shell Integration | 2      | 2           | 0           | 0     |
+| Testing           | 2      | 2           | 0           | 0     |
+| Distribution      | 2      | 2           | 0           | 0     |
+| **Total**         | **24** | **24**      | **0**       | **0** |
 
 ---
 
@@ -31,6 +31,7 @@
 Create a new TypeScript project for the CLI with Bun as the runtime and package manager.
 
 **Acceptance Criteria:**
+
 - [ ] Create project structure with src, tests, docs directories
 - [ ] Configure TypeScript with strict mode
 - [ ] Set up tsup for bundling
@@ -49,6 +50,7 @@ Create a new TypeScript project for the CLI with Bun as the runtime and package 
 Install and configure Commander.js as the CLI framework with global options.
 
 **Acceptance Criteria:**
+
 - [ ] Install Commander.js and types
 - [ ] Create main CLI entry point
 - [ ] Configure version flag
@@ -67,6 +69,7 @@ Install and configure Commander.js as the CLI framework with global options.
 Create a typed API client for communicating with the Feedback Server.
 
 **Acceptance Criteria:**
+
 - [ ] Create HTTP client with fetch
 - [ ] Add authentication header injection
 - [ ] Add request/response logging for debug mode
@@ -88,6 +91,7 @@ Create a typed API client for communicating with the Feedback Server.
 Implement the command to list feedback items with filtering and pagination.
 
 **Acceptance Criteria:**
+
 - [ ] List feedback in table format
 - [ ] Add status filter option
 - [ ] Add type filter option
@@ -109,6 +113,7 @@ Implement the command to list feedback items with filtering and pagination.
 Implement the command to get detailed information about a single feedback item.
 
 **Acceptance Criteria:**
+
 - [ ] Fetch and display feedback details
 - [ ] Show all metadata (title, description, type, status, priority)
 - [ ] Show environment information
@@ -128,6 +133,7 @@ Implement the command to get detailed information about a single feedback item.
 Implement the command to create new feedback items (for testing/automation).
 
 **Acceptance Criteria:**
+
 - [ ] Create feedback with title and options
 - [ ] Add interactive mode with prompts
 - [ ] Add option to create from JSON file
@@ -146,6 +152,7 @@ Implement the command to create new feedback items (for testing/automation).
 Implement the command to update an existing feedback item.
 
 **Acceptance Criteria:**
+
 - [ ] Update status option
 - [ ] Update priority option
 - [ ] Update tags option
@@ -165,6 +172,7 @@ Implement the command to update an existing feedback item.
 Implement the command to delete a feedback item.
 
 **Acceptance Criteria:**
+
 - [ ] Delete by ID
 - [ ] Add confirmation prompt
 - [ ] Add --force flag to skip confirmation
@@ -182,6 +190,7 @@ Implement the command to delete a feedback item.
 Implement the command to show summary statistics.
 
 **Acceptance Criteria:**
+
 - [ ] Show total feedback count
 - [ ] Show breakdown by status
 - [ ] Show breakdown by type
@@ -202,6 +211,7 @@ Implement the command to show summary statistics.
 Implement authentication with interactive login and API key support.
 
 **Acceptance Criteria:**
+
 - [ ] Interactive username/password prompt
 - [ ] API key authentication option
 - [ ] Server URL prompt/option
@@ -220,6 +230,7 @@ Implement authentication with interactive login and API key support.
 Implement logout to clear stored credentials.
 
 **Acceptance Criteria:**
+
 - [ ] Clear stored token from keychain
 - [ ] Clear any cached user info
 - [ ] Display success message
@@ -236,6 +247,7 @@ Implement logout to clear stored credentials.
 Implement command to show current authenticated user.
 
 **Acceptance Criteria:**
+
 - [ ] Display username/email
 - [ ] Display server URL
 - [ ] Display role/permissions
@@ -255,6 +267,7 @@ Implement command to show current authenticated user.
 Implement feedback export to JSON format.
 
 **Acceptance Criteria:**
+
 - [ ] Export all feedback to JSON file
 - [ ] Add filter options (status, type, date)
 - [ ] Add --include-media option for base64 media
@@ -273,6 +286,7 @@ Implement feedback export to JSON format.
 Implement feedback export to CSV format.
 
 **Acceptance Criteria:**
+
 - [ ] Export to CSV with headers
 - [ ] Flatten nested data
 - [ ] Handle special characters
@@ -290,6 +304,7 @@ Implement feedback export to CSV format.
 Implement feedback export to Markdown format for documentation.
 
 **Acceptance Criteria:**
+
 - [ ] Export as Markdown document
 - [ ] Include tables for summary
 - [ ] Include individual feedback as sections
@@ -309,6 +324,7 @@ Implement feedback export to Markdown format for documentation.
 Implement configuration file management using `conf` library.
 
 **Acceptance Criteria:**
+
 - [ ] Create config file on first use
 - [ ] Support YAML format
 - [ ] Add default values
@@ -326,6 +342,7 @@ Implement configuration file management using `conf` library.
 Implement config subcommands (init, get, set, list).
 
 **Acceptance Criteria:**
+
 - [ ] `config init` - interactive config setup
 - [ ] `config get <key>` - get config value
 - [ ] `config set <key> <value>` - set config value
@@ -343,6 +360,7 @@ Implement config subcommands (init, get, set, list).
 Add support for configuration via environment variables.
 
 **Acceptance Criteria:**
+
 - [ ] Support FEEDBACK_SERVER_URL
 - [ ] Support FEEDBACK_API_KEY
 - [ ] Support FEEDBACK_CLI_CONFIG
@@ -362,6 +380,7 @@ Add support for configuration via environment variables.
 Generate shell completion scripts for bash, zsh, fish, PowerShell.
 
 **Acceptance Criteria:**
+
 - [ ] Generate bash completion script
 - [ ] Generate zsh completion script
 - [ ] Generate fish completion script
@@ -380,6 +399,7 @@ Generate shell completion scripts for bash, zsh, fish, PowerShell.
 Create interactive terminal UI for browsing feedback.
 
 **Acceptance Criteria:**
+
 - [ ] List feedback with arrow key navigation
 - [ ] View details on selection
 - [ ] Filter while browsing
@@ -400,6 +420,7 @@ Create interactive terminal UI for browsing feedback.
 Write unit tests for CLI commands and utilities.
 
 **Acceptance Criteria:**
+
 - [ ] Test API client
 - [ ] Test config manager
 - [ ] Test output formatters
@@ -418,6 +439,7 @@ Write unit tests for CLI commands and utilities.
 Write integration tests with mock server.
 
 **Acceptance Criteria:**
+
 - [ ] Mock API server
 - [ ] Test full command flows
 - [ ] Test error scenarios
@@ -437,6 +459,7 @@ Write integration tests with mock server.
 Configure package for npm publishing.
 
 **Acceptance Criteria:**
+
 - [ ] Configure package.json for publishing
 - [ ] Add bin entry point
 - [ ] Add files whitelist
@@ -455,6 +478,7 @@ Configure package for npm publishing.
 Package CLI as standalone binaries using `pkg` or `bun compile`.
 
 **Acceptance Criteria:**
+
 - [ ] Build Linux x64 and arm64 binaries
 - [ ] Build macOS x64 and arm64 binaries
 - [ ] Build Windows x64 binary

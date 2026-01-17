@@ -5,16 +5,16 @@
 
 ## 📋 Task Summary
 
-| Category | Total | Not Started | In Progress | Done |
-|----------|-------|-------------|-------------|------|
-| Setup | 3 | 3 | 0 | 0 |
-| Core Pages | 5 | 5 | 0 | 0 |
-| Components | 8 | 8 | 0 | 0 |
-| State & Data | 4 | 4 | 0 | 0 |
-| Real-time | 3 | 3 | 0 | 0 |
-| Authentication | 3 | 3 | 0 | 0 |
-| Testing | 3 | 3 | 0 | 0 |
-| **Total** | **29** | **29** | **0** | **0** |
+| Category       | Total  | Not Started | In Progress | Done  |
+| -------------- | ------ | ----------- | ----------- | ----- |
+| Setup          | 3      | 3           | 0           | 0     |
+| Core Pages     | 5      | 5           | 0           | 0     |
+| Components     | 8      | 8           | 0           | 0     |
+| State & Data   | 4      | 4           | 0           | 0     |
+| Real-time      | 3      | 3           | 0           | 0     |
+| Authentication | 3      | 3           | 0           | 0     |
+| Testing        | 3      | 3           | 0           | 0     |
+| **Total**      | **29** | **29**      | **0**       | **0** |
 
 ---
 
@@ -30,6 +30,7 @@
 Create a new Vite project with React and TypeScript template, configure path aliases, and set up base configuration.
 
 **Acceptance Criteria:**
+
 - [ ] Create project with `bun create vite@latest`
 - [ ] Configure TypeScript with strict mode
 - [ ] Set up path aliases (`@/` for src)
@@ -48,6 +49,7 @@ Create a new Vite project with React and TypeScript template, configure path ali
 Set up Tailwind CSS with custom theme colors and configure shadcn/ui component library.
 
 **Acceptance Criteria:**
+
 - [ ] Install and configure Tailwind CSS
 - [ ] Define custom color palette for light/dark themes
 - [ ] Initialize shadcn/ui with custom theme
@@ -66,6 +68,7 @@ Set up Tailwind CSS with custom theme colors and configure shadcn/ui component l
 Create folder structure following React best practices.
 
 **Acceptance Criteria:**
+
 - [ ] Create `src/pages/` for page components
 - [ ] Create `src/components/` for shared components
 - [ ] Create `src/lib/` for utilities and API clients
@@ -86,6 +89,7 @@ Create folder structure following React best practices.
 Implement login page with email/password form and authentication flow.
 
 **Acceptance Criteria:**
+
 - [ ] Login form with email and password fields
 - [ ] Form validation with error messages
 - [ ] "Remember me" checkbox
@@ -105,6 +109,7 @@ Implement login page with email/password form and authentication flow.
 Implement dashboard with statistics cards, chart, and recent feedback list.
 
 **Acceptance Criteria:**
+
 - [ ] Statistics cards (total, pending, bugs, features)
 - [ ] Line chart showing feedback over time
 - [ ] Recent feedback list (last 10 items)
@@ -123,6 +128,7 @@ Implement dashboard with statistics cards, chart, and recent feedback list.
 Implement feedback list with filtering, sorting, and pagination.
 
 **Acceptance Criteria:**
+
 - [ ] Data table with sortable columns
 - [ ] Filter bar (status, type, priority, date)
 - [ ] Search input with debounce
@@ -142,6 +148,7 @@ Implement feedback list with filtering, sorting, and pagination.
 Implement feedback detail view with all metadata and media viewers.
 
 **Acceptance Criteria:**
+
 - [ ] Header with title, status, priority
 - [ ] Environment metadata display
 - [ ] Screenshot viewer with zoom
@@ -163,6 +170,7 @@ Implement feedback detail view with all metadata and media viewers.
 Implement settings page for user preferences and project management.
 
 **Acceptance Criteria:**
+
 - [ ] Theme toggle (light/dark/system)
 - [ ] Project list (for admins)
 - [ ] API key management (for admins)
@@ -182,6 +190,7 @@ Implement settings page for user preferences and project management.
 Create main layout components: Header, Sidebar, and page wrapper.
 
 **Acceptance Criteria:**
+
 - [ ] Header with logo, search, user menu
 - [ ] Collapsible sidebar with navigation
 - [ ] Main content wrapper with proper spacing
@@ -199,6 +208,7 @@ Create main layout components: Header, Sidebar, and page wrapper.
 Create reusable data table component with sorting, selection, and custom columns.
 
 **Acceptance Criteria:**
+
 - [ ] Column definitions with custom renderers
 - [ ] Sortable columns
 - [ ] Row selection (single and multi)
@@ -217,6 +227,7 @@ Create reusable data table component with sorting, selection, and custom columns
 Create filter bar component with multiple filter types.
 
 **Acceptance Criteria:**
+
 - [ ] Select filters (status, type, priority)
 - [ ] Date range picker
 - [ ] Active filter chips with clear
@@ -234,6 +245,7 @@ Create filter bar component with multiple filter types.
 Create screenshot viewer with zoom, pan, and annotation display.
 
 **Acceptance Criteria:**
+
 - [ ] Zoomable image with scroll wheel
 - [ ] Pan when zoomed
 - [ ] Annotation overlay display
@@ -252,6 +264,7 @@ Create screenshot viewer with zoom, pan, and annotation display.
 Create video player for session recordings.
 
 **Acceptance Criteria:**
+
 - [ ] Play/pause controls
 - [ ] Progress bar with seek
 - [ ] Volume control
@@ -270,6 +283,7 @@ Create video player for session recordings.
 Create console log viewer with syntax highlighting and filtering.
 
 **Acceptance Criteria:**
+
 - [ ] Log entries with level icons
 - [ ] Syntax highlighting for objects
 - [ ] Filter by log level
@@ -288,6 +302,7 @@ Create console log viewer with syntax highlighting and filtering.
 Create network request viewer showing captured requests.
 
 **Acceptance Criteria:**
+
 - [ ] Request list with method, URL, status
 - [ ] Status color coding
 - [ ] Duration display
@@ -306,6 +321,7 @@ Create network request viewer showing captured requests.
 Create status badge component with color variants.
 
 **Acceptance Criteria:**
+
 - [ ] Color variants for each status
 - [ ] Consistent sizing
 - [ ] Optional icon
@@ -325,6 +341,7 @@ Create status badge component with color variants.
 Create Zustand store for UI state and preferences.
 
 **Acceptance Criteria:**
+
 - [ ] Theme state with persistence
 - [ ] Sidebar toggle state
 - [ ] Notification queue
@@ -342,6 +359,7 @@ Create Zustand store for UI state and preferences.
 Configure React Query with API client and default options.
 
 **Acceptance Criteria:**
+
 - [ ] Query client with defaults
 - [ ] Error handling
 - [ ] Retry configuration
@@ -359,6 +377,7 @@ Configure React Query with API client and default options.
 Create typed API client using Hono RPC or fetch with types.
 
 **Acceptance Criteria:**
+
 - [ ] Typed request/response
 - [ ] Token injection interceptor
 - [ ] Error transformation
@@ -376,6 +395,7 @@ Create typed API client using Hono RPC or fetch with types.
 Create custom hooks for data fetching with React Query.
 
 **Acceptance Criteria:**
+
 - [ ] `useFeedbackList` with filters
 - [ ] `useFeedback` for single item
 - [ ] `useStats` for dashboard
@@ -396,6 +416,7 @@ Create custom hooks for data fetching with React Query.
 Create WebSocket client for real-time updates.
 
 **Acceptance Criteria:**
+
 - [ ] Connection management (connect/disconnect)
 - [ ] Auto-reconnect with backoff
 - [ ] Event subscription/unsubscription
@@ -413,6 +434,7 @@ Create WebSocket client for real-time updates.
 Connect WebSocket events to Zustand store and React Query cache.
 
 **Acceptance Criteria:**
+
 - [ ] Update query cache on events
 - [ ] Add notifications on new feedback
 - [ ] Handle connection status changes
@@ -430,6 +452,7 @@ Connect WebSocket events to Zustand store and React Query cache.
 Implement toast notification system for real-time updates and actions.
 
 **Acceptance Criteria:**
+
 - [ ] Toast component with variants
 - [ ] Auto-dismiss with configurable duration
 - [ ] Action button support
@@ -449,6 +472,7 @@ Implement toast notification system for real-time updates and actions.
 Create authentication context with user state and methods.
 
 **Acceptance Criteria:**
+
 - [ ] User state (logged in, user info, role)
 - [ ] Login/logout methods
 - [ ] Token refresh logic
@@ -466,6 +490,7 @@ Create authentication context with user state and methods.
 Create route wrapper that redirects unauthenticated users.
 
 **Acceptance Criteria:**
+
 - [ ] Redirect to login if not authenticated
 - [ ] Loading state while checking auth
 - [ ] Role-based route protection
@@ -483,6 +508,7 @@ Create route wrapper that redirects unauthenticated users.
 Implement logout with cleanup and redirect.
 
 **Acceptance Criteria:**
+
 - [ ] Clear tokens and user state
 - [ ] Disconnect WebSocket
 - [ ] Clear query cache
@@ -502,6 +528,7 @@ Implement logout with cleanup and redirect.
 Configure Vitest for component and hook testing.
 
 **Acceptance Criteria:**
+
 - [ ] Vitest configuration
 - [ ] Testing Library setup
 - [ ] Mock service worker for API
@@ -519,6 +546,7 @@ Configure Vitest for component and hook testing.
 Write unit tests for key components.
 
 **Acceptance Criteria:**
+
 - [ ] DataTable tests
 - [ ] FilterBar tests
 - [ ] ScreenshotViewer tests
@@ -537,6 +565,7 @@ Write unit tests for key components.
 Configure Playwright and write E2E test suite.
 
 **Acceptance Criteria:**
+
 - [ ] Playwright configuration
 - [ ] Login flow test
 - [ ] Dashboard navigation test

@@ -16,9 +16,7 @@ interface VideoRoutes {
   @post
   @route("/init")
   @summary("Initialize video upload")
-  initUpload(
-    @body body: Models.InitVideoUploadRequest,
-  ): {
+  initUpload(@body body: Models.InitVideoUploadRequest): {
     @statusCode statusCode: 201;
     @body body: Models.InitVideoUploadResponse;
   };
@@ -53,9 +51,7 @@ interface VideoRoutes {
   @get
   @route("/{videoId}")
   @summary("Get video metadata")
-  get(
-    @path videoId: string,
-  ): Models.Video | {
+  get(@path videoId: string): Models.Video | {
     @statusCode statusCode: 404;
     @body body: {
       error: string;
@@ -69,10 +65,7 @@ interface VideoRoutes {
   @get
   @route("/{videoId}/stream")
   @summary("Stream video")
-  stream(
-    @path videoId: string,
-    @header range?: string,
-  ): {
+  stream(@path videoId: string, @header range?: string): {
     @header contentType: string;
     @header acceptRanges: "bytes";
     @header contentRange?: string;
@@ -91,9 +84,7 @@ interface VideoRoutes {
   @get
   @route("/{videoId}/thumbnail")
   @summary("Get video thumbnail")
-  thumbnail(
-    @path videoId: string,
-  ): {
+  thumbnail(@path videoId: string): {
     @header contentType: "image/jpeg";
     @body body: bytes;
   } | {
@@ -110,9 +101,7 @@ interface VideoRoutes {
   @delete
   @route("/{videoId}")
   @summary("Delete video")
-  delete(
-    @path videoId: string,
-  ): {
+  delete(@path videoId: string): {
     @statusCode statusCode: 204;
   } | {
     @statusCode statusCode: 404;

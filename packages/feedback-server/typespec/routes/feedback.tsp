@@ -38,7 +38,11 @@ interface FeedbackRoutes {
     @query pageSize?: int32 = 20,
 
     /** Sort field */
-    @query sortBy?: "createdAt" | "updatedAt" | "priority" | "status" = "createdAt",
+    @query sortBy?:
+      | "createdAt"
+      | "updatedAt"
+      | "priority"
+      | "status" = "createdAt",
 
     /** Sort order */
     @query sortOrder?: "asc" | "desc" = "desc",
@@ -49,9 +53,7 @@ interface FeedbackRoutes {
    */
   @post
   @summary("Create feedback")
-  create(
-    @body body: Models.CreateFeedbackRequest,
-  ): {
+  create(@body body: Models.CreateFeedbackRequest): {
     @statusCode statusCode: 201;
     @body body: Models.Feedback;
   };
@@ -62,9 +64,7 @@ interface FeedbackRoutes {
   @get
   @route("/{id}")
   @summary("Get feedback by ID")
-  get(
-    @path id: string,
-  ): Models.Feedback | {
+  get(@path id: string): Models.Feedback | {
     @statusCode statusCode: 404;
     @body body: {
       error: string;
@@ -95,9 +95,7 @@ interface FeedbackRoutes {
   @delete
   @route("/{id}")
   @summary("Delete feedback")
-  delete(
-    @path id: string,
-  ): {
+  delete(@path id: string): {
     @statusCode statusCode: 204;
   } | {
     @statusCode statusCode: 404;
@@ -117,12 +115,14 @@ interface FeedbackRoutes {
     @body body: {
       /** IDs to update */
       ids: string[];
+
       /** Update data */
       update: Models.UpdateFeedbackRequest;
     },
   ): {
     /** Number of items updated */
     updated: int32;
+
     /** IDs that were updated */
     updatedIds: string[];
   };
@@ -181,12 +181,16 @@ interface FeedbackRoutes {
   ): {
     /** Total feedback count */
     total: int64;
+
     /** Count by status */
     byStatus: Record<int32>;
+
     /** Count by type */
     byType: Record<int32>;
+
     /** Count by priority */
     byPriority: Record<int32>;
+
     /** Feedback over time (daily counts) */
     timeline: {
       date: string;

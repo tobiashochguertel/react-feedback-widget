@@ -67,5 +67,9 @@
     // "tests/**/*.py",
     // "tests/**/*.rs"
   ],
-  "cucumber.parameterTypes": [ ]
+  "cucumber.parameterTypes": [ ],
+  /*
+   VsCode extension: `typespec.typespec-vscode`
+  */
+  "typespec.tsp-server.path": "${workspaceFolder}/packages/feedback-server/node_modules/@typespec/compiler"
 }

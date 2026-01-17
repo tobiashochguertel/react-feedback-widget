@@ -5,14 +5,14 @@
 
 ## 📋 Epic Overview
 
-| Epic ID | Epic Name | Stories | Priority |
-|---------|-----------|---------|----------|
-| E001 | Authentication | 3 | P0 |
-| E002 | Feedback Management | 5 | P0 |
-| E003 | Data Export | 3 | P1 |
-| E004 | Configuration | 3 | P0 |
-| E005 | Shell Integration | 2 | P2 |
-| E006 | CI/CD Integration | 2 | P1 |
+| Epic ID | Epic Name           | Stories | Priority |
+| ------- | ------------------- | ------- | -------- |
+| E001    | Authentication      | 3       | P0       |
+| E002    | Feedback Management | 5       | P0       |
+| E003    | Data Export         | 3       | P1       |
+| E004    | Configuration       | 3       | P0       |
+| E005    | Shell Integration   | 2       | P2       |
+| E006    | CI/CD Integration   | 2       | P1       |
 
 ---
 
@@ -684,15 +684,15 @@ Feature: Pipeline Integration
 
 ## 📊 Story Point Summary
 
-| Epic | Stories | Total Points |
-|------|---------|--------------|
-| E001: Authentication | 3 | 8 |
-| E002: Feedback Management | 5 | 21 |
-| E003: Data Export | 3 | 8 |
-| E004: Configuration | 3 | 8 |
-| E005: Shell Integration | 2 | 8 |
-| E006: CI/CD Integration | 2 | 5 |
-| **Total** | **18** | **58** |
+| Epic                      | Stories | Total Points |
+| ------------------------- | ------- | ------------ |
+| E001: Authentication      | 3       | 8            |
+| E002: Feedback Management | 5       | 21           |
+| E003: Data Export         | 3       | 8            |
+| E004: Configuration       | 3       | 8            |
+| E005: Shell Integration   | 2       | 8            |
+| E006: CI/CD Integration   | 2       | 5            |
+| **Total**                 | **18**  | **58**       |
 
 ---
 

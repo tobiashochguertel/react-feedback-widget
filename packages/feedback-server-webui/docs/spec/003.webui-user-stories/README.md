@@ -5,14 +5,14 @@
 
 ## 📋 Epic Overview
 
-| Epic ID | Epic Name | Stories | Priority |
-|---------|-----------|---------|----------|
-| E001 | Authentication | 3 | P0 |
-| E002 | Dashboard | 2 | P0 |
-| E003 | Feedback List | 4 | P0 |
-| E004 | Feedback Detail | 4 | P0 |
-| E005 | Real-time Updates | 3 | P1 |
-| E006 | Settings & Preferences | 2 | P2 |
+| Epic ID | Epic Name              | Stories | Priority |
+| ------- | ---------------------- | ------- | -------- |
+| E001    | Authentication         | 3       | P0       |
+| E002    | Dashboard              | 2       | P0       |
+| E003    | Feedback List          | 4       | P0       |
+| E004    | Feedback Detail        | 4       | P0       |
+| E005    | Real-time Updates      | 3       | P1       |
+| E006    | Settings & Preferences | 2       | P2       |
 
 ---
 
@@ -630,15 +630,15 @@ Feature: API Key Management
 
 ## 📊 Story Point Summary
 
-| Epic | Stories | Total Points |
-|------|---------|--------------|
-| E001: Authentication | 3 | 13 |
-| E002: Dashboard | 2 | 8 |
-| E003: Feedback List | 4 | 21 |
-| E004: Feedback Detail | 4 | 21 |
-| E005: Real-time Updates | 3 | 8 |
-| E006: Settings | 2 | 5 |
-| **Total** | **18** | **76** |
+| Epic                    | Stories | Total Points |
+| ----------------------- | ------- | ------------ |
+| E001: Authentication    | 3       | 13           |
+| E002: Dashboard         | 2       | 8            |
+| E003: Feedback List     | 4       | 21           |
+| E004: Feedback Detail   | 4       | 21           |
+| E005: Real-time Updates | 3       | 8            |
+| E006: Settings          | 2       | 5            |
+| **Total**               | **18**  | **76**       |
 
 ---
 

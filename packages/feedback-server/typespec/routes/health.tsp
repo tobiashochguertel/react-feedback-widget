@@ -101,12 +101,16 @@ interface InfoRoutes {
   info(): {
     /** Server name */
     name: string;
+
     /** Server version */
     version: string;
+
     /** API version */
     apiVersion: string;
+
     /** Supported features */
     features: string[];
+
     /** Documentation URL */
     docsUrl?: string;
   };

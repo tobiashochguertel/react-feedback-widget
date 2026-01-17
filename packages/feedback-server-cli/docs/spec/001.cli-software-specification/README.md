@@ -100,26 +100,26 @@ src/
 
 ### Core Technologies
 
-| Technology | Purpose | Version |
-|------------|---------|---------|
-| TypeScript | Type-safe development | 5.x |
-| Bun | Runtime and package manager | 1.1.x |
-| Commander.js | CLI framework | 12.x |
-| Chalk | Terminal styling | 5.x |
-| Inquirer | Interactive prompts | 10.x |
-| Ora | Progress spinners | 8.x |
-| Table | Table formatting | 6.x |
+| Technology   | Purpose                     | Version |
+| ------------ | --------------------------- | ------- |
+| TypeScript   | Type-safe development       | 5.x     |
+| Bun          | Runtime and package manager | 1.1.x   |
+| Commander.js | CLI framework               | 12.x    |
+| Chalk        | Terminal styling            | 5.x     |
+| Inquirer     | Interactive prompts         | 10.x    |
+| Ora          | Progress spinners           | 8.x     |
+| Table        | Table formatting            | 6.x     |
 
 ### Additional Libraries
 
-| Library | Purpose |
-|---------|---------|
-| `conf` | Configuration management |
-| `keytar` | Secure credential storage |
-| `csv-stringify` | CSV export |
-| `yaml` | YAML config support |
-| `boxen` | Info boxes |
-| `figures` | Terminal symbols |
+| Library           | Purpose                      |
+| ----------------- | ---------------------------- |
+| `conf`            | Configuration management     |
+| `keytar`          | Secure credential storage    |
+| `csv-stringify`   | CSV export                   |
+| `yaml`            | YAML config support          |
+| `boxen`           | Info boxes                   |
+| `figures`         | Terminal symbols             |
 | `update-notifier` | Version update notifications |
 
 ### Build Tools
@@ -308,13 +308,13 @@ The CLI stores configuration in a YAML file at:
 # Server configuration
 server:
   url: https://feedback.example.com
-  timeout: 30000  # milliseconds
+  timeout: 30000 # milliseconds
 
 # Output preferences
 output:
-  format: table  # table, json, yaml
+  format: table # table, json, yaml
   color: true
-  pager: auto    # auto, always, never
+  pager: auto # auto, always, never
 
 # Pagination defaults
 pagination:
@@ -325,18 +325,18 @@ pagination:
 
 # Shell completion
 completion:
-  shell: auto  # auto, bash, zsh, fish
+  shell: auto # auto, bash, zsh, fish
 ```
 
 ### Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `FEEDBACK_SERVER_URL` | Server URL | - |
-| `FEEDBACK_API_KEY` | API key for authentication | - |
-| `FEEDBACK_CLI_CONFIG` | Custom config file path | `~/.config/feedback-cli/config.yaml` |
-| `FEEDBACK_CLI_DEBUG` | Enable debug logging | `false` |
-| `NO_COLOR` | Disable colored output | `false` |
+| Variable              | Description                | Default                              |
+| --------------------- | -------------------------- | ------------------------------------ |
+| `FEEDBACK_SERVER_URL` | Server URL                 | -                                    |
+| `FEEDBACK_API_KEY`    | API key for authentication | -                                    |
+| `FEEDBACK_CLI_CONFIG` | Custom config file path    | `~/.config/feedback-cli/config.yaml` |
+| `FEEDBACK_CLI_DEBUG`  | Enable debug logging       | `false`                              |
+| `NO_COLOR`            | Disable colored output     | `false`                              |
 
 ---
 
@@ -382,7 +382,7 @@ items:
     title: Login button not working
     type: bug
     status: pending
-    createdAt: '2025-01-15T10:30:00Z'
+    createdAt: "2025-01-15T10:30:00Z"
 total: 42
 page: 1
 limit: 20
@@ -394,15 +394,15 @@ limit: 20
 
 ### Exit Codes
 
-| Code | Meaning |
-|------|---------|
-| 0 | Success |
-| 1 | General error |
-| 2 | Configuration error |
-| 3 | Authentication error |
-| 4 | Not found error |
-| 5 | Network error |
-| 6 | Validation error |
+| Code | Meaning              |
+| ---- | -------------------- |
+| 0    | Success              |
+| 1    | General error        |
+| 2    | Configuration error  |
+| 3    | Authentication error |
+| 4    | Not found error      |
+| 5    | Network error        |
+| 6    | Validation error     |
 
 ### Error Messages
 

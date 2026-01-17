@@ -8,14 +8,14 @@
 
 ## 📋 User Story Overview
 
-| Epic | Stories | Priority | Status |
-| ---- | ------- | -------- | ------ |
-| E001: Feedback Submission | 3 | 🟢 High | 🔲 TODO |
-| E002: Feedback Management | 4 | 🟢 High | 🔲 TODO |
-| E003: Real-time Sync | 2 | 🟡 Medium | 🔲 TODO |
-| E004: Data Portability | 3 | 🟡 Medium | 🔲 TODO |
-| E005: Security | 2 | 🟡 Medium | 🔲 TODO |
-| E006: Deployment | 2 | 🟢 High | 🔲 TODO |
+| Epic                      | Stories | Priority  | Status  |
+| ------------------------- | ------- | --------- | ------- |
+| E001: Feedback Submission | 3       | 🟢 High   | 🔲 TODO |
+| E002: Feedback Management | 4       | 🟢 High   | 🔲 TODO |
+| E003: Real-time Sync      | 2       | 🟡 Medium | 🔲 TODO |
+| E004: Data Portability    | 3       | 🟡 Medium | 🔲 TODO |
+| E005: Security            | 2       | 🟡 Medium | 🔲 TODO |
+| E006: Deployment          | 2       | 🟢 High   | 🔲 TODO |
 
 ---
 
@@ -36,6 +36,7 @@
 **So that** user feedback is stored centrally
 
 **Acceptance Criteria**:
+
 ```gherkin
 Scenario: Submit new feedback successfully
   Given I have a valid feedback payload
@@ -69,6 +70,7 @@ Scenario: Submit feedback with validation error
 **So that** developers can see exactly what the user experienced
 
 **Acceptance Criteria**:
+
 ```gherkin
 Scenario: Upload video blob
   Given I have a video blob (webm format)
@@ -102,6 +104,7 @@ Scenario: Reject invalid video format
 **So that** I can distinguish feedback from different applications
 
 **Acceptance Criteria**:
+
 ```gherkin
 Scenario: Feedback includes client ID
   Given feedback is submitted from "app-dashboard"
@@ -134,6 +137,7 @@ Scenario: Query feedback by client
 **So that** I can review what users have reported
 
 **Acceptance Criteria**:
+
 ```gherkin
 Scenario: List all feedback
   Given there are 25 feedback items in the database
@@ -161,6 +165,7 @@ Scenario: Paginate feedback
 **So that** I can understand the issue and reproduce it
 
 **Acceptance Criteria**:
+
 ```gherkin
 Scenario: Get feedback by ID
   Given a feedback item exists with ID "fb-123"
@@ -188,6 +193,7 @@ Scenario: Feedback not found
 **So that** I can track progress on resolving issues
 
 **Acceptance Criteria**:
+
 ```gherkin
 Scenario: Update feedback status
   Given a feedback item with status "open"
@@ -213,6 +219,7 @@ Scenario: Update multiple fields
 **So that** I can remove spam or duplicates
 
 **Acceptance Criteria**:
+
 ```gherkin
 Scenario: Delete feedback
   Given a feedback item exists
@@ -246,6 +253,7 @@ Scenario: Delete non-existent feedback
 **So that** I don't need to manually refresh
 
 **Acceptance Criteria**:
+
 ```gherkin
 Scenario: Receive new feedback notification
   Given I am connected to the WebSocket server
@@ -276,6 +284,7 @@ Scenario: Receive deletion notification
 **So that** I'm not overwhelmed with notifications
 
 **Acceptance Criteria**:
+
 ```gherkin
 Scenario: Subscribe to specific client
   Given I connect with clientId filter "my-app"
@@ -305,6 +314,7 @@ Scenario: Subscribe to specific client
 **So that** I can create backups
 
 **Acceptance Criteria**:
+
 ```gherkin
 Scenario: Export all feedback
   Given there are 10 feedback items
@@ -330,6 +340,7 @@ Scenario: Export filtered feedback
 **So that** I can restore from backup or migrate data
 
 **Acceptance Criteria**:
+
 ```gherkin
 Scenario: Import feedback bundle
   Given I have a valid feedback bundle JSON
@@ -356,6 +367,7 @@ Scenario: Handle duplicate feedback
 **So that** I don't corrupt my data
 
 **Acceptance Criteria**:
+
 ```gherkin
 Scenario: Reject invalid bundle
   Given I have a malformed JSON bundle
@@ -389,6 +401,7 @@ Scenario: Reject incompatible version
 **So that** my requests are authorized
 
 **Acceptance Criteria**:
+
 ```gherkin
 Scenario: Request with valid API key
   Given AUTH_ENABLED is true
@@ -419,6 +432,7 @@ Scenario: Request with invalid API key
 **So that** the server is protected from abuse
 
 **Acceptance Criteria**:
+
 ```gherkin
 Scenario: Allow requests within limit
   Given rate limit is 100 per minute
@@ -452,6 +466,7 @@ Scenario: Reject excessive requests
 **So that** deployment is consistent across environments
 
 **Acceptance Criteria**:
+
 ```gherkin
 Scenario: Build Docker image
   Given I have the source code
@@ -477,6 +492,7 @@ Scenario: Run with environment variables
 **So that** Kubernetes/Docker can monitor the service
 
 **Acceptance Criteria**:
+
 ```gherkin
 Scenario: Health check succeeds
   Given the server is running
@@ -499,11 +515,11 @@ Scenario: Health check fails
 
 ## 📊 Priority Matrix
 
-| Priority | User Stories |
-| -------- | ------------ |
-| 🟢 High | US001, US002, US004, US005, US006, US015, US016 |
+| Priority  | User Stories                                    |
+| --------- | ----------------------------------------------- |
+| 🟢 High   | US001, US002, US004, US005, US006, US015, US016 |
 | 🟡 Medium | US003, US007, US008, US010, US011, US012, US013 |
-| 🔴 Low | US009, US014 |
+| 🔴 Low    | US009, US014                                    |
 
 ---
 
