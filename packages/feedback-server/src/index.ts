@@ -19,6 +19,7 @@ import { feedbackRouter } from "./routes/feedback";
 import { videoRouter } from "./routes/video";
 import { healthRouter } from "./routes/health";
 import { sync } from "./routes/sync";
+import { docs } from "./routes/docs";
 import { websocketConfig, getWebSocketStats } from "./websocket";
 import { errorHandler } from "./middleware/error-handler";
 import { rateLimiter } from "./middleware/rate-limiter";
@@ -59,6 +60,9 @@ app.onError(errorHandler);
 
 // Health routes (no auth required)
 app.route("/api/v1/health", healthRouter);
+
+// API Documentation (no auth required)
+app.route("/api/docs", docs);
 
 // API Key authentication for protected routes
 // Applied after health routes so health checks don't require auth

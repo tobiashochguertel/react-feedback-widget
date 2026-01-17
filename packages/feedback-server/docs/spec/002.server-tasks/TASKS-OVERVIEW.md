@@ -16,8 +16,8 @@
 | Real-time Sync | 2      | 2    | 0           | 0    |
 | Authentication | 2      | 2    | 0           | 0    |
 | DevOps         | 3      | 3    | 0           | 0    |
-| Documentation  | 2      | 0    | 0           | 2    |
-| **Total**      | **21** | 19   | 0           | 2    |
+| Documentation  | 2      | 1    | 0           | 1    |
+| **Total**      | **21** | 20   | 0           | 1    |
 
 ---
 
@@ -88,10 +88,10 @@
 
 **Description**: API documentation and guides
 
-| Task | Name                  | Status  | Priority  | Dependencies |
-| ---- | --------------------- | ------- | --------- | ------------ |
-| O001 | OpenAPI Documentation | 🔲 TODO | 🟡 Medium | S002, F002   |
-| O002 | Deployment Guide      | 🔲 TODO | 🟡 Medium | D002         |
+| Task | Name                  | Status  | Priority  | Dependencies | Completed  |
+| ---- | --------------------- | ------- | --------- | ------------ | ---------- |
+| O001 | OpenAPI Documentation | ✅ Done | 🟡 Medium | S002, F002   | 2026-01-18 |
+| O002 | Deployment Guide      | 🔲 TODO | 🟡 Medium | D002         | -          |
 
 ---
 
@@ -106,7 +106,7 @@
 | 5     | F004, F005, F006, A001 | Bulk operations, search, API key auth               | ✅ Complete    |
 | 6     | R001, R002, T002       | WebSocket sync, PostgreSQL adapter                  | ✅ Complete    |
 | 7     | D002, D003, A002       | Docker Compose, CI/CD, JWT auth                     | ✅ Complete    |
-| 8     | O001, O002             | Documentation                                       | 🔲 Not Started |
+| 8     | O001, O002             | Documentation                                       | � In Progress |
 
 ---
 

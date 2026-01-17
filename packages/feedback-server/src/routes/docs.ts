@@ -1,0 +1,97 @@
+/**
+ * API Documentation routes
+ *
+ * Serves OpenAPI specification and Swagger UI
+ */
+
+import { Hono } from "hono";
+import { swaggerUI } from "@hono/swagger-ui";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
+import yaml from "js-yaml";
+
+const docs = new Hono();
+
+// Cache the OpenAPI spec in memory
+let openApiSpecCache: Record<string, unknown> | null = null;
+
+/**
+ * Load OpenAPI spec from file
+ */
+async function loadOpenApiSpec(): Promise<Record<string, unknown>> {
+  if (openApiSpecCache) {
+    return openApiSpecCache;
+  }
+
+  const specPath = join(process.cwd(), "src/generated/openapi.yaml");
+
+  try {
+    const content = await readFile(specPath, "utf-8");
+    openApiSpecCache = yaml.load(content) as Record<string, unknown>;
+    return openApiSpecCache;
+  } catch (error) {
+    console.error("Failed to load OpenAPI spec:", error);
+    throw new Error("OpenAPI specification not found");
+  }
+}
+
+/**
+ * GET /api/docs
+ *
+ * Swagger UI interface
+ */
+docs.get("/", swaggerUI({ url: "/api/docs/openapi.json" }));
+
+/**
+ * GET /api/docs/openapi.json
+ *
+ * OpenAPI specification in JSON format
+ */
+docs.get("/openapi.json", async (c) => {
+  try {
+    const spec = await loadOpenApiSpec();
+    return c.json(spec);
+  } catch {
+    return c.json(
+      {
+        error: "OpenAPI specification not available",
+        message: "Run 'bun run generate:api' to generate the specification",
+      },
+      500
+    );
+  }
+});
+
+/**
+ * GET /api/docs/openapi.yaml
+ *
+ * OpenAPI specification in YAML format
+ */
+docs.get("/openapi.yaml", async (c) => {
+  const specPath = join(process.cwd(), "src/generated/openapi.yaml");
+
+  try {
+    const content = await readFile(specPath, "utf-8");
+    c.header("Content-Type", "text/yaml");
+    return c.text(content);
+  } catch {
+    return c.json(
+      {
+        error: "OpenAPI specification not available",
+        message: "Run 'bun run generate:api' to generate the specification",
+      },
+      500
+    );
+  }
+});
+
+/**
+ * Clear OpenAPI spec cache
+ *
+ * Useful for development when regenerating specs
+ */
+export function clearOpenApiCache(): void {
+  openApiSpecCache = null;
+}
+
+export { docs };
