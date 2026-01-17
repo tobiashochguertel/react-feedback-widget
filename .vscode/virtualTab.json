@@ -3,9 +3,9 @@
     "id": "builtin_group_id",
     "name": "Currently Open Files",
     "files": [
-      "packages/feedback-server/src/websocket.ts",
-      "packages/feedback-server-cli/docs/spec/002.cli-tasks/TASKS-OVERVIEW.md",
       "packages/feedback-server/src/routes/sync.ts",
+      "packages/feedback-server/src/middleware/auth.ts",
+      "packages/feedback-server/docs/spec/002.server-tasks/TASKS-OVERVIEW.md",
       "packages/feedback-server/src/sync/protocol.ts"
     ],
     "builtIn": true,
