@@ -145,3 +145,20 @@ export type FeedbackListQuery =
 /** Feedback export query parameters */
 export type FeedbackExportQuery =
   operations["FeedbackRoutes_export"]["parameters"]["query"];
+
+// ============================================================================
+// WebSocket Types
+// ============================================================================
+
+/**
+ * WebSocket event and command types for real-time updates.
+ *
+ * @example
+ * ```typescript
+ * import { ServerEvent, ClientCommand, isFeedbackCreatedEvent } from "@feedback/api-types";
+ *
+ * // Or import from websocket submodule
+ * import { createSubscribeCommand } from "@feedback/api-types/websocket";
+ * ```
+ */
+export * from "./websocket/index.js";

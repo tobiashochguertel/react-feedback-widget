@@ -1,21 +1,20 @@
 # 005: WebSocket API-First Integration Tasks
 
 > **Tasks for:** `feedback-server-webui` package
-> **Related Specification:** [README.md](./README.md)
-> **Status:** 0/10 Complete
+> **Related Specification:** [README.md](./README.md) > **Status:** 0/10 Complete
 
 ---
 
 ## 📊 Task Summary
 
-| Category | Tasks | Completed | Remaining |
-|----------|-------|-----------|-----------|
-| Setup | 2 | 0 | 2 |
-| Library | 3 | 0 | 3 |
-| Hooks | 2 | 0 | 2 |
-| Store Integration | 1 | 0 | 1 |
-| Testing | 2 | 0 | 2 |
-| **Total** | **10** | **0** | **10** |
+| Category          | Tasks  | Completed | Remaining |
+| ----------------- | ------ | --------- | --------- |
+| Setup             | 2      | 0         | 2         |
+| Library           | 3      | 0         | 3         |
+| Hooks             | 2      | 0         | 2         |
+| Store Integration | 1      | 0         | 1         |
+| Testing           | 2      | 0         | 2         |
+| **Total**         | **10** | **0**     | **10**    |
 
 ---
 
@@ -107,12 +106,18 @@ export type WebSocketClientOptions = {
 export class WebSocketClient {
   private ws: WebSocket | null = null;
   private connectionId: string | null = null;
-  
+
   constructor(private options: WebSocketClientOptions) {}
-  
-  connect(): void { /* ... */ }
-  disconnect(): void { /* ... */ }
-  sendCommand(command: ClientCommands): void { /* ... */ }
+
+  connect(): void {
+    /* ... */
+  }
+  disconnect(): void {
+    /* ... */
+  }
+  sendCommand(command: ClientCommands): void {
+    /* ... */
+  }
 }
 ```
 
@@ -213,9 +218,9 @@ export function useWebSocket(options: UseWebSocketOptions): UseWebSocketReturn {
   const { url, autoConnect = true, autoReconnect = true } = options;
   const queryClient = useQueryClient();
   const { setWsStatus, setWsConnectionId } = useUIStore();
-  
+
   // Implementation...
-  
+
   return {
     status,
     connectionId,
@@ -259,14 +264,14 @@ Create a convenience hook for subscribing to feedback events.
 
 ```typescript
 export function useFeedbackSubscription(
-  options: UseFeedbackSubscriptionOptions = {}
+  options: UseFeedbackSubscriptionOptions = {},
 ): UseFeedbackSubscriptionReturn {
   const { projectId, autoSubscribe = true } = options;
   const ws = useWebSocket({ url: getWebSocketUrl() });
   const queryClient = useQueryClient();
-  
+
   // Handle events, update cache
-  
+
   return {
     isSubscribed,
     subscribe,
@@ -413,11 +418,11 @@ graph TD
 
 These tasks provide the foundation for the existing real-time tasks:
 
-| Existing Task | Relationship |
-|---------------|--------------|
-| TASK-WUI-021: Create WebSocket Client | Covered by TASK-WWS-003, TASK-WWS-004, TASK-WWS-005, TASK-WWS-006 |
-| TASK-WUI-022: Integrate WebSocket with Store | Covered by TASK-WWS-007, TASK-WWS-008 |
-| TASK-WUI-023: Implement Real-time UI Updates | Uses hooks from this spec |
+| Existing Task                                | Relationship                                                      |
+| -------------------------------------------- | ----------------------------------------------------------------- |
+| TASK-WUI-021: Create WebSocket Client        | Covered by TASK-WWS-003, TASK-WWS-004, TASK-WWS-005, TASK-WWS-006 |
+| TASK-WUI-022: Integrate WebSocket with Store | Covered by TASK-WWS-007, TASK-WWS-008                             |
+| TASK-WUI-023: Implement Real-time UI Updates | Uses hooks from this spec                                         |
 
 After completing these tasks, TASK-WUI-021 and TASK-WUI-022 can be marked as complete. TASK-WUI-023 focuses on UI components that use these hooks.
 

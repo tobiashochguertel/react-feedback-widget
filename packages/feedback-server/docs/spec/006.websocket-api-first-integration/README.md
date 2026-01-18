@@ -119,14 +119,14 @@ Replace local type definitions with imports from `@feedback/api-types`:
 
 ```typescript
 // Before (src/websocket.ts)
-export type ClientMessage = 
+export type ClientMessage =
   | { type: "subscribe"; projectId: string }
-  | { type: "ping" }
-  // ...
+  | { type: "ping" };
+// ...
 
 // After (src/websocket/types.ts)
-import type { 
-  ServerEvents, 
+import type {
+  ServerEvents,
   ClientCommands,
   FeedbackCreatedEvent,
   FeedbackUpdatedEvent,
@@ -147,7 +147,9 @@ import type { ClientCommands } from "@feedback/api-types";
 const ajv = new Ajv({ strict: false });
 const validateCommand = ajv.compile(clientCommandsSchema);
 
-export function parseAndValidateCommand(data: string): 
+export function parseAndValidateCommand(
+  data: string,
+):
   | { success: true; command: ClientCommands }
   | { success: false; error: string } {
   let parsed: unknown;
@@ -156,14 +158,14 @@ export function parseAndValidateCommand(data: string):
   } catch {
     return { success: false, error: "Invalid JSON" };
   }
-  
+
   if (!validateCommand(parsed)) {
-    return { 
-      success: false, 
-      error: ajv.errorsText(validateCommand.errors) 
+    return {
+      success: false,
+      error: ajv.errorsText(validateCommand.errors),
     };
   }
-  
+
   return { success: true, command: parsed as ClientCommands };
 }
 ```
@@ -192,15 +194,15 @@ notifyFeedbackCreated(event);
 
 ### Current → New Mapping
 
-| Current Type | New TypeSpec Type | Notes |
-|--------------|------------------|-------|
-| `feedback:created` | `feedback.created` | Dot notation per spec |
-| `feedback:updated` | `feedback.updated` | Dot notation per spec |
-| `feedback:deleted` | `feedback.deleted` | Dot notation per spec |
-| `welcome` | `connection.ack` | Renamed, adds `serverVersion` |
-| `subscribed` | `subscription.confirmed` | Renamed, structured channel |
-| `pong` | `pong` | Same, add timestamp |
-| `error` | `error` | Add typed error codes |
+| Current Type       | New TypeSpec Type        | Notes                         |
+| ------------------ | ------------------------ | ----------------------------- |
+| `feedback:created` | `feedback.created`       | Dot notation per spec         |
+| `feedback:updated` | `feedback.updated`       | Dot notation per spec         |
+| `feedback:deleted` | `feedback.deleted`       | Dot notation per spec         |
+| `welcome`          | `connection.ack`         | Renamed, adds `serverVersion` |
+| `subscribed`       | `subscription.confirmed` | Renamed, structured channel   |
+| `pong`             | `pong`                   | Same, add timestamp           |
+| `error`            | `error`                  | Add typed error codes         |
 
 ### Backward Compatibility
 
@@ -215,7 +217,7 @@ function broadcastFeedbackCreated(feedback: Feedback) {
     timestamp: new Date().toISOString(),
     feedback,
   });
-  
+
   // Old format (deprecation period)
   broadcast({
     type: "feedback:created",
@@ -246,28 +248,28 @@ function broadcastFeedbackCreated(feedback: Feedback) {
 
 ### New Files
 
-| File | Purpose |
-|------|---------|
-| `src/websocket/index.ts` | Module re-exports |
-| `src/websocket/config.ts` | Bun WebSocket config |
-| `src/websocket/validator.ts` | Ajv validation |
-| `src/websocket/handler.ts` | Message routing |
-| `src/websocket/broadcaster.ts` | Event broadcasting |
+| File                             | Purpose                 |
+| -------------------------------- | ----------------------- |
+| `src/websocket/index.ts`         | Module re-exports       |
+| `src/websocket/config.ts`        | Bun WebSocket config    |
+| `src/websocket/validator.ts`     | Ajv validation          |
+| `src/websocket/handler.ts`       | Message routing         |
+| `src/websocket/broadcaster.ts`   | Event broadcasting      |
 | `src/websocket/subscriptions.ts` | Subscription management |
-| `src/websocket/types.ts` | Local type extensions |
+| `src/websocket/types.ts`         | Local type extensions   |
 
 ### Modified Files
 
-| File | Changes |
-|------|---------|
-| `src/index.ts` | Import from `./websocket` module |
-| `src/routes/feedback.ts` | Use typed broadcasting |
-| `package.json` | Add dependencies |
+| File                     | Changes                          |
+| ------------------------ | -------------------------------- |
+| `src/index.ts`           | Import from `./websocket` module |
+| `src/routes/feedback.ts` | Use typed broadcasting           |
+| `package.json`           | Add dependencies                 |
 
 ### Deprecated Files
 
-| File | Action |
-|------|--------|
+| File               | Action                                          |
+| ------------------ | ----------------------------------------------- |
 | `src/websocket.ts` | Migrate to `src/websocket/` module, then delete |
 
 ---

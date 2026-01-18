@@ -9,8 +9,8 @@ options:
     output-file: 'openapi.yaml'
 
   '@typespec/json-schema':
-    emitter-output-dir: '{project-root}/../generated/feedback-api-schemas/schemas'
-    bundleId: 'https://feedback.api/schemas'
+    emitter-output-dir: '{project-root}/../generated/feedback-api-schemas'
+    bundleId: 'feedback-api-schemas'
 
   # '@typespec/http-client-js':
   #   emitter-output-dir: '{project-root}/../generated/feedback-api-client-js/src'

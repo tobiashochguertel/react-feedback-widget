@@ -3,9 +3,10 @@
 > **Addon Specification** for `feedback-server-webui` package
 > **Version:** 0.1.0
 > **Status:** Draft
-> **Dependencies:** 
->   - `packages/feedback-server-api/docs/spec/001.websocket-addon-specification`
->   - `packages/feedback-server/docs/spec/006.websocket-api-first-integration`
+> **Dependencies:**
+>
+> - `packages/feedback-server-api/docs/spec/001.websocket-addon-specification`
+> - `packages/feedback-server/docs/spec/006.websocket-api-first-integration`
 
 ---
 
@@ -91,11 +92,11 @@ sequenceDiagram
     WS->>WS: Connect to server
     WS-->>Hook: onopen
     Hook->>Store: setWsStatus('connected')
-    
+
     Note over Hook,WS: Client sends subscribe command
     Hook->>WS: sendCommand({ type: 'subscribe', channel: 'feedback' })
     WS-->>Hook: SubscriptionConfirmedEvent
-    
+
     Note over WS,RQ: Server broadcasts event
     WS-->>Hook: FeedbackCreatedEvent
     Hook->>RQ: invalidateQueries(['feedbacks'])
@@ -110,23 +111,23 @@ graph TD
         FeedbackList[FeedbackList Component]
         FeedbackDetail[FeedbackDetail Component]
     end
-    
+
     subgraph "Hook Layer"
         useFeedbackSub[useFeedbackSubscription]
         useWS[useWebSocket]
     end
-    
+
     subgraph "Library Layer"
         WSClient[WebSocketClient]
         Reconnect[ReconnectManager]
     end
-    
+
     subgraph "External"
         Store[Zustand Store]
         RQ[React Query]
         Types[@feedback/api-types]
     end
-    
+
     FeedbackList --> useFeedbackSub
     FeedbackDetail --> useFeedbackSub
     useFeedbackSub --> useWS
@@ -159,8 +160,8 @@ Add to `packages/feedback-server-webui/package.json`:
 
 ```typescript
 // src/hooks/useWebSocket.ts
-import type { 
-  ServerEvents, 
+import type {
+  ServerEvents,
   ClientCommands,
   SubscribeCommand,
   UnsubscribeCommand,
@@ -184,10 +185,7 @@ Invalidate/update cache on server events:
 queryClient.invalidateQueries({ queryKey: ["feedbacks"] });
 
 // When FeedbackUpdatedEvent received
-queryClient.setQueryData(
-  ["feedback", event.feedback.id],
-  event.feedback
-);
+queryClient.setQueryData(["feedback", event.feedback.id], event.feedback);
 // Also invalidate list
 queryClient.invalidateQueries({ queryKey: ["feedbacks"] });
 
@@ -205,7 +203,7 @@ interface UIState {
   wsStatus: WebSocketStatus;
   wsConnectionId: string | null;
   wsLastError: string | null;
-  
+
   // Actions
   setWsStatus: (status: WebSocketStatus) => void;
   setWsConnectionId: (id: string | null) => void;
@@ -234,16 +232,16 @@ interface UseWebSocketReturn {
   status: WebSocketStatus;
   connectionId: string | null;
   lastError: string | null;
-  
+
   // Actions
   connect: () => void;
   disconnect: () => void;
   sendCommand: (command: ClientCommands) => void;
-  
+
   // Subscription helpers
   subscribe: (channel: string, filters?: SubscriptionFilters) => void;
   unsubscribe: (channel: string) => void;
-  
+
   // Keep-alive
   ping: () => void;
 }
@@ -304,9 +302,9 @@ function handleServerEvent(event: ServerEvents) {
 
 ### Cache Update Strategy
 
-| Event Type | Cache Action |
-|-----------|--------------|
-| `feedback.created` | Invalidate list query |
+| Event Type         | Cache Action                  |
+| ------------------ | ----------------------------- |
+| `feedback.created` | Invalidate list query         |
 | `feedback.updated` | Update item + invalidate list |
 | `feedback.deleted` | Remove item + invalidate list |
 
@@ -317,8 +315,8 @@ function handleServerEvent(event: ServerEvents) {
 ### Exponential Backoff
 
 ```typescript
-const INITIAL_DELAY = 1000;     // 1 second
-const MAX_DELAY = 30000;        // 30 seconds
+const INITIAL_DELAY = 1000; // 1 second
+const MAX_DELAY = 30000; // 30 seconds
 const BACKOFF_MULTIPLIER = 2;
 const MAX_ATTEMPTS = 10;
 
@@ -377,22 +375,22 @@ On reconnection:
 
 ### New Files
 
-| File | Purpose |
-|------|---------|
-| `src/lib/websocket/index.ts` | Module re-exports |
-| `src/lib/websocket/client.ts` | WebSocket client class |
-| `src/lib/websocket/types.ts` | Client-specific types |
-| `src/lib/websocket/reconnect.ts` | Reconnection logic |
-| `src/hooks/useWebSocket.ts` | Main WebSocket hook |
+| File                                   | Purpose                    |
+| -------------------------------------- | -------------------------- |
+| `src/lib/websocket/index.ts`           | Module re-exports          |
+| `src/lib/websocket/client.ts`          | WebSocket client class     |
+| `src/lib/websocket/types.ts`           | Client-specific types      |
+| `src/lib/websocket/reconnect.ts`       | Reconnection logic         |
+| `src/hooks/useWebSocket.ts`            | Main WebSocket hook        |
 | `src/hooks/useFeedbackSubscription.ts` | Feedback subscription hook |
 
 ### Modified Files
 
-| File | Changes |
-|------|---------|
-| `src/stores/ui.ts` | Add WebSocket connection state/actions |
-| `src/hooks/index.ts` | Export new hooks |
-| `package.json` | Add `@feedback/api-types` dependency |
+| File                 | Changes                                |
+| -------------------- | -------------------------------------- |
+| `src/stores/ui.ts`   | Add WebSocket connection state/actions |
+| `src/hooks/index.ts` | Export new hooks                       |
+| `package.json`       | Add `@feedback/api-types` dependency   |
 
 ---
 

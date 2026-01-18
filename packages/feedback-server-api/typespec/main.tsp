@@ -2,12 +2,15 @@ import "@typespec/http";
 import "@typespec/rest";
 import "@typespec/openapi3";
 import "@typespec/openapi";
+import "@typespec/json-schema";
 
 import "./models/feedback.tsp";
 import "./models/video.tsp";
 import "./routes/feedback.tsp";
 import "./routes/video.tsp";
 import "./routes/health.tsp";
+import "./websocket/events.tsp";
+import "./websocket/commands.tsp";
 
 using Http;
 using Rest;

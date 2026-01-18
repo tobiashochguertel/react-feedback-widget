@@ -1,0 +1,656 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: feedback-api-schemas
+$defs:
+  ServerEvents:
+    $schema: https://json-schema.org/draft/2020-12/schema
+    $id: ServerEvents.yaml
+    anyOf:
+      - $ref: "#/$defs/FeedbackCreatedEvent"
+        description: Feedback item was created
+      - $ref: "#/$defs/FeedbackUpdatedEvent"
+        description: Feedback item was updated
+      - $ref: "#/$defs/FeedbackDeletedEvent"
+        description: Feedback item was deleted
+      - $ref: "#/$defs/FeedbackBulkUpdateEvent"
+        description: Multiple feedback items updated (bulk operation)
+      - $ref: "#/$defs/ConnectionAckEvent"
+        description: Connection acknowledged by server
+      - $ref: "#/$defs/SubscriptionConfirmedEvent"
+        description: Subscription confirmed
+      - $ref: "#/$defs/ErrorEvent"
+        description: Error occurred
+      - $ref: "#/$defs/PongEvent"
+        description: Pong response to ping
+    description: |-
+      Server-to-Client Events sent over WebSocket
+
+      This union type represents all possible events that the server can send
+      to connected clients. Each event has a `type` discriminator field.
+    $defs:
+      FeedbackCreatedEvent:
+        type: object
+        properties:
+          type:
+            type: string
+            const: feedback.created
+            description: Event type discriminator
+          timestamp:
+            type: string
+            format: date-time
+            description: ISO 8601 timestamp when event occurred
+          feedback:
+            $ref: "#/$defs/Feedback"
+            description: The created feedback item
+        required:
+          - type
+          - timestamp
+          - feedback
+        description: Emitted when a new feedback item is created
+      FeedbackUpdatedEvent:
+        type: object
+        properties:
+          type:
+            type: string
+            const: feedback.updated
+            description: Event type discriminator
+          timestamp:
+            type: string
+            format: date-time
+            description: ISO 8601 timestamp when event occurred
+          feedback:
+            $ref: "#/$defs/Feedback"
+            description: The updated feedback item
+          changedFields:
+            type: array
+            items:
+              type: string
+            description: List of fields that were changed
+        required:
+          - type
+          - timestamp
+          - feedback
+          - changedFields
+        description: Emitted when a feedback item is updated
+      FeedbackDeletedEvent:
+        type: object
+        properties:
+          type:
+            type: string
+            const: feedback.deleted
+            description: Event type discriminator
+          timestamp:
+            type: string
+            format: date-time
+            description: ISO 8601 timestamp when event occurred
+          feedbackId:
+            type: string
+            description: ID of the deleted feedback
+        required:
+          - type
+          - timestamp
+          - feedbackId
+        description: Emitted when a feedback item is deleted
+      FeedbackBulkUpdateEvent:
+        type: object
+        properties:
+          type:
+            type: string
+            const: feedback.bulk_update
+            description: Event type discriminator
+          timestamp:
+            type: string
+            format: date-time
+            description: ISO 8601 timestamp when event occurred
+          feedbackIds:
+            type: array
+            items:
+              type: string
+            description: IDs of updated feedback items
+          action:
+            $ref: "#/$defs/BulkUpdateAction"
+            description: Action that was performed
+        required:
+          - type
+          - timestamp
+          - feedbackIds
+          - action
+        description: Emitted when multiple feedback items are updated in bulk
+      ConnectionAckEvent:
+        type: object
+        properties:
+          type:
+            type: string
+            const: connection.ack
+            description: Event type discriminator
+          timestamp:
+            type: string
+            format: date-time
+            description: ISO 8601 timestamp when connection was established
+          connectionId:
+            type: string
+            description: Unique connection identifier assigned by server
+          serverVersion:
+            type: string
+            description: Server version for compatibility checking
+        required:
+          - type
+          - timestamp
+          - connectionId
+          - serverVersion
+        description: Emitted when WebSocket connection is established
+      SubscriptionConfirmedEvent:
+        type: object
+        properties:
+          type:
+            type: string
+            const: subscription.confirmed
+            description: Event type discriminator
+          timestamp:
+            type: string
+            format: date-time
+            description: ISO 8601 timestamp when subscription was confirmed
+          channel:
+            type: string
+            description: Channel that was subscribed to
+        required:
+          - type
+          - timestamp
+          - channel
+        description: Emitted when subscription is successfully confirmed
+      ErrorEvent:
+        type: object
+        properties:
+          type:
+            type: string
+            const: error
+            description: Event type discriminator
+          timestamp:
+            type: string
+            format: date-time
+            description: ISO 8601 timestamp when error occurred
+          code:
+            $ref: "#/$defs/ErrorCode"
+            description: Error code for programmatic handling
+          message:
+            type: string
+            description: Human-readable error message
+          details:
+            $ref: "#/$defs/RecordString"
+            description: Optional additional details
+        required:
+          - type
+          - timestamp
+          - code
+          - message
+        description: Emitted when an error occurs
+      PongEvent:
+        type: object
+        properties:
+          type:
+            type: string
+            const: pong
+            description: Event type discriminator
+          timestamp:
+            type: string
+            format: date-time
+            description: ISO 8601 timestamp of pong response
+        required:
+          - type
+          - timestamp
+        description: Response to ping command (keep-alive)
+      Feedback:
+        type: object
+        properties:
+          id:
+            type: string
+            description: Unique identifier
+          projectId:
+            type: string
+            description: Project/app identifier
+          sessionId:
+            type: string
+            description: Client session ID
+          title:
+            type: string
+            description: Feedback title/summary
+          description:
+            type: string
+            description: Detailed description
+          type:
+            $ref: "#/$defs/FeedbackType"
+            description: Feedback type
+          status:
+            $ref: "#/$defs/FeedbackStatus"
+            description: Current status
+          priority:
+            $ref: "#/$defs/FeedbackPriority"
+            description: Priority level
+          environment:
+            $ref: "#/$defs/EnvironmentInfo"
+            description: Environment information
+          screenshots:
+            type: array
+            items:
+              $ref: "#/$defs/Screenshot"
+            description: Attached screenshots
+          consoleLogs:
+            type: array
+            items:
+              $ref: "#/$defs/ConsoleLog"
+            description: Console logs captured
+          networkRequests:
+            type: array
+            items:
+              $ref: "#/$defs/NetworkRequest"
+            description: Network requests captured
+          videoId:
+            type: string
+            description: Video recording ID (if attached)
+          userEmail:
+            type: string
+            description: User-provided email (optional)
+          userName:
+            type: string
+            description: User-provided name (optional)
+          metadata:
+            $ref: "#/$defs/RecordUnknown"
+            description: Custom metadata
+          tags:
+            type: array
+            items:
+              type: string
+            description: Tags/labels
+          createdAt:
+            type: string
+            format: date-time
+            description: Creation timestamp
+          updatedAt:
+            type: string
+            format: date-time
+            description: Last update timestamp
+          syncedAt:
+            type: string
+            format: date-time
+            description: Sync timestamp (for offline support)
+        required:
+          - id
+          - projectId
+          - sessionId
+          - title
+          - type
+          - status
+          - priority
+          - environment
+          - createdAt
+          - updatedAt
+        description: Feedback item
+      BulkUpdateAction:
+        type: string
+        enum:
+          - status_change
+          - priority_change
+          - archive
+          - delete
+        description: Possible bulk update actions
+      ErrorCode:
+        type: string
+        enum:
+          - INVALID_COMMAND
+          - UNAUTHORIZED
+          - SUBSCRIPTION_FAILED
+          - INTERNAL_ERROR
+        description: Possible WebSocket error codes
+      RecordString:
+        type: object
+        properties: {}
+        unevaluatedProperties:
+          type: string
+      FeedbackType:
+        type: string
+        enum:
+          - bug
+          - feature
+          - improvement
+          - question
+          - other
+        description: Feedback type/category
+      FeedbackStatus:
+        type: string
+        enum:
+          - pending
+          - in_progress
+          - resolved
+          - closed
+          - archived
+        description: Feedback item status
+      FeedbackPriority:
+        type: string
+        enum:
+          - low
+          - medium
+          - high
+          - critical
+        description: Feedback priority level
+      EnvironmentInfo:
+        type: object
+        properties:
+          userAgent:
+            type: string
+            description: User agent string
+          browser:
+            type: string
+            description: Browser name
+          browserVersion:
+            type: string
+            description: Browser version
+          os:
+            type: string
+            description: Operating system
+          viewportWidth:
+            type: integer
+            minimum: -2147483648
+            maximum: 2147483647
+            description: Viewport width
+          viewportHeight:
+            type: integer
+            minimum: -2147483648
+            maximum: 2147483647
+            description: Viewport height
+          devicePixelRatio:
+            type: number
+            description: Device pixel ratio
+          url:
+            type: string
+            description: Current URL
+          pageTitle:
+            type: string
+            description: Page title
+        required:
+          - userAgent
+          - url
+        description: Browser/environment information
+      Screenshot:
+        type: object
+        properties:
+          id:
+            type: string
+            description: Unique identifier
+          mimeType:
+            type: string
+            description: MIME type (image/png, image/jpeg, image/webp)
+          data:
+            type: string
+            description: Base64 encoded image data or URL
+          width:
+            type: integer
+            minimum: -2147483648
+            maximum: 2147483647
+            description: Screenshot width
+          height:
+            type: integer
+            minimum: -2147483648
+            maximum: 2147483647
+            description: Screenshot height
+          capturedAt:
+            type: string
+            format: date-time
+            description: Timestamp when screenshot was taken
+          annotations:
+            type: array
+            items:
+              $ref: "#/$defs/Annotation"
+            description: Annotations/markups on the screenshot
+        required:
+          - id
+          - mimeType
+          - data
+          - capturedAt
+        description: Screenshot attachment
+      ConsoleLog:
+        type: object
+        properties:
+          level:
+            anyOf:
+              - type: string
+                const: log
+              - type: string
+                const: info
+              - type: string
+                const: warn
+              - type: string
+                const: error
+              - type: string
+                const: debug
+            description: Log level
+          message:
+            type: string
+            description: Log message
+          timestamp:
+            type: string
+            format: date-time
+            description: Timestamp
+          data:
+            type: array
+            items: {}
+            description: Additional data/arguments
+        required:
+          - level
+          - message
+          - timestamp
+        description: Console log entry
+      NetworkRequest:
+        type: object
+        properties:
+          url:
+            type: string
+            description: Request URL
+          method:
+            type: string
+            description: HTTP method
+          status:
+            type: integer
+            minimum: -2147483648
+            maximum: 2147483647
+            description: HTTP status code
+          duration:
+            type: integer
+            minimum: -2147483648
+            maximum: 2147483647
+            description: Response time in milliseconds
+          timestamp:
+            type: string
+            format: date-time
+            description: Request timestamp
+          success:
+            type: boolean
+            description: Was the request successful
+          error:
+            type: string
+            description: Error message if failed
+        required:
+          - url
+          - method
+          - timestamp
+          - success
+        description: Network request info
+      RecordUnknown:
+        type: object
+        properties: {}
+        unevaluatedProperties: {}
+      Annotation:
+        type: object
+        properties:
+          type:
+            anyOf:
+              - type: string
+                const: rectangle
+              - type: string
+                const: arrow
+              - type: string
+                const: text
+              - type: string
+                const: highlight
+              - type: string
+                const: blur
+            description: Annotation type
+          x:
+            type: number
+            description: X coordinate
+          y:
+            type: number
+            description: Y coordinate
+          width:
+            type: number
+            description: Width (for rectangles)
+          height:
+            type: number
+            description: Height (for rectangles)
+          endX:
+            type: number
+            description: End X coordinate (for arrows)
+          endY:
+            type: number
+            description: End Y coordinate (for arrows)
+          text:
+            type: string
+            description: Text content (for text annotations)
+          color:
+            type: string
+            description: Color (hex or rgba)
+          strokeWidth:
+            type: number
+            description: Stroke width
+        required:
+          - type
+          - x
+          - y
+        description: Annotation on a screenshot
+  ClientCommands:
+    $schema: https://json-schema.org/draft/2020-12/schema
+    $id: ClientCommands.yaml
+    anyOf:
+      - $ref: "#/$defs/SubscribeCommand"
+        description: Subscribe to events for a channel
+      - $ref: "#/$defs/UnsubscribeCommand"
+        description: Unsubscribe from a channel
+      - $ref: "#/$defs/PingCommand"
+        description: Ping to keep connection alive
+      - $ref: "#/$defs/AuthenticateCommand"
+        description: Authenticate the WebSocket connection
+    description: |-
+      Client-to-Server Commands sent over WebSocket
+
+      This union type represents all possible commands that clients can send
+      to the server. Each command has a `type` discriminator field.
+    $defs:
+      SubscribeCommand:
+        type: object
+        properties:
+          type:
+            type: string
+            const: subscribe
+            description: Command type discriminator
+          channel:
+            type: string
+            description: |-
+              Channel to subscribe to.
+              Examples: "feedback", "feedback:project-123", "feedback:item-456"
+          filters:
+            $ref: "#/$defs/SubscriptionFilters"
+            description: Optional filters to narrow down events
+        required:
+          - type
+          - channel
+        description: Subscribe to a specific channel or set of events
+      UnsubscribeCommand:
+        type: object
+        properties:
+          type:
+            type: string
+            const: unsubscribe
+            description: Command type discriminator
+          channel:
+            type: string
+            description: Channel to unsubscribe from
+        required:
+          - type
+          - channel
+        description: Unsubscribe from a channel
+      PingCommand:
+        type: object
+        properties:
+          type:
+            type: string
+            const: ping
+            description: Command type discriminator
+          timestamp:
+            type: string
+            format: date-time
+            description: Optional client timestamp for latency measurement
+        required:
+          - type
+        description: Ping command to keep connection alive
+      AuthenticateCommand:
+        type: object
+        properties:
+          type:
+            type: string
+            const: authenticate
+            description: Command type discriminator
+          apiKey:
+            type: string
+            description: API key for authentication (simple auth)
+          token:
+            type: string
+            description: JWT token for authentication (token-based auth)
+        required:
+          - type
+        description: Authenticate the WebSocket connection
+      SubscriptionFilters:
+        type: object
+        properties:
+          types:
+            type: array
+            items:
+              $ref: "#/$defs/FeedbackType"
+            description: Filter by feedback types
+          statuses:
+            type: array
+            items:
+              $ref: "#/$defs/FeedbackStatus"
+            description: Filter by feedback statuses
+          projectId:
+            type: string
+            description: Filter by project ID
+          priorities:
+            type: array
+            items:
+              $ref: "#/$defs/FeedbackPriority"
+            description: Filter by priority levels
+        description: Filters for subscription to reduce noise
+      FeedbackType:
+        type: string
+        enum:
+          - bug
+          - feature
+          - improvement
+          - question
+          - other
+        description: Feedback type/category
+      FeedbackStatus:
+        type: string
+        enum:
+          - pending
+          - in_progress
+          - resolved
+          - closed
+          - archived
+        description: Feedback item status
+      FeedbackPriority:
+        type: string
+        enum:
+          - low
+          - medium
+          - high
+          - critical
+        description: Feedback priority level

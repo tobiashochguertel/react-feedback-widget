@@ -1,20 +1,19 @@
 # 006: WebSocket API-First Integration Tasks
 
 > **Tasks for:** `feedback-server` package
-> **Related Specification:** [README.md](./README.md)
-> **Status:** 0/10 Complete
+> **Related Specification:** [README.md](./README.md) > **Status:** 0/10 Complete
 
 ---
 
 ## 📊 Task Summary
 
-| Category | Tasks | Completed | Remaining |
-|----------|-------|-----------|-----------|
-| Setup | 2 | 0 | 2 |
-| Migration | 4 | 0 | 4 |
-| Integration | 2 | 0 | 2 |
-| Testing | 2 | 0 | 2 |
-| **Total** | **10** | **0** | **10** |
+| Category    | Tasks  | Completed | Remaining |
+| ----------- | ------ | --------- | --------- |
+| Setup       | 2      | 0         | 2         |
+| Migration   | 4      | 0         | 4         |
+| Integration | 2      | 0         | 2         |
+| Testing     | 2      | 0         | 2         |
+| **Total**   | **10** | **0**     | **10**    |
 
 ---
 
@@ -103,7 +102,7 @@ import type { ClientCommands } from "@feedback/api-types";
 const ajv = new Ajv({ strict: false });
 const validateCommand = ajv.compile(clientCommandsSchema);
 
-export type ValidationResult = 
+export type ValidationResult =
   | { success: true; command: ClientCommands }
   | { success: false; error: string };
 
