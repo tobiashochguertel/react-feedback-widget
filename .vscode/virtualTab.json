@@ -7,6 +7,9 @@
       "packages/feedback-server-webui/docs/spec/002.webui-tasks/TASKS-OVERVIEW.md",
       "packages/feedback-server-webui/src/components/__tests__/StatusBadge.test.tsx",
       "packages/feedback-server-webui/src/hooks/__tests__/useLogout.test.ts",
+      "packages/feedback-server-webui/src/components/__tests__/ScreenshotViewer.test.tsx",
+      "packages/feedback-server-webui/src/components/__tests__/FilterBar.test.tsx",
+      "packages/feedback-server-webui/src/components/__tests__/DataTable.test.tsx",
       "packages/feedback-server-webui/src/hooks/useLogout.ts",
       "packages/feedback-server-webui/src/stores/__tests__/auth.test.ts",
       "packages/feedback-server-webui/src/components/__tests__/Toast.test.tsx",
@@ -18,11 +21,7 @@
       "packages/feedback-server-webui/src/hooks/useWebSocket.ts",
       "packages/feedback-server-webui/src/lib/websocket/index.ts",
       "packages/feedback-server-webui/src/lib/websocket/subscriptions.ts",
-      "packages/feedback-server-webui/src/lib/websocket/reconnect.ts",
-      "packages/feedback-server-webui/src/lib/websocket/client.ts",
-      "packages/feedback-server-webui/src/lib/websocket/types.ts",
-      "packages/feedback-server/src/websocket/config.ts",
-      "packages/feedback-server/src/websocket/broadcaster.ts"
+      "packages/feedback-server-webui/src/lib/websocket/reconnect.ts"
     ],
     "builtIn": true,
     "bookmarks": {}
