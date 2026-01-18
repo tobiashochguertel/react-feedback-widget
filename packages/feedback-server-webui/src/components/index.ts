@@ -21,6 +21,9 @@ export type {
   Annotation,
 } from "./ScreenshotViewer";
 
+export { VideoPlayer } from "./VideoPlayer";
+export type { VideoPlayerProps, VideoPlayerRef } from "./VideoPlayer";
+
 // Debug Viewers
 export { ConsoleLogViewer } from "./ConsoleLogViewer";
 export type { ConsoleLogViewerProps, ConsoleLog, LogLevel } from "./ConsoleLogViewer";
