@@ -3,7 +3,7 @@
     "id": "builtin_group_id",
     "name": "Currently Open Files",
     "files": [
-      "packages/feedback-server-cli/tests/integration/feedback.test.ts"
+      "packages/feedback-server-cli/README.md"
     ],
     "builtIn": true,
     "bookmarks": {}

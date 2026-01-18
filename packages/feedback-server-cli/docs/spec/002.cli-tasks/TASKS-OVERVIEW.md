@@ -14,8 +14,8 @@
 | Configuration     | 3      | 0           | 0           | 3      |
 | Shell Integration | 2      | 2           | 0           | 0      |
 | Testing           | 2      | 0           | 0           | 2      |
-| Distribution      | 2      | 2           | 0           | 0      |
-| **Total**         | **24** | **4**       | **0**       | **20** |
+| Distribution      | 2      | 1           | 0           | 1      |
+| **Total**         | **24** | **3**       | **0**       | **21** |
 
 ---
 
@@ -453,18 +453,18 @@ Write integration tests with mock server.
 
 **Priority:** P1 - High
 **Estimated Effort:** 2 hours
-**Status:** 🔲 NOT STARTED
+**Status:** ✅ DONE
 
 **Description:**
 Configure package for npm publishing.
 
 **Acceptance Criteria:**
 
-- [ ] Configure package.json for publishing
-- [ ] Add bin entry point
-- [ ] Add files whitelist
-- [ ] Add prepublish build script
-- [ ] Add postinstall message
+- [x] Configure package.json for publishing
+- [x] Add bin entry point
+- [x] Add files whitelist
+- [x] Add prepublish build script
+- [x] Add postinstall message
 
 ---
 

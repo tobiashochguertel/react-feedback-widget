@@ -1,7 +1,7 @@
 {
   "name": "@react-visual-feedback/cli",
   "version": "0.1.0",
-  "description": "Command-line interface for Feedback Server",
+  "description": "Command-line interface for Feedback Server - manage feedback, export reports, and integrate with CI/CD pipelines",
   "type": "module",
   "bin": {
     "feedback-cli": "./dist/index.js"
@@ -16,7 +16,8 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "lint": "eslint src --ext ts",
-    "prepublishOnly": "bun run build"
+    "prepublishOnly": "bun run build && bun run test",
+    "postinstall": "node -e \"console.log('\\n\\x1b[36m✨ Thanks for installing @react-visual-feedback/cli!\\x1b[0m\\n\\nRun \\x1b[33mfeedback-cli --help\\x1b[0m to get started.\\n')\" 2>/dev/null || true"
   },
   "dependencies": {
     "@feedback/api-types": "workspace:*",
@@ -48,15 +49,36 @@
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "keywords": [
     "cli",
     "feedback",
     "feedback-server",
-    "command-line"
+    "command-line",
+    "visual-feedback",
+    "bug-reporting",
+    "screenshot",
+    "screen-recording",
+    "developer-tools"
   ],
   "engines": {
     "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Murali1889/react-feedback-widget.git",
+    "directory": "packages/feedback-server-cli"
+  },
+  "bugs": {
+    "url": "https://github.com/Murali1889/react-feedback-widget/issues"
+  },
+  "homepage": "https://github.com/Murali1889/react-feedback-widget/tree/main/packages/feedback-server-cli#readme",
+  "license": "MIT",
+  "author": "React Visual Feedback Contributors",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }
