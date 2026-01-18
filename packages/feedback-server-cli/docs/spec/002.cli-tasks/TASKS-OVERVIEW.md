@@ -12,10 +12,10 @@
 | Authentication    | 3      | 0           | 0           | 3      |
 | Data Export       | 3      | 0           | 0           | 3      |
 | Configuration     | 3      | 0           | 0           | 3      |
-| Shell Integration | 2      | 1           | 0           | 1      |
+| Shell Integration | 2      | 0           | 0           | 2      |
 | Testing           | 2      | 0           | 0           | 2      |
 | Distribution      | 2      | 0           | 0           | 2      |
-| **Total**         | **24** | **1**       | **0**       | **23** |
+| **Total**         | **24** | **0**       | **0**       | **24** |
 
 ---
 
@@ -393,18 +393,18 @@ Generate shell completion scripts for bash, zsh, fish, PowerShell.
 
 **Priority:** P2 - Low
 **Estimated Effort:** 4 hours
-**Status:** 🔲 NOT STARTED
+**Status:** ✅ DONE
 
 **Description:**
 Create interactive terminal UI for browsing feedback.
 
 **Acceptance Criteria:**
 
-- [ ] List feedback with arrow key navigation
-- [ ] View details on selection
-- [ ] Filter while browsing
-- [ ] Quick actions (update status, delete)
-- [ ] Exit with 'q' or Ctrl+C
+- [x] List feedback with arrow key navigation
+- [x] View details on selection
+- [x] Filter while browsing
+- [x] Quick actions (update status, delete)
+- [x] Exit with 'q' or Ctrl+C
 
 ---
 

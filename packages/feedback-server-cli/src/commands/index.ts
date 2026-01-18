@@ -12,6 +12,7 @@ import { registerConfigCommand } from './config.js';
 import { registerExportCommand } from './export.js';
 import { registerStatsCommand } from './stats.js';
 import { createCompletionCommand } from './completion.js';
+import { createInteractiveCommand } from './interactive.js';
 
 /**
  * Register all commands with the CLI program
@@ -26,4 +27,7 @@ export function registerCommands(program: Command): void {
 
   // Shell completion
   program.addCommand(createCompletionCommand());
+
+  // Interactive mode
+  program.addCommand(createInteractiveCommand());
 }

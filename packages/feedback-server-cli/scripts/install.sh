@@ -88,7 +88,7 @@ get_latest_version() {
     fi
 
     info "Fetching latest version..."
-    
+
     version=$(curl -fsSL "https://api.github.com/repos/${REPO}/releases" | \
         grep -o '"tag_name": "cli-v[^"]*"' | \
         head -1 | \
@@ -116,7 +116,7 @@ install_binary() {
     download_url="https://github.com/${REPO}/releases/download/${RELEASE_VERSION}/${binary_name}"
 
     info "Downloading ${binary_name}..."
-    
+
     tmp_dir=$(mktemp -d)
     trap 'rm -rf "$tmp_dir"' EXIT
 
@@ -129,7 +129,7 @@ install_binary() {
 
     # Install binary
     local target_path="${INSTALL_DIR}/${BINARY_NAME}"
-    
+
     mv "${tmp_dir}/${binary_name}" "$target_path"
     chmod +x "$target_path"
 
