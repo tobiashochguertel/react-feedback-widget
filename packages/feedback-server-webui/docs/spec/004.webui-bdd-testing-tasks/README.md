@@ -1,9 +1,9 @@
 # WebUI BDD Testing Tasks
 
-> **Version:** 1.1.0
-> **Status:** 🔄 In Progress
+> **Version:** 1.2.0
+> **Status:** ✅ Nearly Complete (7/8 tasks done)
 > **Created:** 2025-01-20
-> **Updated:** 2025-01-21
+> **Updated:** 2026-01-18
 > **Related:** [003.webui-user-stories/README.md](../003.webui-user-stories/README.md)
 
 ---
@@ -17,6 +17,20 @@
 | **In Progress** | 0     |
 | **Not Started** | 1     |
 | **Blocked**     | 0     |
+
+### ✅ BDD Test Coverage Summary
+
+All **18 user stories** from the [User Stories spec](../003.webui-user-stories/README.md) are covered:
+
+| Epic                    | User Stories              | BDD Test File            | Tests        |
+| ----------------------- | ------------------------- | ------------------------ | ------------ |
+| E001: Authentication    | US-WUI-001, 002, 003      | authentication.test.ts   | 7            |
+| E002: Dashboard         | US-WUI-004, 005           | dashboard.test.ts        | 5            |
+| E003: Feedback List     | US-WUI-006, 007, 008, 009 | feedback-list.test.ts    | 10           |
+| E004: Feedback Detail   | US-WUI-010, 011, 012, 013 | feedback-detail.test.ts  | 9            |
+| E005: Real-time Updates | US-WUI-014, 015, 016      | realtime-updates.test.ts | 6            |
+| E006: Settings          | US-WUI-017, 018           | settings.test.ts         | 7            |
+| **Total**               | **18 stories**            | **6 test files**         | **44 tests** |
 
 ---
 

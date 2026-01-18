@@ -1,18 +1,19 @@
 # Feedback Server WebUI - User Stories
 
-> **Version:** 0.1.0
-> **Last Updated:** 2025-01-15
+> **Version:** 0.2.0
+> **Last Updated:** 2026-01-18
+> **Test Coverage:** ✅ All 18 stories covered by 44 BDD tests (see [004.webui-bdd-testing-tasks](../004.webui-bdd-testing-tasks/README.md))
 
 ## 📋 Epic Overview
 
-| Epic ID | Epic Name              | Stories | Priority |
-| ------- | ---------------------- | ------- | -------- |
-| E001    | Authentication         | 3       | P0       |
-| E002    | Dashboard              | 2       | P0       |
-| E003    | Feedback List          | 4       | P0       |
-| E004    | Feedback Detail        | 4       | P0       |
-| E005    | Real-time Updates      | 3       | P1       |
-| E006    | Settings & Preferences | 2       | P2       |
+| Epic ID | Epic Name              | Stories | Priority | BDD Tests |
+| ------- | ---------------------- | ------- | -------- | --------- |
+| E001    | Authentication         | 3       | P0       | ✅ 7 tests |
+| E002    | Dashboard              | 2       | P0       | ✅ 5 tests |
+| E003    | Feedback List          | 4       | P0       | ✅ 10 tests |
+| E004    | Feedback Detail        | 4       | P0       | ✅ 9 tests |
+| E005    | Real-time Updates      | 3       | P1       | ✅ 6 tests |
+| E006    | Settings & Preferences | 2       | P2       | ✅ 7 tests |
 
 ---
 
