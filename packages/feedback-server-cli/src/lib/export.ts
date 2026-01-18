@@ -22,8 +22,8 @@ export async function exportToJson(
     items: items.map((item) => ({
       ...item,
       // Remove media data if not requested
-      screenshot: includeMedia ? item.screenshot : undefined,
-      video: includeMedia ? item.video : undefined,
+      screenshots: includeMedia ? item.screenshots : undefined,
+      videoId: includeMedia ? item.videoId : undefined,
     })),
   };
 
@@ -43,10 +43,10 @@ export async function exportToCsv(items: Feedback[]): Promise<string> {
     priority: item.priority,
     createdAt: format(new Date(item.createdAt), 'yyyy-MM-dd HH:mm:ss'),
     updatedAt: format(new Date(item.updatedAt), 'yyyy-MM-dd HH:mm:ss'),
-    url: item.url ?? '',
-    userAgent: item.userAgent ?? '',
-    hasScreenshot: item.screenshot ? 'Yes' : 'No',
-    hasVideo: item.video ? 'Yes' : 'No',
+    url: item.environment?.url ?? '',
+    userAgent: item.environment?.userAgent ?? '',
+    hasScreenshot: item.screenshots && item.screenshots.length > 0 ? 'Yes' : 'No',
+    hasVideo: item.videoId ? 'Yes' : 'No',
   }));
 
   return stringify(records, {
@@ -119,8 +119,8 @@ export async function exportToMarkdown(items: Feedback[]): Promise<string> {
       lines.push('');
     }
 
-    if (item.url) {
-      lines.push(`**URL:** ${item.url}`);
+    if (item.environment?.url) {
+      lines.push(`**URL:** ${item.environment.url}`);
       lines.push('');
     }
 

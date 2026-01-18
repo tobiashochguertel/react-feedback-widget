@@ -19,6 +19,7 @@
     "prepublishOnly": "bun run build"
   },
   "dependencies": {
+    "@feedback/api-types": "workspace:*",
     "commander": "^14.0.2",
     "chalk": "^5.3.0",
     "inquirer": "^13.2.0",

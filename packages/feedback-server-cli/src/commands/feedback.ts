@@ -59,7 +59,7 @@ export function registerFeedbackCommand(program: Command): void {
 
         spinner.stop();
 
-        if (response.items.length === 0) {
+        if (response.data.length === 0) {
           logger.info('No feedback items found');
           return;
         }
@@ -79,7 +79,7 @@ export function registerFeedbackCommand(program: Command): void {
             colWidths: [10, 40, 12, 14, 10, 12],
           });
 
-          for (const item of response.items) {
+          for (const item of response.data) {
             table.push([
               item.id.slice(0, 8),
               truncate(item.title, 38),
@@ -91,9 +91,9 @@ export function registerFeedbackCommand(program: Command): void {
           }
 
           console.log(table.toString());
-          console.log(chalk.dim(`\nShowing ${response.items.length} of ${response.total} items`));
+          console.log(chalk.dim(`\nShowing ${response.data.length} of ${response.total} items`));
         } else {
-          console.log(formatOutput(response.items, outputFormat));
+          console.log(formatOutput(response.data, outputFormat));
         }
       } catch (error) {
         spinner.fail(chalk.red('Failed to fetch feedback'));

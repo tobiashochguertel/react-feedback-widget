@@ -115,19 +115,19 @@ async function exportData(
       limit: 1000, // Get all for export
     });
 
-    spinner.text = `Exporting ${response.items.length} items...`;
+    spinner.text = `Exporting ${response.data.length} items...`;
 
     let content: string;
 
     switch (format) {
       case 'json':
-        content = await exportToJson(response.items, options.includeMedia);
+        content = await exportToJson(response.data, options.includeMedia);
         break;
       case 'csv':
-        content = await exportToCsv(response.items);
+        content = await exportToCsv(response.data);
         break;
       case 'markdown':
-        content = await exportToMarkdown(response.items);
+        content = await exportToMarkdown(response.data);
         break;
     }
 
@@ -135,7 +135,7 @@ async function exportData(
 
     spinner.succeed(
       chalk.green(
-        `Exported ${response.items.length} items to ${chalk.bold(outputPath)}`
+        `Exported ${response.data.length} items to ${chalk.bold(outputPath)}`
       )
     );
   } catch (error) {
