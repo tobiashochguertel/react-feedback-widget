@@ -19,7 +19,10 @@ uploads/
 *.swo
 
 # TypeSpec generated files
-src/generated/
+src/generated/*.d.ts
+src/generated/*.yaml
+# Keep types.ts as bridge file (re-exports from @feedback/api-types)
+!src/generated/types.ts
 
 # Test output
 coverage/

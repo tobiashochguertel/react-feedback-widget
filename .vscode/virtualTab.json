@@ -3,14 +3,12 @@
     "id": "builtin_group_id",
     "name": "Currently Open Files",
     "files": [
-      "packages/feedback-server/docs/research/typespec-api-first/README.md",
-      "packages/feedback-server/docs/research/typespec-api-first/99-comparison-table.md",
-      "packages/feedback-server/docs/spec/004.api-first-technical-debt/README.md",
-      "packages/feedback-server/docs/spec/005.api-first-tasks/TASKS-OVERVIEW.md",
-      "packages/feedback-server/docs/research/typespec-api-first/03-implementation-options.md",
-      "packages/feedback-server/docs/research/typespec-api-first/02-typespec-capabilities.md",
-      "packages/feedback-server/docs/research/typespec-api-first/01-current-state.md",
-      "packages/feedback-server/docs/research/typespec-api-first/00-overview.md"
+      "packages/feedback-server/docs/research/typespec-api-first/04-modular-api-package-architecture.md",
+      "packages/generated/README.md",
+      "packages/generated/feedback-api-types/src/index.ts",
+      "packages/feedback-server-api/Taskfile.yml",
+      "packages/feedback-server-api/README.md",
+      "packages/feedback-server/docs/spec/004.api-first-technical-debt/README.md"
     ],
     "builtIn": true,
     "bookmarks": {}

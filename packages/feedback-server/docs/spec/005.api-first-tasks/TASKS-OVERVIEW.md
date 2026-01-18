@@ -133,15 +133,15 @@ packages/
 
 ## 📊 Task Summary (Dependency Order)
 
-| Phase | Tasks                  | Description                  | Status   |
-| ----- | ---------------------- | ---------------------------- | -------- |
-| 0     | A001, A002, T001, T002 | Initial setup (completed)    | ✅ Done  |
-| 1     | M001, M002, M003, M004 | Standalone API package       | ✅ Done  |
-| 2     | G001-G005              | Generated packages directory | ✅ Done  |
-| 3     | R001, R002             | Root Taskfile & workspace    | ✅ Done  |
-| 4     | H001-H005              | Handler migration            | 🔄 1/5   |
-| 5     | E001, E002             | Test migration               | 🔲 TODO  |
-| 6     | I001, I002, I003       | CI/CD integration            | 🔲 TODO  |
+| Phase | Tasks                  | Description                  | Status  |
+| ----- | ---------------------- | ---------------------------- | ------- |
+| 0     | A001, A002, T001, T002 | Initial setup (completed)    | ✅ Done |
+| 1     | M001, M002, M003, M004 | Standalone API package       | ✅ Done |
+| 2     | G001-G005              | Generated packages directory | ✅ Done |
+| 3     | R001, R002             | Root Taskfile & workspace    | ✅ Done |
+| 4     | H001-H005              | Handler migration            | 🔄 1/5  |
+| 5     | E001, E002             | Test migration               | 🔲 TODO |
+| 6     | I001, I002, I003       | CI/CD integration            | 🔲 TODO |
 
 ---
 
