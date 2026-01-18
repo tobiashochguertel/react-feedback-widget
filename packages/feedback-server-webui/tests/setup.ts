@@ -6,6 +6,7 @@
  */
 
 import { describe, it, expect, beforeAll, afterAll, beforeEach, vi } from "vitest";
+import "@testing-library/jest-dom/vitest";
 
 // ============================================================================
 // Configuration

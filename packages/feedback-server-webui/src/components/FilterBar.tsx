@@ -208,6 +208,7 @@ export function FilterBar({
 
         {/* Status Select */}
         <select
+          aria-label="Filter by status"
           value={filters.status || ""}
           onChange={handleSelectChange("status")}
           className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white"
@@ -221,6 +222,7 @@ export function FilterBar({
 
         {/* Type Select */}
         <select
+          aria-label="Filter by type"
           value={filters.type || ""}
           onChange={handleSelectChange("type")}
           className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white"
@@ -234,6 +236,7 @@ export function FilterBar({
 
         {/* Priority Select */}
         <select
+          aria-label="Filter by priority"
           value={filters.priority || ""}
           onChange={handleSelectChange("priority")}
           className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white"

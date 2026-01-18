@@ -1,6 +1,6 @@
 # Feedback Server WebUI - Tasks Overview
 
-> **Version:** 0.6.0
+> **Version:** 0.7.0
 > **Last Updated:** 2026-01-18
 
 ## 📋 Task Summary
@@ -14,8 +14,8 @@
 | State & Data   | 4      | 0           | 0           | 4      |
 | Real-time      | 3      | 0           | 0           | 3      |
 | Authentication | 3      | 0           | 0           | 3      |
-| Testing        | 3      | 3           | 0           | 0      |
-| **Total**      | **31** | **3**       | **0**       | **28** |
+| Testing        | 3      | 2           | 0           | 1      |
+| **Total**      | **31** | **2**       | **0**       | **29** |
 
 ---
 
@@ -699,17 +699,26 @@ Implement logout with cleanup and redirect.
 
 **Priority:** P1 - High
 **Estimated Effort:** 2 hours
-**Status:** 🔲 NOT STARTED
+**Status:** ✅ COMPLETE
 
 **Description:**
 Configure Vitest for component and hook testing.
 
 **Acceptance Criteria:**
 
-- [ ] Vitest configuration
-- [ ] Testing Library setup
-- [ ] Mock service worker for API
-- [ ] Coverage configuration
+- [x] Vitest configuration
+- [x] Testing Library setup
+- [x] Mock service worker for API (installed, handlers in TASK-WUI-028)
+- [x] Coverage configuration
+
+**Implementation:**
+
+- `vitest.config.ts` with jsdom, React plugin, path aliases
+- `tests/setup.ts` with comprehensive utilities (375 lines)
+- MSW v2.12.7 installed
+- @testing-library/react 16.3.0 installed
+- V8 coverage provider configured
+- 192 tests currently passing
 
 ---
 
