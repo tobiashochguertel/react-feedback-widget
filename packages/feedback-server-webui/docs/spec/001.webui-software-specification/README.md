@@ -408,24 +408,114 @@ useMutation(bulkUpdateFeedback);
 
 ## API Integration
 
+### API-First Architecture
+
+The WebUI follows the **API-First architecture** established in this monorepo. Types are generated from the TypeSpec API specification and consumed via the `@feedback/api-types` workspace package.
+
+```mermaid
+graph TD
+    subgraph "API Specification"
+        TS[TypeSpec Spec<br/>packages/feedback-server-api]
+    end
+
+    subgraph "Generated Packages"
+        TS --> G[@feedback/api-types<br/>packages/generated/feedback-api-types]
+    end
+
+    subgraph "Consumer Packages"
+        G --> S[feedback-server]
+        G --> CLI[feedback-server-cli]
+        G --> WUI[feedback-server-webui]
+    end
+```
+
+### Type Dependencies
+
+```json
+{
+  "dependencies": {
+    "@feedback/api-types": "workspace:*"
+  }
+}
+```
+
+### Type Usage
+
+```typescript
+// src/types/api.ts
+import type {
+  Feedback,
+  FeedbackStatus,
+  FeedbackType,
+  FeedbackPriority,
+  CreateFeedbackRequest,
+  UpdateFeedbackRequest,
+  FeedbackListResponse,
+  FeedbackStats,
+  Video,
+  VideoStatus,
+} from "@feedback/api-types";
+
+// Types are fully typed and in sync with the API contract
+```
+
 ### API Client Structure
 
 ```typescript
 // src/lib/api/client.ts
-import { hc } from "hono/client";
-import type { AppType } from "@react-visual-feedback/server";
+import type { Feedback, FeedbackListResponse } from "@feedback/api-types";
 
-export const api = hc<AppType>(import.meta.env.VITE_API_URL);
+const API_URL = import.meta.env.VITE_API_URL;
 
-// Usage
-const feedback = await api.feedback.$get({ query: { page: 1 } });
-const detail = await api.feedback[":id"].$get({ param: { id: "123" } });
+export async function listFeedback(params: {
+  page?: number;
+  limit?: number;
+  status?: string;
+}): Promise<FeedbackListResponse> {
+  const query = new URLSearchParams(params as Record<string, string>);
+  const response = await fetch(`${API_URL}/feedback?${query}`, {
+    headers: { Authorization: `Bearer ${getToken()}` },
+  });
+  return response.json();
+}
+
+export async function getFeedback(id: string): Promise<Feedback> {
+  const response = await fetch(`${API_URL}/feedback/${id}`, {
+    headers: { Authorization: `Bearer ${getToken()}` },
+  });
+  return response.json();
+}
+```
+
+### TanStack Query Integration
+
+```typescript
+// src/hooks/useFeedback.ts
+import { useQuery, useMutation } from "@tanstack/react-query";
+import type { Feedback, FeedbackListResponse } from "@feedback/api-types";
+import * as api from "@/lib/api/client";
+
+export function useFeedbackList(params: ListParams) {
+  return useQuery<FeedbackListResponse>({
+    queryKey: ["feedback", "list", params],
+    queryFn: () => api.listFeedback(params),
+  });
+}
+
+export function useFeedback(id: string) {
+  return useQuery<Feedback>({
+    queryKey: ["feedback", id],
+    queryFn: () => api.getFeedback(id),
+  });
+}
 ```
 
 ### WebSocket Integration
 
 ```typescript
 // src/lib/ws/client.ts
+import type { Feedback } from "@feedback/api-types";
+
 export class FeedbackWebSocket {
   private ws: WebSocket;
   private handlers: Map<string, Handler[]>;
@@ -436,11 +526,11 @@ export class FeedbackWebSocket {
   off(event: string, handler: Handler): void;
 }
 
-// Events handled:
-// - feedback:created
-// - feedback:updated
-// - feedback:deleted
-// - feedback:status
+// Events handled with typed payloads:
+// - feedback:created (Feedback)
+// - feedback:updated (Feedback)
+// - feedback:deleted ({ id: string })
+// - feedback:status ({ id: string, status: FeedbackStatus })
 ```
 
 ---

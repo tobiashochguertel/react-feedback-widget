@@ -1,20 +1,21 @@
 # Feedback Server WebUI - Tasks Overview
 
-> **Version:** 0.1.0
-> **Last Updated:** 2025-01-15
+> **Version:** 0.2.0
+> **Last Updated:** 2026-01-18
 
 ## 📋 Task Summary
 
 | Category       | Total  | Not Started | In Progress | Done  |
 | -------------- | ------ | ----------- | ----------- | ----- |
 | Setup          | 3      | 3           | 0           | 0     |
+| API-First      | 2      | 2           | 0           | 0     |
 | Core Pages     | 5      | 5           | 0           | 0     |
 | Components     | 8      | 8           | 0           | 0     |
 | State & Data   | 4      | 4           | 0           | 0     |
 | Real-time      | 3      | 3           | 0           | 0     |
 | Authentication | 3      | 3           | 0           | 0     |
 | Testing        | 3      | 3           | 0           | 0     |
-| **Total**      | **29** | **29**      | **0**       | **0** |
+| **Total**      | **31** | **31**      | **0**       | **0** |
 
 ---
 
@@ -74,6 +75,104 @@ Create folder structure following React best practices.
 - [ ] Create `src/lib/` for utilities and API clients
 - [ ] Create `src/hooks/` for custom hooks
 - [ ] Create `src/stores/` for Zustand stores
+
+---
+
+## 🔗 Category: API-First Integration
+
+### TASK-WUI-A01: Add @feedback/api-types Dependency
+
+**Priority:** P0 - Critical
+**Estimated Effort:** 1 hour
+**Status:** 🔲 NOT STARTED
+**Dependencies:** TASK-WUI-001
+
+**Description:**
+Add the `@feedback/api-types` workspace dependency to use generated types from the TypeSpec API specification. This ensures type safety and consistency with the API contract.
+
+**Acceptance Criteria:**
+
+- [ ] Add `@feedback/api-types` to package.json dependencies
+- [ ] Run `bun install` to update lockfile
+- [ ] Verify types are accessible in IDE
+- [ ] Create `src/types/api.ts` with re-exports for convenience
+
+**Implementation:**
+
+```json
+{
+  "dependencies": {
+    "@feedback/api-types": "workspace:*"
+  }
+}
+```
+
+```typescript
+// src/types/api.ts
+export type {
+  Feedback,
+  FeedbackStatus,
+  FeedbackType,
+  FeedbackPriority,
+  CreateFeedbackRequest,
+  UpdateFeedbackRequest,
+  FeedbackListResponse,
+  FeedbackStats,
+  Video,
+  VideoStatus,
+} from "@feedback/api-types";
+```
+
+---
+
+### TASK-WUI-A02: Create Typed API Client
+
+**Priority:** P0 - Critical
+**Estimated Effort:** 3 hours
+**Status:** 🔲 NOT STARTED
+**Dependencies:** TASK-WUI-A01
+
+**Description:**
+Create a fully-typed API client using the generated types. The client should handle authentication, error handling, and provide a clean interface for all API operations.
+
+**Acceptance Criteria:**
+
+- [ ] Create `src/lib/api/client.ts` with typed fetch wrapper
+- [ ] Implement authentication header injection
+- [ ] Add error handling with typed error responses
+- [ ] Create methods for all feedback CRUD operations
+- [ ] Create methods for video operations
+- [ ] Create methods for stats endpoint
+- [ ] Add request/response logging in development mode
+
+**Implementation:**
+
+```typescript
+// src/lib/api/client.ts
+import type {
+  Feedback,
+  FeedbackListResponse,
+  CreateFeedbackRequest,
+  UpdateFeedbackRequest,
+  FeedbackStats,
+} from "@feedback/api-types";
+
+class FeedbackApiClient {
+  constructor(private baseUrl: string) {}
+
+  async listFeedback(params: ListParams): Promise<FeedbackListResponse>;
+  async getFeedback(id: string): Promise<Feedback>;
+  async createFeedback(data: CreateFeedbackRequest): Promise<Feedback>;
+  async updateFeedback(
+    id: string,
+    data: UpdateFeedbackRequest,
+  ): Promise<Feedback>;
+  async deleteFeedback(id: string): Promise<void>;
+  async getStats(): Promise<FeedbackStats>;
+}
+
+export const apiClient = new FeedbackApiClient(import.meta.env.VITE_API_URL);
+```
 
 ---
 
