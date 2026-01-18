@@ -11,6 +11,7 @@ import { registerFeedbackCommand } from './feedback.js';
 import { registerConfigCommand } from './config.js';
 import { registerExportCommand } from './export.js';
 import { registerStatsCommand } from './stats.js';
+import { createCompletionCommand } from './completion.js';
 
 /**
  * Register all commands with the CLI program
@@ -22,4 +23,7 @@ export function registerCommands(program: Command): void {
   registerConfigCommand(program);
   registerExportCommand(program);
   registerStatsCommand(program);
+
+  // Shell completion
+  program.addCommand(createCompletionCommand());
 }

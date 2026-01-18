@@ -108,21 +108,21 @@ feedback-cli config reset
 
 ## 🔧 Global Options
 
-| Option       | Description                    |
-| ------------ | ------------------------------ |
-| `--help`     | Show help information          |
-| `--version`  | Show version number            |
-| `--debug`    | Enable debug output            |
-| `--no-color` | Disable colored output         |
-| `--output`   | Output format (table, json)    |
+| Option       | Description                 |
+| ------------ | --------------------------- |
+| `--help`     | Show help information       |
+| `--version`  | Show version number         |
+| `--debug`    | Enable debug output         |
+| `--no-color` | Disable colored output      |
+| `--output`   | Output format (table, json) |
 
 ## 🌐 Environment Variables
 
-| Variable              | Description                      |
-| --------------------- | -------------------------------- |
-| `FEEDBACK_SERVER_URL` | Server URL (overrides config)    |
-| `FEEDBACK_API_KEY`    | API key for authentication       |
-| `NO_COLOR`            | Disable colored output           |
+| Variable              | Description                   |
+| --------------------- | ----------------------------- |
+| `FEEDBACK_SERVER_URL` | Server URL (overrides config) |
+| `FEEDBACK_API_KEY`    | API key for authentication    |
+| `NO_COLOR`            | Disable colored output        |
 
 ## 📖 Examples
 

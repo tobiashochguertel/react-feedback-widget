@@ -3,7 +3,8 @@
     "id": "builtin_group_id",
     "name": "Currently Open Files",
     "files": [
-      "packages/feedback-server-cli/README.md"
+      "packages/feedback-server-cli/README.md",
+      "packages/feedback-server-cli/src/commands/completion.ts"
     ],
     "builtIn": true,
     "bookmarks": {}

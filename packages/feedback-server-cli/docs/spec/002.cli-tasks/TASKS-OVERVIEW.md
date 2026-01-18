@@ -12,10 +12,10 @@
 | Authentication    | 3      | 0           | 0           | 3      |
 | Data Export       | 3      | 0           | 0           | 3      |
 | Configuration     | 3      | 0           | 0           | 3      |
-| Shell Integration | 2      | 2           | 0           | 0      |
+| Shell Integration | 2      | 1           | 0           | 1      |
 | Testing           | 2      | 0           | 0           | 2      |
 | Distribution      | 2      | 1           | 0           | 1      |
-| **Total**         | **24** | **3**       | **0**       | **21** |
+| **Total**         | **24** | **2**       | **0**       | **22** |
 
 ---
 
@@ -374,18 +374,18 @@ Add support for configuration via environment variables.
 
 **Priority:** P2 - Low
 **Estimated Effort:** 3 hours
-**Status:** 🔲 NOT STARTED
+**Status:** ✅ DONE
 
 **Description:**
 Generate shell completion scripts for bash, zsh, fish, PowerShell.
 
 **Acceptance Criteria:**
 
-- [ ] Generate bash completion script
-- [ ] Generate zsh completion script
-- [ ] Generate fish completion script
-- [ ] Generate PowerShell completion script
-- [ ] Add installation instructions
+- [x] Generate bash completion script
+- [x] Generate zsh completion script
+- [x] Generate fish completion script
+- [x] Generate PowerShell completion script
+- [x] Add installation instructions
 
 ---
 
