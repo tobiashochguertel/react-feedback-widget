@@ -67,6 +67,9 @@ export {
   isErrorEvent,
   isPongEvent,
   isFeedbackEvent,
+
+  // Parser
+  parseServerEvent,
 } from './events.js';
 
 // Re-export all command types

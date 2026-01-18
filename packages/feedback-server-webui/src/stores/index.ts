@@ -15,6 +15,8 @@ export {
   selectSidebarCollapsed,
   selectNotifications,
   selectWsStatus,
+  selectWsConnectionId,
+  selectWsLastError,
   selectActiveModal,
   selectGlobalLoading,
 } from "./ui";

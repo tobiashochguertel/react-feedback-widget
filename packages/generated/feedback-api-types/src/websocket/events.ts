@@ -248,3 +248,66 @@ export function isFeedbackEvent(
 ): event is FeedbackCreatedEvent | FeedbackUpdatedEvent | FeedbackDeletedEvent | FeedbackBulkUpdateEvent {
   return event.type.startsWith('feedback.');
 }
+
+// ============================================================================
+// Parser
+// ============================================================================
+
+/**
+ * Valid server event types
+ */
+const VALID_EVENT_TYPES = new Set([
+  'feedback.created',
+  'feedback.updated',
+  'feedback.deleted',
+  'feedback.bulk_update',
+  'connection.ack',
+  'subscription.confirmed',
+  'error',
+  'pong',
+]);
+
+/**
+ * Parse and validate a server event from JSON
+ *
+ * @param data - The parsed JSON data (unknown type)
+ * @returns Result object with event or error
+ *
+ * @example
+ * ```typescript
+ * const result = parseServerEvent(JSON.parse(rawMessage));
+ * if (result.ok) {
+ *   console.log('Event:', result.event.type);
+ * } else {
+ *   console.error('Parse error:', result.error);
+ * }
+ * ```
+ */
+export function parseServerEvent(data: unknown): { ok: true; event: ServerEvent } | { ok: false; error: string } {
+  // Check if data is an object
+  if (typeof data !== 'object' || data === null) {
+    return { ok: false, error: 'Event must be an object' };
+  }
+
+  const obj = data as Record<string, unknown>;
+
+  // Check for type field
+  if (typeof obj.type !== 'string') {
+    return { ok: false, error: 'Event must have a string "type" field' };
+  }
+
+  // Check for timestamp field
+  if (typeof obj.timestamp !== 'string') {
+    return { ok: false, error: 'Event must have a string "timestamp" field' };
+  }
+
+  // Check if type is valid
+  if (!VALID_EVENT_TYPES.has(obj.type)) {
+    return { ok: false, error: `Unknown event type: ${obj.type}` };
+  }
+
+  // Type-specific validation could be added here
+  // For now, we trust that if type is valid, the rest of the structure is correct
+
+  return { ok: true, event: data as ServerEvent };
+}

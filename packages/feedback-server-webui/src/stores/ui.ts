@@ -66,10 +66,14 @@ export interface UIState {
   wsStatus: WebSocketStatus;
   wsLastConnected: number | null;
   wsReconnectAttempts: number;
+  wsConnectionId: string | null;
+  wsLastError: string | null;
   setWsStatus: (status: WebSocketStatus) => void;
   setWsConnected: () => void;
   incrementWsReconnectAttempts: () => void;
   resetWsReconnectAttempts: () => void;
+  setWsConnectionId: (id: string | null) => void;
+  setWsLastError: (error: string | null) => void;
 
   // Modals
   activeModal: string | null;
@@ -190,6 +194,8 @@ export const useUIStore = create<UIState>()(
         wsStatus: 'disconnected',
         wsLastConnected: null,
         wsReconnectAttempts: 0,
+        wsConnectionId: null,
+        wsLastError: null,
 
         setWsStatus: (status) => set({ wsStatus: status }),
 
@@ -198,6 +204,7 @@ export const useUIStore = create<UIState>()(
             wsStatus: 'connected',
             wsLastConnected: Date.now(),
             wsReconnectAttempts: 0,
+            wsLastError: null,
           }),
 
         incrementWsReconnectAttempts: () =>
@@ -206,6 +213,10 @@ export const useUIStore = create<UIState>()(
           })),
 
         resetWsReconnectAttempts: () => set({ wsReconnectAttempts: 0 }),
+
+        setWsConnectionId: (id) => set({ wsConnectionId: id }),
+
+        setWsLastError: (error) => set({ wsLastError: error }),
 
         // ====================================================================
         // Modals
@@ -253,6 +264,8 @@ export const selectSidebarOpen = (state: UIState) => state.sidebarOpen;
 export const selectSidebarCollapsed = (state: UIState) => state.sidebarCollapsed;
 export const selectNotifications = (state: UIState) => state.notifications;
 export const selectWsStatus = (state: UIState) => state.wsStatus;
+export const selectWsConnectionId = (state: UIState) => state.wsConnectionId;
+export const selectWsLastError = (state: UIState) => state.wsLastError;
 export const selectActiveModal = (state: UIState) => state.activeModal;
 export const selectGlobalLoading = (state: UIState) => state.globalLoading;
 
@@ -306,11 +319,15 @@ export function useWebSocketStatus() {
   const status = useUIStore((state) => state.wsStatus);
   const lastConnected = useUIStore((state) => state.wsLastConnected);
   const reconnectAttempts = useUIStore((state) => state.wsReconnectAttempts);
+  const connectionId = useUIStore((state) => state.wsConnectionId);
+  const lastError = useUIStore((state) => state.wsLastError);
 
   return {
     status,
     lastConnected,
     reconnectAttempts,
+    connectionId,
+    lastError,
     isConnected: status === 'connected',
     isConnecting: status === 'connecting' || status === 'reconnecting',
   };

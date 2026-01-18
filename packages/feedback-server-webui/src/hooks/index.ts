@@ -29,3 +29,17 @@ export type {
   UseDeleteFeedbackOptions,
   UseBulkDeleteFeedbackOptions,
 } from "./useFeedback";
+
+// WebSocket hooks
+export { useWebSocket, getWebSocketUrl } from "./useWebSocket";
+export {
+  useFeedbackSubscription,
+  useFeedbackItemSubscription,
+  useRealtimeStatus,
+} from "./useFeedbackSubscription";
+export type {
+  UseWebSocketOptions,
+  UseWebSocketReturn,
+  UseFeedbackSubscriptionOptions,
+  UseFeedbackSubscriptionReturn,
+} from "@/lib/websocket";
