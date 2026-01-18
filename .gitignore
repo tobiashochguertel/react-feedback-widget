@@ -5,3 +5,8 @@ dist/
 .DS_Store
 .env*.local
 .task/
+
+# Playwright
+playwright-report/
+test-results/
+playwright/.cache/
