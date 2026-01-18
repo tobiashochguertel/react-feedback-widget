@@ -1,7 +1,36 @@
 # Feedback Server CLI - User Stories
 
 > **Version:** 0.1.0
-> **Last Updated:** 2025-01-15
+> **Last Updated:** 2025-01-20
+> **BDD Tests Status:** ✅ Implemented
+
+## 🎯 Implementation Status
+
+All user stories in this document have corresponding BDD tests implemented in `tests/bdd/`.
+
+| Epic ID | Epic Name           | Stories | Test File                       | Status          |
+| ------- | ------------------- | ------- | ------------------------------- | --------------- |
+| E001    | Authentication      | 3       | `authentication.test.ts`        | ✅ Implemented  |
+| E002    | Feedback Management | 5       | `feedback-management.test.ts`   | ✅ Implemented  |
+| E003    | Data Export         | 3       | `data-export.test.ts`           | ✅ Implemented  |
+| E004    | Configuration       | 3       | `configuration.test.ts`         | ✅ Implemented  |
+| E005    | Shell Integration   | 2       | `shell-integration.test.ts`     | ✅ Implemented  |
+| E006    | CI/CD Integration   | 2       | `cicd-integration.test.ts`      | ✅ Implemented  |
+
+### Running BDD Tests
+
+```bash
+# Run all BDD tests
+task test:bdd
+
+# Run with server (starts server, runs tests, stops server)
+task test:with-server
+
+# Run specific epic
+bun vitest run tests/bdd/authentication.test.ts
+```
+
+---
 
 ## 📋 Epic Overview
 

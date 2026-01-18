@@ -2,7 +2,10 @@
   {
     "id": "builtin_group_id",
     "name": "Currently Open Files",
-    "files": [],
+    "files": [
+      "taskfiles/Server.yml",
+      "taskfiles/Testing.yml"
+    ],
     "builtIn": true,
     "bookmarks": {}
   }

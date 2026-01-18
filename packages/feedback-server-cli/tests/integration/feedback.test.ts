@@ -1,18 +1,22 @@
 /**
  * Integration Tests for Feedback CLI Commands
  *
- * These tests run against a live feedback server (port 3001).
+ * These tests run against a live feedback server.
  *
  * Prerequisites:
- * - Feedback server running on http://localhost:3001
+ * - Feedback server running (default: http://localhost:3001)
+ * - Can override with TEST_BASE_URL environment variable
  * - Run: `bun vitest run tests/integration`
  */
 
 import { describe, test, expect, beforeAll } from 'vitest';
 import { spawn } from 'child_process';
-
-// Server URL for tests
-const SERVER_URL = 'http://localhost:3001';
+import {
+  DEFAULT_BASE_URL,
+  waitForServer,
+  createTestClient,
+  TestClient,
+} from '../setup';
 
 /**
  * Helper to run CLI commands and capture output
@@ -24,7 +28,7 @@ async function runCli(
   return new Promise((resolve) => {
     const env = {
       ...process.env,
-      FEEDBACK_SERVER_URL: SERVER_URL,
+      FEEDBACK_SERVER_URL: DEFAULT_BASE_URL,
       NO_UPDATE_NOTIFIER: '1',
       FORCE_COLOR: '0',
       ...options.env,
@@ -65,7 +69,7 @@ async function runCli(
  */
 async function isServerAvailable(): Promise<boolean> {
   try {
-    const response = await fetch(`${SERVER_URL}/api/health`);
+    const response = await fetch(`${DEFAULT_BASE_URL}/api/health`);
     return response.ok;
   } catch {
     return false;
@@ -74,15 +78,21 @@ async function isServerAvailable(): Promise<boolean> {
 
 describe('Feedback CLI Integration Tests', () => {
   let serverAvailable: boolean;
+  let client: TestClient;
+  const baseUrl = DEFAULT_BASE_URL;
 
   beforeAll(async () => {
     serverAvailable = await isServerAvailable();
     if (!serverAvailable) {
       console.warn(
-        '\n⚠️  Warning: Feedback server not running on port 3001.\n' +
-        '   Some integration tests will be skipped.\n' +
-        '   Start the server with: task api:dev\n'
+        `\n⚠️  Warning: Feedback server not running at ${baseUrl}.\n` +
+          '   Some integration tests will be skipped.\n' +
+          '   Start the server with: task server:start\n' +
+          '   Or set TEST_BASE_URL to point to your server.\n'
       );
+    } else {
+      await waitForServer(baseUrl, 15000);
+      client = createTestClient(baseUrl);
     }
   });
 

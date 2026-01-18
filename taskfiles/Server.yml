@@ -1,0 +1,193 @@
+# ============================================================================
+# Shared Taskfile: Server Management
+# ============================================================================
+#
+# This taskfile provides reusable tasks for managing test servers using tmux.
+# Include this in package Taskfiles for consistent server management across
+# the monorepo.
+#
+# Usage:
+#   includes:
+#     server:
+#       taskfile: ../../taskfiles/Server.yml
+#       vars:
+#         SERVER_NAME: feedback-server
+#         SERVER_PORT: '3001'
+#         SERVER_CMD: 'bun run dev'
+#
+# ============================================================================
+
+version: '3'
+
+vars:
+  # Default values - override when including
+  SERVER_NAME: '{{default "test-server" .SERVER_NAME}}'
+  SERVER_PORT: '{{default "3001" .SERVER_PORT}}'
+  SERVER_CMD: '{{default "bun run dev" .SERVER_CMD}}'
+  SERVER_DIR: '{{default "." .SERVER_DIR}}'
+  # tmux session naming
+  TMUX_SESSION: '{{.SERVER_NAME}}-{{.SERVER_PORT}}'
+  # Health check endpoint
+  HEALTH_ENDPOINT: '{{default "/api/health" .HEALTH_ENDPOINT}}'
+  HEALTH_URL: 'http://localhost:{{.SERVER_PORT}}{{.HEALTH_ENDPOINT}}'
+  # Timeouts
+  HEALTH_TIMEOUT: '{{default "30" .HEALTH_TIMEOUT}}'
+  HEALTH_INTERVAL: '{{default "1" .HEALTH_INTERVAL}}'
+
+tasks:
+  # ============================================================================
+  # Server Control
+  # ============================================================================
+
+  start:
+    desc: Start the server in a detached tmux session
+    summary: |
+      Starts the server in a detached tmux session.
+      Session name: {{.TMUX_SESSION}}
+      Port: {{.SERVER_PORT}}
+      Command: {{.SERVER_CMD}}
+    cmds:
+      - |
+        if tmux has-session -t {{.TMUX_SESSION}} 2>/dev/null; then
+          echo "⚠️  Server session '{{.TMUX_SESSION}}' already running"
+          echo "   Use 'task server:stop' to stop it first"
+          exit 0
+        fi
+        echo "🚀 Starting server '{{.SERVER_NAME}}' on port {{.SERVER_PORT}}..."
+        tmux new-session -d -s {{.TMUX_SESSION}} -c "{{.SERVER_DIR}}" "{{.SERVER_CMD}}"
+        echo "✅ Server started in tmux session: {{.TMUX_SESSION}}"
+        echo "   Attach with: tmux attach -t {{.TMUX_SESSION}}"
+    silent: true
+
+  stop:
+    desc: Stop the server tmux session
+    cmds:
+      - |
+        if tmux has-session -t {{.TMUX_SESSION}} 2>/dev/null; then
+          echo "🛑 Stopping server '{{.TMUX_SESSION}}'..."
+          tmux kill-session -t {{.TMUX_SESSION}}
+          echo "✅ Server stopped"
+        else
+          echo "ℹ️  Server session '{{.TMUX_SESSION}}' not running"
+        fi
+    silent: true
+
+  restart:
+    desc: Restart the server
+    cmds:
+      - task: stop
+      - sleep 1
+      - task: start
+
+  status:
+    desc: Check if the server is running
+    cmds:
+      - |
+        if tmux has-session -t {{.TMUX_SESSION}} 2>/dev/null; then
+          echo "✅ Server session '{{.TMUX_SESSION}}' is running"
+          # Check if health endpoint responds
+          if curl -s -o /dev/null -w '' --max-time 2 {{.HEALTH_URL}}; then
+            echo "✅ Health check passed: {{.HEALTH_URL}}"
+          else
+            echo "⚠️  Health check failed (server may be starting)"
+          fi
+        else
+          echo "❌ Server session '{{.TMUX_SESSION}}' is not running"
+          exit 1
+        fi
+    silent: true
+
+  logs:
+    desc: Show server logs (attach to tmux session in read-only mode)
+    cmds:
+      - |
+        if tmux has-session -t {{.TMUX_SESSION}} 2>/dev/null; then
+          echo "📋 Showing logs for {{.TMUX_SESSION}} (Ctrl+C to exit)"
+          tmux attach -t {{.TMUX_SESSION}} -r
+        else
+          echo "❌ Server session '{{.TMUX_SESSION}}' is not running"
+          exit 1
+        fi
+    interactive: true
+
+  attach:
+    desc: Attach to the server tmux session
+    cmds:
+      - |
+        if tmux has-session -t {{.TMUX_SESSION}} 2>/dev/null; then
+          tmux attach -t {{.TMUX_SESSION}}
+        else
+          echo "❌ Server session '{{.TMUX_SESSION}}' is not running"
+          exit 1
+        fi
+    interactive: true
+
+  # ============================================================================
+  # Health Checks
+  # ============================================================================
+
+  wait:
+    desc: Wait for the server to be healthy
+    summary: |
+      Waits for the server health endpoint to respond.
+      Timeout: {{.HEALTH_TIMEOUT}} seconds
+      Interval: {{.HEALTH_INTERVAL}} seconds
+      URL: {{.HEALTH_URL}}
+    cmds:
+      - |
+        echo "⏳ Waiting for server to be ready..."
+        echo "   Health URL: {{.HEALTH_URL}}"
+        echo "   Timeout: {{.HEALTH_TIMEOUT}}s"
+
+        ELAPSED=0
+        while [ $ELAPSED -lt {{.HEALTH_TIMEOUT}} ]; do
+          if curl -s -o /dev/null -w '' --max-time 2 {{.HEALTH_URL}}; then
+            echo "✅ Server is ready! (${ELAPSED}s)"
+            exit 0
+          fi
+          sleep {{.HEALTH_INTERVAL}}
+          ELAPSED=$((ELAPSED + {{.HEALTH_INTERVAL}}))
+          echo "   Waiting... (${ELAPSED}s)"
+        done
+
+        echo "❌ Server did not become ready within {{.HEALTH_TIMEOUT}} seconds"
+        exit 1
+    silent: true
+
+  ensure:
+    desc: Ensure the server is running and healthy
+    summary: |
+      Starts the server if not running and waits for it to be healthy.
+      Use this before running tests.
+    cmds:
+      - |
+        # Start if not running
+        if ! tmux has-session -t {{.TMUX_SESSION}} 2>/dev/null; then
+          task server:start
+        fi
+      - task: wait
+
+  # ============================================================================
+  # Test Runners
+  # ============================================================================
+
+  test:with-server:
+    desc: Run tests with automatic server management
+    summary: |
+      1. Starts the server if not running
+      2. Waits for the server to be healthy
+      3. Runs the test command
+      4. Optionally stops the server after tests
+
+      Pass the test command as CLI_ARGS:
+        task server:test:with-server -- bun vitest run tests/integration
+    vars:
+      STOP_AFTER: '{{default "false" .STOP_AFTER}}'
+    cmds:
+      - task: ensure
+      - echo "🧪 Running tests..."
+      - '{{.CLI_ARGS}}'
+      - |
+        if [ "{{.STOP_AFTER}}" = "true" ]; then
+          task server:stop
+        fi

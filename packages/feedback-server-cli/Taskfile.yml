@@ -1,5 +1,27 @@
 version: '3'
 
+# Include shared Taskfiles from the root taskfiles directory
+includes:
+  server:
+    taskfile: ../../taskfiles/Server.yml
+    optional: true
+    vars:
+      SERVER_NAME: feedback-server
+      SERVER_PORT: "3001"
+      SERVER_CMD: cd ../feedback-server && bun run dev
+      HEALTH_ENDPOINT: /api/health
+  testing:
+    taskfile: ../../taskfiles/Testing.yml
+    optional: true
+    vars:
+      TEST_FRAMEWORK: vitest
+      BASE_URL: http://localhost:3001
+
+# Package-specific variables
+vars:
+  CLI_NAME: feedback
+  PACKAGE_NAME: feedback-server-cli
+
 tasks:
   default:
     desc: Show available tasks
@@ -64,6 +86,26 @@ tasks:
     desc: Run integration tests only (requires server on port 3001)
     cmds:
       - bun vitest run tests/integration
+
+  test:bdd:
+    desc: Run BDD tests only (requires server on port 3001)
+    cmds:
+      - bun vitest run tests/bdd
+
+  test:bdd:watch:
+    desc: Run BDD tests in watch mode
+    cmds:
+      - bun vitest tests/bdd
+
+  test:with-server:
+    desc: Start server, run all tests, then stop server
+    deps:
+      - server:ensure
+    cmds:
+      - defer: task server:stop
+      - bun run test
+    env:
+      TEST_BASE_URL: http://localhost:3001
 
   # ============================================================================
   # CLI Execution
