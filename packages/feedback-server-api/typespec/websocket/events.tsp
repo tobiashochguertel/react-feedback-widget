@@ -14,7 +14,7 @@ namespace FeedbackServer.WebSocket;
 
 /**
  * Server-to-Client Events sent over WebSocket
- * 
+ *
  * This union type represents all possible events that the server can send
  * to connected clients. Each event has a `type` discriminator field.
  */
@@ -53,11 +53,11 @@ union ServerEvents {
 model FeedbackCreatedEvent {
   /** Event type discriminator */
   type: "feedback.created";
-  
+
   /** ISO 8601 timestamp when event occurred */
   @format("date-time")
   timestamp: string;
-  
+
   /** The created feedback item */
   feedback: FeedbackServer.Models.Feedback;
 }
@@ -66,14 +66,14 @@ model FeedbackCreatedEvent {
 model FeedbackUpdatedEvent {
   /** Event type discriminator */
   type: "feedback.updated";
-  
+
   /** ISO 8601 timestamp when event occurred */
   @format("date-time")
   timestamp: string;
-  
+
   /** The updated feedback item */
   feedback: FeedbackServer.Models.Feedback;
-  
+
   /** List of fields that were changed */
   changedFields: string[];
 }
@@ -82,11 +82,11 @@ model FeedbackUpdatedEvent {
 model FeedbackDeletedEvent {
   /** Event type discriminator */
   type: "feedback.deleted";
-  
+
   /** ISO 8601 timestamp when event occurred */
   @format("date-time")
   timestamp: string;
-  
+
   /** ID of the deleted feedback */
   feedbackId: string;
 }
@@ -95,14 +95,14 @@ model FeedbackDeletedEvent {
 model FeedbackBulkUpdateEvent {
   /** Event type discriminator */
   type: "feedback.bulk_update";
-  
+
   /** ISO 8601 timestamp when event occurred */
   @format("date-time")
   timestamp: string;
-  
+
   /** IDs of updated feedback items */
   feedbackIds: string[];
-  
+
   /** Action that was performed */
   action: BulkUpdateAction;
 }
@@ -123,14 +123,14 @@ enum BulkUpdateAction {
 model ConnectionAckEvent {
   /** Event type discriminator */
   type: "connection.ack";
-  
+
   /** ISO 8601 timestamp when connection was established */
   @format("date-time")
   timestamp: string;
-  
+
   /** Unique connection identifier assigned by server */
   connectionId: string;
-  
+
   /** Server version for compatibility checking */
   serverVersion: string;
 }
@@ -139,11 +139,11 @@ model ConnectionAckEvent {
 model SubscriptionConfirmedEvent {
   /** Event type discriminator */
   type: "subscription.confirmed";
-  
+
   /** ISO 8601 timestamp when subscription was confirmed */
   @format("date-time")
   timestamp: string;
-  
+
   /** Channel that was subscribed to */
   channel: string;
 }
@@ -156,17 +156,17 @@ model SubscriptionConfirmedEvent {
 model ErrorEvent {
   /** Event type discriminator */
   type: "error";
-  
+
   /** ISO 8601 timestamp when error occurred */
   @format("date-time")
   timestamp: string;
-  
+
   /** Error code for programmatic handling */
   code: ErrorCode;
-  
+
   /** Human-readable error message */
   message: string;
-  
+
   /** Optional additional details */
   details?: Record<string>;
 }
@@ -183,7 +183,7 @@ enum ErrorCode {
 model PongEvent {
   /** Event type discriminator */
   type: "pong";
-  
+
   /** ISO 8601 timestamp of pong response */
   @format("date-time")
   timestamp: string;

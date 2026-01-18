@@ -98,10 +98,10 @@ export const websocketConfig: WebSocketHandler<ClientData> = {
    */
   message(ws, message) {
     // Convert Buffer to string if needed (Bun can send Buffer for binary messages)
-    const messageData = typeof message === 'string' 
-      ? message 
-      : message instanceof ArrayBuffer 
-        ? message 
+    const messageData = typeof message === 'string'
+      ? message
+      : message instanceof ArrayBuffer
+        ? message
         : message.buffer.slice(message.byteOffset, message.byteOffset + message.byteLength);
     handleMessage(ws, messageData);
   },

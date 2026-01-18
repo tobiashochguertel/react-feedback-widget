@@ -15,7 +15,7 @@ namespace FeedbackServer.WebSocket;
 
 /**
  * Client-to-Server Commands sent over WebSocket
- * 
+ *
  * This union type represents all possible commands that clients can send
  * to the server. Each command has a `type` discriminator field.
  */
@@ -42,13 +42,13 @@ union ClientCommands {
 model SubscribeCommand {
   /** Command type discriminator */
   type: "subscribe";
-  
-  /** 
+
+  /**
    * Channel to subscribe to.
    * Examples: "feedback", "feedback:project-123", "feedback:item-456"
    */
   channel: string;
-  
+
   /** Optional filters to narrow down events */
   filters?: SubscriptionFilters;
 }
@@ -57,13 +57,13 @@ model SubscribeCommand {
 model SubscriptionFilters {
   /** Filter by feedback types */
   types?: FeedbackServer.Models.FeedbackType[];
-  
+
   /** Filter by feedback statuses */
   statuses?: FeedbackServer.Models.FeedbackStatus[];
-  
+
   /** Filter by project ID */
   projectId?: string;
-  
+
   /** Filter by priority levels */
   priorities?: FeedbackServer.Models.FeedbackPriority[];
 }
@@ -72,7 +72,7 @@ model SubscriptionFilters {
 model UnsubscribeCommand {
   /** Command type discriminator */
   type: "unsubscribe";
-  
+
   /** Channel to unsubscribe from */
   channel: string;
 }
@@ -85,7 +85,7 @@ model UnsubscribeCommand {
 model PingCommand {
   /** Command type discriminator */
   type: "ping";
-  
+
   /** Optional client timestamp for latency measurement */
   @format("date-time")
   timestamp?: string;
@@ -95,10 +95,10 @@ model PingCommand {
 model AuthenticateCommand {
   /** Command type discriminator */
   type: "authenticate";
-  
+
   /** API key for authentication (simple auth) */
   apiKey?: string;
-  
+
   /** JWT token for authentication (token-based auth) */
   token?: string;
 }
