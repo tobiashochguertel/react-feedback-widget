@@ -23,6 +23,7 @@
     "react-dom": "^18.3.0",
     "react-router-dom": "^7.12.0",
     "@tanstack/react-query": "^5.90.18",
+    "@tanstack/react-query-devtools": "^5.90.18",
     "zustand": "^5.0.10",
     "recharts": "^3.6.0",
     "lucide-react": "^0.562.0",

@@ -3,7 +3,7 @@
     "id": "builtin_group_id",
     "name": "Currently Open Files",
     "files": [
-      "packages/feedback-server-webui/docs/spec/004.webui-bdd-testing-tasks/README.md"
+      "packages/feedback-server-webui/docs/spec/002.webui-tasks/TASKS-OVERVIEW.md"
     ],
     "builtIn": true,
     "bookmarks": {}

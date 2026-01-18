@@ -661,9 +661,8 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(
         {/* Controls Overlay */}
         {showControls && !hasError && (
           <div
-            className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent pt-16 pb-4 px-4 transition-opacity duration-300 ${
-              controlsVisible ? 'opacity-100' : 'opacity-0'
-            }`}
+            className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent pt-16 pb-4 px-4 transition-opacity duration-300 ${controlsVisible ? 'opacity-100' : 'opacity-0'
+              }`}
           >
             {/* Progress Bar */}
             <div className="relative h-1 mb-4 group/progress">
@@ -732,11 +731,10 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(
 
                   {/* Volume Slider */}
                   <div
-                    className={`absolute left-8 flex items-center transition-all duration-200 ${
-                      showVolumeSlider
+                    className={`absolute left-8 flex items-center transition-all duration-200 ${showVolumeSlider
                         ? 'opacity-100 w-20'
                         : 'opacity-0 w-0 overflow-hidden'
-                    }`}
+                      }`}
                   >
                     <input
                       type="range"
@@ -746,7 +744,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(
                       value={isMuted ? 0 : volume}
                       onChange={handleVolumeChange}
                       className="w-full h-1 bg-white/30 rounded appearance-none cursor-pointer
-                                 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 
+                                 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3
                                  [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full"
                       aria-label="Volume"
                     />
@@ -779,11 +777,10 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(
                         <button
                           key={speed}
                           onClick={() => handleSpeedChange(speed)}
-                          className={`w-full px-4 py-1.5 text-left text-sm transition-colors ${
-                            playbackRate === speed
+                          className={`w-full px-4 py-1.5 text-left text-sm transition-colors ${playbackRate === speed
                               ? 'bg-white/20 text-white'
                               : 'text-gray-300 hover:bg-white/10 hover:text-white'
-                          }`}
+                            }`}
                         >
                           {speed}x
                         </button>
