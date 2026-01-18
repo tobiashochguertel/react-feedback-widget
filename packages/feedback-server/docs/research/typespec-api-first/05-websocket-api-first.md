@@ -19,12 +19,12 @@ Establish a **type-safe WebSocket contract** using TypeSpec that:
 
 ### Options Evaluated
 
-| Option | Technology | Viability | Recommendation |
-|--------|------------|-----------|----------------|
-| A | `@typespec/protobuf` + gRPC streaming | ⚠️ Possible | Overkill for our use case |
-| B | `@typespec/json-schema` for messages | ✅ Viable | Part of recommended approach |
-| C | Community `@lars-artmann/typespec-asyncapi` | ❌ Not Ready | Alpha quality (38.4% tests) |
-| D | **`@typespec/events` + JSON Schema** | ✅ **Recommended** | Official, stable, production-ready |
+| Option | Technology                                  | Viability          | Recommendation                     |
+| ------ | ------------------------------------------- | ------------------ | ---------------------------------- |
+| A      | `@typespec/protobuf` + gRPC streaming       | ⚠️ Possible        | Overkill for our use case          |
+| B      | `@typespec/json-schema` for messages        | ✅ Viable          | Part of recommended approach       |
+| C      | Community `@lars-artmann/typespec-asyncapi` | ❌ Not Ready       | Alpha quality (38.4% tests)        |
+| D      | **`@typespec/events` + JSON Schema**        | ✅ **Recommended** | Official, stable, production-ready |
 
 ## 📦 Technology Deep-Dive
 
@@ -49,7 +49,7 @@ interface FeedbackRealtimeService {
   // Bidirectional streaming
   @Protobuf.stream(StreamMode.Duplex)
   subscribeToUpdates(...FeedbackSubscription): FeedbackEvent;
-  
+
   // Server streaming only
   @Protobuf.stream(StreamMode.Out)
   getFeedbackStream(...FilterCriteria): FeedbackItem;
@@ -57,12 +57,14 @@ interface FeedbackRealtimeService {
 ```
 
 **Streaming Modes:**
+
 - `StreamMode.None` - Neither request nor response streamed
 - `StreamMode.In` - Request streamed, response synchronous
 - `StreamMode.Out` - Request synchronous, response streamed
 - `StreamMode.Duplex` - Both request and response streamed (bidirectional)
 
 **Verdict:** ⚠️ **Overkill for our use case**
+
 - Requires gRPC infrastructure
 - Binary protocol adds complexity
 - Best suited for high-performance microservices, not browser WebSocket
@@ -148,20 +150,22 @@ op subscribeToCommands(): FeedbackCommand;
 
 **Current Status (as of research date):**
 
-| Metric | Value |
-|--------|-------|
-| Version | 0.0.1 (Alpha) |
-| Test Pass Rate | 255/664 (38.4%) |
-| Build Errors | 0 TypeScript errors |
-| Stability | 🔴 Not production ready |
+| Metric         | Value                   |
+| -------------- | ----------------------- |
+| Version        | 0.0.1 (Alpha)           |
+| Test Pass Rate | 255/664 (38.4%)         |
+| Build Errors   | 0 TypeScript errors     |
+| Stability      | 🔴 Not production ready |
 
 **Known Issues:**
+
 - `program.stateMap` undefined errors causing state management failures
 - Complex protocols (Kafka, MQTT, WebSocket) implementations disabled
 - 5,745 lines of complex infrastructure disabled
 - Core decorators (`@channel`, `@publish`, `@subscribe`) work for basic cases
 
 **Verdict:** ❌ **Not Ready**
+
 - Alpha quality with significant limitations
 - Wait for 1.0 release before using in production
 - Suitable only for experimentation
@@ -176,11 +180,11 @@ The official TypeSpec Events package provides decorators for defining event-driv
 
 **Decorators:**
 
-| Decorator | Target | Purpose |
-|-----------|--------|---------|
-| `@events` | `Union` | Declares a union type as an event set |
-| `@data` | `ModelProperty` | Marks a property as the event payload |
-| `@contentType` | `Union`, `UnionVariant`, `ModelProperty` | Specifies content type for envelope |
+| Decorator      | Target                                   | Purpose                               |
+| -------------- | ---------------------------------------- | ------------------------------------- |
+| `@events`      | `Union`                                  | Declares a union type as an event set |
+| `@data`        | `ModelProperty`                          | Marks a property as the event payload |
+| `@contentType` | `Union`, `UnionVariant`, `ModelProperty` | Specifies content type for envelope   |
 
 **Example:**
 
@@ -194,13 +198,13 @@ using TypeSpec.Events;
 union FeedbackEvents {
   @contentType("application/json")
   created: FeedbackCreatedEvent,
-  
+
   @contentType("application/json")
   updated: FeedbackUpdatedEvent,
-  
+
   @contentType("application/json")
   deleted: FeedbackDeletedEvent,
-  
+
   // Simple event (string payload)
   connectionEstablished: "connected",
 }
@@ -247,6 +251,7 @@ union FeedbackEvents {
 ```
 
 **Verdict:** ✅ **Recommended Approach**
+
 - Official TypeSpec package (stable)
 - Clean event modeling semantics
 - Combines well with JSON Schema for validation
@@ -264,12 +269,12 @@ graph TB
         TS[main.tsp] --> Events[@typespec/events<br/>Event Definitions]
         TS --> JsonSchema[@typespec/json-schema<br/>Schema Generation]
     end
-    
+
     subgraph Generated Artifacts
         Events --> Types[TypeScript Types]
         JsonSchema --> Schemas[JSON Schemas]
     end
-    
+
     subgraph Runtime
         Types --> Server[Hono WebSocket Server]
         Types --> Client[React WebSocket Client]
@@ -421,88 +426,99 @@ model FilterCriteria {
 **Hono WebSocket Server:**
 
 ```typescript
-import { Hono } from 'hono';
-import { upgradeWebSocket } from 'hono/cloudflare-workers';
-import Ajv from 'ajv';
-import serverEventsSchema from '@feedback/api-schemas/server-events.json';
-import clientCommandsSchema from '@feedback/api-schemas/client-commands.json';
-import type { ServerEvents, ClientCommands } from '@feedback/api-types';
+import { Hono } from "hono";
+import { upgradeWebSocket } from "hono/cloudflare-workers";
+import Ajv from "ajv";
+import serverEventsSchema from "@feedback/api-schemas/server-events.json";
+import clientCommandsSchema from "@feedback/api-schemas/client-commands.json";
+import type { ServerEvents, ClientCommands } from "@feedback/api-types";
 
 const ajv = new Ajv();
 const validateClientCommand = ajv.compile(clientCommandsSchema);
 
 const app = new Hono();
 
-app.get('/ws', upgradeWebSocket((c) => ({
-  onMessage(event, ws) {
-    const command = JSON.parse(event.data as string) as ClientCommands;
-    
-    // Validate against JSON Schema
-    if (!validateClientCommand(command)) {
-      const errorEvent: ServerEvents = {
-        type: 'error',
-        timestamp: new Date().toISOString(),
-        code: 'INVALID_COMMAND',
-        message: ajv.errorsText(validateClientCommand.errors),
-      };
-      ws.send(JSON.stringify(errorEvent));
-      return;
-    }
-    
-    // Handle typed command
-    switch (command.type) {
-      case 'subscribe':
-        handleSubscribe(ws, command);
-        break;
-      case 'unsubscribe':
-        handleUnsubscribe(ws, command);
-        break;
-      case 'ping':
-        ws.send(JSON.stringify({ type: 'pong', timestamp: new Date().toISOString() }));
-        break;
-    }
-  },
-})));
+app.get(
+  "/ws",
+  upgradeWebSocket((c) => ({
+    onMessage(event, ws) {
+      const command = JSON.parse(event.data as string) as ClientCommands;
+
+      // Validate against JSON Schema
+      if (!validateClientCommand(command)) {
+        const errorEvent: ServerEvents = {
+          type: "error",
+          timestamp: new Date().toISOString(),
+          code: "INVALID_COMMAND",
+          message: ajv.errorsText(validateClientCommand.errors),
+        };
+        ws.send(JSON.stringify(errorEvent));
+        return;
+      }
+
+      // Handle typed command
+      switch (command.type) {
+        case "subscribe":
+          handleSubscribe(ws, command);
+          break;
+        case "unsubscribe":
+          handleUnsubscribe(ws, command);
+          break;
+        case "ping":
+          ws.send(
+            JSON.stringify({
+              type: "pong",
+              timestamp: new Date().toISOString(),
+            }),
+          );
+          break;
+      }
+    },
+  })),
+);
 ```
 
 **React WebSocket Client:**
 
 ```typescript
-import type { ServerEvents, ClientCommands } from '@feedback/api-types';
+import type { ServerEvents, ClientCommands } from "@feedback/api-types";
 
 export function useFeedbackWebSocket(url: string) {
   const ws = useRef<WebSocket | null>(null);
-  
+
   const subscribe = useCallback((channel: string, filters?: FilterCriteria) => {
     const command: ClientCommands = {
-      type: 'subscribe',
+      type: "subscribe",
       channel,
       filters,
     };
     ws.current?.send(JSON.stringify(command));
   }, []);
-  
+
   useEffect(() => {
     ws.current = new WebSocket(url);
     ws.current.onmessage = (event) => {
       const serverEvent = JSON.parse(event.data) as ServerEvents;
-      
+
       switch (serverEvent.type) {
-        case 'feedback.created':
-          queryClient.invalidateQueries({ queryKey: ['feedbacks'] });
+        case "feedback.created":
+          queryClient.invalidateQueries({ queryKey: ["feedbacks"] });
           break;
-        case 'feedback.updated':
-          queryClient.setQueryData(['feedback', serverEvent.feedback.id], serverEvent.feedback);
+        case "feedback.updated":
+          queryClient.setQueryData(
+            ["feedback", serverEvent.feedback.id],
+            serverEvent.feedback,
+          );
           break;
-        case 'feedback.deleted':
-          queryClient.invalidateQueries({ queryKey: ['feedbacks'] });
+        case "feedback.deleted":
+          queryClient.invalidateQueries({ queryKey: ["feedbacks"] });
           break;
       }
     };
-    
+
     return () => ws.current?.close();
   }, [url]);
-  
+
   return { subscribe };
 }
 ```
@@ -511,15 +527,15 @@ export function useFeedbackWebSocket(url: string) {
 
 ## 📊 Comparison Summary
 
-| Criteria | Protobuf/gRPC | JSON Schema Only | AsyncAPI Emitter | Events + JSON Schema |
-|----------|---------------|------------------|------------------|----------------------|
-| **Stability** | ✅ Stable | ✅ Stable | ❌ Alpha | ✅ Stable |
-| **Browser Support** | ⚠️ Requires proxy | ✅ Native | ❌ Broken | ✅ Native |
-| **Type Safety** | ✅ Excellent | ✅ Good | ⚠️ Partial | ✅ Excellent |
-| **Validation** | ✅ Built-in | ✅ JSON Schema | ⚠️ Partial | ✅ JSON Schema |
-| **Protocol Semantics** | ✅ Full | ❌ None | ⚠️ Partial | ✅ Event modeling |
-| **Complexity** | 🔴 High | 🟢 Low | 🟡 Medium | 🟢 Low |
-| **Learning Curve** | 🔴 Steep | 🟢 Minimal | 🟡 Medium | 🟢 Minimal |
+| Criteria               | Protobuf/gRPC     | JSON Schema Only | AsyncAPI Emitter | Events + JSON Schema |
+| ---------------------- | ----------------- | ---------------- | ---------------- | -------------------- |
+| **Stability**          | ✅ Stable         | ✅ Stable        | ❌ Alpha         | ✅ Stable            |
+| **Browser Support**    | ⚠️ Requires proxy | ✅ Native        | ❌ Broken        | ✅ Native            |
+| **Type Safety**        | ✅ Excellent      | ✅ Good          | ⚠️ Partial       | ✅ Excellent         |
+| **Validation**         | ✅ Built-in       | ✅ JSON Schema   | ⚠️ Partial       | ✅ JSON Schema       |
+| **Protocol Semantics** | ✅ Full           | ❌ None          | ⚠️ Partial       | ✅ Event modeling    |
+| **Complexity**         | 🔴 High           | 🟢 Low           | 🟡 Medium        | 🟢 Low               |
+| **Learning Curve**     | 🔴 Steep          | 🟢 Minimal       | 🟡 Medium        | 🟢 Minimal           |
 
 ---
 
@@ -553,6 +569,6 @@ This combination provides:
 
 ---
 
-**Research compiled by:** GitHub Copilot  
-**For project:** react-feedback-widget  
+**Research compiled by:** GitHub Copilot
+**For project:** react-feedback-widget
 **Date:** January 2025

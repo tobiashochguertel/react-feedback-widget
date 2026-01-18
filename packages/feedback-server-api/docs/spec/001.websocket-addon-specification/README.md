@@ -103,20 +103,22 @@ Based on research documented in [`packages/feedback-server/docs/research/typespe
 
 ### Evaluated Options
 
-| Option | Technology | Verdict |
-|--------|-----------|---------|
-| A | `@typespec/protobuf` + gRPC streaming | ⚠️ Overkill |
-| B | `@typespec/json-schema` alone | ⚠️ Partial solution |
-| C | `@lars-artmann/typespec-asyncapi` | ❌ Alpha quality (38.4% tests) |
-| **D** | **`@typespec/events` + JSON Schema** | ✅ **Recommended** |
+| Option | Technology                            | Verdict                        |
+| ------ | ------------------------------------- | ------------------------------ |
+| A      | `@typespec/protobuf` + gRPC streaming | ⚠️ Overkill                    |
+| B      | `@typespec/json-schema` alone         | ⚠️ Partial solution            |
+| C      | `@lars-artmann/typespec-asyncapi`     | ❌ Alpha quality (38.4% tests) |
+| **D**  | **`@typespec/events` + JSON Schema**  | ✅ **Recommended**             |
 
 ### Recommended Approach
 
 Use official TypeSpec packages:
+
 - `@typespec/events` - Define event sets with semantic decorators
 - `@typespec/json-schema` - Generate validation schemas
 
 This provides:
+
 - ✅ Stable, official packages
 - ✅ Clean event modeling semantics
 - ✅ Runtime validation via JSON Schema
@@ -137,15 +139,15 @@ sequenceDiagram
 
     Note over C,S: Connection Established
     S->>C: ServerEvent: connection.ack
-    
+
     Note over C,S: Client Subscribes
     C->>V: ClientCommand: subscribe
     V->>S: Validated command
     S->>C: ServerEvent: subscription.confirmed
-    
+
     Note over C,S: Feedback Created (by another client)
     S->>C: ServerEvent: feedback.created
-    
+
     Note over C,S: Client Unsubscribes
     C->>V: ClientCommand: unsubscribe
     V->>S: Validated command
@@ -242,25 +244,25 @@ namespace FeedbackServer.WebSocket;
 union ServerEvents {
   /** Feedback item was created */
   feedbackCreated: FeedbackCreatedEvent,
-  
+
   /** Feedback item was updated */
   feedbackUpdated: FeedbackUpdatedEvent,
-  
+
   /** Feedback item was deleted */
   feedbackDeleted: FeedbackDeletedEvent,
-  
+
   /** Multiple feedback items updated (bulk operation) */
   feedbackBulkUpdate: FeedbackBulkUpdateEvent,
-  
+
   /** Connection acknowledged by server */
   connectionAck: ConnectionAckEvent,
-  
+
   /** Subscription confirmed */
   subscriptionConfirmed: SubscriptionConfirmedEvent,
-  
+
   /** Error occurred */
   error: ErrorEvent,
-  
+
   /** Pong response to ping */
   pong: PongEvent,
 }
@@ -354,13 +356,13 @@ namespace FeedbackServer.WebSocket;
 union ClientCommands {
   /** Subscribe to events for a channel */
   subscribe: SubscribeCommand,
-  
+
   /** Unsubscribe from a channel */
   unsubscribe: UnsubscribeCommand,
-  
+
   /** Ping to keep connection alive */
   ping: PingCommand,
-  
+
   /** Authenticate the WebSocket connection */
   authenticate: AuthenticateCommand,
 }
@@ -415,33 +417,33 @@ model AuthenticateCommand {
 
 ### Server Events (Server → Client)
 
-| Event Type | Description | Payload |
-|------------|-------------|---------|
-| `feedback.created` | New feedback created | Full `Feedback` object |
-| `feedback.updated` | Feedback updated | Full `Feedback` object + changed fields |
-| `feedback.deleted` | Feedback deleted | `feedbackId` only |
-| `feedback.bulk_update` | Multiple items updated | Array of IDs + action type |
-| `connection.ack` | Connection established | `connectionId`, `serverVersion` |
-| `subscription.confirmed` | Subscription success | `channel` |
-| `error` | Error occurred | `code`, `message`, `details?` |
-| `pong` | Ping response | `timestamp` |
+| Event Type               | Description            | Payload                                 |
+| ------------------------ | ---------------------- | --------------------------------------- |
+| `feedback.created`       | New feedback created   | Full `Feedback` object                  |
+| `feedback.updated`       | Feedback updated       | Full `Feedback` object + changed fields |
+| `feedback.deleted`       | Feedback deleted       | `feedbackId` only                       |
+| `feedback.bulk_update`   | Multiple items updated | Array of IDs + action type              |
+| `connection.ack`         | Connection established | `connectionId`, `serverVersion`         |
+| `subscription.confirmed` | Subscription success   | `channel`                               |
+| `error`                  | Error occurred         | `code`, `message`, `details?`           |
+| `pong`                   | Ping response          | `timestamp`                             |
 
 ### Client Commands (Client → Server)
 
-| Command Type | Description | Parameters |
-|--------------|-------------|------------|
-| `subscribe` | Subscribe to events | `channel`, `filters?` |
-| `unsubscribe` | Unsubscribe from events | `channel` |
-| `ping` | Keep connection alive | `timestamp?` |
+| Command Type   | Description             | Parameters            |
+| -------------- | ----------------------- | --------------------- |
+| `subscribe`    | Subscribe to events     | `channel`, `filters?` |
+| `unsubscribe`  | Unsubscribe from events | `channel`             |
+| `ping`         | Keep connection alive   | `timestamp?`          |
 | `authenticate` | Authenticate connection | `apiKey?` or `token?` |
 
 ### Channel Naming Convention
 
-| Channel | Description |
-|---------|-------------|
-| `feedback` | All feedback events |
-| `feedback:project-{id}` | Events for specific project |
-| `feedback:{id}` | Events for specific feedback item |
+| Channel                 | Description                       |
+| ----------------------- | --------------------------------- |
+| `feedback`              | All feedback events               |
+| `feedback:project-{id}` | Events for specific project       |
+| `feedback:{id}`         | Events for specific feedback item |
 
 ---
 
@@ -451,7 +453,7 @@ model AuthenticateCommand {
 
 ```typescript
 // Generated from TypeSpec
-export type ServerEvents = 
+export type ServerEvents =
   | FeedbackCreatedEvent
   | FeedbackUpdatedEvent
   | FeedbackDeletedEvent
@@ -494,9 +496,9 @@ packages/generated/feedback-api-schemas/
 
 ```typescript
 // packages/feedback-server/src/websocket/handler.ts
-import Ajv from 'ajv';
-import clientCommandsSchema from '@feedback/api-schemas/client-commands.json';
-import type { ServerEvents, ClientCommands } from '@feedback/api-types';
+import Ajv from "ajv";
+import clientCommandsSchema from "@feedback/api-schemas/client-commands.json";
+import type { ServerEvents, ClientCommands } from "@feedback/api-types";
 
 const ajv = new Ajv();
 const validateCommand = ajv.compile(clientCommandsSchema);
@@ -504,33 +506,33 @@ const validateCommand = ajv.compile(clientCommandsSchema);
 export function handleWebSocketMessage(
   ws: WebSocket,
   data: string,
-  context: ConnectionContext
+  context: ConnectionContext,
 ): void {
   let command: ClientCommands;
-  
+
   try {
     command = JSON.parse(data);
   } catch {
-    sendError(ws, 'INVALID_COMMAND', 'Invalid JSON');
+    sendError(ws, "INVALID_COMMAND", "Invalid JSON");
     return;
   }
-  
+
   if (!validateCommand(command)) {
-    sendError(ws, 'INVALID_COMMAND', ajv.errorsText(validateCommand.errors));
+    sendError(ws, "INVALID_COMMAND", ajv.errorsText(validateCommand.errors));
     return;
   }
-  
+
   switch (command.type) {
-    case 'subscribe':
+    case "subscribe":
       handleSubscribe(ws, command, context);
       break;
-    case 'unsubscribe':
+    case "unsubscribe":
       handleUnsubscribe(ws, command, context);
       break;
-    case 'ping':
+    case "ping":
       sendPong(ws);
       break;
-    case 'authenticate':
+    case "authenticate":
       handleAuthenticate(ws, command, context);
       break;
   }
@@ -545,47 +547,50 @@ function sendEvent(ws: WebSocket, event: ServerEvents): void {
 
 ```typescript
 // packages/feedback-server-webui/src/hooks/useWebSocket.ts
-import { useCallback, useEffect, useRef } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
-import type { ServerEvents, ClientCommands } from '@feedback/api-types';
+import { useCallback, useEffect, useRef } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import type { ServerEvents, ClientCommands } from "@feedback/api-types";
 
 export function useFeedbackWebSocket(url: string) {
   const ws = useRef<WebSocket | null>(null);
   const queryClient = useQueryClient();
-  
+
   const sendCommand = useCallback((command: ClientCommands) => {
     ws.current?.send(JSON.stringify(command));
   }, []);
-  
-  const subscribe = useCallback((channel: string, filters?: SubscriptionFilters) => {
-    sendCommand({ type: 'subscribe', channel, filters });
-  }, [sendCommand]);
-  
+
+  const subscribe = useCallback(
+    (channel: string, filters?: SubscriptionFilters) => {
+      sendCommand({ type: "subscribe", channel, filters });
+    },
+    [sendCommand],
+  );
+
   useEffect(() => {
     ws.current = new WebSocket(url);
-    
+
     ws.current.onmessage = (event) => {
       const serverEvent: ServerEvents = JSON.parse(event.data);
-      
+
       switch (serverEvent.type) {
-        case 'feedback.created':
-          queryClient.invalidateQueries({ queryKey: ['feedbacks'] });
+        case "feedback.created":
+          queryClient.invalidateQueries({ queryKey: ["feedbacks"] });
           break;
-        case 'feedback.updated':
+        case "feedback.updated":
           queryClient.setQueryData(
-            ['feedback', serverEvent.feedback.id],
-            serverEvent.feedback
+            ["feedback", serverEvent.feedback.id],
+            serverEvent.feedback,
           );
           break;
-        case 'feedback.deleted':
-          queryClient.invalidateQueries({ queryKey: ['feedbacks'] });
+        case "feedback.deleted":
+          queryClient.invalidateQueries({ queryKey: ["feedbacks"] });
           break;
       }
     };
-    
+
     return () => ws.current?.close();
   }, [url, queryClient]);
-  
+
   return { subscribe, sendCommand };
 }
 ```
@@ -623,6 +628,6 @@ export function useFeedbackWebSocket(url: string) {
 
 ---
 
-**Document compiled by:** GitHub Copilot  
-**For project:** react-feedback-widget / feedback-server-api  
+**Document compiled by:** GitHub Copilot
+**For project:** react-feedback-widget / feedback-server-api
 **Date:** January 2025
