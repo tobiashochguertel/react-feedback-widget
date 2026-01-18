@@ -189,6 +189,8 @@ describe("E004: Feedback Detail", () => {
         method: "GET",
         apiKey: testApiKey,
       });
+      expect(originalResponse.ok).toBe(true);
+      const originalUpdatedAt = originalResponse.data?.updatedAt;
 
       // Wait a bit to ensure timestamp difference
       await new Promise((resolve) => setTimeout(resolve, 100));
@@ -203,6 +205,11 @@ describe("E004: Feedback Detail", () => {
       expect(updateResponse.ok).toBe(true);
       // Note: The timestamp comparison might be tricky due to precision
       expect(updateResponse.data?.title).toBe("Updated Detail Test Feedback");
+      // Verify timestamp changed
+      if (originalUpdatedAt && updateResponse.data?.updatedAt) {
+        expect(new Date(updateResponse.data.updatedAt).getTime())
+          .toBeGreaterThanOrEqual(new Date(originalUpdatedAt).getTime());
+      }
     });
   });
 

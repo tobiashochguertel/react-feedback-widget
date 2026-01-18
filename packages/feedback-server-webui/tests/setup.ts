@@ -96,7 +96,7 @@ export async function apiRequest<T = unknown>(
   ok: boolean;
   status: number;
   data: T | null;
-  error?: string;
+  error?: string | undefined;
 }> {
   const { method = "GET", headers = {}, body, apiKey, token } = options;
 
@@ -118,7 +118,7 @@ export async function apiRequest<T = unknown>(
     const response = await fetch(getApiUrl(path), {
       method,
       headers: requestHeaders,
-      body: body ? JSON.stringify(body) : undefined,
+      body: body !== undefined ? JSON.stringify(body) : null,
     });
 
     let data: T | null = null;

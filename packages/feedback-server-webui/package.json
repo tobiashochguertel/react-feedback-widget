@@ -18,6 +18,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@feedback/api-types": "workspace:*",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
     "react-router-dom": "^7.12.0",
@@ -32,6 +33,7 @@
     "zod": "^4.3.5"
   },
   "devDependencies": {
+    "@types/node": "^24.0.12",
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^5.1.2",
