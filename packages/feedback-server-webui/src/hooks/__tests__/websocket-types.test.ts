@@ -165,10 +165,10 @@ describe('Type Compatibility', () => {
         url: 'ws://localhost:3000/ws',
         autoConnect: true,
         autoReconnect: true,
-        onConnect: () => {},
-        onDisconnect: () => {},
-        onError: () => {},
-        onReconnecting: () => {},
+        onConnect: () => { },
+        onDisconnect: () => { },
+        onError: () => { },
+        onReconnecting: () => { },
       };
 
       expect(options.autoConnect).toBe(true);
@@ -187,9 +187,9 @@ describe('Type Compatibility', () => {
         projectId: 'project-123',
         autoSubscribe: true,
         filters: { status: ['new', 'in_progress'] },
-        onFeedbackCreated: () => {},
-        onFeedbackUpdated: () => {},
-        onFeedbackDeleted: () => {},
+        onFeedbackCreated: () => { },
+        onFeedbackUpdated: () => { },
+        onFeedbackDeleted: () => { },
       };
 
       expect(options.projectId).toBe('project-123');
@@ -232,7 +232,7 @@ describe('Class Exports', () => {
 
     it('should be instantiable with required config', () => {
       const manager = new ReconnectionManager({
-        onReconnect: () => {},
+        onReconnect: () => { },
       });
       expect(manager).toBeInstanceOf(ReconnectionManager);
     });

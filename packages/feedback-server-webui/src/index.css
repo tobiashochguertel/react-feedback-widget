@@ -125,3 +125,79 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: rgb(var(--color-muted-foreground) / 0.5);
 }
+
+/* Toast animations */
+@keyframes shrink {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
+
+@keyframes slide-in-from-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-from-left {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-from-top {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-from-bottom {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-in {
+  animation-duration: 300ms;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+}
+
+.slide-in-from-right-full {
+  animation-name: slide-in-from-right;
+}
+
+.slide-in-from-left-full {
+  animation-name: slide-in-from-left;
+}
+
+.slide-in-from-top-full {
+  animation-name: slide-in-from-top;
+}
+
+.slide-in-from-bottom-full {
+  animation-name: slide-in-from-bottom;
+}

@@ -540,17 +540,19 @@ Create custom hooks for data fetching with React Query.
 
 **Priority:** P1 - High
 **Estimated Effort:** 4 hours
-**Status:** 🔲 NOT STARTED
+**Status:** ✅ COMPLETE
 
 **Description:**
 Create WebSocket client for real-time updates.
 
 **Acceptance Criteria:**
 
-- [ ] Connection management (connect/disconnect)
-- [ ] Auto-reconnect with backoff
-- [ ] Event subscription/unsubscription
-- [ ] Connection status tracking
+- [x] Connection management (connect/disconnect)
+- [x] Auto-reconnect with backoff
+- [x] Event subscription/unsubscription
+- [x] Connection status tracking
+
+**Notes:** Implemented via spec 005 (TASK-WWS-003, TASK-WWS-004, TASK-WWS-005, TASK-WWS-006)
 
 ---
 
@@ -558,17 +560,19 @@ Create WebSocket client for real-time updates.
 
 **Priority:** P1 - High
 **Estimated Effort:** 3 hours
-**Status:** 🔲 NOT STARTED
+**Status:** ✅ COMPLETE
 
 **Description:**
 Connect WebSocket events to Zustand store and React Query cache.
 
 **Acceptance Criteria:**
 
-- [ ] Update query cache on events
-- [ ] Add notifications on new feedback
-- [ ] Handle connection status changes
-- [ ] Reconnect on window focus
+- [x] Update query cache on events
+- [x] Add notifications on new feedback
+- [x] Handle connection status changes
+- [x] Reconnect on window focus
+
+**Notes:** Implemented via spec 005 (TASK-WWS-007, TASK-WWS-008)
 
 ---
 
@@ -576,17 +580,22 @@ Connect WebSocket events to Zustand store and React Query cache.
 
 **Priority:** P1 - High
 **Estimated Effort:** 2 hours
-**Status:** 🔲 NOT STARTED
+**Status:** ✅ COMPLETE
 
 **Description:**
 Implement toast notification system for real-time updates and actions.
 
 **Acceptance Criteria:**
 
-- [ ] Toast component with variants
-- [ ] Auto-dismiss with configurable duration
-- [ ] Action button support
-- [ ] Stack management
+- [x] Toast component with variants (success, error, warning, info)
+- [x] Auto-dismiss with configurable duration
+- [x] Action button support
+- [x] Stack management
+
+**Implementation:**
+- Created `src/components/Toast.tsx` with Toast, ToastContainer, and useToast hook
+- Added CSS animations for slide-in and progress bar
+- 25 unit tests passing
 
 ---
 
