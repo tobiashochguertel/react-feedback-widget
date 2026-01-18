@@ -166,8 +166,8 @@ function displayList(state: InteractiveState): void {
   );
   console.log(
     chalk.bold.cyan('║') +
-      chalk.bold.white('                    FEEDBACK INTERACTIVE MODE                         ') +
-      chalk.bold.cyan('║')
+    chalk.bold.white('                    FEEDBACK INTERACTIVE MODE                         ') +
+    chalk.bold.cyan('║')
   );
   console.log(
     chalk.bold.cyan('╚══════════════════════════════════════════════════════════════════════╝')
