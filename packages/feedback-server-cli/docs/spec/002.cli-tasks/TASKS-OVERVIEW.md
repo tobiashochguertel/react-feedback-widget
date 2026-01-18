@@ -13,9 +13,9 @@
 | Data Export       | 3      | 0           | 0           | 3      |
 | Configuration     | 3      | 0           | 0           | 3      |
 | Shell Integration | 2      | 2           | 0           | 0      |
-| Testing           | 2      | 2           | 0           | 0      |
+| Testing           | 2      | 0           | 0           | 2      |
 | Distribution      | 2      | 2           | 0           | 0      |
-| **Total**         | **24** | **6**       | **0**       | **18** |
+| **Total**         | **24** | **4**       | **0**       | **20** |
 
 ---
 
@@ -414,18 +414,18 @@ Create interactive terminal UI for browsing feedback.
 
 **Priority:** P1 - High
 **Estimated Effort:** 6 hours
-**Status:** 🔲 NOT STARTED
+**Status:** ✅ DONE
 
 **Description:**
 Write unit tests for CLI commands and utilities.
 
 **Acceptance Criteria:**
 
-- [ ] Test API client
-- [ ] Test config manager
-- [ ] Test output formatters
-- [ ] Test authentication helpers
-- [ ] 80% code coverage
+- [x] Test API client
+- [x] Test config manager
+- [x] Test output formatters
+- [x] Test authentication helpers
+- [x] 80% code coverage
 
 ---
 
@@ -433,17 +433,17 @@ Write unit tests for CLI commands and utilities.
 
 **Priority:** P1 - High
 **Estimated Effort:** 4 hours
-**Status:** 🔲 NOT STARTED
+**Status:** ✅ DONE
 
 **Description:**
 Write integration tests with mock server.
 
 **Acceptance Criteria:**
 
-- [ ] Mock API server
-- [ ] Test full command flows
-- [ ] Test error scenarios
-- [ ] Test output formats
+- [x] Mock API server
+- [x] Test full command flows
+- [x] Test error scenarios
+- [x] Test output formats
 
 ---
 

@@ -81,7 +81,7 @@ describe('Export CLI Integration Tests', () => {
     if (!serverAvailable) {
       console.warn(
         '\n⚠️  Warning: Feedback server not running on port 3001.\n' +
-          '   Export integration tests will be skipped.\n'
+        '   Export integration tests will be skipped.\n'
       );
     }
   });
@@ -132,7 +132,7 @@ describe('Export CLI Integration Tests', () => {
 
       // Assert
       expect(result.exitCode).toBe(0);
-      
+
       if (existsSync(outputPath)) {
         const content = await readFile(outputPath, 'utf-8');
         const parsed = JSON.parse(content);
@@ -159,7 +159,7 @@ describe('Export CLI Integration Tests', () => {
 
       // Assert
       expect(result.exitCode).toBe(0);
-      
+
       if (existsSync(outputPath)) {
         const content = await readFile(outputPath, 'utf-8');
         // CSV should have header row
@@ -186,7 +186,7 @@ describe('Export CLI Integration Tests', () => {
 
       // Assert
       expect(result.exitCode).toBe(0);
-      
+
       if (existsSync(outputPath)) {
         const content = await readFile(outputPath, 'utf-8');
         // Markdown should have headers
@@ -238,7 +238,7 @@ describe('Export CLI Integration Tests', () => {
 
       // Assert
       expect(result.exitCode).toBe(0);
-      
+
       if (existsSync(outputPath)) {
         const content = await readFile(outputPath, 'utf-8');
         const parsed = JSON.parse(content);

@@ -80,8 +80,8 @@ describe('Feedback CLI Integration Tests', () => {
     if (!serverAvailable) {
       console.warn(
         '\n⚠️  Warning: Feedback server not running on port 3001.\n' +
-          '   Some integration tests will be skipped.\n' +
-          '   Start the server with: task api:dev\n'
+        '   Some integration tests will be skipped.\n' +
+        '   Start the server with: task api:dev\n'
       );
     }
   });
