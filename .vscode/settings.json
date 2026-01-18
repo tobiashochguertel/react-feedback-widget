@@ -3,9 +3,9 @@
    VsCode extension: `alexkrechik.cucumberautocomplete`
   */
   "cucumberautocomplete.steps": [
-    "packages/react-visual-feedback/tests/bdd/steps/*.ts",
+    "packages/**/tests/bdd/steps/*.ts",
   ],
-  "cucumberautocomplete.syncfeatures": "packages/react-visual-feedback/tests/bdd/features/*.feature",
+  "cucumberautocomplete.syncfeatures": "packages/**/tests/bdd/features/*.feature",
   "cucumberautocomplete.strictGherkinCompletion": true,
   "cucumberautocomplete.strictGherkinValidation": true,
   "cucumberautocomplete.smartSnippets": false,
@@ -44,14 +44,14 @@
    VsCode extension: `cucumberopen.cucumber-official`
   */
   "cucumber.features": [
-    "packages/react-visual-feedback/tests/bdd/features/*.feature",
+    "packages/**/tests/bdd/features/*.feature",
     // "src/test/**/*.feature",
     // "features/**/*.feature",
     // "tests/**/*.feature",
     // "*specs*/**/*.feature"
   ],
   "cucumber.glue": [
-    "packages/react-visual-feedback/tests/bdd/steps/*.ts",
+    "packages/**/tests/bdd/steps/*.ts",
     // "*specs*/**/*.cs",
     // "features/**/*.js",
     // "features/**/*.jsx",
@@ -71,5 +71,5 @@
   /*
    VsCode extension: `typespec.typespec-vscode`
   */
-  "typespec.tsp-server.path": "${workspaceFolder}/packages/feedback-server/node_modules/@typespec/compiler"
+  "typespec.tsp-server.path": "${workspaceFolder}/packages/feedback-server-api/node_modules/@typespec/compiler"
 }

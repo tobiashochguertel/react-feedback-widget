@@ -3,8 +3,7 @@
     "id": "builtin_group_id",
     "name": "Currently Open Files",
     "files": [
-      "packages/feedback-server-cli/docs/spec/005.api-first-tasks/TASKS-OVERVIEW.md",
-      "packages/feedback-server-cli/docs/spec/004.api-first-technical-debt/README.md"
+      "packages/feedback-server-cli/tests/integration/feedback.test.ts"
     ],
     "builtIn": true,
     "bookmarks": {}

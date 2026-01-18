@@ -1,0 +1,112 @@
+version: '3'
+
+tasks:
+  default:
+    desc: Show available tasks
+    cmds:
+      - task --list
+    silent: true
+
+  # ============================================================================
+  # Build & Development
+  # ============================================================================
+
+  build:
+    desc: Build the CLI package
+    cmds:
+      - bun run build
+    sources:
+      - src/**/*.ts
+      - tsup.config.ts
+    generates:
+      - dist/**/*
+
+  dev:
+    desc: Start development mode with watch
+    cmds:
+      - bun run dev
+
+  typecheck:
+    desc: Run TypeScript type checking
+    cmds:
+      - bun run typecheck
+
+  lint:
+    desc: Run ESLint
+    cmds:
+      - bun run lint
+
+  # ============================================================================
+  # Testing
+  # ============================================================================
+
+  test:
+    desc: Run all tests
+    cmds:
+      - bun run test
+
+  test:watch:
+    desc: Run tests in watch mode
+    cmds:
+      - bun run test:watch
+
+  test:coverage:
+    desc: Run tests with coverage report
+    cmds:
+      - bun run test:coverage
+
+  test:unit:
+    desc: Run unit tests only
+    cmds:
+      - bun vitest run tests/unit
+
+  test:integration:
+    desc: Run integration tests only (requires server on port 3001)
+    cmds:
+      - bun vitest run tests/integration
+
+  # ============================================================================
+  # CLI Execution
+  # ============================================================================
+
+  cli:
+    desc: Run the CLI (pass arguments after --)
+    cmds:
+      - bun run ./dist/index.js {{.CLI_ARGS}}
+
+  cli:dev:
+    desc: Run the CLI in development mode
+    cmds:
+      - bun run ./src/index.ts {{.CLI_ARGS}}
+
+  # ============================================================================
+  # Maintenance
+  # ============================================================================
+
+  clean:
+    desc: Clean build artifacts
+    cmds:
+      - rm -rf dist coverage
+
+  clean:all:
+    desc: Clean build artifacts and node_modules
+    cmds:
+      - rm -rf dist coverage node_modules
+
+  # ============================================================================
+  # Quality Checks
+  # ============================================================================
+
+  check:
+    desc: Run all quality checks (typecheck, lint, test)
+    cmds:
+      - task: typecheck
+      - task: lint
+      - task: test
+
+  check:ci:
+    desc: Run CI-friendly quality checks
+    cmds:
+      - bun run typecheck
+      - bun run lint
+      - bun run test:coverage

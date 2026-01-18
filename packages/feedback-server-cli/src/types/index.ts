@@ -87,4 +87,3 @@ export type FeedbackListResponse = PaginatedFeedbackList;
  * @see FeedbackStatsResponse
  */
 export type FeedbackStats = FeedbackStatsResponse;
-
