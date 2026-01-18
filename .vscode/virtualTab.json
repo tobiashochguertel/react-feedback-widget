@@ -4,6 +4,12 @@
     "name": "Currently Open Files",
     "files": [
       "packages/feedback-server/docs/spec/006.websocket-api-first-integration/README.md",
+      "packages/feedback-server-webui/docs/spec/002.webui-tasks/TASKS-OVERVIEW.md",
+      "packages/feedback-server-webui/src/hooks/useLogout.ts",
+      "packages/feedback-server-webui/src/stores/__tests__/auth.test.ts",
+      "packages/feedback-server-webui/src/components/__tests__/Toast.test.tsx",
+      "packages/feedback-server-webui/src/components/Toast.tsx",
+      "packages/feedback-server-webui/src/hooks/__tests__/websocket-types.test.ts",
       "packages/feedback-server-webui/src/lib/websocket/__tests__/subscriptions.test.ts",
       "packages/feedback-server-webui/src/lib/websocket/__tests__/reconnect.test.ts",
       "packages/feedback-server-webui/src/hooks/useFeedbackSubscription.ts",
@@ -15,14 +21,7 @@
       "packages/feedback-server-webui/src/lib/websocket/types.ts",
       "packages/feedback-server/src/websocket/config.ts",
       "packages/feedback-server/src/websocket/broadcaster.ts",
-      "packages/feedback-server/src/websocket/handler.ts",
-      "packages/feedback-server/src/websocket/validator.ts",
-      "packages/feedback-server/src/websocket/types.ts",
-      "packages/generated/feedback-api-types/src/websocket/index.ts",
-      "packages/generated/feedback-api-types/src/websocket/commands.ts",
-      "packages/generated/feedback-api-types/src/websocket/events.ts",
-      "packages/feedback-server-api/scripts/generate-websocket-types.ts",
-      "packages/feedback-server-api/typespec/websocket/commands.tsp"
+      "packages/feedback-server/src/websocket/handler.ts"
     ],
     "builtIn": true,
     "bookmarks": {}

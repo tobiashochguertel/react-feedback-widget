@@ -1,5 +1,17 @@
 // Authentication store
-export { useAuthStore } from "./auth";
+export {
+  useAuthStore,
+  useAuth,
+  useRequireRole,
+  // Selectors
+  selectIsAuthenticated,
+  selectIsLoading,
+  selectUser,
+  selectUserRole,
+  selectAuthError,
+  selectAuthType,
+} from "./auth";
+export type { User, UserRole, AuthTokens, AuthType } from "./auth";
 
 // UI state store
 export {

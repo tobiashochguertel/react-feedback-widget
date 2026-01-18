@@ -1,16 +1,18 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { KeyRound, Loader2 } from "lucide-react";
-import { useAuthStore } from "../stores/auth";
+import { useAuth } from "../stores";
 
 /**
  * Login page with API key authentication
+ *
+ * TASK-WUI-024: Enhanced to use new auth store
  */
 export function LoginPage() {
   const [apiKey, setApiKey] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const login = useAuthStore((state) => state.login);
+  const { loginWithApiKey } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -37,7 +39,8 @@ export function LoginPage() {
       }
 
       // API key is valid, store it and redirect
-      login(apiKey);
+      // Default to 'admin' role for API key auth (can be enhanced later)
+      loginWithApiKey(apiKey, { role: "admin" });
       navigate("/dashboard");
     } catch {
       setError("Invalid API key. Please check and try again.");

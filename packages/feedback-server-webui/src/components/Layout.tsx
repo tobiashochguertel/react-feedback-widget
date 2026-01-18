@@ -1,4 +1,12 @@
-import { Outlet, NavLink, useNavigate } from "react-router-dom";
+/**
+ * @file Layout Component
+ *
+ * Main layout with sidebar navigation and logout functionality.
+ *
+ * TASK-WUI-026: Enhanced with useLogout hook for complete cleanup
+ */
+
+import { Outlet, NavLink } from "react-router-dom";
 import {
   LayoutDashboard,
   MessageSquare,
@@ -8,7 +16,7 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
-import { useAuthStore } from "../stores/auth";
+import { useLogout } from "../hooks";
 import { cn } from "../lib/utils";
 
 const navItems = [
@@ -22,12 +30,10 @@ const navItems = [
  */
 export function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const logout = useAuthStore((state) => state.logout);
-  const navigate = useNavigate();
+  const logout = useLogout();
 
   const handleLogout = () => {
-    logout();
-    navigate("/login");
+    logout({ showNotification: true, message: "Successfully logged out" });
   };
 
   return (

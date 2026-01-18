@@ -30,6 +30,9 @@ export type {
   UseBulkDeleteFeedbackOptions,
 } from "./useFeedback";
 
+// Authentication hooks
+export { useLogout, useLogoutWithNotification } from "./useLogout";
+
 // WebSocket hooks
 export { useWebSocket, getWebSocketUrl } from "./useWebSocket";
 export {

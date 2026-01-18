@@ -1,6 +1,6 @@
 # Feedback Server WebUI - Tasks Overview
 
-> **Version:** 0.5.0
+> **Version:** 0.6.0
 > **Last Updated:** 2026-01-18
 
 ## 📋 Task Summary
@@ -13,9 +13,9 @@
 | Components     | 8      | 0           | 0           | 8      |
 | State & Data   | 4      | 0           | 0           | 4      |
 | Real-time      | 3      | 0           | 0           | 3      |
-| Authentication | 3      | 3           | 0           | 0      |
+| Authentication | 3      | 0           | 0           | 3      |
 | Testing        | 3      | 3           | 0           | 0      |
-| **Total**      | **31** | **6**       | **0**       | **25** |
+| **Total**      | **31** | **3**       | **0**       | **28** |
 
 ---
 
@@ -606,17 +606,28 @@ Implement toast notification system for real-time updates and actions.
 
 **Priority:** P0 - Critical
 **Estimated Effort:** 3 hours
-**Status:** 🔲 NOT STARTED
+**Status:** ✅ COMPLETE
 
 **Description:**
 Create authentication context with user state and methods.
 
 **Acceptance Criteria:**
 
-- [ ] User state (logged in, user info, role)
-- [ ] Login/logout methods
-- [ ] Token refresh logic
-- [ ] Auth persistence
+- [x] User state (logged in, user info, role)
+- [x] Login/logout methods
+- [x] Token refresh logic
+- [x] Auth persistence
+
+**Implementation:**
+
+- Enhanced `src/stores/auth.ts` with full auth features:
+  - API key and JWT authentication support
+  - User roles (admin, user, viewer) with hierarchy
+  - Token expiry checking with 5-minute buffer
+  - `useAuth()` hook for easy consumption
+  - `useRequireRole()` hook for role-based access
+  - Auto-logout on token expiry during rehydration
+- 29 unit tests passing
 
 ---
 
@@ -624,17 +635,33 @@ Create authentication context with user state and methods.
 
 **Priority:** P0 - Critical
 **Estimated Effort:** 2 hours
-**Status:** 🔲 NOT STARTED
+**Status:** ✅ COMPLETE
 
 **Description:**
 Create route wrapper that redirects unauthenticated users.
 
 **Acceptance Criteria:**
 
-- [ ] Redirect to login if not authenticated
-- [ ] Loading state while checking auth
-- [ ] Role-based route protection
-- [ ] Remember intended destination
+- [x] Redirect to login if not authenticated
+- [x] Loading state while checking auth
+- [x] Role-based route protection
+- [x] Remember intended destination
+
+**Implementation:**
+
+- Enhanced `ProtectedRoute` in `src/App.tsx`:
+  - Loading screen during auth state restoration
+  - Redirect to login when unauthenticated
+  - Role-based access control with `requiredRole` prop
+  - Access denied screen for insufficient permissions
+  - Settings page restricted to admin role
+
+**Acceptance Criteria:**
+
+- [x] Redirect to login if not authenticated
+- [x] Loading state while checking auth
+- [x] Role-based route protection
+- [x] Remember intended destination
 
 ---
 
@@ -642,17 +669,27 @@ Create route wrapper that redirects unauthenticated users.
 
 **Priority:** P0 - Critical
 **Estimated Effort:** 1 hour
-**Status:** 🔲 NOT STARTED
+**Status:** ✅ COMPLETE
 
 **Description:**
 Implement logout with cleanup and redirect.
 
 **Acceptance Criteria:**
 
-- [ ] Clear tokens and user state
-- [ ] Disconnect WebSocket
-- [ ] Clear query cache
-- [ ] Redirect to login
+- [x] Clear tokens and user state
+- [x] Disconnect WebSocket
+- [x] Clear query cache
+- [x] Redirect to login
+
+**Implementation:**
+
+- Created `src/hooks/useLogout.ts`:
+  - `useLogout()` hook for complete logout flow
+  - `useLogoutWithNotification()` convenience wrapper
+  - Clears WebSocket status, React Query cache, notifications, and auth state
+  - Configurable redirect path and notification message
+- Updated `src/components/Layout.tsx` to use new hook
+- 10 unit tests passing
 
 ---
 
