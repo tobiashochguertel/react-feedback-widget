@@ -303,7 +303,7 @@ describe("useToast", () => {
         <button
           onClick={() =>
             toast.success("With action", {
-              action: { label: "Undo", onClick: () => {} },
+              action: { label: "Undo", onClick: () => { } },
             })
           }
         >

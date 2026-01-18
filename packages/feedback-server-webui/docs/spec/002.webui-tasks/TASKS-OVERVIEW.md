@@ -1,7 +1,7 @@
 # Feedback Server WebUI - Tasks Overview
 
-> **Version:** 0.4.0
-> **Last Updated:** 2025-01-22
+> **Version:** 0.5.0
+> **Last Updated:** 2026-01-18
 
 ## 📋 Task Summary
 
@@ -12,10 +12,10 @@
 | Core Pages     | 5      | 0           | 0           | 5      |
 | Components     | 8      | 0           | 0           | 8      |
 | State & Data   | 4      | 0           | 0           | 4      |
-| Real-time      | 3      | 3           | 0           | 0      |
-| Authentication | 3      | 2           | 0           | 1      |
+| Real-time      | 3      | 0           | 0           | 3      |
+| Authentication | 3      | 3           | 0           | 0      |
 | Testing        | 3      | 3           | 0           | 0      |
-| **Total**      | **31** | **8**       | **0**       | **23** |
+| **Total**      | **31** | **6**       | **0**       | **25** |
 
 ---
 
@@ -593,6 +593,7 @@ Implement toast notification system for real-time updates and actions.
 - [x] Stack management
 
 **Implementation:**
+
 - Created `src/components/Toast.tsx` with Toast, ToastContainer, and useToast hook
 - Added CSS animations for slide-in and progress bar
 - 25 unit tests passing
