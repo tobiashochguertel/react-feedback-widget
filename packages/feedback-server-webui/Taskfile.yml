@@ -1,0 +1,171 @@
+version: '3'
+
+# Include shared Taskfiles from the root taskfiles directory
+includes:
+  server:
+    taskfile: ../../taskfiles/Server.yml
+    optional: true
+    vars:
+      SERVER_NAME: feedback-server
+      SERVER_PORT: '3001'
+      SERVER_CMD: cd ../feedback-server && bun run dev
+      HEALTH_ENDPOINT: /api/v1/health
+  testing:
+    taskfile: ../../taskfiles/Testing.yml
+    optional: true
+    vars:
+      TEST_FRAMEWORK: vitest
+      BASE_URL: http://localhost:3001
+
+# Package-specific variables
+vars:
+  PACKAGE_NAME: feedback-server-webui
+  WEBUI_PORT: '5173' # Vite default dev port
+
+tasks:
+  default:
+    desc: Show available tasks
+    cmds:
+      - task --list
+    silent: true
+
+  # ============================================================================
+  # Build & Development
+  # ============================================================================
+
+  dev:
+    desc: Start Vite development server
+    cmds:
+      - bun run dev
+
+  build:
+    desc: Build the WebUI for production
+    cmds:
+      - bun run build
+    sources:
+      - src/**/*
+      - index.html
+      - vite.config.ts
+      - tailwind.config.ts
+    generates:
+      - dist/**/*
+
+  preview:
+    desc: Preview production build locally
+    cmds:
+      - bun run preview
+
+  typecheck:
+    desc: Run TypeScript type checking
+    cmds:
+      - bun run typecheck
+
+  lint:
+    desc: Run ESLint
+    cmds:
+      - bun run lint
+
+  # ============================================================================
+  # Testing
+  # ============================================================================
+
+  test:
+    desc: Run all tests
+    cmds:
+      - bun run test
+
+  test:watch:
+    desc: Run tests in watch mode
+    cmds:
+      - bun run test:watch
+
+  test:coverage:
+    desc: Run tests with coverage report
+    cmds:
+      - bun run test:coverage
+
+  test:unit:
+    desc: Run unit tests only
+    cmds:
+      - bun vitest run tests/unit
+
+  test:bdd:
+    desc: Run BDD tests only (requires API server on port 3001)
+    cmds:
+      - bun vitest run tests/bdd
+
+  test:bdd:watch:
+    desc: Run BDD tests in watch mode
+    cmds:
+      - bun vitest tests/bdd
+
+  test:e2e:
+    desc: Run Playwright E2E tests
+    cmds:
+      - bun run test:e2e
+
+  test:with-server:
+    desc: Start API server, run all tests, then stop server
+    deps:
+      - server:ensure
+    cmds:
+      - defer: task server:stop
+      - bun run test
+    env:
+      VITE_API_URL: http://localhost:3001
+
+  test:bdd:with-server:
+    desc: Start API server, run BDD tests, then stop server
+    deps:
+      - server:ensure
+    cmds:
+      - defer: task server:stop
+      - bun vitest run tests/bdd
+    env:
+      VITE_API_URL: http://localhost:3001
+
+  # ============================================================================
+  # Storybook
+  # ============================================================================
+
+  storybook:
+    desc: Start Storybook development server
+    cmds:
+      - bun run storybook
+
+  storybook:build:
+    desc: Build Storybook for static hosting
+    cmds:
+      - bun run build-storybook
+
+  # ============================================================================
+  # Maintenance
+  # ============================================================================
+
+  clean:
+    desc: Clean build artifacts
+    cmds:
+      - rm -rf dist coverage storybook-static
+
+  clean:all:
+    desc: Clean build artifacts and node_modules
+    cmds:
+      - rm -rf dist coverage storybook-static node_modules
+
+  # ============================================================================
+  # Quality Checks
+  # ============================================================================
+
+  check:
+    desc: Run all quality checks (typecheck, lint, test)
+    cmds:
+      - task: typecheck
+      - task: lint
+      - task: test
+
+  check:ci:
+    desc: Run CI-friendly quality checks
+    cmds:
+      - bun run typecheck
+      - bun run lint
+      - bun run test:coverage

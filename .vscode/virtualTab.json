@@ -3,7 +3,12 @@
     "id": "builtin_group_id",
     "name": "Currently Open Files",
     "files": [
-      "packages/feedback-server-cli/tests/integration/export.test.ts"
+      "packages/feedback-server-cli/tests/integration/export.test.ts",
+      "packages/feedback-server-webui/tests/bdd/authentication.test.ts",
+      "packages/feedback-server-webui/tests/bdd/dashboard.test.ts",
+      "packages/feedback-server-webui/tests/bdd/feedback-detail.test.ts",
+      "packages/feedback-server-webui/tests/bdd/realtime-updates.test.ts",
+      "packages/feedback-server-webui/tests/bdd/feedback-list.test.ts"
     ],
     "builtIn": true,
     "bookmarks": {}

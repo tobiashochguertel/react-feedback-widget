@@ -92,7 +92,7 @@
       "dependencies": {
         "@feedback/api-types": "workspace:*",
         "boxen": "^8.0.1",
-        "chalk": "^5.3.0",
+        "chalk": "^5.6.2",
         "cli-table3": "^0.6.5",
         "commander": "^14.0.2",
         "conf": "^15.0.2",
