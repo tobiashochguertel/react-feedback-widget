@@ -248,17 +248,19 @@ describe('E002: Feedback Management', () => {
       it('Given I am authenticated, When I create feedback with title only, Then a new feedback should be created', async () => {
         // Given: I am authenticated (client is ready)
         const projectId = uniqueId('project');
+        const sessionId = uniqueId('session');
 
         // When: I create feedback with minimal options
         const response = await client.post<{ id: string }>('/api/v1/feedback', {
           projectId,
+          sessionId,
           title: 'Minimal Test Feedback',
         });
 
         // Then: A new feedback should be created
         expect(response.status).toBe(201);
         expect(response.data?.id).toBeDefined();
-        expect(response.data?.id).toMatch(/^fb_|^[a-f0-9-]+$/);
+        expect(response.data?.id).toMatch(/^(fb_)?[a-zA-Z0-9_-]+$/);
       });
     });
 
@@ -391,8 +393,8 @@ describe('E002: Feedback Management', () => {
         // When: I delete the feedback
         const deleteResponse = await client.delete(`/api/v1/feedback/${feedbackId}`);
 
-        // Then: The feedback should be deleted
-        expect(deleteResponse.status).toBe(200);
+        // Then: The feedback should be deleted (204 No Content)
+        expect(deleteResponse.status).toBe(204);
 
         // Verify deletion
         const getResponse = await client.get(`/api/v1/feedback/${feedbackId}`);

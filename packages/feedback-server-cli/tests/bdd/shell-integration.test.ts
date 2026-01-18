@@ -145,7 +145,7 @@ describe('E005: Shell Integration', () => {
     describe('Scenario: Exit codes for scripting', () => {
       it('Given a successful operation, Then exit code should be 0', async () => {
         // Given: A successful operation
-        const response = await client.get('/api/health');
+        const response = await client.get('/api/v1/health');
 
         // When: Checking the result
         const isSuccess = response.ok;

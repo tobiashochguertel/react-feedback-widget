@@ -47,6 +47,7 @@
 **Description:**
 
 Set up the BDD testing infrastructure for the WebUI package, including:
+
 - Playwright or Cypress configuration for E2E tests
 - Test utilities and helpers
 - Server management integration with shared Taskfile
@@ -118,22 +119,32 @@ Implement BDD tests for Epic E001: Authentication (3 user stories).
 **Test Scenarios:**
 
 ```typescript
-describe('E001: Authentication', () => {
-  describe('US-WUI-001: User Login', () => {
-    it('Given I am on the login page, When I enter valid credentials, Then I should be redirected to dashboard');
-    it('Given I enter invalid credentials, Then I should see error message');
-    it('Given I click Login without credentials, Then I should see validation errors');
-    it('Given I check Remember Me, Then my session should persist');
+describe("E001: Authentication", () => {
+  describe("US-WUI-001: User Login", () => {
+    it(
+      "Given I am on the login page, When I enter valid credentials, Then I should be redirected to dashboard",
+    );
+    it("Given I enter invalid credentials, Then I should see error message");
+    it(
+      "Given I click Login without credentials, Then I should see validation errors",
+    );
+    it("Given I check Remember Me, Then my session should persist");
   });
 
-  describe('US-WUI-002: Session Persistence', () => {
-    it('Given I am logged in, When I refresh the page, Then I should remain logged in');
-    it('Given my session expires, When I access protected page, Then I should be redirected to login');
+  describe("US-WUI-002: Session Persistence", () => {
+    it(
+      "Given I am logged in, When I refresh the page, Then I should remain logged in",
+    );
+    it(
+      "Given my session expires, When I access protected page, Then I should be redirected to login",
+    );
   });
 
-  describe('US-WUI-003: User Logout', () => {
-    it('Given I am logged in, When I click logout, Then I should be logged out');
-    it('And my session token should be invalidated');
+  describe("US-WUI-003: User Logout", () => {
+    it(
+      "Given I am logged in, When I click logout, Then I should be logged out",
+    );
+    it("And my session token should be invalidated");
   });
 });
 ```
@@ -346,7 +357,7 @@ export class LoginPage {
   constructor(private page: Page) {}
 
   async goto() {
-    await this.page.goto('/login');
+    await this.page.goto("/login");
   }
 
   async login(email: string, password: string) {
@@ -364,8 +375,8 @@ Use fixtures for test data:
 ```typescript
 // fixtures/users.ts
 export const testUser = {
-  email: 'test@example.com',
-  password: 'Test123!',
+  email: "test@example.com",
+  password: "Test123!",
 };
 ```
 

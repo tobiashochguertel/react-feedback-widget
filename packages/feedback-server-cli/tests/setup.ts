@@ -288,7 +288,7 @@ export async function waitForServer(
   await waitFor(
     async () => {
       try {
-        const response = await client.get('/api/health');
+        const response = await client.get('/api/v1/health');
         return response.ok;
       } catch {
         return false;
@@ -323,27 +323,50 @@ export function sleep(ms: number): Promise<void> {
 export function createTestFeedback(
   overrides: Partial<{
     projectId: string;
+    sessionId: string;
     title: string;
     description: string;
     type: string;
     status: string;
     priority: string;
     tags: string[];
-    environment: Record<string, unknown>;
+    environment: {
+      userAgent: string;
+      url: string;
+      browser?: string;
+      browserVersion?: string;
+      os?: string;
+      viewportWidth?: number;
+      viewportHeight?: number;
+      devicePixelRatio?: number;
+      pageTitle?: string;
+    };
   }> = {}
 ): {
   projectId: string;
+  sessionId: string;
   title: string;
   description: string;
   type: string;
   status: string;
   priority: string;
   tags: string[];
-  environment: Record<string, unknown>;
+  environment: {
+    userAgent: string;
+    url: string;
+    browser?: string;
+    browserVersion?: string;
+    os?: string;
+    viewportWidth?: number;
+    viewportHeight?: number;
+    devicePixelRatio?: number;
+    pageTitle?: string;
+  };
 } {
   const id = uniqueId('fb');
   return {
     projectId: overrides.projectId || uniqueId('project'),
+    sessionId: overrides.sessionId || uniqueId('session'),
     title: overrides.title || `Test Feedback ${id}`,
     description: overrides.description || `Description for ${id}`,
     type: overrides.type || 'bug',
@@ -353,7 +376,8 @@ export function createTestFeedback(
     environment: overrides.environment || {
       userAgent: 'TestClient/1.0',
       url: 'http://localhost/test',
-      viewport: { width: 1920, height: 1080 },
+      viewportWidth: 1920,
+      viewportHeight: 1080,
     },
   };
 }

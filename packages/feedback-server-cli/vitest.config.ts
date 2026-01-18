@@ -4,8 +4,9 @@ import { defineConfig } from 'vitest/config';
  * Vitest configuration for feedback-server-cli package.
  *
  * Test structure:
- * - tests/unit/       - Unit tests for individual modules
+ * - tests/unit/        - Unit tests for individual modules
  * - tests/integration/ - Integration tests against running server
+ * - tests/bdd/         - BDD-style feature tests (user stories)
  *
  * @see https://vitest.dev/config/
  */
@@ -22,6 +23,7 @@ export default defineConfig({
     include: [
       'tests/unit/**/*.{test,spec}.ts',
       'tests/integration/**/*.{test,spec}.ts',
+      'tests/bdd/**/*.{test,spec}.ts',
     ],
     exclude: ['node_modules/**/*', 'dist/**/*'],
 

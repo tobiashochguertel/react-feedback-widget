@@ -8,14 +8,14 @@
 
 All user stories in this document have corresponding BDD tests implemented in `tests/bdd/`.
 
-| Epic ID | Epic Name           | Stories | Test File                       | Status          |
-| ------- | ------------------- | ------- | ------------------------------- | --------------- |
-| E001    | Authentication      | 3       | `authentication.test.ts`        | ✅ Implemented  |
-| E002    | Feedback Management | 5       | `feedback-management.test.ts`   | ✅ Implemented  |
-| E003    | Data Export         | 3       | `data-export.test.ts`           | ✅ Implemented  |
-| E004    | Configuration       | 3       | `configuration.test.ts`         | ✅ Implemented  |
-| E005    | Shell Integration   | 2       | `shell-integration.test.ts`     | ✅ Implemented  |
-| E006    | CI/CD Integration   | 2       | `cicd-integration.test.ts`      | ✅ Implemented  |
+| Epic ID | Epic Name           | Stories | Test File                     | Status         |
+| ------- | ------------------- | ------- | ----------------------------- | -------------- |
+| E001    | Authentication      | 3       | `authentication.test.ts`      | ✅ Implemented |
+| E002    | Feedback Management | 5       | `feedback-management.test.ts` | ✅ Implemented |
+| E003    | Data Export         | 3       | `data-export.test.ts`         | ✅ Implemented |
+| E004    | Configuration       | 3       | `configuration.test.ts`       | ✅ Implemented |
+| E005    | Shell Integration   | 2       | `shell-integration.test.ts`   | ✅ Implemented |
+| E006    | CI/CD Integration   | 2       | `cicd-integration.test.ts`    | ✅ Implemented |
 
 ### Running BDD Tests
 

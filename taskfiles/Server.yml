@@ -54,7 +54,7 @@ tasks:
           exit 0
         fi
         echo "🚀 Starting server '{{.SERVER_NAME}}' on port {{.SERVER_PORT}}..."
-        tmux new-session -d -s {{.TMUX_SESSION}} -c "{{.SERVER_DIR}}" "{{.SERVER_CMD}}"
+        tmux new-session -d -s {{.TMUX_SESSION}} -c "{{.SERVER_DIR}}" "export PORT={{.SERVER_PORT}} RATE_LIMIT_MAX_REQUESTS=10000 && {{.SERVER_CMD}}"
         echo "✅ Server started in tmux session: {{.TMUX_SESSION}}"
         echo "   Attach with: tmux attach -t {{.TMUX_SESSION}}"
     silent: true

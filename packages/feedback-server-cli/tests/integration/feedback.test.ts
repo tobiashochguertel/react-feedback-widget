@@ -86,9 +86,9 @@ describe('Feedback CLI Integration Tests', () => {
     if (!serverAvailable) {
       console.warn(
         `\n⚠️  Warning: Feedback server not running at ${baseUrl}.\n` +
-          '   Some integration tests will be skipped.\n' +
-          '   Start the server with: task server:start\n' +
-          '   Or set TEST_BASE_URL to point to your server.\n'
+        '   Some integration tests will be skipped.\n' +
+        '   Start the server with: task server:start\n' +
+        '   Or set TEST_BASE_URL to point to your server.\n'
       );
     } else {
       await waitForServer(baseUrl, 15000);

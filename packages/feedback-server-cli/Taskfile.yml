@@ -7,7 +7,7 @@ includes:
     optional: true
     vars:
       SERVER_NAME: feedback-server
-      SERVER_PORT: "3001"
+      SERVER_PORT: '3001'
       SERVER_CMD: cd ../feedback-server && bun run dev
       HEALTH_ENDPOINT: /api/health
   testing:

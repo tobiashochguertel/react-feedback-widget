@@ -90,7 +90,7 @@ describe('E001: Authentication', () => {
         // Given: The server is running (verified in beforeAll)
 
         // When: I check the health endpoint
-        const response = await client.get('/api/health');
+        const response = await client.get('/api/v1/health');
 
         // Then: I should get a successful response
         expect(response.ok).toBe(true);
@@ -144,7 +144,7 @@ describe('E001: Authentication', () => {
 
         // Then: Credentials should be cleared
         // Making an unauthenticated request should work (for public endpoints)
-        const response = await client.get('/api/health');
+        const response = await client.get('/api/v1/health');
         expect(response.ok).toBe(true);
       });
     });
@@ -158,7 +158,7 @@ describe('E001: Authentication', () => {
         freshClient.clearAuth();
 
         // Then: No error should occur
-        const response = await freshClient.get('/api/health');
+        const response = await freshClient.get('/api/v1/health');
         expect(response.ok).toBe(true);
       });
     });

@@ -80,7 +80,7 @@ describe('E004: Configuration', () => {
         const customClient = createTestClient(customUrl);
 
         // Then: The client should connect to that server
-        const response = await customClient.get('/api/health');
+        const response = await customClient.get('/api/v1/health');
         expect(response.ok).toBe(true);
       });
     });
@@ -94,7 +94,7 @@ describe('E004: Configuration', () => {
         // When: I try to connect
         let errorOccurred = false;
         try {
-          await invalidClient.get('/api/health');
+          await invalidClient.get('/api/v1/health');
         } catch {
           errorOccurred = true;
         }
@@ -131,7 +131,7 @@ describe('E004: Configuration', () => {
 
         // Then: The client is configured with the key
         // (In real implementation, this would be verified by successful auth)
-        const response = await client.get('/api/health');
+        const response = await client.get('/api/v1/health');
         expect(response.ok).toBe(true);
       });
     });

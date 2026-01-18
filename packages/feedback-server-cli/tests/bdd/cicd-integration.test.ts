@@ -100,7 +100,7 @@ describe('E006: CI/CD Integration', () => {
         client.setApiKey(process.env.FEEDBACK_API_KEY);
 
         // Then: Auth should work without prompts
-        const response = await client.get('/api/health');
+        const response = await client.get('/api/v1/health');
         expect(response.ok).toBe(true);
       });
     });
@@ -131,7 +131,7 @@ describe('E006: CI/CD Integration', () => {
     describe('Scenario: Success exit code', () => {
       it('Given a successful operation, When command completes, Then exit code should be 0', async () => {
         // Given: A successful operation
-        const response = await client.get('/api/health');
+        const response = await client.get('/api/v1/health');
 
         // When: Checking result
         const exitCode = response.ok ? 0 : 1;
@@ -171,8 +171,10 @@ describe('E006: CI/CD Integration', () => {
       it('Given invalid input, When validation fails, Then exit code should be 3', async () => {
         // Given: Invalid input (empty title)
         const projectId = uniqueId('project');
+        const sessionId = uniqueId('session');
         const response = await client.post('/api/v1/feedback', {
           projectId,
+          sessionId,
           title: '', // Empty title - validation should fail
         });
 
