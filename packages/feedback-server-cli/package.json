@@ -10,6 +10,13 @@
   "scripts": {
     "dev": "tsup --watch",
     "build": "tsup",
+    "build:binary": "bun build ./src/index.ts --compile --outfile ./bin/feedback-cli",
+    "build:binary:linux-x64": "bun build ./src/index.ts --compile --target=bun-linux-x64 --outfile ./bin/feedback-cli-linux-x64",
+    "build:binary:linux-arm64": "bun build ./src/index.ts --compile --target=bun-linux-arm64 --outfile ./bin/feedback-cli-linux-arm64",
+    "build:binary:darwin-x64": "bun build ./src/index.ts --compile --target=bun-darwin-x64 --outfile ./bin/feedback-cli-darwin-x64",
+    "build:binary:darwin-arm64": "bun build ./src/index.ts --compile --target=bun-darwin-arm64 --outfile ./bin/feedback-cli-darwin-arm64",
+    "build:binary:windows-x64": "bun build ./src/index.ts --compile --target=bun-windows-x64 --outfile ./bin/feedback-cli-windows-x64.exe",
+    "build:binaries": "bun run build:binary:linux-x64 && bun run build:binary:linux-arm64 && bun run build:binary:darwin-x64 && bun run build:binary:darwin-arm64 && bun run build:binary:windows-x64",
     "start": "bun run ./dist/index.js",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",

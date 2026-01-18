@@ -14,8 +14,8 @@
 | Configuration     | 3      | 0           | 0           | 3      |
 | Shell Integration | 2      | 1           | 0           | 1      |
 | Testing           | 2      | 0           | 0           | 2      |
-| Distribution      | 2      | 1           | 0           | 1      |
-| **Total**         | **24** | **2**       | **0**       | **22** |
+| Distribution      | 2      | 0           | 0           | 2      |
+| **Total**         | **24** | **1**       | **0**       | **23** |
 
 ---
 
@@ -472,18 +472,18 @@ Configure package for npm publishing.
 
 **Priority:** P2 - Low
 **Estimated Effort:** 3 hours
-**Status:** 🔲 NOT STARTED
+**Status:** ✅ DONE
 
 **Description:**
 Package CLI as standalone binaries using `pkg` or `bun compile`.
 
 **Acceptance Criteria:**
 
-- [ ] Build Linux x64 and arm64 binaries
-- [ ] Build macOS x64 and arm64 binaries
-- [ ] Build Windows x64 binary
-- [ ] Create GitHub release workflow
-- [ ] Add install script
+- [x] Build Linux x64 and arm64 binaries
+- [x] Build macOS x64 and arm64 binaries
+- [x] Build Windows x64 binary
+- [x] Create GitHub release workflow
+- [x] Add install script
 
 ---
 
