@@ -3,13 +3,6 @@
     "id": "builtin_group_id",
     "name": "Currently Open Files",
     "files": [
-      "packages/feedback-server-webui/docs/spec/002.webui-tasks/TASKS-OVERVIEW.md",
-      "packages/feedback-server-webui/src/components/DataTable.tsx",
-      "packages/feedback-server-webui/src/components/FilterBar.tsx",
-      "packages/feedback-server-webui/src/components/StatusBadge.tsx",
-      "packages/feedback-server-api/docs/spec/002.websocket-addon-tasks/TASKS-OVERVIEW.md",
-      "packages/feedback-server-api/docs/spec/001.websocket-addon-specification/README.md",
-      "packages/feedback-server/docs/research/typespec-api-first/05-websocket-api-first.md",
       "packages/feedback-server-webui/docs/spec/004.webui-bdd-testing-tasks/README.md"
     ],
     "builtIn": true,

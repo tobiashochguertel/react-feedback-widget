@@ -582,11 +582,10 @@ export function ScreenshotCarousel({
                   setCurrentIndex(index);
                   onImageChange?.(index);
                 }}
-                className={`w-2 h-2 rounded-full transition-colors ${
-                  index === currentIndex
+                className={`w-2 h-2 rounded-full transition-colors ${index === currentIndex
                     ? "bg-white"
                     : "bg-white/50 hover:bg-white/75"
-                }`}
+                  }`}
                 aria-label={`Go to image ${index + 1}`}
               />
             ))}

@@ -191,11 +191,10 @@ function LevelFilterButton({
   return (
     <button
       onClick={onClick}
-      className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors ${
-        active
+      className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors ${active
           ? `${config.bg} ${config.text} ring-1 ring-current`
           : "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700"
-      }`}
+        }`}
     >
       <span>{config.icon}</span>
       <span>{config.label}</span>

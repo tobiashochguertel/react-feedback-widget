@@ -1,7 +1,7 @@
 # Feedback Server WebUI - Tasks Overview
 
-> **Version:** 0.3.0
-> **Last Updated:** 2026-01-18
+> **Version:** 0.4.0
+> **Last Updated:** 2025-01-22
 
 ## 📋 Task Summary
 
@@ -10,12 +10,12 @@
 | Setup          | 3      | 0           | 0           | 3      |
 | API-First      | 2      | 0           | 0           | 2      |
 | Core Pages     | 5      | 0           | 0           | 5      |
-| Components     | 8      | 7           | 0           | 1      |
+| Components     | 8      | 1           | 0           | 7      |
 | State & Data   | 4      | 3           | 0           | 1      |
 | Real-time      | 3      | 3           | 0           | 0      |
 | Authentication | 3      | 2           | 0           | 1      |
 | Testing        | 3      | 3           | 0           | 0      |
-| **Total**      | **31** | **18**      | **0**       | **13** |
+| **Total**      | **31** | **12**      | **0**       | **19** |
 
 ---
 
@@ -301,7 +301,7 @@ Create main layout components: Header, Sidebar, and page wrapper.
 
 **Priority:** P0 - Critical
 **Estimated Effort:** 6 hours
-**Status:** 🔲 NOT STARTED
+**Status:** ✅ DONE
 
 **Description:**
 Create reusable data table component with sorting, selection, and custom columns.
@@ -320,7 +320,7 @@ Create reusable data table component with sorting, selection, and custom columns
 
 **Priority:** P1 - High
 **Estimated Effort:** 4 hours
-**Status:** 🔲 NOT STARTED
+**Status:** ✅ DONE
 
 **Description:**
 Create filter bar component with multiple filter types.
@@ -338,7 +338,7 @@ Create filter bar component with multiple filter types.
 
 **Priority:** P0 - Critical
 **Estimated Effort:** 6 hours
-**Status:** 🔲 NOT STARTED
+**Status:** ✅ DONE
 
 **Description:**
 Create screenshot viewer with zoom, pan, and annotation display.
@@ -376,7 +376,7 @@ Create video player for session recordings.
 
 **Priority:** P1 - High
 **Estimated Effort:** 4 hours
-**Status:** 🔲 NOT STARTED
+**Status:** ✅ DONE
 
 **Description:**
 Create console log viewer with syntax highlighting and filtering.
@@ -395,7 +395,7 @@ Create console log viewer with syntax highlighting and filtering.
 
 **Priority:** P1 - High
 **Estimated Effort:** 4 hours
-**Status:** 🔲 NOT STARTED
+**Status:** ✅ DONE
 
 **Description:**
 Create network request viewer showing captured requests.
@@ -414,7 +414,7 @@ Create network request viewer showing captured requests.
 
 **Priority:** P0 - Critical
 **Estimated Effort:** 1 hour
-**Status:** 🔲 NOT STARTED
+**Status:** ✅ DONE
 
 **Description:**
 Create status badge component with color variants.
