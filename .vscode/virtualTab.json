@@ -3,8 +3,9 @@
     "id": "builtin_group_id",
     "name": "Currently Open Files",
     "files": [
-      "packages/feedback-server-webui/docs/spec/003.webui-user-stories/README.md",
-      "packages/feedback-server-webui/docs/spec/004.webui-bdd-testing-tasks/README.md"
+      ".github/workflows/feedback-webui.yml",
+      "packages/feedback-server-webui/docs/spec/004.webui-bdd-testing-tasks/README.md",
+      "packages/feedback-server-webui/docs/spec/005.websocket-api-first-integration/TASKS-OVERVIEW.md"
     ],
     "builtIn": true,
     "bookmarks": {}
