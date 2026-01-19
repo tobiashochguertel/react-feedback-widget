@@ -17,7 +17,7 @@ services:
   # ---------------------------------------------------------------------------
   postgres:
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - '${POSTGRES_PORT:-5432}:5432'
     healthcheck:
       interval: 5s
       start_period: 5s
@@ -29,7 +29,7 @@ services:
     build:
       context: ./packages/feedback-server
       dockerfile: Dockerfile
-      target: builder  # Use builder stage for development
+      target: builder # Use builder stage for development
     volumes:
       # Mount source code for hot reload
       - ./packages/feedback-server/src:/app/src:ro
@@ -39,8 +39,8 @@ services:
     environment:
       NODE_ENV: development
       LOG_LEVEL: debug
-      RUN_MIGRATIONS: "true"
-    command: ["bun", "run", "--watch", "src/index.ts"]
+      RUN_MIGRATIONS: 'true'
+    command: ['bun', 'run', '--watch', 'src/index.ts']
     healthcheck:
       interval: 10s
       start_period: 5s
@@ -60,7 +60,7 @@ services:
     environment:
       NODE_ENV: development
     working_dir: /app/packages/feedback-server-webui
-    command: ["bun", "run", "dev", "--host", "0.0.0.0"]
+    command: ['bun', 'run', 'dev', '--host', '0.0.0.0']
     healthcheck:
       interval: 10s
       start_period: 10s
@@ -80,7 +80,7 @@ services:
     environment:
       NODE_ENV: development
     working_dir: /app/packages/feedback-example
-    command: ["bun", "run", "dev"]
+    command: ['bun', 'run', 'dev']
     healthcheck:
       interval: 10s
       start_period: 15s

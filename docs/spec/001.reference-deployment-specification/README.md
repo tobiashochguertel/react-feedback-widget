@@ -1,7 +1,7 @@
 # Reference Deployment - Software Specification
 
-**Version**: 1.0.0  
-**Created**: 2026-01-19  
+**Version**: 1.0.0
+**Created**: 2026-01-19
 **Updated**: 2026-01-19
 
 ## 🎯 Overview
@@ -35,22 +35,22 @@ The **Reference Deployment** is a Docker Compose-based orchestration that deploy
 
 ## 📊 Feature Matrix
 
-| Feature                    | Included | Technology          | Notes                                    |
-| -------------------------- | -------- | ------------------- | ---------------------------------------- |
-| Multi-service orchestration| ✅       | Docker Compose      | Single docker-compose.yml for all services|
-| Multi-stage builds         | ✅       | Docker              | Build + production stages                |
-| Entrypoint scripts         | ✅       | Shell/Bun           | Permission checks, health waits          |
-| Health checks              | ✅       | Docker + curl/wget  | All services report health               |
-| Centralized configuration  | ✅       | .env files          | Single source for env vars               |
-| Taskfile automation        | ✅       | Taskfile.yml        | Build, deploy, logs, restart, reset      |
-| Volume persistence         | ✅       | Docker volumes      | Data survives container restarts         |
-| Network isolation          | ✅       | Docker networks     | Service-to-service communication         |
-| PostgreSQL database        | ✅       | PostgreSQL 16       | Production-ready database                |
-| Blob storage               | ✅       | Volume mount        | Screenshots, videos                      |
-| Reverse proxy              | ⚠️       | Nginx/Traefik       | Optional: for production domains         |
-| SSL/TLS termination        | ⚠️       | Let's Encrypt       | Optional: production HTTPS               |
-| Logging aggregation        | ⚠️       | Docker logs         | Optional: ELK/Loki stack                 |
-| Monitoring                 | ⚠️       | Prometheus          | Optional: metrics collection             |
+| Feature                     | Included | Technology         | Notes                                      |
+| --------------------------- | -------- | ------------------ | ------------------------------------------ |
+| Multi-service orchestration | ✅       | Docker Compose     | Single docker-compose.yml for all services |
+| Multi-stage builds          | ✅       | Docker             | Build + production stages                  |
+| Entrypoint scripts          | ✅       | Shell/Bun          | Permission checks, health waits            |
+| Health checks               | ✅       | Docker + curl/wget | All services report health                 |
+| Centralized configuration   | ✅       | .env files         | Single source for env vars                 |
+| Taskfile automation         | ✅       | Taskfile.yml       | Build, deploy, logs, restart, reset        |
+| Volume persistence          | ✅       | Docker volumes     | Data survives container restarts           |
+| Network isolation           | ✅       | Docker networks    | Service-to-service communication           |
+| PostgreSQL database         | ✅       | PostgreSQL 16      | Production-ready database                  |
+| Blob storage                | ✅       | Volume mount       | Screenshots, videos                        |
+| Reverse proxy               | ⚠️       | Nginx/Traefik      | Optional: for production domains           |
+| SSL/TLS termination         | ⚠️       | Let's Encrypt      | Optional: production HTTPS                 |
+| Logging aggregation         | ⚠️       | Docker logs        | Optional: ELK/Loki stack                   |
+| Monitoring                  | ⚠️       | Prometheus         | Optional: metrics collection               |
 
 **Legend**: ✅ Included | ⚠️ Optional/Configurable | ❌ Not Included
 
@@ -60,13 +60,13 @@ The **Reference Deployment** is a Docker Compose-based orchestration that deploy
 
 ### Service Inventory
 
-| Service                  | Package                     | Port | Purpose                                   |
-| ------------------------ | --------------------------- | ---- | ----------------------------------------- |
-| `feedback-server`        | `packages/feedback-server`  | 3000 | REST API + WebSocket sync                 |
-| `feedback-webui`         | `packages/feedback-server-webui` | 3001 | Admin dashboard (React SPA)          |
-| `feedback-example`       | `packages/feedback-example` | 3002 | Next.js example app with widget          |
-| `react-visual-feedback`  | `packages/react-visual-feedback` | N/A | Widget library (build-only, no server) |
-| `postgres`               | PostgreSQL 16               | 5432 | Database service                          |
+| Service                 | Package                          | Port | Purpose                                |
+| ----------------------- | -------------------------------- | ---- | -------------------------------------- |
+| `feedback-server`       | `packages/feedback-server`       | 3000 | REST API + WebSocket sync              |
+| `feedback-webui`        | `packages/feedback-server-webui` | 3001 | Admin dashboard (React SPA)            |
+| `feedback-example`      | `packages/feedback-example`      | 3002 | Next.js example app with widget        |
+| `react-visual-feedback` | `packages/react-visual-feedback` | N/A  | Widget library (build-only, no server) |
+| `postgres`              | PostgreSQL 16                    | 5432 | Database service                       |
 
 ### Service Dependencies
 
@@ -195,6 +195,7 @@ graph TB
 **Image**: `oven/bun:1.3.6-debian`
 
 **Rationale**:
+
 - Bun 1.3.6 is the current stable version with all required features
 - Debian base provides curl, wget, and other utilities
 - Consistent across all services for layer caching
@@ -294,7 +295,7 @@ echo "   Port: ${PORT:-3000}"
 check_permissions() {
     local dir=$1
     local required_perms=$2
-    
+
     if [ -d "$dir" ]; then
         if [ ! -w "$dir" ]; then
             echo "❌ ERROR: Directory $dir is not writable by user $(whoami)"
@@ -317,21 +318,21 @@ wait_for_service() {
     local port=$2
     local timeout=${3:-30}
     local start=$(date +%s)
-    
+
     echo "⏳ Waiting for $host:$port..."
-    
+
     while ! nc -z "$host" "$port" 2>/dev/null; do
         local now=$(date +%s)
         local elapsed=$((now - start))
-        
+
         if [ $elapsed -ge $timeout ]; then
             echo "❌ Timeout waiting for $host:$port after ${timeout}s"
             exit 1
         fi
-        
+
         sleep 1
     done
-    
+
     echo "✅ $host:$port is ready"
 }
 
@@ -435,10 +436,10 @@ DOCKER_TAG=latest
 
 ### Volume Mounts
 
-| Volume Name         | Mount Path              | Purpose                        |
-| ------------------- | ----------------------- | ------------------------------ |
-| `postgres-data`     | `/var/lib/postgresql/data` | Database persistence        |
-| `feedback-data`     | `/data`                 | Blob storage (screenshots, videos) |
+| Volume Name     | Mount Path                 | Purpose                            |
+| --------------- | -------------------------- | ---------------------------------- |
+| `postgres-data` | `/var/lib/postgresql/data` | Database persistence               |
+| `feedback-data` | `/data`                    | Blob storage (screenshots, videos) |
 
 ---
 
@@ -465,7 +466,11 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-feedback} -d ${POSTGRES_DB:-feedback}"]
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-feedback} -d ${POSTGRES_DB:-feedback}",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -596,13 +601,13 @@ New `taskfiles/Docker.yml`:
 # Shared Docker Tasks
 # Include in package Taskfiles for consistent Docker operations
 
-version: '3'
+version: "3"
 
 vars:
   IMAGE_NAME: '{{default "app" .IMAGE_NAME}}'
   IMAGE_TAG: '{{default "latest" .IMAGE_TAG}}'
   REGISTRY: '{{default "" .REGISTRY}}'
-  CONTAINER_NAME: '{{default .IMAGE_NAME .CONTAINER_NAME}}'
+  CONTAINER_NAME: "{{default .IMAGE_NAME .CONTAINER_NAME}}"
   DOCKERFILE: '{{default "Dockerfile" .DOCKERFILE}}'
   CONTEXT: '{{default "." .CONTEXT}}'
 
@@ -851,13 +856,13 @@ docker compose up -d
 
 ### System Requirements
 
-| Requirement     | Minimum    | Recommended |
-| --------------- | ---------- | ----------- |
-| Docker          | 24.0+      | 25.0+       |
-| Docker Compose  | 2.20+      | 2.24+       |
-| RAM             | 2 GB       | 4 GB        |
-| Disk Space      | 5 GB       | 20 GB       |
-| CPU             | 2 cores    | 4 cores     |
+| Requirement    | Minimum | Recommended |
+| -------------- | ------- | ----------- |
+| Docker         | 24.0+   | 25.0+       |
+| Docker Compose | 2.20+   | 2.24+       |
+| RAM            | 2 GB    | 4 GB        |
+| Disk Space     | 5 GB    | 20 GB       |
+| CPU            | 2 cores | 4 cores     |
 
 ### Port Requirements
 
@@ -877,12 +882,14 @@ docker compose up -d
 **Decision**: Use Bun 1.3.6 as the runtime for all Node.js services
 
 **Rationale**:
+
 - Faster startup time than Node.js
 - Built-in TypeScript support without compilation step
 - Native bundler for production builds
 - Consistent with existing project tooling
 
 **Consequences**:
+
 - Must use Bun-compatible packages
 - Different debugging workflow than Node.js
 - Smaller community than Node.js (mitigated by Node compatibility)
@@ -892,12 +899,14 @@ docker compose up -d
 **Decision**: Use dumb-init as PID 1 in containers
 
 **Rationale**:
+
 - Proper signal forwarding (SIGTERM, SIGINT)
 - Zombie process reaping
 - Clean shutdown behavior
 - Minimal overhead (~1 MB)
 
 **Consequences**:
+
 - Additional package dependency
 - Container startup ~1ms slower
 - More predictable shutdown behavior
@@ -907,12 +916,14 @@ docker compose up -d
 **Decision**: Run all services as non-root user (appuser)
 
 **Rationale**:
+
 - Security best practice
 - Reduced attack surface
 - Compliance with CIS Docker Benchmark
 - Works with rootless Docker
 
 **Consequences**:
+
 - Must ensure volume permissions are correct
 - Entrypoint must handle permission checks
 - Cannot bind to ports < 1024
@@ -922,12 +933,14 @@ docker compose up -d
 **Decision**: All services implement `/api/health` or `/` health endpoints
 
 **Rationale**:
+
 - Docker health checks for orchestration
 - Service dependency management
 - Load balancer integration
 - Monitoring compatibility
 
 **Consequences**:
+
 - Each service must implement health endpoint
 - Health checks add minimal overhead
 - Container marked unhealthy if endpoint fails
@@ -942,6 +955,6 @@ docker compose up -d
 
 ---
 
-**Specification Version**: 1.0.0  
-**Created by**: GitHub Copilot  
+**Specification Version**: 1.0.0
+**Created by**: GitHub Copilot
 **Last Updated**: 2026-01-19

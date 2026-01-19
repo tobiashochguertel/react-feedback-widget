@@ -60,12 +60,12 @@ log_debug() {
 check_var() {
     var_name="$1"
     eval var_value="\$$var_name"
-    
+
     if [ -z "$var_value" ]; then
         log_error "Required environment variable $var_name is not set"
         return 1
     fi
-    
+
     log_debug "Variable $var_name is set"
     return 0
 }
@@ -75,19 +75,19 @@ check_var() {
 check_required_vars() {
     vars="$1"
     missing=""
-    
+
     for var in $vars; do
         eval value="\$$var"
         if [ -z "$value" ]; then
             missing="$missing $var"
         fi
     done
-    
+
     if [ -n "$missing" ]; then
         log_error "Missing required environment variables:$missing"
         return 1
     fi
-    
+
     return 0
 }
 
@@ -103,9 +103,9 @@ wait_for() {
     port="$2"
     timeout="${3:-30}"
     interval="${4:-2}"
-    
+
     log_info "Waiting for $host:$port to be ready (timeout: ${timeout}s)..."
-    
+
     elapsed=0
     while [ $elapsed -lt $timeout ]; do
         # Try to connect using various methods available
@@ -131,12 +131,12 @@ wait_for() {
                 return 0
             fi
         fi
-        
+
         sleep $interval
         elapsed=$((elapsed + interval))
         log_debug "Still waiting for $host:$port... (${elapsed}s elapsed)"
     done
-    
+
     log_error "Timeout waiting for $host:$port after ${timeout}s"
     return 1
 }
@@ -145,22 +145,22 @@ wait_for() {
 # Usage: wait_for_postgres [timeout]
 wait_for_postgres() {
     timeout="${1:-60}"
-    
+
     if [ -z "$DATABASE_URL" ]; then
         log_error "DATABASE_URL not set, cannot wait for PostgreSQL"
         return 1
     fi
-    
+
     # Extract host and port from DATABASE_URL
     # postgresql://user:pass@host:port/db
     host=$(echo "$DATABASE_URL" | sed -n 's/.*@\([^:]*\):.*/\1/p')
     port=$(echo "$DATABASE_URL" | sed -n 's/.*:\([0-9]*\)\/.*/\1/p')
-    
+
     if [ -z "$host" ] || [ -z "$port" ]; then
         log_error "Could not parse host/port from DATABASE_URL"
         return 1
     fi
-    
+
     log_info "Waiting for PostgreSQL at $host:$port..."
     wait_for "$host" "$port" "$timeout"
 }
@@ -171,21 +171,21 @@ wait_for_http() {
     url="$1"
     timeout="${2:-30}"
     interval="${3:-2}"
-    
+
     log_info "Waiting for $url to be ready (timeout: ${timeout}s)..."
-    
+
     elapsed=0
     while [ $elapsed -lt $timeout ]; do
         if curl -sf "$url" >/dev/null 2>&1; then
             log_info "$url is ready!"
             return 0
         fi
-        
+
         sleep $interval
         elapsed=$((elapsed + interval))
         log_debug "Still waiting for $url... (${elapsed}s elapsed)"
     done
-    
+
     log_error "Timeout waiting for $url after ${timeout}s"
     return 1
 }
@@ -198,7 +198,7 @@ wait_for_http() {
 # Usage: check_writable /path/to/dir
 check_writable() {
     dir="$1"
-    
+
     if [ ! -d "$dir" ]; then
         log_warn "Directory $dir does not exist, attempting to create..."
         if ! mkdir -p "$dir" 2>/dev/null; then
@@ -206,12 +206,12 @@ check_writable() {
             return 1
         fi
     fi
-    
+
     if [ ! -w "$dir" ]; then
         log_error "Directory $dir is not writable"
         return 1
     fi
-    
+
     log_debug "Directory $dir is writable"
     return 0
 }
@@ -220,13 +220,13 @@ check_writable() {
 # Usage: ensure_dirs "/path/dir1 /path/dir2"
 ensure_dirs() {
     dirs="$1"
-    
+
     for dir in $dirs; do
         if ! check_writable "$dir"; then
             return 1
         fi
     done
-    
+
     return 0
 }
 
@@ -239,14 +239,14 @@ ensure_dirs() {
 # Default command: bun run db:migrate
 run_migrations() {
     migration_cmd="${1:-bun run db:migrate}"
-    
+
     if [ "${RUN_MIGRATIONS:-false}" != "true" ]; then
         log_debug "RUN_MIGRATIONS not set to true, skipping migrations"
         return 0
     fi
-    
+
     log_info "Running database migrations..."
-    
+
     if eval "$migration_cmd"; then
         log_info "Migrations completed successfully"
         return 0
@@ -289,7 +289,7 @@ exec_cmd() {
 # Usage: setup_shutdown_handler [cleanup_function]
 setup_shutdown_handler() {
     cleanup_func="${1:-true}"
-    
+
     trap "$cleanup_func; exit 0" TERM INT
     trap "$cleanup_func; exit 1" HUP
 }

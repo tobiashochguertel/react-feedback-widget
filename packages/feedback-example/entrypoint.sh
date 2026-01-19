@@ -17,10 +17,10 @@ log_error() {
 wait_for_server() {
     if [ -n "$FEEDBACK_SERVER_URL" ]; then
         log_info "Waiting for Feedback Server at $FEEDBACK_SERVER_URL..."
-        
+
         timeout=${SERVER_WAIT_TIMEOUT:-30}
         elapsed=0
-        
+
         while [ $elapsed -lt $timeout ]; do
             if curl -sf "$FEEDBACK_SERVER_URL/api/v1/health" >/dev/null 2>&1; then
                 log_info "Feedback Server is ready!"
@@ -29,7 +29,7 @@ wait_for_server() {
             sleep 2
             elapsed=$((elapsed + 2))
         done
-        
+
         log_error "Timeout waiting for Feedback Server"
         # Continue anyway - server might come up later
     fi
@@ -45,10 +45,10 @@ main() {
     echo "  Port: ${PORT:-3002}"
     echo "=============================================="
     echo ""
-    
+
     # Wait for feedback server (optional)
     wait_for_server
-    
+
     # Start the Next.js server
     log_info "Starting Next.js server..."
     exec bun run packages/feedback-example/server.js

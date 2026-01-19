@@ -31,9 +31,9 @@ services:
       NEXT_PUBLIC_FEEDBACK_API_URL: ${NEXT_PUBLIC_FEEDBACK_API_URL:-http://localhost:3001}
       FEEDBACK_SERVER_URL: ${FEEDBACK_SERVER_URL:-http://feedback-server:3001}
     ports:
-      - "${PORT:-3002}:3002"
+      - '${PORT:-3002}:3002'
     healthcheck:
-      test: ["CMD", "curl", "-sf", "http://localhost:3002/"]
+      test: ['CMD', 'curl', '-sf', 'http://localhost:3002/']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -57,8 +57,8 @@ services:
       - node_modules:/app/node_modules
       - next-cache:/app/packages/feedback-example/.next
     ports:
-      - "${PORT:-3002}:3002"
-    command: ["bun", "run", "dev"]
+      - '${PORT:-3002}:3002'
+    command: ['bun', 'run', 'dev']
 
   # ---------------------------------------------------------------------------
   # Build - Build production assets
@@ -71,7 +71,7 @@ services:
     image: feedback-example-builder:${DOCKER_IMAGE_TAG:-latest}
     volumes:
       - next-output:/app/packages/feedback-example/.next
-    command: ["bun", "run", "build"]
+    command: ['bun', 'run', 'build']
 
   # ---------------------------------------------------------------------------
   # Test - Run tests
@@ -83,8 +83,8 @@ services:
       target: builder
     image: feedback-example-test:${DOCKER_IMAGE_TAG:-latest}
     environment:
-      CI: "true"
-    command: ["bun", "run", "test"]
+      CI: 'true'
+    command: ['bun', 'run', 'test']
 
   # ---------------------------------------------------------------------------
   # Shell - Interactive shell
@@ -100,7 +100,7 @@ services:
     volumes:
       - .:/app/packages/feedback-example
       - node_modules:/app/node_modules
-    command: ["/bin/sh"]
+    command: ['/bin/sh']
 
 # =============================================================================
 # Volumes

@@ -1,7 +1,7 @@
 # Reference Deployment - Feature Tasks
 
-**Version**: 1.0.0  
-**Created**: 2026-01-19  
+**Version**: 1.0.0
+**Created**: 2026-01-19
 **Updated**: 2026-01-19
 
 ---
@@ -10,18 +10,20 @@
 
 ### T001 - Create Shared Docker Taskfile
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟢 High
 
 **Description**: Create a shared Taskfile in `taskfiles/Docker.yml` with reusable Docker tasks that can be included in package Taskfiles.
 
 **Implementation**:
+
 - Create `taskfiles/Docker.yml` with parameterized tasks
 - Include tasks: build, build:nocache, run, stop, logs, shell, push, clean
 - Use variables: IMAGE_NAME, IMAGE_TAG, REGISTRY, CONTAINER_NAME
 - Follow existing pattern from `taskfiles/Server.yml`
 
 **Acceptance Criteria**:
+
 - [ ] File exists at `taskfiles/Docker.yml`
 - [ ] Tasks are parameterized via variables
 - [ ] Can be included in package Taskfiles
@@ -35,18 +37,20 @@
 
 ### T002 - Create Root .env.example
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟢 High
 
 **Description**: Create a comprehensive `.env.example` file at the repository root with all configuration variables.
 
 **Implementation**:
+
 - Document all environment variables with comments
 - Group by service (postgres, server, webui, example)
 - Include sensible defaults where possible
 - Mark secrets with "change-me" placeholder
 
 **Acceptance Criteria**:
+
 - [ ] File exists at `.env.example`
 - [ ] All services have their variables documented
 - [ ] Comments explain each variable
@@ -60,18 +64,20 @@
 
 ### T003 - Create .dockerignore Template
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟢 High
 
 **Description**: Create a base `.dockerignore` template that can be copied to each package.
 
 **Implementation**:
+
 - Exclude node_modules, dist, .git, docs
 - Exclude test files, coverage reports
 - Exclude IDE files (.vscode, .idea)
 - Exclude environment files (.env, .env.local)
 
 **Acceptance Criteria**:
+
 - [ ] Template exists (can be in docs or scripts)
 - [ ] Excludes all non-essential files
 - [ ] Reduces image size significantly
@@ -84,12 +90,13 @@
 
 ### T004 - Create Entrypoint Script Template
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟢 High
 
 **Description**: Create a base entrypoint script template with common functionality.
 
 **Implementation**:
+
 - Permission check function
 - Wait-for-service function (TCP port check)
 - Migration runner function
@@ -97,6 +104,7 @@
 - Proper signal handling with exec
 
 **Acceptance Criteria**:
+
 - [ ] Template includes all common functions
 - [ ] Functions are well-documented
 - [ ] Works with dumb-init
@@ -112,12 +120,13 @@
 
 ### T005 - Update feedback-server Dockerfile
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟢 High
 
 **Description**: Update the existing Dockerfile to follow the new standard pattern with entrypoint script.
 
 **Implementation**:
+
 - Use Bun 1.3.6-debian base image
 - Multi-stage build (builder + production)
 - Add dumb-init for signal handling
@@ -126,6 +135,7 @@
 - Health check endpoint
 
 **Acceptance Criteria**:
+
 - [ ] Uses oven/bun:1.3.6-debian
 - [ ] Multi-stage build working
 - [ ] Runs as non-root user
@@ -140,18 +150,20 @@
 
 ### T006 - Create feedback-webui Dockerfile
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟢 High
 
 **Description**: Create Dockerfile for the Vite-based React WebUI.
 
 **Implementation**:
+
 - Builder stage: install deps, build Vite app
 - Production stage: serve static files with Bun HTTP server
 - Or use serve/nginx for static hosting
 - Configure for SPA routing (fallback to index.html)
 
 **Acceptance Criteria**:
+
 - [ ] Dockerfile exists at packages/feedback-server-webui/Dockerfile
 - [ ] Builds successfully
 - [ ] Serves SPA correctly
@@ -166,18 +178,20 @@
 
 ### T007 - Create feedback-example Dockerfile
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟢 High
 
 **Description**: Create Dockerfile for the Next.js example application.
 
 **Implementation**:
+
 - Builder stage: install deps, build Next.js
 - Production stage: run Next.js server
 - Configure for standalone output if possible
 - Handle public env vars for widget
 
 **Acceptance Criteria**:
+
 - [ ] Dockerfile exists at packages/feedback-example/Dockerfile
 - [ ] Next.js builds in standalone mode
 - [ ] Runs on port 3002
@@ -192,18 +206,20 @@
 
 ### T008 - Create react-visual-feedback Dockerfile
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟢 High
 
 **Description**: Create Dockerfile for building and publishing the widget library.
 
 **Implementation**:
+
 - Build stage: compile TypeScript, bundle with Rollup
 - Output: dist folder with CJS/ESM builds
 - Optional: npm publish step
 - This is a build-only container (no runtime)
 
 **Acceptance Criteria**:
+
 - [ ] Dockerfile exists at packages/react-visual-feedback/Dockerfile
 - [ ] Builds library successfully
 - [ ] Can copy dist artifacts
@@ -217,17 +233,19 @@
 
 ### T009 - Create feedback-server-cli Dockerfile
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟢 High
 
 **Description**: Create Dockerfile for building CLI binaries.
 
 **Implementation**:
+
 - Build stage: compile with tsup and bun --compile
 - Multi-target builds: linux-x64, linux-arm64, darwin-x64, darwin-arm64, windows-x64
 - Output binaries to /dist/bin
 
 **Acceptance Criteria**:
+
 - [ ] Dockerfile exists at packages/feedback-server-cli/Dockerfile
 - [ ] Builds all platform binaries
 - [ ] Binaries are executable
@@ -241,17 +259,19 @@
 
 ### T010 - Create .dockerignore for Each Package
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟢 High
 
 **Description**: Copy and customize .dockerignore for each package that needs a Dockerfile.
 
 **Implementation**:
+
 - Copy template to each package
 - Customize for package-specific needs
 - Verify no essential files are excluded
 
 **Acceptance Criteria**:
+
 - [ ] .dockerignore exists in feedback-server
 - [ ] .dockerignore exists in feedback-server-webui
 - [ ] .dockerignore exists in feedback-example
@@ -268,18 +288,20 @@
 
 ### T011 - Create feedback-server Entrypoint
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟢 High
 
 **Description**: Create entrypoint script for feedback-server with database wait and migration support.
 
 **Implementation**:
+
 - Wait for PostgreSQL to be ready
 - Run database migrations if RUN_MIGRATIONS=true
 - Check data directory permissions
 - Log startup information
 
 **Acceptance Criteria**:
+
 - [ ] Script at packages/feedback-server/entrypoint.sh
 - [ ] Waits for database before starting
 - [ ] Runs migrations when configured
@@ -294,17 +316,19 @@
 
 ### T012 - Create feedback-webui Entrypoint
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟢 High
 
 **Description**: Create entrypoint script for feedback-webui.
 
 **Implementation**:
+
 - Optional: wait for feedback-server health
 - Configure runtime environment (inject API URL)
 - Log startup information
 
 **Acceptance Criteria**:
+
 - [ ] Script at packages/feedback-server-webui/entrypoint.sh
 - [ ] Works without external dependencies
 - [ ] Logs startup progress
@@ -317,17 +341,19 @@
 
 ### T013 - Create feedback-example Entrypoint
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟢 High
 
 **Description**: Create entrypoint script for feedback-example Next.js app.
 
 **Implementation**:
+
 - Wait for feedback-server health
 - Log startup information
 - Pass through environment variables
 
 **Acceptance Criteria**:
+
 - [ ] Script at packages/feedback-example/entrypoint.sh
 - [ ] Waits for API server
 - [ ] Next.js starts correctly
@@ -340,17 +366,19 @@
 
 ### T014 - Create Shared Entrypoint Utilities
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟢 High
 
 **Description**: Create a shared library of entrypoint functions that can be sourced by individual scripts.
 
 **Implementation**:
+
 - Create `scripts/docker/entrypoint-utils.sh`
 - Functions: wait_for_service, check_permissions, log_info, log_error
 - Document usage in comments
 
 **Acceptance Criteria**:
+
 - [ ] Utils script exists
 - [ ] Functions are well-documented
 - [ ] Can be copied into Docker context or sourced
@@ -365,12 +393,13 @@
 
 ### T015 - Create Root docker-compose.yml
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟢 High
 
 **Description**: Create the main docker-compose.yml at the repository root that orchestrates all services.
 
 **Implementation**:
+
 - Define all services: postgres, feedback-server, feedback-webui, feedback-example
 - Configure networks (feedback-network)
 - Configure volumes (postgres-data, feedback-data)
@@ -378,6 +407,7 @@
 - Use environment variable substitution
 
 **Acceptance Criteria**:
+
 - [ ] File exists at root docker-compose.yml
 - [ ] All services defined
 - [ ] Health checks configured
@@ -392,18 +422,20 @@
 
 ### T016 - Create docker-compose.override.yml
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟡 Medium
 
 **Description**: Create development override file with hot-reload volumes and debug settings.
 
 **Implementation**:
+
 - Mount source code volumes for hot reload
 - Enable debug logging
 - Expose additional ports
 - Faster health check intervals
 
 **Acceptance Criteria**:
+
 - [ ] File exists at root docker-compose.override.yml
 - [ ] Source volumes mounted
 - [ ] Development settings applied
@@ -416,17 +448,19 @@
 
 ### T017 - Configure Volume and Network Setup
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟡 Medium
 
 **Description**: Ensure proper configuration of Docker volumes and networks.
 
 **Implementation**:
+
 - Named volumes for data persistence
 - Bridge network for service communication
 - Document volume backup procedures
 
 **Acceptance Criteria**:
+
 - [ ] Volumes persist across container restarts
 - [ ] Services can communicate via DNS
 - [ ] Data survives `docker compose down`
@@ -441,17 +475,19 @@
 
 ### T018 - Update feedback-server Taskfile
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟡 Medium
 
 **Description**: Add Docker tasks to the feedback-server Taskfile.
 
 **Implementation**:
+
 - Include shared Docker Taskfile
 - Configure variables (IMAGE_NAME, etc.)
 - Add package-specific tasks if needed
 
 **Acceptance Criteria**:
+
 - [ ] Taskfile includes taskfiles/Docker.yml
 - [ ] `task docker:build` works
 - [ ] `task docker:push` works
@@ -464,17 +500,19 @@
 
 ### T019 - Create/Update feedback-webui Taskfile
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟡 Medium
 
 **Description**: Add Docker tasks to the feedback-webui Taskfile.
 
 **Implementation**:
+
 - Update existing Taskfile.yml
 - Include shared Docker Taskfile
 - Add webui-specific tasks
 
 **Acceptance Criteria**:
+
 - [ ] Docker tasks available
 - [ ] Integrates with existing tasks
 
@@ -486,17 +524,19 @@
 
 ### T020 - Create feedback-example Taskfile
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟡 Medium
 
 **Description**: Create Taskfile for feedback-example package with Docker tasks.
 
 **Implementation**:
+
 - Create new Taskfile.yml
 - Include shared Docker Taskfile
 - Add Next.js-specific tasks (dev, build)
 
 **Acceptance Criteria**:
+
 - [ ] Taskfile.yml exists
 - [ ] Docker tasks work
 - [ ] Dev and build tasks work
@@ -509,17 +549,19 @@
 
 ### T021 - Update react-visual-feedback Taskfile
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟡 Medium
 
 **Description**: Add Docker build tasks to react-visual-feedback Taskfile.
 
 **Implementation**:
+
 - Update existing Taskfile.yml
 - Add docker:build for library builds
 - Add publish tasks
 
 **Acceptance Criteria**:
+
 - [ ] Docker build task works
 - [ ] Library builds correctly
 
@@ -531,17 +573,19 @@
 
 ### T022 - Update feedback-server-cli Taskfile
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟡 Medium
 
 **Description**: Add Docker tasks to feedback-server-cli Taskfile.
 
 **Implementation**:
+
 - Update existing Taskfile.yml
 - Add multi-platform binary build tasks
 - Add release workflow tasks
 
 **Acceptance Criteria**:
+
 - [ ] Docker build works
 - [ ] Binary builds for all platforms
 
@@ -553,17 +597,19 @@
 
 ### T023 - Update Root Taskfile with Compose Tasks
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟡 Medium
 
 **Description**: Add Docker Compose orchestration tasks to root Taskfile.
 
 **Implementation**:
+
 - Add: up, down, restart, logs, status
 - Add: docker:build:all, docker:push:all
 - Add: reset, prune
 
 **Acceptance Criteria**:
+
 - [ ] All compose commands available as tasks
 - [ ] `task up` starts all services
 - [ ] `task down` stops all services
@@ -576,12 +622,13 @@
 
 ### T024 - Create taskfiles/Docker.yml Shared Tasks
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟡 Medium
 
 **Description**: Implement the shared Docker Taskfile as designed in T001.
 
 **Implementation**:
+
 - Duplicate of T001 (marked for consolidation)
 
 **Acceptance Criteria**: Same as T001
@@ -594,17 +641,19 @@
 
 ### T025 - Add Publish Tasks to All Taskfiles
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟡 Medium
 
 **Description**: Add registry push tasks to all package Taskfiles.
 
 **Implementation**:
+
 - Tag images with DOCKER_REGISTRY prefix
 - Push to configured registry
 - Support for multiple tags (latest, version)
 
 **Acceptance Criteria**:
+
 - [ ] `task docker:push` works in each package
 - [ ] Images pushed to registry
 - [ ] Multiple tag support
@@ -619,7 +668,7 @@
 
 ### T026 - Create Root .env.example
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟡 Medium
 
 **Description**: Same as T002 (consolidate)
@@ -630,17 +679,19 @@
 
 ### T027 - Create Package-Specific Env Files
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟡 Medium
 
 **Description**: Create .env.example files in each package for standalone use.
 
 **Implementation**:
+
 - Each package has its own .env.example
 - Document package-specific variables
 - Reference root .env for compose deployment
 
 **Acceptance Criteria**:
+
 - [ ] .env.example in each package
 - [ ] Variables documented
 - [ ] Works for standalone development
@@ -653,17 +704,19 @@
 
 ### T028 - Add .env to .gitignore
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟡 Medium
 
 **Description**: Ensure .env files are properly gitignored.
 
 **Implementation**:
+
 - Update root .gitignore
-- Add .env, .env.local, .env.*.local
+- Add .env, .env.local, .env.\*.local
 - Verify .env.example is NOT ignored
 
 **Acceptance Criteria**:
+
 - [ ] .env files are ignored
 - [ ] .env.example files are tracked
 - [ ] No secrets in git history
@@ -676,18 +729,20 @@
 
 ### T029 - Create docker-compose.prod.yml
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟡 Medium
 
 **Description**: Create production-specific compose configuration.
 
 **Implementation**:
+
 - Disable debug settings
 - Enable restart: always
 - Configure resource limits
 - Add logging driver configuration
 
 **Acceptance Criteria**:
+
 - [ ] File exists at root
 - [ ] Production-ready settings
 - [ ] Can be used with -f flag
@@ -702,12 +757,13 @@
 
 ### T030 - Create Build Validation Script
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟡 Medium
 
 **Description**: Create script to validate all Docker builds.
 
 **Implementation**:
+
 - Script in scripts/docker/validate-builds.sh
 - Build each image
 - Verify image exists
@@ -715,6 +771,7 @@
 - Report results
 
 **Acceptance Criteria**:
+
 - [ ] Script builds all images
 - [ ] Reports success/failure
 - [ ] Can be run in CI
@@ -727,12 +784,13 @@
 
 ### T031 - Create Health Check Validation
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟡 Medium
 
 **Description**: Create script to validate all service health endpoints.
 
 **Implementation**:
+
 - Script in scripts/docker/validate-health.sh
 - Start compose stack
 - Wait for healthy status
@@ -740,6 +798,7 @@
 - Report results
 
 **Acceptance Criteria**:
+
 - [ ] Validates all services
 - [ ] Times out appropriately
 - [ ] Reports clear status
@@ -752,12 +811,13 @@
 
 ### T032 - Test Full Deployment Cycle
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟡 Medium
 
 **Description**: Perform end-to-end deployment testing.
 
 **Implementation**:
+
 - Clean start (down -v)
 - Build all images
 - Start all services
@@ -767,6 +827,7 @@
 - Stop services
 
 **Acceptance Criteria**:
+
 - [ ] Full cycle completes without errors
 - [ ] All features work
 - [ ] Data persists across restarts
@@ -779,18 +840,20 @@
 
 ### T033 - Add CI/CD Workflow for Docker Builds
 
-**Status**: 🔲 TODO  
+**Status**: 🔲 TODO
 **Priority**: 🟡 Medium
 
 **Description**: Create GitHub Actions workflow for Docker image builds.
 
 **Implementation**:
+
 - Workflow at .github/workflows/docker-build.yml
 - Build all images on PR
 - Push to registry on main merge
 - Multi-platform builds (amd64, arm64)
 
 **Acceptance Criteria**:
+
 - [ ] Builds on every PR
 - [ ] Pushes on main
 - [ ] Multi-platform support
@@ -802,6 +865,6 @@
 
 ---
 
-**Tasks Version**: 1.0.0  
-**Created by**: GitHub Copilot  
+**Tasks Version**: 1.0.0
+**Created by**: GitHub Copilot
 **Last Updated**: 2026-01-19

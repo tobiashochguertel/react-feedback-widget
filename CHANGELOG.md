@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Infrastructure**
 
 - **Root `docker-compose.yml`** - Full-stack deployment orchestration with:
+
   - PostgreSQL 16 database with health checks
   - Feedback Server (REST API)
   - Feedback WebUI (Admin Dashboard)
@@ -45,6 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Automation**
 
 - **Root `Taskfile.yml`** - Comprehensive task automation with:
+
   - `task up` / `task down` - Start/stop services
   - `task db:shell` / `task db:backup` / `task db:restore` - Database operations
   - `task health` / `task status` - Health monitoring
@@ -63,6 +65,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Documentation**
 
 - **`docs/deployment/README.md`** - Comprehensive deployment guide with:
+
   - Prerequisites and system requirements
   - Quick start guide (5 steps)
   - Full configuration reference
@@ -73,6 +76,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Upgrade procedures
 
 - **`docs/deployment/troubleshooting.md`** - Troubleshooting guide with:
+
   - Quick diagnostics
   - Container issues resolution
   - Database troubleshooting
@@ -82,6 +86,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Emergency procedures
 
 - **`docs/deployment/security.md`** - Security guide with:
+
   - Secret management
   - Network security
   - Container hardening
@@ -98,9 +103,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Technical Details
 
-**Base Image**: `oven/bun:1.3.6-debian`  
-**Signal Handler**: dumb-init for proper signal forwarding  
-**Database**: PostgreSQL 16 (alpine)  
+**Base Image**: `oven/bun:1.3.6-debian`
+**Signal Handler**: dumb-init for proper signal forwarding
+**Database**: PostgreSQL 16 (alpine)
 **Orchestration**: Docker Compose with health checks and dependency ordering
 
 ---
@@ -115,4 +120,4 @@ For changes to individual packages, see:
 
 ---
 
-*Maintained by: @tobiashochguertel*
+_Maintained by: @tobiashochguertel_

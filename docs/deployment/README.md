@@ -1,6 +1,6 @@
 # React Visual Feedback - Deployment Guide
 
-**Version**: 1.0.0  
+**Version**: 1.0.0
 **Last Updated**: 2025-01-XX
 
 This guide covers deploying the complete React Visual Feedback stack using Docker Compose.
@@ -25,13 +25,13 @@ This guide covers deploying the complete React Visual Feedback stack using Docke
 
 ### System Requirements
 
-| Requirement | Minimum | Recommended |
-|-------------|---------|-------------|
-| Docker | 24.0+ | 25.0+ |
-| Docker Compose | 2.20+ | 2.24+ |
-| RAM | 2GB | 4GB |
-| Disk Space | 10GB | 50GB |
-| CPU | 2 cores | 4 cores |
+| Requirement    | Minimum | Recommended |
+| -------------- | ------- | ----------- |
+| Docker         | 24.0+   | 25.0+       |
+| Docker Compose | 2.20+   | 2.24+       |
+| RAM            | 2GB     | 4GB         |
+| Disk Space     | 10GB    | 50GB        |
+| CPU            | 2 cores | 4 cores     |
 
 ### Required Tools
 
@@ -125,12 +125,12 @@ curl http://localhost:3001/api/v1/health
 
 ### 5. Access Services
 
-| Service | URL | Description |
-|---------|-----|-------------|
-| Feedback Server API | http://localhost:3001 | REST API |
-| Feedback WebUI | http://localhost:5173 | Admin Dashboard |
-| Feedback Example | http://localhost:3002 | Demo Application |
-| PostgreSQL | localhost:5432 | Database (internal) |
+| Service             | URL                   | Description         |
+| ------------------- | --------------------- | ------------------- |
+| Feedback Server API | http://localhost:3001 | REST API            |
+| Feedback WebUI      | http://localhost:5173 | Admin Dashboard     |
+| Feedback Example    | http://localhost:3002 | Demo Application    |
+| PostgreSQL          | localhost:5432        | Database (internal) |
 
 ---
 
@@ -142,44 +142,44 @@ All configuration is done via environment variables. Copy `.env.example` to `.en
 
 #### PostgreSQL
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `POSTGRES_USER` | `feedback` | Database username |
-| `POSTGRES_PASSWORD` | `change-me-in-production` | Database password |
-| `POSTGRES_DB` | `feedback` | Database name |
-| `POSTGRES_PORT` | `5432` | External port (dev only) |
+| Variable            | Default                   | Description              |
+| ------------------- | ------------------------- | ------------------------ |
+| `POSTGRES_USER`     | `feedback`                | Database username        |
+| `POSTGRES_PASSWORD` | `change-me-in-production` | Database password        |
+| `POSTGRES_DB`       | `feedback`                | Database name            |
+| `POSTGRES_PORT`     | `5432`                    | External port (dev only) |
 
 #### Feedback Server
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `FEEDBACK_SERVER_PORT` | `3001` | API server port |
-| `DATABASE_URL` | (auto) | PostgreSQL connection string |
-| `LOG_LEVEL` | `info` | Logging level: debug, info, warn, error |
-| `RUN_MIGRATIONS` | `true` | Auto-run migrations on startup |
-| `CORS_ORIGINS` | `*` | Allowed CORS origins |
+| Variable               | Default | Description                             |
+| ---------------------- | ------- | --------------------------------------- |
+| `FEEDBACK_SERVER_PORT` | `3001`  | API server port                         |
+| `DATABASE_URL`         | (auto)  | PostgreSQL connection string            |
+| `LOG_LEVEL`            | `info`  | Logging level: debug, info, warn, error |
+| `RUN_MIGRATIONS`       | `true`  | Auto-run migrations on startup          |
+| `CORS_ORIGINS`         | `*`     | Allowed CORS origins                    |
 
 #### WebUI
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `WEBUI_PORT` | `5173` | WebUI server port |
-| `VITE_API_URL` | (auto) | Feedback Server URL |
+| Variable       | Default | Description         |
+| -------------- | ------- | ------------------- |
+| `WEBUI_PORT`   | `5173`  | WebUI server port   |
+| `VITE_API_URL` | (auto)  | Feedback Server URL |
 
 #### Example App
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `EXAMPLE_PORT` | `3002` | Example app port |
-| `NEXT_PUBLIC_FEEDBACK_API_URL` | (auto) | Public API URL |
+| Variable                       | Default | Description      |
+| ------------------------------ | ------- | ---------------- |
+| `EXAMPLE_PORT`                 | `3002`  | Example app port |
+| `NEXT_PUBLIC_FEEDBACK_API_URL` | (auto)  | Public API URL   |
 
 #### Health Checks
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `HEALTHCHECK_INTERVAL` | `30` | Seconds between health checks |
-| `HEALTHCHECK_TIMEOUT` | `10` | Seconds to wait for response |
-| `HEALTHCHECK_RETRIES` | `3` | Retries before marking unhealthy |
+| Variable               | Default | Description                      |
+| ---------------------- | ------- | -------------------------------- |
+| `HEALTHCHECK_INTERVAL` | `30`    | Seconds between health checks    |
+| `HEALTHCHECK_TIMEOUT`  | `10`    | Seconds to wait for response     |
+| `HEALTHCHECK_RETRIES`  | `3`     | Retries before marking unhealthy |
 
 ---
 
@@ -424,11 +424,11 @@ task shell:example
 
 ### Health Endpoints
 
-| Service | Endpoint | Expected Response |
-|---------|----------|-------------------|
+| Service         | Endpoint         | Expected Response |
+| --------------- | ---------------- | ----------------- |
 | Feedback Server | `/api/v1/health` | `{"status":"ok"}` |
-| WebUI | `/health` | `{"status":"ok"}` |
-| Example | `/` | HTTP 200 |
+| WebUI           | `/health`        | `{"status":"ok"}` |
+| Example         | `/`              | HTTP 200          |
 
 ### Prometheus Metrics (Optional)
 
@@ -580,24 +580,24 @@ docker compose exec feedback-server curl localhost:3001/api/v1/health
 
 ## Task Reference
 
-| Task | Description |
-|------|-------------|
-| `task up` | Start all services |
-| `task down` | Stop all services |
-| `task restart` | Restart all services |
-| `task logs` | View logs (follow mode) |
-| `task status` | Show service status |
-| `task health` | Check service health |
-| `task db:shell` | Open PostgreSQL shell |
-| `task db:backup` | Create database backup |
-| `task db:restore FILE=<path>` | Restore from backup |
-| `task shell:server` | Open server shell |
-| `task shell:webui` | Open WebUI shell |
-| `task shell:example` | Open example app shell |
-| `task docker:build` | Build all images |
-| `task docker:push` | Push to registry |
-| `task reset` | Full reset (DESTRUCTIVE) |
-| `task prune` | Clean unused resources |
+| Task                          | Description              |
+| ----------------------------- | ------------------------ |
+| `task up`                     | Start all services       |
+| `task down`                   | Stop all services        |
+| `task restart`                | Restart all services     |
+| `task logs`                   | View logs (follow mode)  |
+| `task status`                 | Show service status      |
+| `task health`                 | Check service health     |
+| `task db:shell`               | Open PostgreSQL shell    |
+| `task db:backup`              | Create database backup   |
+| `task db:restore FILE=<path>` | Restore from backup      |
+| `task shell:server`           | Open server shell        |
+| `task shell:webui`            | Open WebUI shell         |
+| `task shell:example`          | Open example app shell   |
+| `task docker:build`           | Build all images         |
+| `task docker:push`            | Push to registry         |
+| `task reset`                  | Full reset (DESTRUCTIVE) |
+| `task prune`                  | Clean unused resources   |
 
 ---
 
@@ -609,4 +609,4 @@ docker compose exec feedback-server curl localhost:3001/api/v1/health
 
 ---
 
-*Last updated: 2025-01-XX*
+_Last updated: 2025-01-XX_

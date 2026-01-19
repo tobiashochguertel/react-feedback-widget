@@ -41,21 +41,21 @@ wait_for_postgres() {
     case "$DATABASE_URL" in
         postgresql://*|postgres://*)
             log_info "Detected PostgreSQL database"
-            
+
             # Extract host and port
             host=$(echo "$DATABASE_URL" | sed -n 's|.*@\([^:]*\):.*|\1|p')
             port=$(echo "$DATABASE_URL" | sed -n 's|.*:\([0-9]*\)/.*|\1|p')
-            
+
             if [ -z "$host" ]; then
                 log_error "Could not parse host from DATABASE_URL"
                 return 1
             fi
-            
+
             port=${port:-5432}
             timeout=${DB_WAIT_TIMEOUT:-60}
-            
+
             log_info "Waiting for PostgreSQL at $host:$port (timeout: ${timeout}s)..."
-            
+
             elapsed=0
             while [ $elapsed -lt $timeout ]; do
                 if nc -z "$host" "$port" 2>/dev/null; then
@@ -65,7 +65,7 @@ wait_for_postgres() {
                 sleep 2
                 elapsed=$((elapsed + 2))
             done
-            
+
             log_error "Timeout waiting for PostgreSQL at $host:$port"
             return 1
             ;;
@@ -89,9 +89,9 @@ run_migrations() {
         log_info "Migrations disabled (RUN_MIGRATIONS != true)"
         return 0
     fi
-    
+
     log_info "Running database migrations..."
-    
+
     if bun run db:migrate; then
         log_info "Migrations completed successfully"
         return 0
@@ -111,23 +111,23 @@ validate_directories() {
         log_info "Creating data directory..."
         mkdir -p /app/data
     fi
-    
+
     if [ ! -w "/app/data" ]; then
         log_error "Data directory /app/data is not writable"
         return 1
     fi
-    
+
     # Check uploads directory
     if [ ! -d "/app/uploads" ]; then
         log_info "Creating uploads directory..."
         mkdir -p /app/uploads
     fi
-    
+
     if [ ! -w "/app/uploads" ]; then
         log_error "Uploads directory /app/uploads is not writable"
         return 1
     fi
-    
+
     log_info "Directories validated"
     return 0
 }
@@ -146,22 +146,22 @@ main() {
     echo "  Port: ${PORT:-3001}"
     echo "=============================================="
     echo ""
-    
+
     # Validate directories
     if ! validate_directories; then
         exit 1
     fi
-    
+
     # Wait for database if PostgreSQL
     if ! wait_for_postgres; then
         exit 1
     fi
-    
+
     # Run migrations if enabled
     if ! run_migrations; then
         exit 1
     fi
-    
+
     # Start the server
     log_info "Starting Feedback Server..."
     exec bun run dist/index.js

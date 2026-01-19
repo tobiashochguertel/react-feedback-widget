@@ -1,6 +1,6 @@
 # Security Guide
 
-**Version**: 1.0.0  
+**Version**: 1.0.0
 **Last Updated**: 2025-01-XX
 
 This guide covers security considerations and best practices for deploying the React Visual Feedback stack.
@@ -33,14 +33,14 @@ This guide covers security considerations and best practices for deploying the R
 
 ### Threat Model
 
-| Threat | Mitigation |
-|--------|------------|
-| Exposed secrets | Environment variables, Docker secrets |
-| Network attacks | Firewall rules, internal networks |
-| Container escape | Non-root users, read-only filesystems |
-| SQL injection | Parameterized queries, input validation |
-| XSS attacks | Content Security Policy, input sanitization |
-| CSRF attacks | Token validation, SameSite cookies |
+| Threat           | Mitigation                                  |
+| ---------------- | ------------------------------------------- |
+| Exposed secrets  | Environment variables, Docker secrets       |
+| Network attacks  | Firewall rules, internal networks           |
+| Container escape | Non-root users, read-only filesystems       |
+| SQL injection    | Parameterized queries, input validation     |
+| XSS attacks      | Content Security Policy, input sanitization |
+| CSRF attacks     | Token validation, SameSite cookies          |
 
 ---
 
@@ -79,11 +79,11 @@ This guide covers security considerations and best practices for deploying the R
 
 ### Password Requirements
 
-| Secret | Minimum Length | Complexity |
-|--------|---------------|------------|
-| `POSTGRES_PASSWORD` | 32 characters | Mixed case, numbers, symbols |
-| `JWT_SECRET` | 64 characters | Random bytes, base64 encoded |
-| `API_KEY` | 32 characters | Alphanumeric |
+| Secret              | Minimum Length | Complexity                   |
+| ------------------- | -------------- | ---------------------------- |
+| `POSTGRES_PASSWORD` | 32 characters  | Mixed case, numbers, symbols |
+| `JWT_SECRET`        | 64 characters  | Random bytes, base64 encoded |
+| `API_KEY`           | 32 characters  | Alphanumeric                 |
 
 ### Generating Secure Secrets
 
@@ -160,20 +160,20 @@ graph TB
     subgraph "Public Internet"
         user((User))
     end
-    
+
     subgraph "DMZ"
         fw[Firewall :443]
     end
-    
+
     subgraph "Internal Network"
         server[Feedback Server]
         db[(PostgreSQL)]
     end
-    
+
     user --> fw
     fw --> server
     server --> db
-    
+
     db -.-x|BLOCKED| fw
 ```
 
@@ -185,25 +185,25 @@ networks:
   # Frontend network (exposed)
   frontend:
     driver: bridge
-    
+
   # Backend network (internal only)
   backend:
     driver: bridge
-    internal: true  # No external access
+    internal: true # No external access
 
 services:
   nginx:
     networks:
       - frontend
-      
+
   feedback-server:
     networks:
       - frontend
       - backend
-      
+
   postgres:
     networks:
-      - backend  # Only internal access
+      - backend # Only internal access
 ```
 
 ### Firewall Rules
@@ -225,12 +225,12 @@ sudo ufw deny 5432/tcp   # PostgreSQL
 
 ### Port Exposure Best Practices
 
-| Service | Development | Production |
-|---------|-------------|------------|
-| PostgreSQL :5432 | Exposed (debugging) | Internal only |
-| Feedback Server :3001 | Exposed | Behind proxy |
-| WebUI :5173 | Exposed | Behind proxy |
-| Example :3002 | Exposed | Behind proxy |
+| Service               | Development         | Production    |
+| --------------------- | ------------------- | ------------- |
+| PostgreSQL :5432      | Exposed (debugging) | Internal only |
+| Feedback Server :3001 | Exposed             | Behind proxy  |
+| WebUI :5173           | Exposed             | Behind proxy  |
+| Example :3002         | Exposed             | Behind proxy  |
 
 ```yaml
 # Production - don't expose internal ports
@@ -238,7 +238,7 @@ services:
   postgres:
     # No ports exposed externally
     expose:
-      - "5432"  # Internal only
+      - "5432" # Internal only
 ```
 
 ---
@@ -267,7 +267,7 @@ services:
     tmpfs:
       - /tmp
     volumes:
-      - uploads:/app/uploads:rw  # Only uploads writable
+      - uploads:/app/uploads:rw # Only uploads writable
 ```
 
 ### Security Options
@@ -280,7 +280,7 @@ services:
     cap_drop:
       - ALL
     cap_add:
-      - NET_BIND_SERVICE  # Only if needed
+      - NET_BIND_SERVICE # Only if needed
 ```
 
 ### Resource Limits
@@ -291,10 +291,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'
+          cpus: "1.0"
           memory: 512M
         reservations:
-          cpus: '0.25'
+          cpus: "0.25"
           memory: 256M
 ```
 
@@ -355,7 +355,7 @@ services:
           driver: local
           driver_opts:
             type: ext4
-            o: 'encryption'
+            o: "encryption"
 ```
 
 ### Backup Security
@@ -385,23 +385,23 @@ server {
 server {
     listen 443 ssl http2;
     server_name feedback.example.com;
-    
+
     # TLS Configuration
     ssl_certificate /etc/letsencrypt/live/feedback.example.com/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/feedback.example.com/privkey.pem;
-    
+
     # Modern TLS settings
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256;
     ssl_prefer_server_ciphers off;
-    
+
     # Security headers
     add_header Strict-Transport-Security "max-age=63072000" always;
     add_header X-Frame-Options "SAMEORIGIN" always;
     add_header X-Content-Type-Options "nosniff" always;
     add_header X-XSS-Protection "1; mode=block" always;
     add_header Content-Security-Policy "default-src 'self';" always;
-    
+
     # Proxy to services
     location /api {
         proxy_pass http://localhost:3001;
@@ -410,7 +410,7 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
     }
-    
+
     location / {
         proxy_pass http://localhost:5173;
         proxy_set_header Host $host;
@@ -436,7 +436,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - letsencrypt:/letsencrypt
-      
+
   feedback-server:
     labels:
       - "traefik.enable=true"
@@ -484,7 +484,7 @@ environment:
 # Nginx rate limiting
 http {
     limit_req_zone $binary_remote_addr zone=api:10m rate=10r/s;
-    
+
     server {
         location /api {
             limit_req zone=api burst=20 nodelay;
@@ -593,26 +593,31 @@ docker compose up -d
 ### Pre-Production Security Review
 
 - [ ] **Secrets Management**
+
   - [ ] No secrets in code or version control
   - [ ] Strong, unique passwords for all services
   - [ ] Secret rotation process documented
 
 - [ ] **Network Security**
+
   - [ ] Firewall configured
   - [ ] Internal services not exposed externally
   - [ ] TLS/HTTPS configured
 
 - [ ] **Container Security**
+
   - [ ] Running as non-root user
   - [ ] Resource limits configured
   - [ ] Images scanned for vulnerabilities
 
 - [ ] **Database Security**
+
   - [ ] Strong password set
   - [ ] Backups encrypted
   - [ ] Connection encryption enabled
 
 - [ ] **Access Control**
+
   - [ ] API authentication enabled
   - [ ] CORS properly configured
   - [ ] Rate limiting enabled
@@ -624,13 +629,13 @@ docker compose up -d
 
 ### Periodic Security Tasks
 
-| Task | Frequency |
-|------|-----------|
-| Review access logs | Weekly |
-| Scan for vulnerabilities | Weekly |
-| Update dependencies | Monthly |
-| Rotate secrets | Quarterly |
-| Security audit | Annually |
+| Task                     | Frequency |
+| ------------------------ | --------- |
+| Review access logs       | Weekly    |
+| Scan for vulnerabilities | Weekly    |
+| Update dependencies      | Monthly   |
+| Rotate secrets           | Quarterly |
+| Security audit           | Annually  |
 
 ---
 
@@ -670,4 +675,4 @@ docker network inspect feedback-network
 
 ---
 
-*Last updated: 2025-01-XX*
+_Last updated: 2025-01-XX_

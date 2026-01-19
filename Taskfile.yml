@@ -205,7 +205,7 @@ tasks:
       - Feedback Server (API)
       - Feedback WebUI (Dashboard)
       - Feedback Example (Demo app)
-      
+
       Use 'task logs' to view logs.
       Use 'task down' to stop.
     cmds:
@@ -354,7 +354,7 @@ tasks:
     desc: Restore database from backup
     summary: |
       Restore database from a backup file.
-      
+
       Usage:
         task db:restore FILE=backups/feedback-2024-01-15.sql
     requires:

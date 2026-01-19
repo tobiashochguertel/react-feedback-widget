@@ -3,7 +3,25 @@
     "id": "builtin_group_id",
     "name": "Currently Open Files",
     "files": [
-      "docs/spec/001.reference-deployment-specification/README.md"
+      "CHANGELOG.md",
+      "docs/deployment/security.md",
+      "docs/deployment/diagrams/architecture.md",
+      "docs/deployment/troubleshooting.md",
+      "docs/deployment/README.md",
+      "packages/feedback-example/Taskfile.yml",
+      "packages/feedback-server/Taskfile.yml",
+      "docker-compose.prod.yml",
+      "packages/feedback-example/docker-compose.yml",
+      "packages/feedback-server-webui/docker-compose.yml",
+      "packages/feedback-server-cli/docker-compose.yml",
+      "packages/react-visual-feedback/docker-compose.yml",
+      "packages/feedback-server-cli/.dockerignore",
+      "packages/react-visual-feedback/.dockerignore",
+      "packages/feedback-server-cli/Dockerfile",
+      "packages/react-visual-feedback/Dockerfile",
+      "packages/feedback-example/.dockerignore",
+      "packages/feedback-server-webui/.dockerignore",
+      "docker-compose.override.yml"
     ],
     "builtIn": true,
     "bookmarks": {}

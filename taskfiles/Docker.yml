@@ -11,7 +11,7 @@
 #   DOCKER_FILE: Dockerfile path (default: Dockerfile)
 #   DOCKER_CONTEXT: Build context path (default: .)
 
-version: "3"
+version: '3'
 
 vars:
   DOCKER_IMAGE_TAG: '{{.DOCKER_IMAGE_TAG | default "latest"}}'
@@ -29,12 +29,12 @@ tasks:
     desc: Build Docker image
     summary: |
       Build the Docker image for this package.
-      
+
       Variables:
         DOCKER_IMAGE_NAME: Required - Image name
         DOCKER_IMAGE_TAG: Optional - Image tag (default: latest)
         DOCKER_REGISTRY: Optional - Registry prefix
-        
+
       Example:
         task docker:build
         task docker:build DOCKER_IMAGE_TAG=1.0.0
@@ -71,7 +71,7 @@ tasks:
     summary: |
       Run the Docker container in the foreground.
       Press Ctrl+C to stop.
-      
+
       Variables:
         DOCKER_PORTS: Port mapping (e.g., "3001:3001")
         DOCKER_ENV_FILE: Path to env file (optional)
@@ -178,7 +178,7 @@ tasks:
     desc: Tag image with additional tag
     summary: |
       Tag the current image with an additional tag.
-      
+
       Example:
         task docker:tag NEW_TAG=v1.0.0
     cmds:

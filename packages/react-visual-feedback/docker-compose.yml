@@ -24,7 +24,7 @@ services:
     image: react-visual-feedback/lib-builder:${DOCKER_IMAGE_TAG:-latest}
     volumes:
       - dist-output:/app/dist
-    command: ["bun", "run", "build"]
+    command: ['bun', 'run', 'build']
 
   # ---------------------------------------------------------------------------
   # Test - Run unit tests
@@ -36,8 +36,8 @@ services:
       target: test
     image: react-visual-feedback/lib-test:${DOCKER_IMAGE_TAG:-latest}
     environment:
-      CI: "true"
-    command: ["bun", "run", "test"]
+      CI: 'true'
+    command: ['bun', 'run', 'test']
 
   # ---------------------------------------------------------------------------
   # E2E - Run Playwright E2E tests
@@ -49,11 +49,11 @@ services:
       target: e2e
     image: react-visual-feedback/lib-e2e:${DOCKER_IMAGE_TAG:-latest}
     environment:
-      CI: "true"
+      CI: 'true'
     volumes:
       - e2e-results:/app/test-results
       - playwright-report:/app/playwright-report
-    command: ["bun", "run", "test:e2e"]
+    command: ['bun', 'run', 'test:e2e']
 
   # ---------------------------------------------------------------------------
   # Coverage - Run tests with coverage
@@ -65,10 +65,10 @@ services:
       target: test
     image: react-visual-feedback/lib-test:${DOCKER_IMAGE_TAG:-latest}
     environment:
-      CI: "true"
+      CI: 'true'
     volumes:
       - coverage-output:/app/coverage
-    command: ["bun", "run", "test:coverage"]
+    command: ['bun', 'run', 'test:coverage']
 
   # ---------------------------------------------------------------------------
   # Shell - Interactive development shell
@@ -84,7 +84,7 @@ services:
     volumes:
       - .:/app
       - node_modules:/app/node_modules
-    command: ["/bin/bash"]
+    command: ['/bin/bash']
 
   # ---------------------------------------------------------------------------
   # Dev - Development mode with file watching
@@ -99,7 +99,7 @@ services:
       - .:/app
       - node_modules:/app/node_modules
       - dist-output:/app/dist
-    command: ["bun", "run", "build:watch"]
+    command: ['bun', 'run', 'build:watch']
 
 # =============================================================================
 # Volumes

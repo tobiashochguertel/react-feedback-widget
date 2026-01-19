@@ -1,7 +1,7 @@
 # Reference Deployment - User Stories
 
-**Version**: 1.0.0  
-**Created**: 2026-01-19  
+**Version**: 1.0.0
+**Created**: 2026-01-19
 **Updated**: 2026-01-19
 
 ---
@@ -19,6 +19,7 @@ This document captures user stories for the Reference Deployment feature of Reac
 A software developer who integrates the feedback widget into their application and needs a local development environment.
 
 **Goals**:
+
 - Quick local setup
 - Easy debugging
 - Fast iteration cycle
@@ -28,6 +29,7 @@ A software developer who integrates the feedback widget into their application a
 A DevOps engineer responsible for deploying and maintaining the feedback system in production.
 
 **Goals**:
+
 - Reliable deployment
 - Easy monitoring
 - Simple backup/restore
@@ -38,6 +40,7 @@ A DevOps engineer responsible for deploying and maintaining the feedback system 
 An admin user who manages feedback through the WebUI.
 
 **Goals**:
+
 - Access to feedback dashboard
 - Reliable system availability
 - Data persistence
@@ -48,8 +51,8 @@ An admin user who manages feedback through the WebUI.
 
 ### US-001: Developer Starts Local Environment
 
-**As a** Developer  
-**I want to** start the complete feedback system locally with a single command  
+**As a** Developer
+**I want to** start the complete feedback system locally with a single command
 **So that I** can develop and test my application with feedback functionality
 
 **Acceptance Criteria**:
@@ -80,15 +83,15 @@ Feature: Local Development Startup
     And logs should be color-coded by service
 ```
 
-**Priority**: 🟢 High  
+**Priority**: 🟢 High
 **Related Tasks**: T015, T016, T023
 
 ---
 
 ### US-002: Developer Builds Docker Images
 
-**As a** Developer  
-**I want to** build Docker images for all packages  
+**As a** Developer
+**I want to** build Docker images for all packages
 **So that I** can verify the production build works before pushing
 
 **Acceptance Criteria**:
@@ -116,15 +119,15 @@ Feature: Docker Image Building
     And all layers should be rebuilt
 ```
 
-**Priority**: 🟢 High  
+**Priority**: 🟢 High
 **Related Tasks**: T001, T005-T009
 
 ---
 
 ### US-003: Developer Stops Environment
 
-**As a** Developer  
-**I want to** cleanly stop the development environment  
+**As a** Developer
+**I want to** cleanly stop the development environment
 **So that I** free up system resources
 
 **Acceptance Criteria**:
@@ -152,7 +155,7 @@ Feature: Environment Shutdown
     And disk space should be freed
 ```
 
-**Priority**: 🟡 Medium  
+**Priority**: 🟡 Medium
 **Related Tasks**: T023
 
 ---
@@ -161,8 +164,8 @@ Feature: Environment Shutdown
 
 ### US-004: Operator Deploys to Production
 
-**As a** DevOps Engineer  
-**I want to** deploy the feedback system to a production server  
+**As a** DevOps Engineer
+**I want to** deploy the feedback system to a production server
 **So that** users can submit feedback in the production environment
 
 **Acceptance Criteria**:
@@ -193,15 +196,15 @@ Feature: Production Deployment
     And the API should accept feedback submissions
 ```
 
-**Priority**: 🟢 High  
+**Priority**: 🟢 High
 **Related Tasks**: T015, T029, D001
 
 ---
 
 ### US-005: Operator Monitors Services
 
-**As a** DevOps Engineer  
-**I want to** monitor the health and status of all services  
+**As a** DevOps Engineer
+**I want to** monitor the health and status of all services
 **So that I** can detect and respond to issues quickly
 
 **Acceptance Criteria**:
@@ -230,15 +233,15 @@ Feature: Service Monitoring
     And error logs should be clearly marked
 ```
 
-**Priority**: 🟡 Medium  
+**Priority**: 🟡 Medium
 **Related Tasks**: T031
 
 ---
 
 ### US-006: Operator Backs Up Data
 
-**As a** DevOps Engineer  
-**I want to** create backups of the feedback database  
+**As a** DevOps Engineer
+**I want to** create backups of the feedback database
 **So that I** can restore data in case of failure
 
 **Acceptance Criteria**:
@@ -268,15 +271,15 @@ Feature: Data Backup
     And the backup should be compressed
 ```
 
-**Priority**: 🟡 Medium  
+**Priority**: 🟡 Medium
 **Related Tasks**: D001
 
 ---
 
 ### US-007: Operator Updates Deployment
 
-**As a** DevOps Engineer  
-**I want to** update the feedback system to a new version  
+**As a** DevOps Engineer
+**I want to** update the feedback system to a new version
 **So that** users get new features and bug fixes
 
 **Acceptance Criteria**:
@@ -302,7 +305,7 @@ Feature: Deployment Updates
     And data should remain intact
 ```
 
-**Priority**: 🟡 Medium  
+**Priority**: 🟡 Medium
 **Related Tasks**: T032, D001
 
 ---
@@ -311,8 +314,8 @@ Feature: Deployment Updates
 
 ### US-008: User Submits Feedback
 
-**As a** End User  
-**I want to** submit feedback through the widget  
+**As a** End User
+**I want to** submit feedback through the widget
 **So that I** can report issues or suggestions
 
 **Acceptance Criteria**:
@@ -347,15 +350,15 @@ Feature: Feedback Submission
     Then the queued feedback should be submitted automatically
 ```
 
-**Priority**: 🟢 High  
+**Priority**: 🟢 High
 **Related Tasks**: T007, T015
 
 ---
 
 ### US-009: Admin Views Feedback
 
-**As an** Administrator  
-**I want to** view all submitted feedback in the dashboard  
+**As an** Administrator
+**I want to** view all submitted feedback in the dashboard
 **So that I** can review and respond to user issues
 
 **Acceptance Criteria**:
@@ -385,7 +388,7 @@ Feature: Feedback Dashboard
     And the feedback list should reflect the change
 ```
 
-**Priority**: 🟡 Medium  
+**Priority**: 🟡 Medium
 **Related Tasks**: T006, T015
 
 ---
@@ -394,8 +397,8 @@ Feature: Feedback Dashboard
 
 ### US-010: Operator Troubleshoots Startup Failure
 
-**As a** DevOps Engineer  
-**I want to** diagnose why a service won't start  
+**As a** DevOps Engineer
+**I want to** diagnose why a service won't start
 **So that I** can fix the issue quickly
 
 **Acceptance Criteria**:
@@ -423,15 +426,15 @@ Feature: Startup Troubleshooting
     And be able to diagnose network/auth issues
 ```
 
-**Priority**: 🟡 Medium  
+**Priority**: 🟡 Medium
 **Related Tasks**: D002
 
 ---
 
 ### US-011: Operator Checks Resource Usage
 
-**As a** DevOps Engineer  
-**I want to** monitor resource usage of all containers  
+**As a** DevOps Engineer
+**I want to** monitor resource usage of all containers
 **So that I** can ensure adequate resources are allocated
 
 **Acceptance Criteria**:
@@ -454,26 +457,26 @@ Feature: Resource Monitoring
     And volume storage usage
 ```
 
-**Priority**: 🔴 Low  
+**Priority**: 🔴 Low
 **Related Tasks**: None
 
 ---
 
 ## User Story Summary
 
-| ID | Title | Persona | Priority | Epic |
-|----|-------|---------|----------|------|
-| US-001 | Start Local Environment | Developer | 🟢 High | Dev Environment |
-| US-002 | Build Docker Images | Developer | 🟢 High | Dev Environment |
-| US-003 | Stop Environment | Developer | 🟡 Medium | Dev Environment |
-| US-004 | Deploy to Production | Operator | 🟢 High | Production |
-| US-005 | Monitor Services | Operator | 🟡 Medium | Production |
-| US-006 | Backup Data | Operator | 🟡 Medium | Production |
-| US-007 | Update Deployment | Operator | 🟡 Medium | Production |
-| US-008 | Submit Feedback | End User | 🟢 High | User Experience |
-| US-009 | View Feedback | Admin | 🟡 Medium | User Experience |
-| US-010 | Troubleshoot Startup | Operator | 🟡 Medium | Troubleshooting |
-| US-011 | Check Resources | Operator | 🔴 Low | Troubleshooting |
+| ID     | Title                   | Persona   | Priority  | Epic            |
+| ------ | ----------------------- | --------- | --------- | --------------- |
+| US-001 | Start Local Environment | Developer | 🟢 High   | Dev Environment |
+| US-002 | Build Docker Images     | Developer | 🟢 High   | Dev Environment |
+| US-003 | Stop Environment        | Developer | 🟡 Medium | Dev Environment |
+| US-004 | Deploy to Production    | Operator  | 🟢 High   | Production      |
+| US-005 | Monitor Services        | Operator  | 🟡 Medium | Production      |
+| US-006 | Backup Data             | Operator  | 🟡 Medium | Production      |
+| US-007 | Update Deployment       | Operator  | 🟡 Medium | Production      |
+| US-008 | Submit Feedback         | End User  | 🟢 High   | User Experience |
+| US-009 | View Feedback           | Admin     | 🟡 Medium | User Experience |
+| US-010 | Troubleshoot Startup    | Operator  | 🟡 Medium | Troubleshooting |
+| US-011 | Check Resources         | Operator  | 🔴 Low    | Troubleshooting |
 
 ---
 
@@ -510,22 +513,22 @@ Troubleshooting ────┼───────────────┼�
 
 ## Mapping to Tasks
 
-| User Story | Related Tasks |
-|------------|---------------|
-| US-001 | T015, T016, T023 |
-| US-002 | T001, T005-T009 |
-| US-003 | T023 |
-| US-004 | T015, T029, D001 |
-| US-005 | T031 |
-| US-006 | D001 |
-| US-007 | T032, D001 |
-| US-008 | T007, T015 |
-| US-009 | T006, T015 |
-| US-010 | D002 |
-| US-011 | - |
+| User Story | Related Tasks    |
+| ---------- | ---------------- |
+| US-001     | T015, T016, T023 |
+| US-002     | T001, T005-T009  |
+| US-003     | T023             |
+| US-004     | T015, T029, D001 |
+| US-005     | T031             |
+| US-006     | D001             |
+| US-007     | T032, D001       |
+| US-008     | T007, T015       |
+| US-009     | T006, T015       |
+| US-010     | D002             |
+| US-011     | -                |
 
 ---
 
-**User Stories Version**: 1.0.0  
-**Created by**: GitHub Copilot  
+**User Stories Version**: 1.0.0
+**Created by**: GitHub Copilot
 **Last Updated**: 2026-01-19

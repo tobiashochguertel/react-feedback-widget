@@ -1,6 +1,6 @@
 # Troubleshooting Guide
 
-**Version**: 1.0.0  
+**Version**: 1.0.0
 **Last Updated**: 2025-01-XX
 
 This guide helps diagnose and resolve common issues with the React Visual Feedback Docker deployment.
@@ -64,6 +64,7 @@ task debug:info
 ### Container Won't Start
 
 **Symptoms:**
+
 - Container exits immediately after starting
 - Status shows "Exited (1)" or similar
 - `docker compose up` fails
@@ -84,28 +85,31 @@ lsof -i :3001
 **Common Causes & Solutions:**
 
 1. **Port already in use:**
+
    ```bash
    # Find process using the port
    lsof -i :3001
-   
+
    # Kill the process or change port in .env
    FEEDBACK_SERVER_PORT=3003
    ```
 
 2. **Missing environment variables:**
+
    ```bash
    # Check required env vars are set
    docker compose config
-   
+
    # Ensure .env file exists
    ls -la .env
    ```
 
 3. **Permission denied:**
+
    ```bash
    # Check volume permissions
    ls -la ./data
-   
+
    # Fix permissions
    sudo chown -R 1001:1001 ./data
    ```
@@ -121,6 +125,7 @@ lsof -i :3001
 ### Container Keeps Restarting
 
 **Symptoms:**
+
 - Container restarts repeatedly
 - Status shows "Restarting"
 - Logs show crash-restart cycle
@@ -141,10 +146,11 @@ docker stats feedback-server --no-stream
 **Common Causes & Solutions:**
 
 1. **Out of memory (OOM killed):**
+
    ```bash
    # Check if OOM killed
    docker inspect feedback-server --format='{{.State.OOMKilled}}'
-   
+
    # Increase memory limit in docker-compose.yml
    deploy:
      resources:
@@ -153,19 +159,21 @@ docker stats feedback-server --no-stream
    ```
 
 2. **Application crash:**
+
    ```bash
    # Check for error patterns in logs
    docker compose logs feedback-server 2>&1 | grep -i "error\|exception\|failed"
-   
+
    # Enable debug logging
    LOG_LEVEL=debug docker compose up feedback-server
    ```
 
 3. **Database not ready:**
+
    ```bash
    # Check if postgres is healthy
    docker compose exec postgres pg_isready -U feedback
-   
+
    # Ensure proper depends_on with healthcheck
    # Already configured in docker-compose.yml
    ```
@@ -175,6 +183,7 @@ docker stats feedback-server --no-stream
 ### Container is Slow to Start
 
 **Symptoms:**
+
 - Container takes long time to become healthy
 - "Waiting for service" messages
 
@@ -198,6 +207,7 @@ docker compose up -d feedback-server
 ### Cannot Connect to Database
 
 **Symptoms:**
+
 - "Connection refused" errors
 - "FATAL: password authentication failed"
 - Application fails to start with database errors
@@ -221,16 +231,18 @@ docker compose exec feedback-server sh -c 'nc -zv postgres 5432'
 **Solutions:**
 
 1. **PostgreSQL not started:**
+
    ```bash
    docker compose up -d postgres
    docker compose logs postgres
    ```
 
 2. **Wrong credentials:**
+
    ```bash
    # Check .env matches what postgres was initialized with
    cat .env | grep POSTGRES
-   
+
    # If mismatch, reset postgres data
    docker compose down -v
    docker volume rm react-feedback-widget_postgres_data
@@ -248,6 +260,7 @@ docker compose exec feedback-server sh -c 'nc -zv postgres 5432'
 ### Database Migration Failures
 
 **Symptoms:**
+
 - "Migration failed" errors
 - Application starts but database tables missing
 - "relation does not exist" errors
@@ -265,11 +278,13 @@ docker compose logs feedback-server 2>&1 | grep -i "migration"
 **Solutions:**
 
 1. **Run migrations manually:**
+
    ```bash
    docker compose exec feedback-server bun run db:migrate
    ```
 
 2. **Reset and re-migrate (DESTRUCTIVE):**
+
    ```bash
    docker compose down -v
    docker compose up -d postgres
@@ -289,6 +304,7 @@ docker compose logs feedback-server 2>&1 | grep -i "migration"
 ### Database Performance Issues
 
 **Symptoms:**
+
 - Slow queries
 - High CPU on postgres container
 - Timeout errors
@@ -309,12 +325,14 @@ docker compose exec postgres psql -U feedback -c "SELECT * FROM pg_locks WHERE g
 **Solutions:**
 
 1. **Add missing indexes:**
+
    ```sql
    -- Check slow queries and add appropriate indexes
    CREATE INDEX idx_feedback_created_at ON feedback(created_at);
    ```
 
 2. **Increase shared buffers:**
+
    ```yaml
    # docker-compose.yml
    postgres:
@@ -333,6 +351,7 @@ docker compose exec postgres psql -U feedback -c "SELECT * FROM pg_locks WHERE g
 ### Services Can't Communicate
 
 **Symptoms:**
+
 - "Connection refused" between services
 - DNS resolution failures
 - Timeout errors
@@ -357,6 +376,7 @@ docker compose exec feedback-server nc -zv postgres 5432
 **Solutions:**
 
 1. **Recreate network:**
+
    ```bash
    docker compose down
    docker network rm react-feedback-widget_feedback-network
@@ -380,6 +400,7 @@ docker compose exec feedback-server nc -zv postgres 5432
 ### Port Conflicts
 
 **Symptoms:**
+
 - "Bind: address already in use"
 - Container won't start due to port
 
@@ -394,11 +415,13 @@ netstat -tlpn | grep 3001
 **Solutions:**
 
 1. **Kill conflicting process:**
+
    ```bash
    kill $(lsof -t -i:3001)
    ```
 
 2. **Change port in .env:**
+
    ```env
    FEEDBACK_SERVER_PORT=3003
    ```
@@ -428,6 +451,7 @@ watch -n 5 'docker stats --no-stream --format "table {{.Name}}\t{{.MemUsage}}"'
 **Solutions:**
 
 1. **Set memory limits:**
+
    ```yaml
    deploy:
      resources:
@@ -460,11 +484,12 @@ docker compose exec feedback-server top
 **Solutions:**
 
 1. **Set CPU limits:**
+
    ```yaml
    deploy:
      resources:
        limits:
-         cpus: '1.0'
+         cpus: "1.0"
    ```
 
 2. **Check for infinite loops in logs:**
@@ -489,6 +514,7 @@ docker inspect feedback-server --format='{{json .State.Health}}' | jq
 **Solutions:**
 
 1. **Check database connection pool:**
+
    ```env
    DATABASE_POOL_SIZE=20
    ```
@@ -529,6 +555,7 @@ docker compose exec feedback-server netstat -tlpn | grep 3001
 **Solutions:**
 
 1. **Increase start period:**
+
    ```yaml
    healthcheck:
      start_period: 60s
@@ -557,6 +584,7 @@ docker compose logs -f feedback-server
 **Solutions:**
 
 1. **Increase timeout:**
+
    ```yaml
    healthcheck:
      timeout: 30s
@@ -587,11 +615,11 @@ docker compose logs 2>&1 | grep -i "exception\|stack\|trace"
 
 ### Log Locations
 
-| Service | Container Log | Persistent Log |
-|---------|---------------|----------------|
+| Service         | Container Log                         | Persistent Log                 |
+| --------------- | ------------------------------------- | ------------------------------ |
 | feedback-server | `docker compose logs feedback-server` | `/var/log/feedback/server.log` |
-| feedback-webui | `docker compose logs feedback-webui` | N/A |
-| postgres | `docker compose logs postgres` | Postgres data volume |
+| feedback-webui  | `docker compose logs feedback-webui`  | N/A                            |
+| postgres        | `docker compose logs postgres`        | Postgres data volume           |
 
 ### Log Retention
 
@@ -610,6 +638,7 @@ docker system prune --volumes -f
 ### Before Reporting an Issue
 
 1. **Collect diagnostic information:**
+
    ```bash
    task debug:info > debug-info.txt
    # or manually:
@@ -628,6 +657,7 @@ docker system prune --volumes -f
    ```
 
 2. **Check existing issues:**
+
    - [GitHub Issues](https://github.com/Murali1889/react-feedback-widget/issues)
 
 3. **Search documentation:**
@@ -640,34 +670,42 @@ Include the following in your issue:
 
 ```markdown
 ## Environment
+
 - OS: [e.g., Ubuntu 22.04]
 - Docker: [version]
 - Docker Compose: [version]
 
 ## Problem Description
+
 [Clear description of the issue]
 
 ## Steps to Reproduce
+
 1. [Step 1]
 2. [Step 2]
 3. [Step 3]
 
 ## Expected Behavior
+
 [What should happen]
 
 ## Actual Behavior
+
 [What actually happens]
 
 ## Logs
 ```
+
 [Paste relevant logs here]
-```
+
+````
 
 ## Configuration (sanitized)
 ```env
 [Paste .env without passwords]
-```
-```
+````
+
+````
 
 ---
 
@@ -692,7 +730,7 @@ docker system prune -a -f
 
 # Fresh start
 docker compose up -d
-```
+````
 
 ### Database Backup Before Changes
 
@@ -722,4 +760,4 @@ docker compose up -d
 
 ---
 
-*Last updated: 2025-01-XX*
+_Last updated: 2025-01-XX_
