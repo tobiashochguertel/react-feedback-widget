@@ -209,3 +209,58 @@ Make sure you saved the script and deployed it as a web app.
 
 ### Zapier: No data received
 Check that the webhook URL is correct and the Zap is turned on.
+
+## 🐳 Docker
+
+Run the example app in a Docker container.
+
+### Quick Start
+
+```bash
+# Using Taskfile (recommended)
+task docker:build
+task docker:run
+
+# Or directly with Docker Compose
+docker compose up -d
+```
+
+### Build Commands
+
+```bash
+# Build the Docker image
+docker build -t feedback-example:latest .
+
+# Run standalone container
+docker run -d -p 3002:3002 \
+  -e FEEDBACK_SERVER_URL=http://localhost:3001 \
+  feedback-example:latest
+```
+
+### Environment Variables
+
+| Variable              | Description               | Default                     |
+| --------------------- | ------------------------- | --------------------------- |
+| `NODE_ENV`            | Node environment          | `production`                |
+| `PORT`                | Server port               | `3002`                      |
+| `FEEDBACK_SERVER_URL` | Feedback API server URL   | `http://localhost:3001/api` |
+| `NEXT_PUBLIC_API_URL` | Public API URL for client | `http://localhost:3001/api` |
+
+### Docker Compose
+
+```bash
+# Start with dependencies
+docker compose up -d
+
+# View logs
+docker compose logs -f
+
+# Stop and remove
+docker compose down
+```
+
+> **📖 Full Deployment Guide:** See [docs/deployment/README.md](../../docs/deployment/README.md) for complete Docker deployment documentation including full-stack setup.
+
+## 📄 License
+
+MIT

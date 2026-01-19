@@ -157,7 +157,55 @@ feedback-cli export \
 echo "Report generated: reports/feedback-${DATE}.md"
 ```
 
-## 🔗 Related
+## � Docker
+
+Build CLI binaries for multiple platforms using Docker.
+
+### Build Binaries
+
+```bash
+# Using Taskfile (recommended)
+task docker:build
+
+# Or directly with Docker
+docker build -t feedback-server-cli:latest .
+```
+
+### Extract Binaries
+
+```bash
+# Build and extract all platform binaries
+docker build -t feedback-server-cli:latest .
+docker create --name tmp-cli feedback-server-cli:latest
+docker cp tmp-cli:/app/dist/bin ./bin
+docker rm tmp-cli
+```
+
+### Available Binaries
+
+The Docker build produces binaries for:
+
+| Platform      | Binary                           |
+| ------------- | -------------------------------- |
+| Linux x64     | `bin/feedback-cli-linux-x64`     |
+| Linux ARM64   | `bin/feedback-cli-linux-arm64`   |
+| macOS x64     | `bin/feedback-cli-darwin-x64`    |
+| macOS ARM64   | `bin/feedback-cli-darwin-arm64`  |
+| Windows x64   | `bin/feedback-cli-windows-x64.exe` |
+
+### Docker Compose
+
+```bash
+# Build binaries via compose
+docker compose up
+
+# Copy binaries from container
+docker compose cp cli:/app/dist/bin ./bin
+```
+
+> **📖 Full Deployment Guide:** See [docs/deployment/README.md](../../docs/deployment/README.md) for complete Docker deployment documentation.
+
+## �🔗 Related
 
 - [react-visual-feedback](../react-visual-feedback) - React component for collecting visual feedback
 - [Feedback Server](../feedback-server) - Backend server for storing and managing feedback

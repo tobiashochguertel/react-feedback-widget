@@ -206,7 +206,50 @@ npm install react react-dom styled-components
 - Safari
 - Opera
 
-## 📄 License
+## � Docker
+
+The library can be built using Docker for CI/CD environments.
+
+### Build Library
+
+```bash
+# Using Taskfile
+task docker:build
+
+# Or directly with Docker
+docker build -t react-visual-feedback:latest .
+```
+
+### Build and Extract Artifacts
+
+```bash
+# Build and copy dist folder
+docker build -t react-visual-feedback:latest .
+docker create --name tmp-build react-visual-feedback:latest
+docker cp tmp-build:/app/dist ./dist
+docker rm tmp-build
+```
+
+### Docker Compose (for development)
+
+```bash
+# Start development build
+docker compose up
+
+# Build with no cache
+docker compose build --no-cache
+```
+
+### Environment Variables
+
+| Variable      | Description           | Default                     |
+| ------------- | --------------------- | --------------------------- |
+| `NODE_ENV`    | Build environment     | `production`                |
+| `API_URL`     | Feedback server URL   | `http://localhost:3001/api` |
+
+> **📖 Full Deployment Guide:** See [docs/deployment/README.md](../../docs/deployment/README.md) for complete Docker deployment documentation.
+
+## �📄 License
 
 MIT
 
