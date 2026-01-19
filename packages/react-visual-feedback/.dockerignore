@@ -1,0 +1,61 @@
+# ============================================================================
+# React Visual Feedback Library - Docker Ignore
+# ============================================================================
+
+# Dependencies
+node_modules/
+.bun/
+
+# Build outputs (will be created inside container)
+dist/
+coverage/
+.cache/
+
+# Test outputs
+test-results/
+playwright-report/
+.playwright/
+
+# Development files
+*.log
+*.tsbuildinfo
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
+
+# Documentation source (keep for builds that need docs)
+# docs/
+
+# Archive
+archive/
+
+# Test fixtures that aren't needed for build
+tests/fixtures/screenshots/
+tests/fixtures/recordings/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# npm/bun cache
+.npm/
+.cache/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Coverage reports
+coverage/
+*.lcov

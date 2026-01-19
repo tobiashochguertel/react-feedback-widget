@@ -1,0 +1,156 @@
+# =============================================================================
+# React Visual Feedback - Docker Compose Configuration
+# =============================================================================
+# Full deployment stack for the feedback system
+#
+# Usage:
+#   docker compose up -d        # Start all services
+#   docker compose logs -f      # View logs
+#   docker compose down         # Stop services
+#   docker compose down -v      # Stop and remove volumes
+#
+# For development with hot-reload, use with override file (automatically merged):
+#   docker compose up -d
+#
+# For production (without override):
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+# =============================================================================
+
+name: react-visual-feedback
+
+services:
+  # ---------------------------------------------------------------------------
+  # PostgreSQL Database
+  # ---------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: feedback-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-feedback}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me-in-production}
+      POSTGRES_DB: ${POSTGRES_DB:-feedback}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-feedback} -d ${POSTGRES_DB:-feedback}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - feedback-network
+
+  # ---------------------------------------------------------------------------
+  # Feedback Server (Hono API)
+  # ---------------------------------------------------------------------------
+  feedback-server:
+    build:
+      context: ./packages/feedback-server
+      dockerfile: Dockerfile
+    image: ${DOCKER_REGISTRY:-}react-visual-feedback/server:${DOCKER_IMAGE_TAG:-latest}
+    container_name: feedback-server
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: ${FEEDBACK_SERVER_PORT:-3001}
+      HOST: 0.0.0.0
+      DATABASE_URL: ${DATABASE_URL:-postgresql://feedback:change-me-in-production@postgres:5432/feedback}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      RUN_MIGRATIONS: ${RUN_MIGRATIONS:-true}
+      CORS_ORIGINS: ${FEEDBACK_CORS_ORIGINS:-http://localhost:3000,http://localhost:3002,http://localhost:5173}
+    volumes:
+      - feedback-data:/app/data
+      - feedback-uploads:/app/uploads
+    ports:
+      - "${FEEDBACK_SERVER_PORT:-3001}:3001"
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:3001/api/v1/health"]
+      interval: ${HEALTHCHECK_INTERVAL:-30}s
+      timeout: ${HEALTHCHECK_TIMEOUT:-10}s
+      retries: ${HEALTHCHECK_RETRIES:-3}
+      start_period: 15s
+    networks:
+      - feedback-network
+
+  # ---------------------------------------------------------------------------
+  # Feedback WebUI (Vite/React Dashboard)
+  # ---------------------------------------------------------------------------
+  feedback-webui:
+    build:
+      context: .
+      dockerfile: packages/feedback-server-webui/Dockerfile
+    image: ${DOCKER_REGISTRY:-}react-visual-feedback/webui:${DOCKER_IMAGE_TAG:-latest}
+    container_name: feedback-webui
+    restart: unless-stopped
+    depends_on:
+      feedback-server:
+        condition: service_healthy
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: ${WEBUI_PORT:-5173}
+      VITE_API_URL: ${VITE_API_URL:-http://feedback-server:3001}
+    ports:
+      - "${WEBUI_PORT:-5173}:5173"
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:5173/health"]
+      interval: ${HEALTHCHECK_INTERVAL:-30}s
+      timeout: ${HEALTHCHECK_TIMEOUT:-10}s
+      retries: ${HEALTHCHECK_RETRIES:-3}
+      start_period: 10s
+    networks:
+      - feedback-network
+
+  # ---------------------------------------------------------------------------
+  # Feedback Example (Next.js Demo App)
+  # ---------------------------------------------------------------------------
+  feedback-example:
+    build:
+      context: .
+      dockerfile: packages/feedback-example/Dockerfile
+    image: ${DOCKER_REGISTRY:-}react-visual-feedback/example:${DOCKER_IMAGE_TAG:-latest}
+    container_name: feedback-example
+    restart: unless-stopped
+    depends_on:
+      feedback-server:
+        condition: service_healthy
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: ${EXAMPLE_PORT:-3002}
+      HOSTNAME: 0.0.0.0
+      NEXT_PUBLIC_FEEDBACK_API_URL: ${NEXT_PUBLIC_FEEDBACK_API_URL:-http://localhost:3001}
+      FEEDBACK_SERVER_URL: http://feedback-server:3001
+    ports:
+      - "${EXAMPLE_PORT:-3002}:3002"
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:3002/"]
+      interval: ${HEALTHCHECK_INTERVAL:-30}s
+      timeout: ${HEALTHCHECK_TIMEOUT:-10}s
+      retries: ${HEALTHCHECK_RETRIES:-3}
+      start_period: 20s
+    networks:
+      - feedback-network
+
+# =============================================================================
+# Networks
+# =============================================================================
+networks:
+  feedback-network:
+    driver: bridge
+    name: ${DOCKER_NETWORK:-feedback-network}
+
+# =============================================================================
+# Volumes
+# =============================================================================
+volumes:
+  postgres-data:
+    name: feedback-postgres-data
+  feedback-data:
+    name: feedback-server-data
+  feedback-uploads:
+    name: feedback-server-uploads

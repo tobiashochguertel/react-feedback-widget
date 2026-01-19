@@ -1,0 +1,109 @@
+# =============================================================================
+# Feedback Server WebUI - Docker Compose Configuration
+# =============================================================================
+# Standalone development setup for the feedback dashboard.
+#
+# Usage:
+#   docker compose up -d              # Start WebUI
+#   docker compose logs -f            # View logs
+#   docker compose down               # Stop service
+#   docker compose run --rm shell     # Open interactive shell
+# =============================================================================
+
+name: feedback-server-webui
+
+services:
+  # ---------------------------------------------------------------------------
+  # WebUI (Production)
+  # ---------------------------------------------------------------------------
+  webui:
+    build:
+      context: ../..
+      dockerfile: packages/feedback-server-webui/Dockerfile
+      target: production
+    image: feedback-webui:${DOCKER_IMAGE_TAG:-latest}
+    container_name: feedback-webui
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: ${PORT:-5173}
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:3001}
+    ports:
+      - "${PORT:-5173}:5173"
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:5173/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # ---------------------------------------------------------------------------
+  # Development Mode (Hot Reload with Vite)
+  # ---------------------------------------------------------------------------
+  dev:
+    build:
+      context: ../..
+      dockerfile: packages/feedback-server-webui/Dockerfile
+      target: builder
+    image: feedback-webui-dev:${DOCKER_IMAGE_TAG:-latest}
+    container_name: feedback-webui-dev
+    environment:
+      NODE_ENV: development
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:3001}
+    volumes:
+      - .:/app/packages/feedback-server-webui
+      - node_modules:/app/node_modules
+    ports:
+      - "${PORT:-5173}:5173"
+    command: ["bun", "run", "dev", "--host", "0.0.0.0"]
+
+  # ---------------------------------------------------------------------------
+  # Build - Build production assets
+  # ---------------------------------------------------------------------------
+  build:
+    build:
+      context: ../..
+      dockerfile: packages/feedback-server-webui/Dockerfile
+      target: builder
+    image: feedback-webui-builder:${DOCKER_IMAGE_TAG:-latest}
+    volumes:
+      - dist-output:/app/packages/feedback-server-webui/dist
+    command: ["bun", "run", "build"]
+
+  # ---------------------------------------------------------------------------
+  # Test - Run tests
+  # ---------------------------------------------------------------------------
+  test:
+    build:
+      context: ../..
+      dockerfile: packages/feedback-server-webui/Dockerfile
+      target: builder
+    image: feedback-webui-test:${DOCKER_IMAGE_TAG:-latest}
+    environment:
+      CI: "true"
+    command: ["bun", "run", "test"]
+
+  # ---------------------------------------------------------------------------
+  # Shell - Interactive shell
+  # ---------------------------------------------------------------------------
+  shell:
+    build:
+      context: ../..
+      dockerfile: packages/feedback-server-webui/Dockerfile
+      target: builder
+    image: feedback-webui-dev:${DOCKER_IMAGE_TAG:-latest}
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/app/packages/feedback-server-webui
+      - node_modules:/app/node_modules
+    command: ["/bin/sh"]
+
+# =============================================================================
+# Volumes
+# =============================================================================
+volumes:
+  dist-output:
+    name: feedback-webui-dist
+  node_modules:
+    name: feedback-webui-node-modules

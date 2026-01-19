@@ -192,3 +192,192 @@ tasks:
     cmds:
       - task: build
       - task: example:build
+
+  # ============================================================================
+  # Docker Compose - Deployment Orchestration
+  # ============================================================================
+
+  up:
+    desc: Start all services with Docker Compose
+    summary: |
+      Starts the complete feedback system stack:
+      - PostgreSQL database
+      - Feedback Server (API)
+      - Feedback WebUI (Dashboard)
+      - Feedback Example (Demo app)
+      
+      Use 'task logs' to view logs.
+      Use 'task down' to stop.
+    cmds:
+      - docker compose up -d
+      - |
+        echo ""
+        echo "Services starting..."
+        echo "  - PostgreSQL:      localhost:5432"
+        echo "  - Feedback Server: http://localhost:3001"
+        echo "  - Feedback WebUI:  http://localhost:5173"
+        echo "  - Feedback Example: http://localhost:3002"
+        echo ""
+        echo "Run 'task logs' to view logs"
+
+  down:
+    desc: Stop all services
+    cmds:
+      - docker compose down
+
+  restart:
+    desc: Restart all services
+    cmds:
+      - docker compose restart
+
+  logs:
+    desc: View logs from all services
+    cmds:
+      - docker compose logs -f
+
+  logs:server:
+    desc: View logs from feedback-server only
+    cmds:
+      - docker compose logs -f feedback-server
+
+  logs:webui:
+    desc: View logs from feedback-webui only
+    cmds:
+      - docker compose logs -f feedback-webui
+
+  logs:example:
+    desc: View logs from feedback-example only
+    cmds:
+      - docker compose logs -f feedback-example
+
+  status:
+    desc: Show status of all services
+    cmds:
+      - docker compose ps
+
+  health:
+    desc: Check health of all services
+    cmds:
+      - |
+        echo "Checking service health..."
+        echo ""
+        echo "PostgreSQL:"
+        docker compose exec -T postgres pg_isready -U feedback || echo "  Not ready"
+        echo ""
+        echo "Feedback Server:"
+        curl -sf http://localhost:3001/api/v1/health && echo " OK" || echo "  Not ready"
+        echo ""
+        echo "Feedback WebUI:"
+        curl -sf http://localhost:5173/health && echo " OK" || echo "  Not ready"
+        echo ""
+        echo "Feedback Example:"
+        curl -sf http://localhost:3002/ >/dev/null && echo "OK" || echo "  Not ready"
+
+  # ============================================================================
+  # Docker - Build Tasks
+  # ============================================================================
+
+  docker:build:
+    desc: Build all Docker images
+    cmds:
+      - docker compose build
+
+  docker:build:nocache:
+    desc: Build all Docker images without cache
+    cmds:
+      - docker compose build --no-cache
+
+  docker:build:server:
+    desc: Build feedback-server Docker image
+    cmds:
+      - docker compose build feedback-server
+
+  docker:build:webui:
+    desc: Build feedback-webui Docker image
+    cmds:
+      - docker compose build feedback-webui
+
+  docker:build:example:
+    desc: Build feedback-example Docker image
+    cmds:
+      - docker compose build feedback-example
+
+  docker:push:
+    desc: Push all Docker images to registry
+    summary: |
+      Push images to the configured registry.
+      Set DOCKER_REGISTRY in .env to specify the registry.
+    cmds:
+      - docker compose push
+
+  # ============================================================================
+  # Docker - Cleanup Tasks
+  # ============================================================================
+
+  reset:
+    desc: Stop services and remove all volumes (fresh start)
+    prompt: This will delete all data. Are you sure?
+    cmds:
+      - docker compose down -v
+      - echo "All volumes removed. Next 'task up' will be a fresh start."
+
+  prune:
+    desc: Remove unused Docker resources
+    cmds:
+      - docker system prune -f
+      - docker volume prune -f
+
+  docker:clean:
+    desc: Remove all project containers and images
+    cmds:
+      - docker compose down --rmi all -v
+
+  # ============================================================================
+  # Docker - Database Tasks
+  # ============================================================================
+
+  db:shell:
+    desc: Open PostgreSQL shell
+    cmds:
+      - docker compose exec postgres psql -U feedback -d feedback
+
+  db:backup:
+    desc: Create database backup
+    vars:
+      BACKUP_FILE: 'backups/feedback-{{now | date "2006-01-02-150405"}}.sql'
+    cmds:
+      - mkdir -p backups
+      - docker compose exec -T postgres pg_dump -U feedback feedback > {{.BACKUP_FILE}}
+      - 'echo "Backup created: {{.BACKUP_FILE}}"'
+
+  db:restore:
+    desc: Restore database from backup
+    summary: |
+      Restore database from a backup file.
+      
+      Usage:
+        task db:restore FILE=backups/feedback-2024-01-15.sql
+    requires:
+      vars: [FILE]
+    cmds:
+      - docker compose exec -T postgres psql -U feedback feedback < {{.FILE}}
+      - 'echo "Database restored from {{.FILE}}"'
+
+  # ============================================================================
+  # Docker - Shell Access
+  # ============================================================================
+
+  shell:server:
+    desc: Open shell in feedback-server container
+    cmds:
+      - docker compose exec feedback-server /bin/sh
+
+  shell:webui:
+    desc: Open shell in feedback-webui container
+    cmds:
+      - docker compose exec feedback-webui /bin/sh
+
+  shell:example:
+    desc: Open shell in feedback-example container
+    cmds:
+      - docker compose exec feedback-example /bin/sh

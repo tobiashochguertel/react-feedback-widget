@@ -1,0 +1,86 @@
+# =============================================================================
+# Docker Compose Override - Development Configuration
+# =============================================================================
+# Automatically merged with docker-compose.yml when running:
+#   docker compose up -d
+#
+# Includes:
+# - Source code volume mounts for hot reload
+# - Debug logging
+# - Faster health check intervals
+# - Additional exposed ports for debugging
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # PostgreSQL Database (Development Overrides)
+  # ---------------------------------------------------------------------------
+  postgres:
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      interval: 5s
+      start_period: 5s
+
+  # ---------------------------------------------------------------------------
+  # Feedback Server (Development Overrides)
+  # ---------------------------------------------------------------------------
+  feedback-server:
+    build:
+      context: ./packages/feedback-server
+      dockerfile: Dockerfile
+      target: builder  # Use builder stage for development
+    volumes:
+      # Mount source code for hot reload
+      - ./packages/feedback-server/src:/app/src:ro
+      # Persist data during development
+      - feedback-data:/app/data
+      - feedback-uploads:/app/uploads
+    environment:
+      NODE_ENV: development
+      LOG_LEVEL: debug
+      RUN_MIGRATIONS: "true"
+    command: ["bun", "run", "--watch", "src/index.ts"]
+    healthcheck:
+      interval: 10s
+      start_period: 5s
+
+  # ---------------------------------------------------------------------------
+  # Feedback WebUI (Development Overrides)
+  # ---------------------------------------------------------------------------
+  feedback-webui:
+    build:
+      context: .
+      dockerfile: packages/feedback-server-webui/Dockerfile
+      target: builder
+    volumes:
+      # Mount source code for hot reload
+      - ./packages/feedback-server-webui/src:/app/packages/feedback-server-webui/src:ro
+      - ./packages/feedback-server-webui/public:/app/packages/feedback-server-webui/public:ro
+    environment:
+      NODE_ENV: development
+    working_dir: /app/packages/feedback-server-webui
+    command: ["bun", "run", "dev", "--host", "0.0.0.0"]
+    healthcheck:
+      interval: 10s
+      start_period: 10s
+
+  # ---------------------------------------------------------------------------
+  # Feedback Example (Development Overrides)
+  # ---------------------------------------------------------------------------
+  feedback-example:
+    build:
+      context: .
+      dockerfile: packages/feedback-example/Dockerfile
+      target: builder
+    volumes:
+      # Mount source code for hot reload
+      - ./packages/feedback-example/src:/app/packages/feedback-example/src:ro
+      - ./packages/feedback-example/public:/app/packages/feedback-example/public:ro
+    environment:
+      NODE_ENV: development
+    working_dir: /app/packages/feedback-example
+    command: ["bun", "run", "dev"]
+    healthcheck:
+      interval: 10s
+      start_period: 15s

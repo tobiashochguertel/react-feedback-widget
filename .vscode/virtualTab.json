@@ -3,7 +3,7 @@
     "id": "builtin_group_id",
     "name": "Currently Open Files",
     "files": [
-      "packages/feedback-server/docs/spec/Conversation-3.md"
+      "docs/spec/001.reference-deployment-specification/README.md"
     ],
     "builtIn": true,
     "bookmarks": {}

@@ -1,0 +1,247 @@
+# Shared Docker Tasks for Package Dockerfiles
+# Include this in package Taskfiles: includes: { docker: ../taskfiles/Docker.yml }
+#
+# Required variables in package Taskfile:
+#   DOCKER_IMAGE_NAME: Image name (e.g., react-visual-feedback/server)
+#   DOCKER_REGISTRY: Registry URL (default: empty for local)
+#
+# Optional variables:
+#   DOCKER_IMAGE_TAG: Image tag (default: latest)
+#   DOCKER_CONTAINER_NAME: Container name for run/stop/logs
+#   DOCKER_FILE: Dockerfile path (default: Dockerfile)
+#   DOCKER_CONTEXT: Build context path (default: .)
+
+version: "3"
+
+vars:
+  DOCKER_IMAGE_TAG: '{{.DOCKER_IMAGE_TAG | default "latest"}}'
+  DOCKER_FILE: '{{.DOCKER_FILE | default "Dockerfile"}}'
+  DOCKER_CONTEXT: '{{.DOCKER_CONTEXT | default "."}}'
+  DOCKER_CONTAINER_NAME: '{{.DOCKER_CONTAINER_NAME | default .DOCKER_IMAGE_NAME}}'
+  FULL_IMAGE_NAME: '{{if .DOCKER_REGISTRY}}{{.DOCKER_REGISTRY}}/{{end}}{{.DOCKER_IMAGE_NAME}}:{{.DOCKER_IMAGE_TAG}}'
+
+tasks:
+  # ============================================================================
+  # Build Tasks
+  # ============================================================================
+
+  build:
+    desc: Build Docker image
+    summary: |
+      Build the Docker image for this package.
+      
+      Variables:
+        DOCKER_IMAGE_NAME: Required - Image name
+        DOCKER_IMAGE_TAG: Optional - Image tag (default: latest)
+        DOCKER_REGISTRY: Optional - Registry prefix
+        
+      Example:
+        task docker:build
+        task docker:build DOCKER_IMAGE_TAG=1.0.0
+    cmds:
+      - docker build -t {{.FULL_IMAGE_NAME}} -f {{.DOCKER_FILE}} {{.DOCKER_CONTEXT}}
+    requires:
+      vars: [DOCKER_IMAGE_NAME]
+
+  build:nocache:
+    desc: Build Docker image without cache
+    summary: |
+      Build the Docker image from scratch, ignoring cached layers.
+      Use when dependencies have changed or to ensure a clean build.
+    cmds:
+      - docker build --no-cache -t {{.FULL_IMAGE_NAME}} -f {{.DOCKER_FILE}} {{.DOCKER_CONTEXT}}
+    requires:
+      vars: [DOCKER_IMAGE_NAME]
+
+  build:progress:
+    desc: Build Docker image with plain progress output
+    summary: |
+      Build with detailed progress output, useful for debugging build issues.
+    cmds:
+      - docker build --progress=plain -t {{.FULL_IMAGE_NAME}} -f {{.DOCKER_FILE}} {{.DOCKER_CONTEXT}}
+    requires:
+      vars: [DOCKER_IMAGE_NAME]
+
+  # ============================================================================
+  # Run Tasks
+  # ============================================================================
+
+  run:
+    desc: Run Docker container
+    summary: |
+      Run the Docker container in the foreground.
+      Press Ctrl+C to stop.
+      
+      Variables:
+        DOCKER_PORTS: Port mapping (e.g., "3001:3001")
+        DOCKER_ENV_FILE: Path to env file (optional)
+    cmds:
+      - |
+        docker run --rm \
+          --name {{.DOCKER_CONTAINER_NAME}} \
+          {{if .DOCKER_PORTS}}-p {{.DOCKER_PORTS}}{{end}} \
+          {{if .DOCKER_ENV_FILE}}--env-file {{.DOCKER_ENV_FILE}}{{end}} \
+          {{.FULL_IMAGE_NAME}}
+    requires:
+      vars: [DOCKER_IMAGE_NAME]
+
+  run:detached:
+    desc: Run Docker container in background
+    summary: |
+      Run the Docker container in detached mode.
+      Use 'task docker:logs' to view logs.
+      Use 'task docker:stop' to stop.
+    cmds:
+      - |
+        docker run -d \
+          --name {{.DOCKER_CONTAINER_NAME}} \
+          {{if .DOCKER_PORTS}}-p {{.DOCKER_PORTS}}{{end}} \
+          {{if .DOCKER_ENV_FILE}}--env-file {{.DOCKER_ENV_FILE}}{{end}} \
+          {{.FULL_IMAGE_NAME}}
+    requires:
+      vars: [DOCKER_IMAGE_NAME]
+
+  # ============================================================================
+  # Container Management
+  # ============================================================================
+
+  stop:
+    desc: Stop running container
+    cmds:
+      - docker stop {{.DOCKER_CONTAINER_NAME}} || true
+    requires:
+      vars: [DOCKER_IMAGE_NAME]
+
+  restart:
+    desc: Restart container
+    cmds:
+      - task: stop
+      - task: run:detached
+    requires:
+      vars: [DOCKER_IMAGE_NAME]
+
+  logs:
+    desc: View container logs
+    cmds:
+      - docker logs -f {{.DOCKER_CONTAINER_NAME}}
+    requires:
+      vars: [DOCKER_IMAGE_NAME]
+
+  logs:tail:
+    desc: View last 100 lines of container logs
+    cmds:
+      - docker logs --tail 100 {{.DOCKER_CONTAINER_NAME}}
+    requires:
+      vars: [DOCKER_IMAGE_NAME]
+
+  shell:
+    desc: Open shell in running container
+    summary: |
+      Opens an interactive shell in the running container.
+      Default shell is /bin/sh, override with DOCKER_SHELL variable.
+    vars:
+      DOCKER_SHELL: '{{.DOCKER_SHELL | default "/bin/sh"}}'
+    cmds:
+      - docker exec -it {{.DOCKER_CONTAINER_NAME}} {{.DOCKER_SHELL}}
+    requires:
+      vars: [DOCKER_IMAGE_NAME]
+
+  status:
+    desc: Show container status
+    cmds:
+      - docker ps -a --filter name={{.DOCKER_CONTAINER_NAME}} --format "table {{`{{.Names}}`}}\t{{`{{.Status}}`}}\t{{`{{.Ports}}`}}"
+    requires:
+      vars: [DOCKER_IMAGE_NAME]
+
+  # ============================================================================
+  # Registry Tasks
+  # ============================================================================
+
+  push:
+    desc: Push image to registry
+    summary: |
+      Push the Docker image to the configured registry.
+      Requires DOCKER_REGISTRY to be set.
+    cmds:
+      - docker push {{.FULL_IMAGE_NAME}}
+    requires:
+      vars: [DOCKER_IMAGE_NAME, DOCKER_REGISTRY]
+
+  pull:
+    desc: Pull image from registry
+    cmds:
+      - docker pull {{.FULL_IMAGE_NAME}}
+    requires:
+      vars: [DOCKER_IMAGE_NAME, DOCKER_REGISTRY]
+
+  tag:
+    desc: Tag image with additional tag
+    summary: |
+      Tag the current image with an additional tag.
+      
+      Example:
+        task docker:tag NEW_TAG=v1.0.0
+    cmds:
+      - docker tag {{.FULL_IMAGE_NAME}} {{if .DOCKER_REGISTRY}}{{.DOCKER_REGISTRY}}/{{end}}{{.DOCKER_IMAGE_NAME}}:{{.NEW_TAG}}
+    requires:
+      vars: [DOCKER_IMAGE_NAME, NEW_TAG]
+
+  # ============================================================================
+  # Cleanup Tasks
+  # ============================================================================
+
+  clean:
+    desc: Remove container and image
+    cmds:
+      - docker rm -f {{.DOCKER_CONTAINER_NAME}} 2>/dev/null || true
+      - docker rmi {{.FULL_IMAGE_NAME}} 2>/dev/null || true
+    requires:
+      vars: [DOCKER_IMAGE_NAME]
+
+  prune:
+    desc: Remove dangling images for this package
+    cmds:
+      - docker image prune -f --filter "label=package={{.DOCKER_IMAGE_NAME}}"
+    requires:
+      vars: [DOCKER_IMAGE_NAME]
+
+  # ============================================================================
+  # Info Tasks
+  # ============================================================================
+
+  info:
+    desc: Show image information
+    cmds:
+      - docker images {{.FULL_IMAGE_NAME}}
+      - echo ""
+      - docker inspect {{.FULL_IMAGE_NAME}} --format "Size{{":"}} {{`{{.Size}}`}} bytes"
+      - docker inspect {{.FULL_IMAGE_NAME}} --format "Created{{":"}} {{`{{.Created}}`}}"
+    requires:
+      vars: [DOCKER_IMAGE_NAME]
+
+  history:
+    desc: Show image layer history
+    cmds:
+      - docker history {{.FULL_IMAGE_NAME}}
+    requires:
+      vars: [DOCKER_IMAGE_NAME]
+
+  # ============================================================================
+  # Health Check
+  # ============================================================================
+
+  health:
+    desc: Check container health status
+    cmds:
+      - |
+        STATUS=$(docker inspect --format='{{`{{.State.Health.Status}}`}}' {{.DOCKER_CONTAINER_NAME}} 2>/dev/null)
+        if [ -z "$STATUS" ]; then
+          echo "Container not running or no health check configured"
+          exit 1
+        fi
+        echo "Health status: $STATUS"
+        if [ "$STATUS" != "healthy" ]; then
+          exit 1
+        fi
+    requires:
+      vars: [DOCKER_IMAGE_NAME]

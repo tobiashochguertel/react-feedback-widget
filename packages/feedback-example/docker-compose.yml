@@ -1,0 +1,114 @@
+# =============================================================================
+# Feedback Example (Next.js) - Docker Compose Configuration
+# =============================================================================
+# Standalone development setup for the Next.js demo application.
+#
+# Usage:
+#   docker compose up -d              # Start example app
+#   docker compose logs -f            # View logs
+#   docker compose down               # Stop service
+#   docker compose run --rm shell     # Open interactive shell
+# =============================================================================
+
+name: feedback-example
+
+services:
+  # ---------------------------------------------------------------------------
+  # Example App (Production)
+  # ---------------------------------------------------------------------------
+  example:
+    build:
+      context: ../..
+      dockerfile: packages/feedback-example/Dockerfile
+      target: production
+    image: feedback-example:${DOCKER_IMAGE_TAG:-latest}
+    container_name: feedback-example
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: ${PORT:-3002}
+      HOSTNAME: 0.0.0.0
+      NEXT_PUBLIC_FEEDBACK_API_URL: ${NEXT_PUBLIC_FEEDBACK_API_URL:-http://localhost:3001}
+      FEEDBACK_SERVER_URL: ${FEEDBACK_SERVER_URL:-http://feedback-server:3001}
+    ports:
+      - "${PORT:-3002}:3002"
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:3002/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # ---------------------------------------------------------------------------
+  # Development Mode (Next.js Dev Server)
+  # ---------------------------------------------------------------------------
+  dev:
+    build:
+      context: ../..
+      dockerfile: packages/feedback-example/Dockerfile
+      target: builder
+    image: feedback-example-dev:${DOCKER_IMAGE_TAG:-latest}
+    container_name: feedback-example-dev
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_FEEDBACK_API_URL: ${NEXT_PUBLIC_FEEDBACK_API_URL:-http://localhost:3001}
+    volumes:
+      - .:/app/packages/feedback-example
+      - node_modules:/app/node_modules
+      - next-cache:/app/packages/feedback-example/.next
+    ports:
+      - "${PORT:-3002}:3002"
+    command: ["bun", "run", "dev"]
+
+  # ---------------------------------------------------------------------------
+  # Build - Build production assets
+  # ---------------------------------------------------------------------------
+  build:
+    build:
+      context: ../..
+      dockerfile: packages/feedback-example/Dockerfile
+      target: builder
+    image: feedback-example-builder:${DOCKER_IMAGE_TAG:-latest}
+    volumes:
+      - next-output:/app/packages/feedback-example/.next
+    command: ["bun", "run", "build"]
+
+  # ---------------------------------------------------------------------------
+  # Test - Run tests
+  # ---------------------------------------------------------------------------
+  test:
+    build:
+      context: ../..
+      dockerfile: packages/feedback-example/Dockerfile
+      target: builder
+    image: feedback-example-test:${DOCKER_IMAGE_TAG:-latest}
+    environment:
+      CI: "true"
+    command: ["bun", "run", "test"]
+
+  # ---------------------------------------------------------------------------
+  # Shell - Interactive shell
+  # ---------------------------------------------------------------------------
+  shell:
+    build:
+      context: ../..
+      dockerfile: packages/feedback-example/Dockerfile
+      target: builder
+    image: feedback-example-dev:${DOCKER_IMAGE_TAG:-latest}
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/app/packages/feedback-example
+      - node_modules:/app/node_modules
+    command: ["/bin/sh"]
+
+# =============================================================================
+# Volumes
+# =============================================================================
+volumes:
+  next-output:
+    name: feedback-example-next
+  next-cache:
+    name: feedback-example-cache
+  node_modules:
+    name: feedback-example-node-modules

@@ -1,0 +1,117 @@
+# =============================================================================
+# React Visual Feedback Library - Docker Compose Configuration
+# =============================================================================
+# Build and test the react-visual-feedback library in a consistent environment.
+#
+# Usage:
+#   docker compose up build           # Build the library
+#   docker compose run test           # Run unit tests
+#   docker compose run e2e            # Run E2E tests
+#   docker compose run --rm shell     # Open interactive shell
+# =============================================================================
+
+name: react-visual-feedback-lib
+
+services:
+  # ---------------------------------------------------------------------------
+  # Build - Library build service
+  # ---------------------------------------------------------------------------
+  build:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    image: react-visual-feedback/lib-builder:${DOCKER_IMAGE_TAG:-latest}
+    volumes:
+      - dist-output:/app/dist
+    command: ["bun", "run", "build"]
+
+  # ---------------------------------------------------------------------------
+  # Test - Run unit tests
+  # ---------------------------------------------------------------------------
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: test
+    image: react-visual-feedback/lib-test:${DOCKER_IMAGE_TAG:-latest}
+    environment:
+      CI: "true"
+    command: ["bun", "run", "test"]
+
+  # ---------------------------------------------------------------------------
+  # E2E - Run Playwright E2E tests
+  # ---------------------------------------------------------------------------
+  e2e:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: e2e
+    image: react-visual-feedback/lib-e2e:${DOCKER_IMAGE_TAG:-latest}
+    environment:
+      CI: "true"
+    volumes:
+      - e2e-results:/app/test-results
+      - playwright-report:/app/playwright-report
+    command: ["bun", "run", "test:e2e"]
+
+  # ---------------------------------------------------------------------------
+  # Coverage - Run tests with coverage
+  # ---------------------------------------------------------------------------
+  coverage:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: test
+    image: react-visual-feedback/lib-test:${DOCKER_IMAGE_TAG:-latest}
+    environment:
+      CI: "true"
+    volumes:
+      - coverage-output:/app/coverage
+    command: ["bun", "run", "test:coverage"]
+
+  # ---------------------------------------------------------------------------
+  # Shell - Interactive development shell
+  # ---------------------------------------------------------------------------
+  shell:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: deps
+    image: react-visual-feedback/lib-deps:${DOCKER_IMAGE_TAG:-latest}
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+    command: ["/bin/bash"]
+
+  # ---------------------------------------------------------------------------
+  # Dev - Development mode with file watching
+  # ---------------------------------------------------------------------------
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: deps
+    image: react-visual-feedback/lib-dev:${DOCKER_IMAGE_TAG:-latest}
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+      - dist-output:/app/dist
+    command: ["bun", "run", "build:watch"]
+
+# =============================================================================
+# Volumes
+# =============================================================================
+volumes:
+  dist-output:
+    name: rvf-lib-dist
+  e2e-results:
+    name: rvf-lib-e2e-results
+  playwright-report:
+    name: rvf-lib-playwright-report
+  coverage-output:
+    name: rvf-lib-coverage
+  node_modules:
+    name: rvf-lib-node-modules
