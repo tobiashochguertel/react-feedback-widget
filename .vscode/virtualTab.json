@@ -5,7 +5,10 @@
     "files": [
       "packages/feedback-server-webui/README.md",
       "packages/feedback-server/README.md",
-      "../../../../Downloads/Umsatzanzeige_DE57500105175409981818_20260119 (1).csv"
+      "scripts/docker/integration-test.sh",
+      "packages/feedback-server-webui/.env.example",
+      "scripts/docker/validate-health.sh",
+      "scripts/docker/validate-builds.sh"
     ],
     "builtIn": true,
     "bookmarks": {}
