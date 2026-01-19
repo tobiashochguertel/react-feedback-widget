@@ -53,24 +53,23 @@ services:
     image: ${DOCKER_REGISTRY:-}react-visual-feedback/server:${DOCKER_IMAGE_TAG:-latest}
     container_name: feedback-server
     restart: unless-stopped
-    depends_on:
-      postgres:
-        condition: service_healthy
+    # NOTE: Using SQLite mode as the server code currently only supports SQLite
+    # PostgreSQL support requires code changes to use db/factory.ts
     environment:
       NODE_ENV: ${NODE_ENV:-production}
       PORT: ${FEEDBACK_SERVER_PORT:-3001}
       HOST: 0.0.0.0
-      DATABASE_URL: ${DATABASE_URL:-postgresql://feedback:change-me-in-production@postgres:5432/feedback}
+      DATABASE_URL: ${DATABASE_URL:-file:/app/data/feedback.db}
       LOG_LEVEL: ${LOG_LEVEL:-info}
-      RUN_MIGRATIONS: ${RUN_MIGRATIONS:-true}
+      RUN_MIGRATIONS: ${RUN_MIGRATIONS:-false}
       CORS_ORIGINS: ${FEEDBACK_CORS_ORIGINS:-http://localhost:3000,http://localhost:3002,http://localhost:5173}
     volumes:
       - feedback-data:/app/data
       - feedback-uploads:/app/uploads
     ports:
-      - '${FEEDBACK_SERVER_PORT:-3001}:3001'
+      - '${FEEDBACK_SERVER_PORT:-3001}:${FEEDBACK_SERVER_PORT:-3001}'
     healthcheck:
-      test: ['CMD', 'curl', '-sf', 'http://localhost:3001/api/v1/health']
+      test: ['CMD', 'curl', '-sf', 'http://localhost:${FEEDBACK_SERVER_PORT:-3001}/api/v1/health']
       interval: ${HEALTHCHECK_INTERVAL:-30}s
       timeout: ${HEALTHCHECK_TIMEOUT:-10}s
       retries: ${HEALTHCHECK_RETRIES:-3}
@@ -123,8 +122,8 @@ services:
       NODE_ENV: ${NODE_ENV:-production}
       PORT: ${EXAMPLE_PORT:-3002}
       HOSTNAME: 0.0.0.0
-      NEXT_PUBLIC_FEEDBACK_API_URL: ${NEXT_PUBLIC_FEEDBACK_API_URL:-http://localhost:3001}
-      FEEDBACK_SERVER_URL: http://feedback-server:3001
+      NEXT_PUBLIC_FEEDBACK_API_URL: ${NEXT_PUBLIC_FEEDBACK_API_URL:-http://localhost:${FEEDBACK_SERVER_PORT:-3001}}
+      FEEDBACK_SERVER_URL: http://feedback-server:${FEEDBACK_SERVER_PORT:-3001}
     ports:
       - '${EXAMPLE_PORT:-3002}:3002'
     healthcheck:

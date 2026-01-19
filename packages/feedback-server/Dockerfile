@@ -62,6 +62,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     dumb-init \
+    netcat-openbsd \
     python3 \
     make \
     g++ \

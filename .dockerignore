@@ -1,0 +1,57 @@
+# =============================================================================
+# Docker Build Context Ignore File
+# =============================================================================
+# This file controls what is sent to Docker daemon during builds.
+# Used when building from monorepo root context.
+# =============================================================================
+
+# Git and version control
+.git
+.gitignore
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# macOS
+.DS_Store
+
+# Reference repositories (not needed in builds)
+.reference/
+
+# Root-level documentation (package docs are needed for some builds)
+CONTRIBUTING.md
+GUIDE_TASKS.md
+MIGRATION.md
+CODE_OF_CONDUCT.md
+SECURITY.md
+
+# Root-level node_modules (packages have their own)
+/node_modules/
+
+# Taskfile (not needed in containers)
+Taskfile.yml
+
+# Environment files at root
+.env
+.env.*
+
+# Test outputs
+test-results/
+coverage/
+.nyc_output/
+
+# Logs
+*.log
+logs/
+
+# TypeScript build info at root
+*.tsbuildinfo
+
+# =============================================================================
+# NOTE: Package-specific ignores are NOT used when building from root context
+# Each package Dockerfile should use selective COPY statements instead of 
+# relying on .dockerignore files in package directories.
+# =============================================================================
