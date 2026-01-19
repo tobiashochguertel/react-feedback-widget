@@ -49,9 +49,10 @@ main() {
     # Wait for feedback server (optional)
     wait_for_server
 
-    # Start the Next.js server
-    log_info "Starting Next.js server..."
-    exec node server.js
+    # Start the Next.js server using bun (handles bun-specific symlinks)
+    log_info "Starting Next.js server with bun..."
+    cd /workspace/packages/feedback-example
+    exec bun server.js
 }
 
 main "$@"
