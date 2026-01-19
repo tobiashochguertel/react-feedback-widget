@@ -48,8 +48,8 @@ services:
   # ---------------------------------------------------------------------------
   feedback-server:
     build:
-      context: ./packages/feedback-server
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: packages/feedback-server/Dockerfile
     image: ${DOCKER_REGISTRY:-}react-visual-feedback/server:${DOCKER_IMAGE_TAG:-latest}
     container_name: feedback-server
     restart: unless-stopped

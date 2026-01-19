@@ -3,12 +3,7 @@
     "id": "builtin_group_id",
     "name": "Currently Open Files",
     "files": [
-      "packages/feedback-server-webui/README.md",
-      "packages/feedback-server/README.md",
-      "scripts/docker/integration-test.sh",
-      "packages/feedback-server-webui/.env.example",
-      "scripts/docker/validate-health.sh",
-      "scripts/docker/validate-builds.sh"
+      "packages/feedback-server/Dockerfile"
     ],
     "builtIn": true,
     "bookmarks": {}
