@@ -51,7 +51,7 @@ main() {
 
     # Start the Next.js server
     log_info "Starting Next.js server..."
-    exec bun run packages/feedback-example/server.js
+    exec node server.js
 }
 
 main "$@"

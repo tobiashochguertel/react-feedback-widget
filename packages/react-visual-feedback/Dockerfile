@@ -59,11 +59,16 @@ WORKDIR /app
 # ============================================================================
 FROM base AS deps
 
+# Create minimal workspace package.json for this library only
+# The root package.json has workspace dependencies we don't need for building this lib
+RUN echo '{"name":"docker-workspace","private":true,"workspaces":["packages/react-visual-feedback"]}' > package.json
+
 # Copy package files for dependency installation
-COPY package.json bun.lock* ./
+COPY bun.lock* ./
+COPY packages/react-visual-feedback/package.json packages/react-visual-feedback/
 
 # Install all dependencies (including devDependencies)
-RUN bun install --frozen-lockfile
+RUN bun install
 
 # ============================================================================
 # Stage: builder - Build the library
@@ -71,9 +76,10 @@ RUN bun install --frozen-lockfile
 FROM deps AS builder
 
 # Copy source files
-COPY . .
+COPY packages/react-visual-feedback ./packages/react-visual-feedback
 
 # Build the library
+WORKDIR /app/packages/react-visual-feedback
 RUN bun run build
 
 # Verify build output

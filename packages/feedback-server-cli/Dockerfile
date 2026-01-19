@@ -40,13 +40,19 @@ WORKDIR /app
 # ============================================================================
 FROM base AS deps
 
-# Copy root workspace files for monorepo resolution
-COPY package.json bun.lock* ./
+# Create minimal workspace package.json to avoid resolving ALL workspace dependencies
+# The root package.json has "react-visual-feedback": "workspace:*" which would fail
+# because we only copy the packages we need
+RUN echo '{"name":"docker-workspace","private":true,"workspaces":["packages/feedback-server-cli","packages/generated/feedback-api-types"]}' > package.json
+
+# Copy lockfile and package files
+COPY bun.lock* ./
 COPY packages/feedback-server-cli/package.json ./packages/feedback-server-cli/
 COPY packages/generated/feedback-api-types/package.json ./packages/generated/feedback-api-types/
 
-# Install dependencies
-RUN bun install --frozen-lockfile
+# Install dependencies - use --no-frozen-lockfile since our minimal workspace
+# package.json won't match the lockfile exactly
+RUN bun install
 
 # ============================================================================
 # Stage: builder - Build TypeScript to JavaScript
@@ -105,6 +111,9 @@ CMD ["ls", "-la", "/binaries"]
 # ============================================================================
 FROM debian:bookworm-slim AS runner
 
+# Bring in target architecture
+ARG TARGETARCH
+
 LABEL org.opencontainers.image.title="feedback-server-cli"
 LABEL org.opencontainers.image.description="Feedback Server CLI - Command-line interface"
 LABEL org.opencontainers.image.vendor="React Visual Feedback"
@@ -119,8 +128,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && useradd --uid 1001 --gid appgroup --shell /bin/bash --create-home appuser
 
 # Copy the appropriate binary based on architecture
-COPY --from=binary-builder /app/packages/feedback-server-cli/bin/feedback-cli-linux-x64 /usr/local/bin/feedback-cli
-# For ARM64 builds, use: feedback-cli-linux-arm64
+# TARGETARCH is 'amd64' or 'arm64'
+COPY --from=binary-builder /app/packages/feedback-server-cli/bin/ /tmp/binaries/
+RUN if [ "$TARGETARCH" = "arm64" ]; then \
+      cp /tmp/binaries/feedback-cli-linux-arm64 /usr/local/bin/feedback-cli; \
+    else \
+      cp /tmp/binaries/feedback-cli-linux-x64 /usr/local/bin/feedback-cli; \
+    fi && rm -rf /tmp/binaries
 
 # Make executable
 RUN chmod +x /usr/local/bin/feedback-cli

@@ -3,7 +3,9 @@
     "id": "builtin_group_id",
     "name": "Currently Open Files",
     "files": [
-      "packages/feedback-server/Dockerfile"
+      "packages/feedback-example/Dockerfile",
+      "packages/feedback-server-webui/Dockerfile",
+      "packages/feedback-server/docs/spec/Conversation-4.md"
     ],
     "builtIn": true,
     "bookmarks": {}

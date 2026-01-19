@@ -14,29 +14,29 @@ FROM oven/bun:1.3.6-debian AS builder
 
 WORKDIR /app
 
-# Copy workspace root files for monorepo context
-COPY package.json bun.lock* ./
-COPY packages/feedback-server-api/package.json packages/feedback-server-api/
+# Create minimal workspace package.json to avoid resolving ALL workspace dependencies
+# The root package.json has "react-visual-feedback": "workspace:*" which would fail
+RUN echo '{"name":"docker-workspace","private":true,"workspaces":["packages/feedback-server-webui","packages/generated/feedback-api-types"]}' > package.json
 
-# Copy this package's files
+# Copy lockfile and package files
+COPY bun.lock* ./
 COPY packages/feedback-server-webui/package.json packages/feedback-server-webui/
+COPY packages/generated/feedback-api-types/package.json packages/generated/feedback-api-types/
 
 # Install dependencies
+RUN bun install
+
+# Copy source code (exclude tests for production build)
+COPY packages/generated/feedback-api-types /app/packages/generated/feedback-api-types
+COPY packages/feedback-server-webui/src ./packages/feedback-server-webui/src
+COPY packages/feedback-server-webui/public ./packages/feedback-server-webui/public
+COPY packages/feedback-server-webui/index.html ./packages/feedback-server-webui/
+COPY packages/feedback-server-webui/vite.config.ts ./packages/feedback-server-webui/
+COPY packages/feedback-server-webui/tsconfig*.json ./packages/feedback-server-webui/
+
+# Build the application (skip tsc for production, let Vite handle transpilation)
 WORKDIR /app/packages/feedback-server-webui
-RUN cd /app && bun install --frozen-lockfile
-
-# Copy source code
-COPY packages/feedback-server-api /app/packages/feedback-server-api
-COPY packages/feedback-server-webui/src ./src
-COPY packages/feedback-server-webui/public ./public
-COPY packages/feedback-server-webui/index.html ./
-COPY packages/feedback-server-webui/vite.config.ts ./
-COPY packages/feedback-server-webui/tsconfig*.json ./
-COPY packages/feedback-server-webui/tailwind.config.js ./
-COPY packages/feedback-server-webui/postcss.config.js ./
-
-# Build the application
-RUN bun run build
+RUN bun run vite build
 
 # -----------------------------------------------------------------------------
 # Stage 2: Production (Static File Server)
@@ -60,74 +60,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Copy built static files
 COPY --from=builder /app/packages/feedback-server-webui/dist ./dist
 
-# Create a simple Bun-based static file server
-RUN cat > /app/server.ts << 'EOF'
-import { serve } from "bun";
-import { readFileSync, existsSync } from "fs";
-import { join, extname } from "path";
-
-const PORT = parseInt(process.env.PORT || "5173");
-const DIST_DIR = "/app/dist";
-
-const mimeTypes: Record<string, string> = {
-".html": "text/html",
-".js": "application/javascript",
-".css": "text/css",
-".json": "application/json",
-".png": "image/png",
-".jpg": "image/jpeg",
-".gif": "image/gif",
-".svg": "image/svg+xml",
-".ico": "image/x-icon",
-".woff": "font/woff",
-".woff2": "font/woff2",
-};
-
-serve({
-port: PORT,
-fetch(req) {
-const url = new URL(req.url);
-let pathname = url.pathname;
-
-// Health check endpoint
-if (pathname === "/health") {
-return new Response(JSON.stringify({ status: "ok" }), {
-headers: { "Content-Type": "application/json" },
-});
-}
-
-// Try to serve the requested file
-let filePath = join(DIST_DIR, pathname);
-
-// If path is a directory or doesn't exist, try index.html (SPA fallback)
-if (!existsSync(filePath) || pathname === "/") {
-filePath = join(DIST_DIR, "index.html");
-}
-
-try {
-const content = readFileSync(filePath);
-const ext = extname(filePath);
-const contentType = mimeTypes[ext] || "application/octet-stream";
-
-return new Response(content, {
-headers: { "Content-Type": contentType },
-});
-} catch (e) {
-// Fallback to index.html for SPA routing
-try {
-const indexContent = readFileSync(join(DIST_DIR, "index.html"));
-return new Response(indexContent, {
-headers: { "Content-Type": "text/html" },
-});
-} catch {
-return new Response("Not Found", { status: 404 });
-}
-}
-},
-});
-
-console.log(`WebUI server running on port ${PORT}`);
-EOF
+# Copy static file server
+COPY packages/feedback-server-webui/server.ts ./server.ts
 
 # Set ownership
 RUN chown -R appuser:appgroup /app

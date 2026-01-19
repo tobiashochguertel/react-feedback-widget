@@ -34,6 +34,7 @@ export function FeedbackProviderWrapper({ children }: FeedbackProviderWrapperPro
   }
 
   // Integration config based on selected type
+  // Return type matches FeedbackProviderProps['integrations']
   const getIntegrationConfig = () => {
     switch (integrationType) {
       case 'server':
@@ -120,7 +121,7 @@ export function FeedbackProviderWrapper({ children }: FeedbackProviderWrapperPro
         userName="Test User"
         userEmail="test@example.com"
         mode="light"
-        integrations={getIntegrationConfig()}
+        integrations={getIntegrationConfig() as any}
         onIntegrationSuccess={handleIntegrationSuccess}
         onIntegrationError={handleIntegrationError}
       >
