@@ -121,3 +121,36 @@ tasks:
       - echo "Bun version = $(bun --version)"
       - echo "Node version = $(node --version)"
     silent: false
+  # ============================================================================
+  # Docker Tasks
+  # ============================================================================
+
+  docker:build:
+    desc: Build library Docker image
+    cmds:
+      - docker compose build build
+
+  docker:test:
+    desc: Run tests in Docker container
+    cmds:
+      - docker compose run --rm test
+
+  docker:e2e:
+    desc: Run E2E tests in Docker container
+    cmds:
+      - docker compose run --rm e2e
+
+  docker:shell:
+    desc: Open interactive shell in Docker container
+    cmds:
+      - docker compose run --rm shell
+
+  docker:dev:
+    desc: Start development with watch mode in Docker
+    cmds:
+      - docker compose up dev
+
+  docker:clean:
+    desc: Remove Docker images and volumes
+    cmds:
+      - docker compose down -v --rmi local

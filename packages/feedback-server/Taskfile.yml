@@ -2,25 +2,17 @@ version: '3'
 
 # Include shared Taskfiles from the root taskfiles directory
 includes:
-  server:
-    taskfile: ../../taskfiles/Server.yml
+  docker:
+    taskfile: ../../taskfiles/Docker.yml
     optional: true
     vars:
-      SERVER_NAME: feedback-server
-      SERVER_PORT: '3001'
-      SERVER_CMD: cd ../feedback-server && bun run dev
-      HEALTH_ENDPOINT: /api/health
-  testing:
-    taskfile: ../../taskfiles/Testing.yml
-    optional: true
-    vars:
-      TEST_FRAMEWORK: vitest
-      BASE_URL: http://localhost:3001
+      DOCKER_IMAGE_NAME: feedback-server
+      DOCKER_IMAGE_TAG: '{{.DOCKER_IMAGE_TAG | default "latest"}}'
 
 # Package-specific variables
 vars:
-  CLI_NAME: feedback
-  PACKAGE_NAME: feedback-server-cli
+  PACKAGE_NAME: feedback-server
+  SERVER_PORT: '3001'
 
 tasks:
   default:
@@ -34,19 +26,24 @@ tasks:
   # ============================================================================
 
   build:
-    desc: Build the CLI package
+    desc: Build the server package
     cmds:
       - bun run build
     sources:
       - src/**/*.ts
-      - tsup.config.ts
+      - tsconfig.json
     generates:
       - dist/**/*
 
   dev:
-    desc: Start development mode with watch
+    desc: Start development server with hot reload
     cmds:
       - bun run dev
+
+  start:
+    desc: Start production server
+    cmds:
+      - bun run start
 
   typecheck:
     desc: Run TypeScript type checking
@@ -57,6 +54,30 @@ tasks:
     desc: Run ESLint
     cmds:
       - bun run lint
+
+  # ============================================================================
+  # Database
+  # ============================================================================
+
+  db:migrate:
+    desc: Run database migrations
+    cmds:
+      - bun run db:migrate
+
+  db:seed:
+    desc: Seed the database with sample data
+    cmds:
+      - bun run db:seed
+
+  db:reset:
+    desc: Reset database (drop, migrate, seed)
+    cmds:
+      - bun run db:reset
+
+  db:studio:
+    desc: Open Drizzle Studio for database inspection
+    cmds:
+      - bun run db:studio
 
   # ============================================================================
   # Testing
@@ -83,43 +104,23 @@ tasks:
       - bun vitest run tests/unit
 
   test:integration:
-    desc: Run integration tests only (requires server on port 3001)
+    desc: Run integration tests only
     cmds:
       - bun vitest run tests/integration
 
-  test:bdd:
-    desc: Run BDD tests only (requires server on port 3001)
-    cmds:
-      - bun vitest run tests/bdd
-
-  test:bdd:watch:
-    desc: Run BDD tests in watch mode
-    cmds:
-      - bun vitest tests/bdd
-
-  test:with-server:
-    desc: Start server, run all tests, then stop server
-    deps:
-      - server:ensure
-    cmds:
-      - defer: task server:stop
-      - bun run test
-    env:
-      TEST_BASE_URL: http://localhost:3001
-
   # ============================================================================
-  # CLI Execution
+  # TypeSpec / API
   # ============================================================================
 
-  cli:
-    desc: Run the CLI (pass arguments after --)
+  api:generate:
+    desc: Generate OpenAPI spec from TypeSpec
     cmds:
-      - bun run ./dist/index.js {{.CLI_ARGS}}
+      - bun run tsp compile typespec/main.tsp
 
-  cli:dev:
-    desc: Run the CLI in development mode
+  api:docs:
+    desc: Serve OpenAPI documentation
     cmds:
-      - bun run ./src/index.ts {{.CLI_ARGS}}
+      - bun run docs:serve
 
   # ============================================================================
   # Maintenance
@@ -134,6 +135,11 @@ tasks:
     desc: Clean build artifacts and node_modules
     cmds:
       - rm -rf dist coverage node_modules
+
+  clean:data:
+    desc: Clean local data (uploads, sqlite)
+    cmds:
+      - rm -rf data/*.db uploads/*
 
   # ============================================================================
   # Quality Checks
@@ -152,36 +158,71 @@ tasks:
       - bun run typecheck
       - bun run lint
       - bun run test:coverage
+
   # ============================================================================
   # Docker Tasks
   # ============================================================================
 
   docker:build:
-    desc: Build CLI Docker image (creates cross-platform binaries)
+    desc: Build server Docker image
     cmds:
-      - docker compose build build
+      - docker compose build server
 
-  docker:build:binaries:
-    desc: Build and extract cross-platform binaries
+  docker:up:
+    desc: Start server with PostgreSQL in Docker
     cmds:
-      - docker compose run --rm extract
+      - docker compose up -d
 
-  docker:cli:
-    desc: Run CLI in Docker (pass args after --)
+  docker:dev:
+    desc: Start development server in Docker with hot reload
     cmds:
-      - docker compose run --rm cli {{.CLI_ARGS}}
+      - docker compose up dev
+
+  docker:down:
+    desc: Stop Docker containers
+    cmds:
+      - docker compose down
+
+  docker:logs:
+    desc: View Docker logs
+    cmds:
+      - docker compose logs -f
 
   docker:test:
     desc: Run tests in Docker container
     cmds:
       - docker compose run --rm test
 
+  docker:migrate:
+    desc: Run migrations in Docker
+    cmds:
+      - docker compose run --rm migrate
+
   docker:shell:
     desc: Open interactive shell in Docker container
     cmds:
       - docker compose run --rm shell
 
+  docker:db:shell:
+    desc: Open PostgreSQL shell
+    cmds:
+      - docker compose exec db psql -U feedback -d feedback
+
   docker:clean:
     desc: Remove Docker images and volumes
     cmds:
       - docker compose down -v --rmi local
+
+  # ============================================================================
+  # Info
+  # ============================================================================
+
+  info:
+    desc: Show project information
+    cmds:
+      - |
+        echo "Package: {{.PACKAGE_NAME}}"
+        echo "Port: {{.SERVER_PORT}}"
+        echo "Bun version: $(bun --version)"
+        echo "Node version: $(node --version)"
+    silent: false

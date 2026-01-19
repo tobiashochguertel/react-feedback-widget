@@ -169,3 +169,41 @@ tasks:
       - bun run typecheck
       - bun run lint
       - bun run test:coverage
+  # ============================================================================
+  # Docker Tasks
+  # ============================================================================
+
+  docker:build:
+    desc: Build WebUI Docker image
+    cmds:
+      - docker compose build webui
+
+  docker:up:
+    desc: Start WebUI in Docker
+    cmds:
+      - docker compose up -d webui
+
+  docker:dev:
+    desc: Start development server in Docker
+    cmds:
+      - docker compose up dev
+
+  docker:test:
+    desc: Run tests in Docker container
+    cmds:
+      - docker compose run --rm test
+
+  docker:shell:
+    desc: Open interactive shell in Docker container
+    cmds:
+      - docker compose run --rm shell
+
+  docker:down:
+    desc: Stop Docker containers
+    cmds:
+      - docker compose down
+
+  docker:clean:
+    desc: Remove Docker images and volumes
+    cmds:
+      - docker compose down -v --rmi local

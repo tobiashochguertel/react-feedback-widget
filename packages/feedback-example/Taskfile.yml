@@ -1,0 +1,126 @@
+version: '3'
+
+# Package-specific variables
+vars:
+  PACKAGE_NAME: feedback-example
+  APP_PORT: '3002'
+
+tasks:
+  default:
+    desc: Show available tasks
+    cmds:
+      - task --list
+    silent: true
+
+  # ============================================================================
+  # Build & Development
+  # ============================================================================
+
+  build:
+    desc: Build the Next.js application
+    cmds:
+      - bun run build
+    sources:
+      - src/**/*
+      - next.config.js
+      - tsconfig.json
+    generates:
+      - .next/**/*
+
+  dev:
+    desc: Start Next.js development server
+    cmds:
+      - bun run dev
+
+  start:
+    desc: Start production server
+    cmds:
+      - bun run start
+
+  typecheck:
+    desc: Run TypeScript type checking
+    cmds:
+      - bun run typecheck
+
+  lint:
+    desc: Run ESLint
+    cmds:
+      - bun run lint
+
+  # ============================================================================
+  # Maintenance
+  # ============================================================================
+
+  clean:
+    desc: Clean build artifacts
+    cmds:
+      - rm -rf .next out
+
+  clean:all:
+    desc: Clean build artifacts and node_modules
+    cmds:
+      - rm -rf .next out node_modules
+
+  # ============================================================================
+  # Quality Checks
+  # ============================================================================
+
+  check:
+    desc: Run all quality checks (typecheck, lint)
+    cmds:
+      - task: typecheck
+      - task: lint
+
+  # ============================================================================
+  # Docker Tasks
+  # ============================================================================
+
+  docker:build:
+    desc: Build example app Docker image
+    cmds:
+      - docker compose build example
+
+  docker:up:
+    desc: Start example app in Docker
+    cmds:
+      - docker compose up -d example
+
+  docker:dev:
+    desc: Start development server in Docker
+    cmds:
+      - docker compose up dev
+
+  docker:down:
+    desc: Stop Docker containers
+    cmds:
+      - docker compose down
+
+  docker:logs:
+    desc: View Docker logs
+    cmds:
+      - docker compose logs -f
+
+  docker:shell:
+    desc: Open interactive shell in Docker container
+    cmds:
+      - docker compose run --rm shell
+
+  docker:clean:
+    desc: Remove Docker images and volumes
+    cmds:
+      - docker compose down -v --rmi local
+
+  # ============================================================================
+  # Info
+  # ============================================================================
+
+  info:
+    desc: Show project information
+    cmds:
+      - |
+        echo "Package: {{.PACKAGE_NAME}}"
+        echo "Port: {{.APP_PORT}}"
+        echo "Bun version: $(bun --version)"
+        echo "Node version: $(node --version)"
+        echo "Next.js version: $(cat package.json | grep '\"next\"' | cut -d'\"' -f4)"
+    silent: false

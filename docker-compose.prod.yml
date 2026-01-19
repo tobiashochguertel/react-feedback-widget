@@ -1,0 +1,190 @@
+# =============================================================================
+# React Visual Feedback - Production Docker Compose Configuration
+# =============================================================================
+# Production-specific overrides for deployment.
+#
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#
+# This file:
+#   - Disables development features (hot-reload, debug logging)
+#   - Enables production optimizations (resource limits, replicas)
+#   - Configures production health checks
+#   - Sets production environment variables
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # PostgreSQL - Production Configuration
+  # ---------------------------------------------------------------------------
+  postgres:
+    # Use specific version for reproducibility
+    image: postgres:16.4-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is required}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: ${POSTGRES_DB:-feedback}
+      # Performance tuning
+      POSTGRES_INITDB_ARGS: "--data-checksums"
+    # Production resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    # Don't expose PostgreSQL port externally in production
+    ports: []
+    # Use named volume with driver options for production
+    volumes:
+      - type: volume
+        source: postgres-data
+        target: /var/lib/postgresql/data
+        volume:
+          nocopy: true
+    # Stricter healthcheck for production
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+
+  # ---------------------------------------------------------------------------
+  # Feedback Server - Production Configuration
+  # ---------------------------------------------------------------------------
+  feedback-server:
+    restart: always
+    environment:
+      NODE_ENV: production
+      LOG_LEVEL: ${LOG_LEVEL:-warn}
+      RUN_MIGRATIONS: "false"
+      # Security headers
+      ENABLE_HELMET: "true"
+      # Rate limiting
+      RATE_LIMIT_ENABLED: "true"
+      RATE_LIMIT_MAX_REQUESTS: ${RATE_LIMIT_MAX_REQUESTS:-100}
+      RATE_LIMIT_WINDOW_MS: ${RATE_LIMIT_WINDOW_MS:-60000}
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    # Stricter healthcheck
+    healthcheck:
+      interval: 60s
+      timeout: 15s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "10"
+    # Disable bind mounts in production
+    volumes:
+      - feedback-data:/app/data
+      - feedback-uploads:/app/uploads
+
+  # ---------------------------------------------------------------------------
+  # Feedback WebUI - Production Configuration
+  # ---------------------------------------------------------------------------
+  feedback-webui:
+    restart: always
+    environment:
+      NODE_ENV: production
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 60s
+    healthcheck:
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+
+  # ---------------------------------------------------------------------------
+  # Feedback Example - Production Configuration
+  # ---------------------------------------------------------------------------
+  feedback-example:
+    restart: always
+    environment:
+      NODE_ENV: production
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 60s
+    healthcheck:
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+
+# =============================================================================
+# Volumes - Production Configuration
+# =============================================================================
+volumes:
+  postgres-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${POSTGRES_DATA_PATH:-/var/lib/feedback/postgres}
+
+  feedback-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${FEEDBACK_DATA_PATH:-/var/lib/feedback/data}
+
+  feedback-uploads:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${FEEDBACK_UPLOADS_PATH:-/var/lib/feedback/uploads}
