@@ -77,34 +77,50 @@ function doPost(e) {
 
   // Ensure headers exist
   if (sheet.getLastRow() === 0) {
-    sheet.appendRow(['Timestamp', 'ID', 'Feedback', 'Type', 'Status', 'User Name', 'User Email', 'URL', 'Viewport', 'Screenshot', 'Video']);
+    sheet.appendRow([
+      "Timestamp",
+      "ID",
+      "Feedback",
+      "Type",
+      "Status",
+      "User Name",
+      "User Email",
+      "URL",
+      "Viewport",
+      "Screenshot",
+      "Video",
+    ]);
   }
 
   const row = [
     new Date().toISOString(),
-    data.feedbackData?.id || '',
-    data.feedbackData?.feedback || '',
-    data.feedbackData?.type || 'bug',
-    data.feedbackData?.status || 'new',
-    data.feedbackData?.userName || 'Anonymous',
-    data.feedbackData?.userEmail || '',
-    data.feedbackData?.url || '',
-    data.feedbackData?.viewport ? data.feedbackData.viewport.width + 'x' + data.feedbackData.viewport.height : '',
-    data.feedbackData?.screenshot ? 'Yes' : 'No',
-    data.feedbackData?.video ? 'Yes' : 'No'
+    data.feedbackData?.id || "",
+    data.feedbackData?.feedback || "",
+    data.feedbackData?.type || "bug",
+    data.feedbackData?.status || "new",
+    data.feedbackData?.userName || "Anonymous",
+    data.feedbackData?.userEmail || "",
+    data.feedbackData?.url || "",
+    data.feedbackData?.viewport
+      ? data.feedbackData.viewport.width +
+        "x" +
+        data.feedbackData.viewport.height
+      : "",
+    data.feedbackData?.screenshot ? "Yes" : "No",
+    data.feedbackData?.video ? "Yes" : "No",
   ];
 
   sheet.appendRow(row);
 
-  return ContentService
-    .createTextOutput(JSON.stringify({ success: true, row: sheet.getLastRow() }))
-    .setMimeType(ContentService.MimeType.JSON);
+  return ContentService.createTextOutput(
+    JSON.stringify({ success: true, row: sheet.getLastRow() }),
+  ).setMimeType(ContentService.MimeType.JSON);
 }
 
 function doGet(e) {
-  return ContentService
-    .createTextOutput(JSON.stringify({ status: 'ok' }))
-    .setMimeType(ContentService.MimeType.JSON);
+  return ContentService.createTextOutput(
+    JSON.stringify({ status: "ok" }),
+  ).setMimeType(ContentService.MimeType.JSON);
 }
 ```
 
@@ -164,13 +180,13 @@ NEXT_PUBLIC_ZAPIER_SHEETS_WEBHOOK=https://hooks.zapier.com/hooks/catch/123456/gh
 
 ## Keyboard Shortcuts
 
-| Shortcut | Action |
-|----------|--------|
-| `Alt + Q` | Select element mode |
-| `Alt + A` | Open manual feedback form |
-| `Alt + W` | Start screen recording |
-| `Alt + Shift + Q` | Open dashboard |
-| `Esc` | Cancel/close |
+| Shortcut          | Action                    |
+| ----------------- | ------------------------- |
+| `Alt + Q`         | Select element mode       |
+| `Alt + A`         | Open manual feedback form |
+| `Alt + W`         | Start screen recording    |
+| `Alt + Shift + Q` | Open dashboard            |
+| `Esc`             | Cancel/close              |
 
 ## File Structure
 
@@ -196,18 +212,23 @@ example-nextjs/
 ## Troubleshooting
 
 ### Jira: "Jira configuration missing"
-Make sure all JIRA_* environment variables are set in `.env.local`.
+
+Make sure all JIRA\_\* environment variables are set in `.env.local`.
 
 ### Sheets: "GOOGLE_SERVICE_ACCOUNT environment variable not set"
+
 Make sure the entire JSON is on one line in `.env.local`.
 
 ### Sheets: "The caller does not have permission"
+
 Share your Google Sheet with the service account email (ends in `.iam.gserviceaccount.com`).
 
 ### Apps Script: "Script function not found: doPost"
+
 Make sure you saved the script and deployed it as a web app.
 
 ### Zapier: No data received
+
 Check that the webhook URL is correct and the Zap is turned on.
 
 ## 🐳 Docker

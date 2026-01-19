@@ -698,6 +698,7 @@
 - [x] Works for standalone development
 
 **Files Created**:
+
 - `packages/feedback-server-webui/.env.example`
 - `packages/feedback-server-cli/.env.example`
 - `packages/react-visual-feedback/.env.example`
@@ -729,6 +730,7 @@
 - [x] No secrets in git history
 
 **Files Modified**:
+
 - `.gitignore` - Added comprehensive .env patterns with !.env.example exception
 
 **Testing**: Create .env, verify not tracked
@@ -788,6 +790,7 @@
 - [x] Can be run in CI
 
 **Files Created**:
+
 - `scripts/docker/validate-builds.sh` (~170 lines)
 
 **Testing**: Run script, verify output
@@ -819,6 +822,7 @@
 - [x] Reports clear status
 
 **Files Created**:
+
 - `scripts/docker/validate-health.sh` (~200 lines)
 
 **Testing**: Run with healthy and unhealthy services
@@ -852,6 +856,7 @@
 - [x] Data persists across restarts
 
 **Files Created**:
+
 - `scripts/docker/integration-test.sh` (~280 lines)
 
 **Testing**: Manual and automated E2E
@@ -884,9 +889,11 @@
 - [x] Runs integration tests on main
 
 **Files Created**:
+
 - `.github/workflows/docker-build.yml` (~220 lines)
 
 **Features**:
+
 - Matrix build for all 5 packages
 - GHCR registry push with proper tagging
 - Compose config validation (base, prod, override)

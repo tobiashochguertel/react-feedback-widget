@@ -185,13 +185,13 @@ docker rm tmp-cli
 
 The Docker build produces binaries for:
 
-| Platform      | Binary                           |
-| ------------- | -------------------------------- |
-| Linux x64     | `bin/feedback-cli-linux-x64`     |
-| Linux ARM64   | `bin/feedback-cli-linux-arm64`   |
-| macOS x64     | `bin/feedback-cli-darwin-x64`    |
-| macOS ARM64   | `bin/feedback-cli-darwin-arm64`  |
-| Windows x64   | `bin/feedback-cli-windows-x64.exe` |
+| Platform    | Binary                             |
+| ----------- | ---------------------------------- |
+| Linux x64   | `bin/feedback-cli-linux-x64`       |
+| Linux ARM64 | `bin/feedback-cli-linux-arm64`     |
+| macOS x64   | `bin/feedback-cli-darwin-x64`      |
+| macOS ARM64 | `bin/feedback-cli-darwin-arm64`    |
+| Windows x64 | `bin/feedback-cli-windows-x64.exe` |
 
 ### Docker Compose
 

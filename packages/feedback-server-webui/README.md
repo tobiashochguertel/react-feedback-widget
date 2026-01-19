@@ -37,11 +37,11 @@ bun run build
 
 ### Environment Variables
 
-| Variable                   | Description               | Default                 |
-| -------------------------- | ------------------------- | ----------------------- |
-| `VITE_API_URL`             | Feedback server API URL   | `http://localhost:3001` |
-| `VITE_WS_URL`              | WebSocket server URL      | `ws://localhost:3001`   |
-| `VITE_AUTH_ENABLED`        | Enable authentication     | `true`                  |
+| Variable            | Description             | Default                 |
+| ------------------- | ----------------------- | ----------------------- |
+| `VITE_API_URL`      | Feedback server API URL | `http://localhost:3001` |
+| `VITE_WS_URL`       | WebSocket server URL    | `ws://localhost:3001`   |
+| `VITE_AUTH_ENABLED` | Enable authentication   | `true`                  |
 
 ### Development
 
@@ -88,13 +88,13 @@ docker run -d -p 5173:5173 \
 
 ### Environment Variables
 
-| Variable           | Description           | Default                 |
-| ------------------ | --------------------- | ----------------------- |
-| `NODE_ENV`         | Build environment     | `production`            |
-| `PORT`             | Server port           | `5173`                  |
-| `VITE_API_URL`     | Feedback API URL      | `http://localhost:3001` |
-| `VITE_WS_URL`      | WebSocket URL         | `ws://localhost:3001`   |
-| `VITE_AUTH_ENABLED`| Enable authentication | `true`                  |
+| Variable            | Description           | Default                 |
+| ------------------- | --------------------- | ----------------------- |
+| `NODE_ENV`          | Build environment     | `production`            |
+| `PORT`              | Server port           | `5173`                  |
+| `VITE_API_URL`      | Feedback API URL      | `http://localhost:3001` |
+| `VITE_WS_URL`       | WebSocket URL         | `ws://localhost:3001`   |
+| `VITE_AUTH_ENABLED` | Enable authentication | `true`                  |
 
 ### Docker Compose
 

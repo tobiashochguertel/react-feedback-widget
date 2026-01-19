@@ -20,14 +20,14 @@ npm install react-visual-feedback react react-dom styled-components
 ```
 
 ```tsx
-import { FeedbackProvider, FeedbackData } from 'react-visual-feedback';
+import { FeedbackProvider, FeedbackData } from "react-visual-feedback";
 
 function App(): React.ReactElement {
   const handleSubmit = async (data: FeedbackData): Promise<void> => {
-    await fetch('/api/feedback', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
+    await fetch("/api/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
     });
   };
 
@@ -87,24 +87,24 @@ React Visual Feedback provides hooks for fine-grained control:
 
 ```tsx
 import {
-  useActivation,      // Control feedback mode activation
-  useDashboard,       // Control dashboard visibility
-  useRecording,       // Screen recording controls
-  useScreenCapture,   // Screenshot capture
+  useActivation, // Control feedback mode activation
+  useDashboard, // Control dashboard visibility
+  useRecording, // Screen recording controls
+  useScreenCapture, // Screenshot capture
   useElementSelection, // DOM element selection
   useKeyboardShortcuts, // Custom shortcuts
   useFeedbackSubmission, // Submission queue & retry
-  useIntegrations,    // Jira/Sheets integration
-  useTheme,          // Theme access
-} from 'react-visual-feedback';
+  useIntegrations, // Jira/Sheets integration
+  useTheme, // Theme access
+} from "react-visual-feedback";
 
 function MyComponent() {
   const { activate, deactivate, isActive } = useActivation();
   const { startRecording, stopRecording, isRecording } = useRecording();
 
   return (
-    <button onClick={() => isActive ? deactivate() : activate()}>
-      {isActive ? 'Deactivate' : 'Activate'} Feedback
+    <button onClick={() => (isActive ? deactivate() : activate())}>
+      {isActive ? "Deactivate" : "Activate"} Feedback
     </button>
   );
 }
@@ -120,12 +120,12 @@ Connect to external services:
 <FeedbackProvider
   integrations={{
     jira: {
-      endpoint: '/api/feedback/jira',
-      mode: 'server',
+      endpoint: "/api/feedback/jira",
+      mode: "server",
     },
     sheets: {
-      endpoint: '/api/feedback/sheets',
-      mode: 'server',
+      endpoint: "/api/feedback/sheets",
+      mode: "server",
     },
   }}
 >
@@ -137,13 +137,13 @@ Server-side handlers keep credentials secure:
 
 ```typescript
 // app/api/feedback/jira/route.ts
-import { createJiraNextAppHandler } from 'react-visual-feedback/server';
+import { createJiraNextAppHandler } from "react-visual-feedback/server";
 
 export const POST = createJiraNextAppHandler({
   host: process.env.JIRA_HOST!,
   email: process.env.JIRA_EMAIL!,
   apiToken: process.env.JIRA_API_TOKEN!,
-  projectKey: 'FEEDBACK',
+  projectKey: "FEEDBACK",
 });
 ```
 
@@ -152,7 +152,7 @@ See [Integrations Guide](./docs/integrations/README.md) for details.
 ## ⌨️ Keyboard Shortcuts
 
 | Shortcut      | Action                                     |
-|---------------|--------------------------------------------|
+| ------------- | ------------------------------------------ |
 | `Alt+Q`       | Activate feedback mode (element selection) |
 | `Alt+A`       | Open manual feedback form                  |
 | `Alt+W`       | Start screen recording                     |
@@ -242,10 +242,10 @@ docker compose build --no-cache
 
 ### Environment Variables
 
-| Variable      | Description           | Default                     |
-| ------------- | --------------------- | --------------------------- |
-| `NODE_ENV`    | Build environment     | `production`                |
-| `API_URL`     | Feedback server URL   | `http://localhost:3001/api` |
+| Variable   | Description         | Default                     |
+| ---------- | ------------------- | --------------------------- |
+| `NODE_ENV` | Build environment   | `production`                |
+| `API_URL`  | Feedback server URL | `http://localhost:3001/api` |
 
 > **📖 Full Deployment Guide:** See [docs/deployment/README.md](../../docs/deployment/README.md) for complete Docker deployment documentation.
 

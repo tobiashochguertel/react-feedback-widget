@@ -41,17 +41,17 @@ bun run build
 
 ### Environment Variables
 
-| Variable               | Description               | Default                       |
-| ---------------------- | ------------------------- | ----------------------------- |
-| `NODE_ENV`             | Environment mode          | `development`                 |
-| `PORT`                 | Server port               | `3001`                        |
-| `DATABASE_URL`         | PostgreSQL connection URL | `postgresql://...`            |
-| `DATABASE_PROVIDER`    | Database type             | `sqlite` or `postgres`        |
-| `AUTH_ENABLED`         | Enable authentication     | `true`                        |
-| `API_KEY`              | API key for auth          | Required in production        |
-| `JWT_SECRET`           | JWT signing secret        | Required for JWT auth         |
-| `BLOB_STORAGE_PATH`    | Path for file storage     | `./uploads`                   |
-| `MAX_FILE_SIZE`        | Maximum upload size       | `50MB`                        |
+| Variable            | Description               | Default                |
+| ------------------- | ------------------------- | ---------------------- |
+| `NODE_ENV`          | Environment mode          | `development`          |
+| `PORT`              | Server port               | `3001`                 |
+| `DATABASE_URL`      | PostgreSQL connection URL | `postgresql://...`     |
+| `DATABASE_PROVIDER` | Database type             | `sqlite` or `postgres` |
+| `AUTH_ENABLED`      | Enable authentication     | `true`                 |
+| `API_KEY`           | API key for auth          | Required in production |
+| `JWT_SECRET`        | JWT signing secret        | Required for JWT auth  |
+| `BLOB_STORAGE_PATH` | Path for file storage     | `./uploads`            |
+| `MAX_FILE_SIZE`     | Maximum upload size       | `50MB`                 |
 
 ### Development
 
@@ -157,15 +157,15 @@ docker run -d -p 3001:3001 \
 
 ### Environment Variables
 
-| Variable            | Description           | Default                   |
-| ------------------- | --------------------- | ------------------------- |
-| `NODE_ENV`          | Environment           | `production`              |
-| `PORT`              | Server port           | `3001`                    |
-| `DATABASE_PROVIDER` | Database type         | `sqlite`                  |
-| `DATABASE_URL`      | PostgreSQL URL        | -                         |
-| `AUTH_ENABLED`      | Enable authentication | `true`                    |
-| `API_KEY`           | API key               | Required in production    |
-| `RUN_MIGRATIONS`    | Run DB migrations     | `true`                    |
+| Variable            | Description           | Default                |
+| ------------------- | --------------------- | ---------------------- |
+| `NODE_ENV`          | Environment           | `production`           |
+| `PORT`              | Server port           | `3001`                 |
+| `DATABASE_PROVIDER` | Database type         | `sqlite`               |
+| `DATABASE_URL`      | PostgreSQL URL        | -                      |
+| `AUTH_ENABLED`      | Enable authentication | `true`                 |
+| `API_KEY`           | API key               | Required in production |
+| `RUN_MIGRATIONS`    | Run DB migrations     | `true`                 |
 
 ### Docker Compose
 

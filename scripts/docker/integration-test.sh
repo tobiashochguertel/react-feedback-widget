@@ -112,7 +112,7 @@ step_clean() {
 step_build() {
     log_step "Step 2: Build Images"
     log_info "Building all Docker images (this may take a few minutes)..."
-    
+
     if docker compose -f "$COMPOSE_FILE" build --quiet; then
         log_success "All images built successfully"
     else
@@ -125,7 +125,7 @@ step_build() {
 step_start() {
     log_step "Step 3: Start Services"
     log_info "Starting Docker Compose stack..."
-    
+
     if docker compose -f "$COMPOSE_FILE" up -d; then
         log_success "Services started"
     else
@@ -137,9 +137,9 @@ step_start() {
 # Step 4: Wait for health
 step_health() {
     log_step "Step 4: Wait for Health Checks"
-    
+
     log_info "Waiting for services to become healthy..."
-    
+
     echo -n "  Waiting for API server..."
     if wait_for_url "${API_URL}/health" 60; then
         echo -e " ${GREEN}ready${NC}"
@@ -147,7 +147,7 @@ step_health() {
         echo -e " ${RED}timeout${NC}"
         return 1
     fi
-    
+
     echo -n "  Waiting for WebUI..."
     if wait_for_url "$WEBUI_URL" 60; then
         echo -e " ${GREEN}ready${NC}"
@@ -155,7 +155,7 @@ step_health() {
         echo -e " ${RED}timeout${NC}"
         return 1
     fi
-    
+
     echo -n "  Waiting for Example App..."
     if wait_for_url "$EXAMPLE_URL" 60; then
         echo -e " ${GREEN}ready${NC}"
@@ -163,44 +163,44 @@ step_health() {
         echo -e " ${RED}timeout${NC}"
         return 1
     fi
-    
+
     log_success "All services healthy"
 }
 
 # Step 5: API Tests
 step_api_tests() {
     log_step "Step 5: API Integration Tests"
-    
+
     # Test health endpoint
     run_test "Health endpoint" curl -sf "${API_URL}/health" || true
-    
+
     # Test feedback list (empty)
     run_test "Feedback list (empty)" bash -c "curl -sf '${API_URL}/api/feedback' | grep -q '\[\]' || curl -sf '${API_URL}/api/feedback' | grep -q 'feedback'" || true
-    
+
     # Create test feedback
     local feedback_json='{"title":"Integration Test Bug","type":"bug","priority":"high","status":"open","description":"Test feedback from integration script"}'
-    
+
     log_info "Creating test feedback..."
     local response
     response=$(curl -sf -X POST "${API_URL}/api/feedback" \
         -H "Content-Type: application/json" \
         -d "$feedback_json" 2>&1) || true
-    
+
     if [[ -n "$response" ]]; then
         local feedback_id
         feedback_id=$(echo "$response" | grep -o '"id"[[:space:]]*:[[:space:]]*"[^"]*"' | head -1 | sed 's/.*"id"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/' || echo "")
-        
+
         if [[ -n "$feedback_id" ]]; then
             log_success "Created feedback with ID: $feedback_id"
-            
+
             # Verify we can retrieve it
             run_test "Retrieve created feedback" curl -sf "${API_URL}/api/feedback/${feedback_id}" || true
-            
+
             # Update the feedback
             run_test "Update feedback status" curl -sf -X PATCH "${API_URL}/api/feedback/${feedback_id}" \
                 -H "Content-Type: application/json" \
                 -d '{"status":"in_progress"}' || true
-            
+
             # Delete the feedback
             run_test "Delete test feedback" curl -sf -X DELETE "${API_URL}/api/feedback/${feedback_id}" || true
         else
@@ -209,7 +209,7 @@ step_api_tests() {
     else
         log_warning "No response from create feedback endpoint"
     fi
-    
+
     # Test stats endpoint
     run_test "Stats endpoint" curl -sf "${API_URL}/api/feedback/stats" || true
 }
@@ -217,10 +217,10 @@ step_api_tests() {
 # Step 6: WebUI Tests
 step_webui_tests() {
     log_step "Step 6: WebUI Tests"
-    
+
     # Check WebUI is serving
     run_test "WebUI serves index" bash -c "curl -sf '$WEBUI_URL' | grep -q '<html'" || true
-    
+
     # Check WebUI assets
     run_test "WebUI serves CSS/JS" curl -sf "${WEBUI_URL}/assets/" -o /dev/null || true
 }
@@ -228,7 +228,7 @@ step_webui_tests() {
 # Step 7: Example App Tests
 step_example_tests() {
     log_step "Step 7: Example App Tests"
-    
+
     # Check Example app is serving
     run_test "Example app serves index" bash -c "curl -sf '$EXAMPLE_URL' | grep -q '<html'" || true
 }
@@ -244,7 +244,7 @@ print_summary() {
     echo -e "  ${GREEN}Passed:${NC}       $TESTS_PASSED"
     echo -e "  ${RED}Failed:${NC}       $TESTS_FAILED"
     echo ""
-    
+
     if [[ $TESTS_FAILED -eq 0 ]]; then
         echo -e "${GREEN}✅ All integration tests PASSED${NC}"
         return 0
@@ -267,30 +267,30 @@ main() {
     echo "║              Docker Integration Test Script                    ║"
     echo "╚════════════════════════════════════════════════════════════════╝"
     echo ""
-    
+
     local failed=0
-    
+
     # Run all steps
     step_clean || failed=1
     step_build || failed=1
     step_start || failed=1
     step_health || { show_status; failed=1; }
-    
+
     if [[ $failed -eq 0 ]]; then
         step_api_tests
         step_webui_tests
         step_example_tests
     fi
-    
+
     show_status
-    
+
     # Cleanup unless KEEP_RUNNING is set
     if [[ "${KEEP_RUNNING:-}" != "true" ]]; then
         cleanup
     else
         log_info "KEEP_RUNNING=true, leaving stack running"
     fi
-    
+
     print_summary
 }
 
