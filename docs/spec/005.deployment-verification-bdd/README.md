@@ -37,7 +37,7 @@ If TypeScript is preferred:
 
 ## Directory Structure
 
-```
+```structure
 tests/bdd/deployment/
 ├── conftest.py                      # Shared fixtures
 ├── pytest.ini                       # pytest configuration
