@@ -3,9 +3,8 @@
     "id": "builtin_group_id",
     "name": "Currently Open Files",
     "files": [
-      "packages/feedback-example/Dockerfile",
-      "packages/feedback-server-webui/Dockerfile",
-      "packages/feedback-server/docs/spec/Conversation-4.md"
+      "docs/spec/002.reference-deployment-tasks/TASKS-OVERVIEW.md",
+      "docs/deployment/bun-nextjs.help.reference.md"
     ],
     "builtIn": true,
     "bookmarks": {}
