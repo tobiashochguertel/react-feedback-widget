@@ -1,25 +1,37 @@
 # Reference Deployment - Tasks Overview
 
-**Version**: 1.1.0
+**Version**: 1.3.0
 **Created**: 2026-01-19
-**Updated**: 2026-01-19
-**Status**: ✅ Complete (28/36 tasks complete - Core deployment ready!)
+**Updated**: 2025-01-20
+**Status**: ✅ Operational (33/41 tasks complete - Smart deployment implemented!)
+
+---
+
+## ⚠️ Important: SQLite Mode
+
+**Current Deployment:** Running in **SQLite mode only**. The PostgreSQL integration documented in the original specification requires code changes - see [ADR-001: Database Factory Pattern](../../../packages/feedback-server/docs/spec/ADR-001-database-factory.md).
+
+**Running Services:**
+- feedback-server: http://localhost:3001 (SQLite: `file:/app/data/feedback.db`)
+- feedback-webui: http://localhost:5173
+- feedback-example: http://localhost:3002
 
 ---
 
 ## 📊 Quick Status Overview
 
-| Category      | Total  | Done   | In Progress | TODO  |
-| ------------- | ------ | ------ | ----------- | ----- |
-| Setup         | 4      | 3      | 0           | 1     |
-| Dockerfiles   | 6      | 6      | 0           | 0     |
-| Entrypoints   | 4      | 4      | 0           | 0     |
-| Root Compose  | 3      | 3      | 0           | 0     |
-| Taskfiles     | 8      | 4      | 0           | 4     |
-| Configuration | 4      | 2      | 0           | 2     |
-| Testing       | 4      | 3      | 0           | 1     |
-| Documentation | 3      | 3      | 0           | 0     |
-| **Total**     | **36** | **28** | **0**       | **8** |
+| Category           | Total  | Done   | In Progress | TODO  |
+| ------------------ | ------ | ------ | ----------- | ----- |
+| Setup              | 4      | 3      | 0           | 1     |
+| Dockerfiles        | 6      | 6      | 0           | 0     |
+| Entrypoints        | 4      | 4      | 0           | 0     |
+| Root Compose       | 3      | 3      | 0           | 0     |
+| Taskfiles          | 8      | 4      | 0           | 4     |
+| Configuration      | 4      | 2      | 0           | 2     |
+| Testing            | 4      | 3      | 0           | 1     |
+| Documentation      | 3      | 3      | 0           | 0     |
+| **Taskfile Smart** | **5**  | **5**  | **0**       | **0** |
+| **Total**          | **41** | **33** | **0**       | **8** |
 
 > **🎉 Deployment is operational!** Run `task up` to start all services.
 
@@ -126,6 +138,28 @@
 | 1     | D001    | Create deployment guide README | ✅ DONE |
 | 2     | D002    | Add troubleshooting section    | ✅ DONE |
 | 3     | D003    | Create architecture diagrams   | ✅ DONE |
+
+### Set 9: Taskfile Smart Deployment
+
+**Priority**: 🟡 Medium
+**Description**: Enhance Taskfile.yml with smart deployment features following [taskfile.dev](https://taskfile.dev) best practices
+
+| Order | Task ID | Title                                              | Status  |
+| ----- | ------- | -------------------------------------------------- | ------- |
+| 1     | TS001   | Add status checks to prevent unnecessary rebuilds  | ✅ DONE |
+| 2     | TS002   | Add sources/generates for Docker image caching     | ✅ DONE |
+| 3     | TS003   | Add platform-specific commands (Linux/macOS/Win)   | ✅ DONE |
+| 4     | TS004   | Add preconditions for deployment tasks             | ✅ DONE |
+| 5     | TS005   | Add warning prompts for destructive operations     | ✅ DONE |
+
+**Implemented Features:**
+- ✅ `status:` checks via `up:smart` to skip if containers already running
+- ✅ `sources:` and `generates:` for Dockerfile fingerprinting in `docker:build:*:smart` tasks
+- ✅ `platforms:` for Windows/macOS/Linux in `_port:available` helper tasks
+- ✅ `preconditions:` in `_docker:check` and `_docker:compose:check` for Docker daemon validation
+- ✅ `prompt:` for destructive operations (`down:volumes`, `reset`, `prune`, `db:restore`)
+- ✅ Internal helper tasks (`_docker:check`, `_docker:compose:check`, `_container:running`, `_port:available`)
+- ✅ New tasks: `deploy`, `deploy:fresh`, `health:wait`, `validate`, `diag`, `db:info`
 
 ---
 

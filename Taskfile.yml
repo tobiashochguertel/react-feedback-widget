@@ -1,11 +1,30 @@
 version: '3'
 
+# =============================================================================
+# React Visual Feedback - Taskfile Configuration
+# =============================================================================
+# Smart deployment orchestration with:
+# - Status checks (skip if already running)
+# - Source fingerprinting (rebuild only on changes)
+# - Platform-specific commands
+# - Preconditions (validate environment)
+# - Prompts for destructive operations
+#
+# Reference: https://taskfile.dev
+# =============================================================================
+
 vars:
   ROOT_DIR: '{{.ROOT_DIR}}'
   LIB_DIR: '{{.ROOT_DIR}}/packages/react-visual-feedback'
   EXAMPLE_DIR: '{{.ROOT_DIR}}/packages/feedback-example'
   API_DIR: '{{.ROOT_DIR}}/packages/feedback-server-api'
   GENERATED_DIR: '{{.ROOT_DIR}}/packages/generated'
+  SERVER_DIR: '{{.ROOT_DIR}}/packages/feedback-server'
+  WEBUI_DIR: '{{.ROOT_DIR}}/packages/feedback-server-webui'
+  # Ports - match docker-compose.yml defaults
+  SERVER_PORT: '{{.FEEDBACK_SERVER_PORT | default "3001"}}'
+  WEBUI_PORT: '{{.WEBUI_PORT | default "5173"}}'
+  EXAMPLE_PORT: '{{.EXAMPLE_PORT | default "3002"}}'
 
 # Include child Taskfiles
 includes:
@@ -15,6 +34,57 @@ includes:
     optional: true
 
 tasks:
+  # ============================================================================
+  # Internal Helper Tasks
+  # ============================================================================
+
+  _docker:check:
+    desc: Check if Docker daemon is running (internal)
+    internal: true
+    silent: true
+    preconditions:
+      - sh: command -v docker
+        msg: "Docker is not installed. Please install Docker Desktop: https://docker.com/get-started"
+      - sh: docker info >/dev/null 2>&1
+        msg: "Docker daemon is not running. Please start Docker Desktop."
+
+  _docker:compose:check:
+    desc: Check if docker compose is available (internal)
+    internal: true
+    silent: true
+    preconditions:
+      - sh: docker compose version >/dev/null 2>&1
+        msg: "Docker Compose V2 is not available. Please update Docker Desktop."
+
+  _container:running:
+    desc: Check if a specific container is running (internal)
+    internal: true
+    silent: true
+    vars:
+      CONTAINER: '{{.CONTAINER}}'
+    cmds:
+      - docker compose ps --format json | grep -q '"{{.CONTAINER}}".*"running"'
+
+  _port:available:
+    desc: Check if a port is available (internal)
+    internal: true
+    silent: true
+    vars:
+      PORT: '{{.PORT}}'
+    platforms: [darwin, linux]
+    cmds:
+      - '! lsof -i :{{.PORT}} >/dev/null 2>&1'
+
+  _port:available:windows:
+    desc: Check if a port is available on Windows (internal)
+    internal: true
+    silent: true
+    vars:
+      PORT: '{{.PORT}}'
+    platforms: [windows]
+    cmds:
+      - 'powershell -Command "if (Get-NetTCPConnection -LocalPort {{.PORT}} -ErrorAction SilentlyContinue) { exit 1 }"'
+
   default:
     desc: Show available tasks (default)
     cmds:
@@ -194,119 +264,286 @@ tasks:
       - task: example:build
 
   # ============================================================================
-  # Docker Compose - Deployment Orchestration
+  # Docker Compose - Smart Deployment Orchestration
   # ============================================================================
+
+  deploy:
+    desc: Deploy all services (build if needed, start if not running)
+    summary: |
+      Smart deployment that:
+      1. Checks Docker is running
+      2. Builds images only if Dockerfiles changed
+      3. Starts services only if not already running
+
+      This is the recommended way to deploy the stack.
+    deps: [_docker:check, _docker:compose:check]
+    cmds:
+      - task: docker:build:smart
+      - task: up:smart
+      - task: health:wait
+
+  deploy:fresh:
+    desc: Clean deployment (rebuild all, fresh start)
+    summary: |
+      Forces a complete rebuild and restart:
+      1. Stops all services
+      2. Rebuilds all images without cache
+      3. Starts services
+      4. Waits for health checks
+
+      Use this when you need a completely clean slate.
+    prompt: This will stop services and rebuild everything. Continue?
+    deps: [_docker:check, _docker:compose:check]
+    cmds:
+      - docker compose down
+      - docker compose build --no-cache
+      - docker compose up -d
+      - task: health:wait
 
   up:
     desc: Start all services with Docker Compose
     summary: |
-      Starts the complete feedback system stack:
-      - PostgreSQL database
-      - Feedback Server (API)
-      - Feedback WebUI (Dashboard)
-      - Feedback Example (Demo app)
+      Starts the complete feedback system stack (SQLite mode):
+      - Feedback Server (API)   → http://localhost:{{.SERVER_PORT}}
+      - Feedback WebUI          → http://localhost:{{.WEBUI_PORT}}
+      - Feedback Example        → http://localhost:{{.EXAMPLE_PORT}}
+
+      NOTE: Currently running in SQLite mode.
+      PostgreSQL container exists but server code ignores it.
+      See: packages/feedback-server/docs/spec/ADR-001-database-factory.md
 
       Use 'task logs' to view logs.
       Use 'task down' to stop.
+    deps: [_docker:check, _docker:compose:check]
     cmds:
       - docker compose up -d
       - |
         echo ""
-        echo "Services starting..."
-        echo "  - PostgreSQL:      localhost:5432"
-        echo "  - Feedback Server: http://localhost:3001"
-        echo "  - Feedback WebUI:  http://localhost:5173"
-        echo "  - Feedback Example: http://localhost:3002"
+        echo "Services starting (SQLite mode)..."
+        echo "  - Feedback Server:  http://localhost:{{.SERVER_PORT}}"
+        echo "  - Feedback WebUI:   http://localhost:{{.WEBUI_PORT}}"
+        echo "  - Feedback Example: http://localhost:{{.EXAMPLE_PORT}}"
         echo ""
         echo "Run 'task logs' to view logs"
+        echo "Run 'task health' to check status"
+
+  up:smart:
+    desc: Start services only if not already running
+    deps: [_docker:check, _docker:compose:check]
+    status:
+      - docker compose ps --format json 2>/dev/null | grep -q '"feedback-server".*"running"'
+      - docker compose ps --format json 2>/dev/null | grep -q '"feedback-webui".*"running"'
+      - docker compose ps --format json 2>/dev/null | grep -q '"feedback-example".*"running"'
+    cmds:
+      - task: up
 
   down:
     desc: Stop all services
+    deps: [_docker:check]
     cmds:
       - docker compose down
 
+  down:volumes:
+    desc: Stop all services and remove volumes (data loss!)
+    prompt: "⚠️  WARNING: This will DELETE ALL DATA including the database. Are you sure?"
+    deps: [_docker:check]
+    cmds:
+      - docker compose down -v
+      - echo "All volumes removed. Next 'task up' will be a fresh start."
+
   restart:
     desc: Restart all services
+    deps: [_docker:check]
     cmds:
       - docker compose restart
 
+  restart:server:
+    desc: Restart only the feedback-server
+    deps: [_docker:check]
+    cmds:
+      - docker compose restart feedback-server
+
   logs:
     desc: View logs from all services
+    deps: [_docker:check]
     cmds:
       - docker compose logs -f
 
   logs:server:
     desc: View logs from feedback-server only
+    deps: [_docker:check]
     cmds:
       - docker compose logs -f feedback-server
 
   logs:webui:
     desc: View logs from feedback-webui only
+    deps: [_docker:check]
     cmds:
       - docker compose logs -f feedback-webui
 
   logs:example:
     desc: View logs from feedback-example only
+    deps: [_docker:check]
     cmds:
       - docker compose logs -f feedback-example
 
   status:
     desc: Show status of all services
+    deps: [_docker:check]
     cmds:
       - docker compose ps
 
   health:
     desc: Check health of all services
+    deps: [_docker:check]
     cmds:
       - |
         echo "Checking service health..."
         echo ""
-        echo "PostgreSQL:"
-        docker compose exec -T postgres pg_isready -U feedback || echo "  Not ready"
+        echo "Feedback Server (http://localhost:{{.SERVER_PORT}}):"
+        curl -sf http://localhost:{{.SERVER_PORT}}/api/v1/health && echo " ✅ OK" || echo "  ❌ Not ready"
         echo ""
-        echo "Feedback Server:"
-        curl -sf http://localhost:3001/api/v1/health && echo " OK" || echo "  Not ready"
+        echo "Feedback WebUI (http://localhost:{{.WEBUI_PORT}}):"
+        curl -sf http://localhost:{{.WEBUI_PORT}}/health && echo " ✅ OK" || echo "  ❌ Not ready"
         echo ""
-        echo "Feedback WebUI:"
-        curl -sf http://localhost:5173/health && echo " OK" || echo "  Not ready"
+        echo "Feedback Example (http://localhost:{{.EXAMPLE_PORT}}):"
+        curl -sf http://localhost:{{.EXAMPLE_PORT}}/ >/dev/null && echo "✅ OK" || echo "  ❌ Not ready"
+
+  health:wait:
+    desc: Wait for all services to become healthy
+    summary: |
+      Polls health endpoints until all services respond.
+      Timeout after 60 seconds.
+    deps: [_docker:check]
+    vars:
+      MAX_ATTEMPTS: 30
+      SLEEP_SECONDS: 2
+    cmds:
+      - |
+        echo "Waiting for services to become healthy..."
+        attempt=0
+        while [ $attempt -lt {{.MAX_ATTEMPTS}} ]; do
+          attempt=$((attempt + 1))
+          echo "Attempt $attempt/{{.MAX_ATTEMPTS}}..."
+
+          server_ok=0
+          webui_ok=0
+          example_ok=0
+
+          curl -sf http://localhost:{{.SERVER_PORT}}/api/v1/health >/dev/null 2>&1 && server_ok=1
+          curl -sf http://localhost:{{.WEBUI_PORT}}/health >/dev/null 2>&1 && webui_ok=1
+          curl -sf http://localhost:{{.EXAMPLE_PORT}}/ >/dev/null 2>&1 && example_ok=1
+
+          if [ $server_ok -eq 1 ] && [ $webui_ok -eq 1 ] && [ $example_ok -eq 1 ]; then
+            echo ""
+            echo "✅ All services healthy!"
+            echo "  - Server:  http://localhost:{{.SERVER_PORT}}"
+            echo "  - WebUI:   http://localhost:{{.WEBUI_PORT}}"
+            echo "  - Example: http://localhost:{{.EXAMPLE_PORT}}"
+            exit 0
+          fi
+
+          sleep {{.SLEEP_SECONDS}}
+        done
+
         echo ""
-        echo "Feedback Example:"
-        curl -sf http://localhost:3002/ >/dev/null && echo "OK" || echo "  Not ready"
+        echo "❌ Timeout waiting for services. Check logs with 'task logs'"
+        exit 1
+
 
   # ============================================================================
-  # Docker - Build Tasks
+  # Docker - Smart Build Tasks (with source fingerprinting)
   # ============================================================================
 
   docker:build:
     desc: Build all Docker images
+    deps: [_docker:check]
     cmds:
       - docker compose build
 
+  docker:build:smart:
+    desc: Build images only if Dockerfiles or source changed
+    deps: [_docker:check]
+    cmds:
+      - task: docker:build:server:smart
+      - task: docker:build:webui:smart
+      - task: docker:build:example:smart
+
   docker:build:nocache:
     desc: Build all Docker images without cache
+    deps: [_docker:check]
     cmds:
       - docker compose build --no-cache
 
   docker:build:server:
     desc: Build feedback-server Docker image
+    deps: [_docker:check]
     cmds:
       - docker compose build feedback-server
 
+  docker:build:server:smart:
+    desc: Build feedback-server only if sources changed
+    deps: [_docker:check]
+    sources:
+      - '{{.SERVER_DIR}}/Dockerfile'
+      - '{{.SERVER_DIR}}/src/**/*.ts'
+      - '{{.SERVER_DIR}}/package.json'
+      - '{{.SERVER_DIR}}/tsconfig.json'
+      - '{{.SERVER_DIR}}/drizzle.config.ts'
+    generates:
+      - '.task/checksum/docker-build-server'
+    cmds:
+      - docker compose build feedback-server
+      - mkdir -p .task/checksum && touch .task/checksum/docker-build-server
+
   docker:build:webui:
     desc: Build feedback-webui Docker image
+    deps: [_docker:check]
     cmds:
       - docker compose build feedback-webui
 
+  docker:build:webui:smart:
+    desc: Build feedback-webui only if sources changed
+    deps: [_docker:check]
+    sources:
+      - '{{.WEBUI_DIR}}/Dockerfile'
+      - '{{.WEBUI_DIR}}/src/**/*.{ts,tsx}'
+      - '{{.WEBUI_DIR}}/package.json'
+      - '{{.WEBUI_DIR}}/vite.config.ts'
+      - '{{.WEBUI_DIR}}/tsconfig.json'
+    generates:
+      - '.task/checksum/docker-build-webui'
+    cmds:
+      - docker compose build feedback-webui
+      - mkdir -p .task/checksum && touch .task/checksum/docker-build-webui
+
   docker:build:example:
     desc: Build feedback-example Docker image
+    deps: [_docker:check]
     cmds:
       - docker compose build feedback-example
+
+  docker:build:example:smart:
+    desc: Build feedback-example only if sources changed
+    deps: [_docker:check]
+    sources:
+      - '{{.EXAMPLE_DIR}}/Dockerfile'
+      - '{{.EXAMPLE_DIR}}/src/**/*.{ts,tsx}'
+      - '{{.EXAMPLE_DIR}}/package.json'
+      - '{{.EXAMPLE_DIR}}/next.config.js'
+      - '{{.EXAMPLE_DIR}}/tsconfig.json'
+    generates:
+      - '.task/checksum/docker-build-example'
+    cmds:
+      - docker compose build feedback-example
+      - mkdir -p .task/checksum && touch .task/checksum/docker-build-example
 
   docker:push:
     desc: Push all Docker images to registry
     summary: |
       Push images to the configured registry.
       Set DOCKER_REGISTRY in .env to specify the registry.
+    deps: [_docker:check]
     cmds:
       - docker compose push
 
@@ -316,52 +553,91 @@ tasks:
 
   reset:
     desc: Stop services and remove all volumes (fresh start)
-    prompt: This will delete all data. Are you sure?
+    prompt: "⚠️  This will DELETE ALL DATA. Are you sure?"
+    deps: [_docker:check]
     cmds:
       - docker compose down -v
-      - echo "All volumes removed. Next 'task up' will be a fresh start."
+      - rm -rf .task/checksum
+      - echo "All volumes and build checksums removed. Next 'task deploy' will be a fresh start."
 
   prune:
     desc: Remove unused Docker resources
+    prompt: This will remove unused Docker images, containers, and volumes. Continue?
+    deps: [_docker:check]
     cmds:
       - docker system prune -f
       - docker volume prune -f
 
   docker:clean:
     desc: Remove all project containers and images
+    prompt: This will remove all project Docker images and containers. Continue?
+    deps: [_docker:check]
     cmds:
       - docker compose down --rmi all -v
+      - rm -rf .task/checksum
 
   # ============================================================================
-  # Docker - Database Tasks
+  # Docker - Database Tasks (SQLite mode)
   # ============================================================================
+  # NOTE: PostgreSQL tasks are commented out as the server currently uses SQLite.
+  # See: packages/feedback-server/docs/spec/ADR-001-database-factory.md
+
+  db:info:
+    desc: Show current database configuration
+    cmds:
+      - |
+        echo "Database Configuration"
+        echo "======================"
+        echo ""
+        echo "Mode: SQLite (hardcoded in server code)"
+        echo "Path: /app/data/feedback.db (inside container)"
+        echo "Volume: feedback-data (Docker volume)"
+        echo ""
+        echo "NOTE: PostgreSQL support exists in db/factory.ts but is not wired up."
+        echo "See: packages/feedback-server/docs/spec/ADR-001-database-factory.md"
 
   db:shell:
-    desc: Open PostgreSQL shell
+    desc: Open SQLite shell in server container
+    deps: [_docker:check]
+    preconditions:
+      - sh: docker compose ps --format json | grep -q '"feedback-server".*"running"'
+        msg: "feedback-server is not running. Start with 'task up' first."
     cmds:
-      - docker compose exec postgres psql -U feedback -d feedback
+      - docker compose exec feedback-server sqlite3 /app/data/feedback.db
 
   db:backup:
     desc: Create database backup
+    deps: [_docker:check]
+    preconditions:
+      - sh: docker compose ps --format json | grep -q '"feedback-server".*"running"'
+        msg: "feedback-server is not running. Start with 'task up' first."
     vars:
-      BACKUP_FILE: 'backups/feedback-{{now | date "2006-01-02-150405"}}.sql'
+      BACKUP_FILE: 'backups/feedback-{{now | date "2006-01-02-150405"}}.sqlite'
     cmds:
       - mkdir -p backups
-      - docker compose exec -T postgres pg_dump -U feedback feedback > {{.BACKUP_FILE}}
-      - 'echo "Backup created: {{.BACKUP_FILE}}"'
+      - docker compose cp feedback-server:/app/data/feedback.db {{.BACKUP_FILE}}
+      - 'echo "✅ Backup created: {{.BACKUP_FILE}}"'
 
   db:restore:
     desc: Restore database from backup
     summary: |
-      Restore database from a backup file.
+      Restore SQLite database from a backup file.
 
       Usage:
-        task db:restore FILE=backups/feedback-2024-01-15.sql
+        task db:restore FILE=backups/feedback-2024-01-15.sqlite
+    deps: [_docker:check]
+    prompt: "⚠️  This will OVERWRITE the current database. Are you sure?"
     requires:
       vars: [FILE]
+    preconditions:
+      - sh: test -f {{.FILE}}
+        msg: "Backup file not found: {{.FILE}}"
+      - sh: docker compose ps --format json | grep -q '"feedback-server".*"running"'
+        msg: "feedback-server is not running. Start with 'task up' first."
     cmds:
-      - docker compose exec -T postgres psql -U feedback feedback < {{.FILE}}
-      - 'echo "Database restored from {{.FILE}}"'
+      - docker compose cp {{.FILE}} feedback-server:/app/data/feedback.db
+      - docker compose restart feedback-server
+      - 'echo "✅ Database restored from {{.FILE}}"'
 
   # ============================================================================
   # Docker - Shell Access
@@ -369,15 +645,122 @@ tasks:
 
   shell:server:
     desc: Open shell in feedback-server container
+    deps: [_docker:check]
+    preconditions:
+      - sh: docker compose ps --format json | grep -q '"feedback-server".*"running"'
+        msg: "feedback-server is not running. Start with 'task up' first."
     cmds:
       - docker compose exec feedback-server /bin/sh
 
   shell:webui:
     desc: Open shell in feedback-webui container
+    deps: [_docker:check]
+    preconditions:
+      - sh: docker compose ps --format json | grep -q '"feedback-webui".*"running"'
+        msg: "feedback-webui is not running. Start with 'task up' first."
     cmds:
       - docker compose exec feedback-webui /bin/sh
 
   shell:example:
     desc: Open shell in feedback-example container
+    deps: [_docker:check]
+    preconditions:
+      - sh: docker compose ps --format json | grep -q '"feedback-example".*"running"'
+        msg: "feedback-example is not running. Start with 'task up' first."
     cmds:
       - docker compose exec feedback-example /bin/sh
+
+  # ============================================================================
+  # Validation & Diagnostics
+  # ============================================================================
+
+  validate:
+    desc: Validate entire deployment configuration
+    summary: |
+      Checks:
+      1. Docker is running
+      2. docker-compose.yml is valid
+      3. Required files exist
+      4. Environment is configured correctly
+    cmds:
+      - task: _docker:check
+      - task: _docker:compose:check
+      - |
+        echo "Validating configuration..."
+        echo ""
+
+        # Check docker-compose.yml
+        echo "📄 docker-compose.yml:"
+        docker compose config --quiet && echo "  ✅ Valid" || echo "  ❌ Invalid"
+
+        # Check Dockerfiles exist
+        echo ""
+        echo "📦 Dockerfiles:"
+        test -f packages/feedback-server/Dockerfile && echo "  ✅ feedback-server/Dockerfile" || echo "  ❌ feedback-server/Dockerfile missing"
+        test -f packages/feedback-server-webui/Dockerfile && echo "  ✅ feedback-server-webui/Dockerfile" || echo "  ❌ feedback-server-webui/Dockerfile missing"
+        test -f packages/feedback-example/Dockerfile && echo "  ✅ feedback-example/Dockerfile" || echo "  ❌ feedback-example/Dockerfile missing"
+
+        # Check environment
+        echo ""
+        echo "🔧 Environment:"
+        test -f .env && echo "  ✅ .env file exists" || echo "  ⚠️  No .env file (using defaults)"
+
+        echo ""
+        echo "✅ Validation complete"
+
+  diag:
+    desc: Run full diagnostics on the deployment
+    aliases: [diagnostics]
+    summary: |
+      Comprehensive diagnostics including:
+      - Service status
+      - Container health
+      - Port usage
+      - Resource usage
+      - Recent logs
+    deps: [_docker:check]
+    cmds:
+      - |
+        echo "═══════════════════════════════════════════════════════════"
+        echo "  React Visual Feedback - Deployment Diagnostics"
+        echo "═══════════════════════════════════════════════════════════"
+        echo ""
+
+        echo "📊 Service Status"
+        echo "─────────────────"
+        docker compose ps
+        echo ""
+
+        echo "🔍 Container Health"
+        echo "───────────────────"
+        task health
+        echo ""
+
+        echo "🌐 Port Usage"
+        echo "─────────────"
+        echo "  Server port {{.SERVER_PORT}}:"
+        lsof -i :{{.SERVER_PORT}} 2>/dev/null | head -3 || echo "    Not in use"
+        echo ""
+        echo "  WebUI port {{.WEBUI_PORT}}:"
+        lsof -i :{{.WEBUI_PORT}} 2>/dev/null | head -3 || echo "    Not in use"
+        echo ""
+        echo "  Example port {{.EXAMPLE_PORT}}:"
+        lsof -i :{{.EXAMPLE_PORT}} 2>/dev/null | head -3 || echo "    Not in use"
+        echo ""
+
+        echo "💾 Volume Usage"
+        echo "───────────────"
+        docker volume ls --filter name=react-visual-feedback 2>/dev/null || echo "  No volumes found"
+        echo ""
+
+        echo "📝 Recent Logs (last 10 lines per service)"
+        echo "──────────────────────────────────────────"
+        echo ""
+        echo "feedback-server:"
+        docker compose logs --tail=10 feedback-server 2>/dev/null || echo "  No logs available"
+        echo ""
+        echo "feedback-webui:"
+        docker compose logs --tail=10 feedback-webui 2>/dev/null || echo "  No logs available"
+        echo ""
+        echo "feedback-example:"
+        docker compose logs --tail=10 feedback-example 2>/dev/null || echo "  No logs available"
