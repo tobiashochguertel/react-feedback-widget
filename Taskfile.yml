@@ -44,9 +44,9 @@ tasks:
     silent: true
     preconditions:
       - sh: command -v docker
-        msg: "Docker is not installed. Please install Docker Desktop: https://docker.com/get-started"
+        msg: 'Docker is not installed. Please install Docker Desktop: https://docker.com/get-started'
       - sh: docker info >/dev/null 2>&1
-        msg: "Docker daemon is not running. Please start Docker Desktop."
+        msg: 'Docker daemon is not running. Please start Docker Desktop.'
 
   _docker:compose:check:
     desc: Check if docker compose is available (internal)
@@ -54,7 +54,7 @@ tasks:
     silent: true
     preconditions:
       - sh: docker compose version >/dev/null 2>&1
-        msg: "Docker Compose V2 is not available. Please update Docker Desktop."
+        msg: 'Docker Compose V2 is not available. Please update Docker Desktop.'
 
   _container:running:
     desc: Check if a specific container is running (internal)
@@ -345,7 +345,7 @@ tasks:
 
   down:volumes:
     desc: Stop all services and remove volumes (data loss!)
-    prompt: "⚠️  WARNING: This will DELETE ALL DATA including the database. Are you sure?"
+    prompt: '⚠️  WARNING: This will DELETE ALL DATA including the database. Are you sure?'
     deps: [_docker:check]
     cmds:
       - docker compose down -v
@@ -450,7 +450,6 @@ tasks:
         echo "❌ Timeout waiting for services. Check logs with 'task logs'"
         exit 1
 
-
   # ============================================================================
   # Docker - Smart Build Tasks (with source fingerprinting)
   # ============================================================================
@@ -553,7 +552,7 @@ tasks:
 
   reset:
     desc: Stop services and remove all volumes (fresh start)
-    prompt: "⚠️  This will DELETE ALL DATA. Are you sure?"
+    prompt: '⚠️  This will DELETE ALL DATA. Are you sure?'
     deps: [_docker:check]
     cmds:
       - docker compose down -v
@@ -626,12 +625,12 @@ tasks:
       Usage:
         task db:restore FILE=backups/feedback-2024-01-15.sqlite
     deps: [_docker:check]
-    prompt: "⚠️  This will OVERWRITE the current database. Are you sure?"
+    prompt: '⚠️  This will OVERWRITE the current database. Are you sure?'
     requires:
       vars: [FILE]
     preconditions:
       - sh: test -f {{.FILE}}
-        msg: "Backup file not found: {{.FILE}}"
+        msg: 'Backup file not found: {{.FILE}}'
       - sh: docker compose ps --format json | grep -q '"feedback-server".*"running"'
         msg: "feedback-server is not running. Start with 'task up' first."
     cmds:

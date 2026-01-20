@@ -12,6 +12,7 @@
 **Current Deployment:** Running in **SQLite mode only**. The PostgreSQL integration documented in the original specification requires code changes - see [ADR-001: Database Factory Pattern](../../../packages/feedback-server/docs/spec/ADR-001-database-factory.md).
 
 **Running Services:**
+
 - feedback-server: http://localhost:3001 (SQLite: `file:/app/data/feedback.db`)
 - feedback-webui: http://localhost:5173
 - feedback-example: http://localhost:3002
@@ -144,15 +145,16 @@
 **Priority**: 🟡 Medium
 **Description**: Enhance Taskfile.yml with smart deployment features following [taskfile.dev](https://taskfile.dev) best practices
 
-| Order | Task ID | Title                                              | Status  |
-| ----- | ------- | -------------------------------------------------- | ------- |
-| 1     | TS001   | Add status checks to prevent unnecessary rebuilds  | ✅ DONE |
-| 2     | TS002   | Add sources/generates for Docker image caching     | ✅ DONE |
-| 3     | TS003   | Add platform-specific commands (Linux/macOS/Win)   | ✅ DONE |
-| 4     | TS004   | Add preconditions for deployment tasks             | ✅ DONE |
-| 5     | TS005   | Add warning prompts for destructive operations     | ✅ DONE |
+| Order | Task ID | Title                                             | Status  |
+| ----- | ------- | ------------------------------------------------- | ------- |
+| 1     | TS001   | Add status checks to prevent unnecessary rebuilds | ✅ DONE |
+| 2     | TS002   | Add sources/generates for Docker image caching    | ✅ DONE |
+| 3     | TS003   | Add platform-specific commands (Linux/macOS/Win)  | ✅ DONE |
+| 4     | TS004   | Add preconditions for deployment tasks            | ✅ DONE |
+| 5     | TS005   | Add warning prompts for destructive operations    | ✅ DONE |
 
 **Implemented Features:**
+
 - ✅ `status:` checks via `up:smart` to skip if containers already running
 - ✅ `sources:` and `generates:` for Dockerfile fingerprinting in `docker:build:*:smart` tasks
 - ✅ `platforms:` for Windows/macOS/Linux in `_port:available` helper tasks
