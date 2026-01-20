@@ -1,0 +1,21 @@
+# BDD Deployment Tests Dependencies
+# Python 3.11+
+
+# Core test framework
+pytest>=7.4.0
+pytest-bdd>=7.0.0
+
+# HTTP requests for service testing
+requests>=2.31.0
+
+# Interactive process testing (for confirmation prompts)
+pexpect>=4.9.0
+
+# Docker SDK for container inspection
+docker>=7.0.0
+
+# YAML parsing for config validation
+PyYAML>=6.0
+
+# Rich output formatting
+rich>=13.0.0
