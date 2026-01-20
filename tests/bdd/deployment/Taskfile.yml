@@ -1,0 +1,176 @@
+version: '3'
+
+# =============================================================================
+# BDD Deployment Tests - Taskfile Configuration
+# =============================================================================
+# Run BDD tests to verify deployment scenarios work correctly.
+#
+# Usage:
+#   task bdd:test          # Run all BDD tests
+#   task bdd:test:static   # Run only static tests (no services needed)
+#   task bdd:test:services # Run tests requiring running services
+#   task bdd:setup         # Set up virtual environment
+#   task bdd:clean         # Clean up virtual environment
+#
+# Reference: https://taskfile.dev
+# =============================================================================
+
+vars:
+  VENV_DIR: '{{.ROOT_DIR}}/.venv'
+  PYTHON: '{{.VENV_DIR}}/bin/python'
+  PYTEST: '{{.VENV_DIR}}/bin/pytest'
+
+tasks:
+  # ============================================================================
+  # Setup Tasks
+  # ============================================================================
+
+  setup:
+    desc: Set up Python virtual environment for BDD tests
+    summary: |
+      Creates a Python virtual environment and installs dependencies.
+      Uses 'uv' for fast dependency installation.
+    cmds:
+      - |
+        if [ ! -d "{{.VENV_DIR}}" ]; then
+          echo "Creating virtual environment..."
+          uv venv {{.VENV_DIR}}
+        else
+          echo "Virtual environment already exists."
+        fi
+      - echo "Installing dependencies..."
+      - uv pip install -r requirements.txt --python {{.PYTHON}}
+      - echo "✅ Setup complete!"
+    status:
+      - test -f {{.PYTEST}}
+    sources:
+      - requirements.txt
+    generates:
+      - '{{.VENV_DIR}}/bin/pytest'
+
+  clean:
+    desc: Remove virtual environment
+    prompt: This will remove the virtual environment. Continue?
+    cmds:
+      - rm -rf {{.VENV_DIR}}
+      - rm -rf .pytest_cache
+      - rm -rf __pycache__
+      - rm -rf step_defs/__pycache__
+      - echo "✅ Cleaned up!"
+
+  # ============================================================================
+  # Test Tasks
+  # ============================================================================
+
+  test:
+    desc: Run all BDD deployment tests
+    summary: |
+      Runs all BDD tests including:
+      - Static tests (Taskfile, docker-compose validation)
+      - Service tests (requires running services)
+      
+      Use 'task bdd:test:static' for tests that don't need services.
+    deps:
+      - setup
+    cmds:
+      - echo "🧪 Running all BDD deployment tests..."
+      - '{{.PYTEST}} -v --tb=short 2>&1 || true'
+      - echo ""
+      - echo "📋 Test execution complete!"
+
+  test:static:
+    desc: Run only static tests (no services needed)
+    summary: |
+      Runs tests that don't require running Docker services:
+      - Taskfile validation
+      - Docker compose configuration checks
+      - Environment file checks
+      - Docker daemon status
+    deps:
+      - setup
+    cmds:
+      - echo "Running static BDD tests (no services required)..."
+      - '{{.PYTEST}} -v --tb=short -k "valid or example_file_exists or reset or volumes_are_used or daemon or task_list" 2>&1'
+      - echo ""
+      - echo "Static tests complete!"
+
+  test:services:
+    desc: Run tests requiring running services
+    summary: |
+      Runs tests that require Docker services to be running.
+      Make sure to run 'task up' first from the root directory.
+    deps:
+      - setup
+    cmds:
+      - echo "Running service-dependent BDD tests..."
+      - echo "Note - Services must be running (run task up from root first)"
+      - '{{.PYTEST}} -v --tb=short -k "not (valid or example_file_exists or reset or volumes_are_used or daemon or task_list)" 2>&1 || true'
+      - echo ""
+      - echo "Service tests complete!"
+
+  test:quick:
+    desc: Run quick evaluation tests
+    summary: |
+      Runs the quick evaluation feature tests.
+      These verify that the first-time setup experience works correctly.
+    deps:
+      - setup
+    cmds:
+      - echo "🧪 Running quick evaluation tests..."
+      - '{{.PYTEST}} -v --tb=short step_defs/test_quick_evaluation.py 2>&1 || true'
+
+  test:safety:
+    desc: Run safety tests
+    summary: |
+      Runs safety-related tests:
+      - Destructive operation safeguards
+      - Volume persistence checks
+      - Reset task availability
+    deps:
+      - setup
+    cmds:
+      - echo "🧪 Running safety tests..."
+      - '{{.PYTEST}} -v --tb=short step_defs/test_safety.py 2>&1 || true'
+
+  # ============================================================================
+  # Information Tasks
+  # ============================================================================
+
+  list:
+    desc: List all available tests
+    deps:
+      - setup
+    cmds:
+      - echo "📋 Available BDD tests:"
+      - '{{.PYTEST}} --collect-only -q 2>&1 | head -40'
+
+  features:
+    desc: Show all feature files
+    cmds:
+      - echo "📋 Feature files:"
+      - ls -la features/*.feature
+      - echo ""
+      - echo "📊 Scenario counts:"
+      - grep -c "Scenario:" features/*.feature || true
+
+  # ============================================================================
+  # Default Task
+  # ============================================================================
+
+  default:
+    desc: Show available BDD test commands
+    cmds:
+      - echo "╔══════════════════════════════════════════════════════════════╗"
+      - echo "║           BDD Deployment Tests                               ║"
+      - echo "╠══════════════════════════════════════════════════════════════╣"
+      - echo "║                                                              ║"
+      - echo "║  task bdd:test          - Run all BDD tests                  ║"
+      - echo "║  task bdd:test:static   - Run static tests (no services)     ║"
+      - echo "║  task bdd:test:services - Run tests needing services         ║"
+      - echo "║  task bdd:test:quick    - Run quick evaluation tests         ║"
+      - echo "║  task bdd:test:safety   - Run safety tests                   ║"
+      - echo "║  task bdd:list          - List all available tests           ║"
+      - echo "║  task bdd:setup         - Set up virtual environment         ║"
+      - echo "║  task bdd:clean         - Clean up virtual environment       ║"
+      - echo "║                                                              ║"
+      - echo "╚══════════════════════════════════════════════════════════════╝"

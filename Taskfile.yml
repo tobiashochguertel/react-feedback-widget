@@ -21,16 +21,22 @@ vars:
   GENERATED_DIR: '{{.ROOT_DIR}}/packages/generated'
   SERVER_DIR: '{{.ROOT_DIR}}/packages/feedback-server'
   WEBUI_DIR: '{{.ROOT_DIR}}/packages/feedback-server-webui'
-  # Ports - match docker-compose.yml defaults
-  SERVER_PORT: '{{.FEEDBACK_SERVER_PORT | default "3001"}}'
-  WEBUI_PORT: '{{.WEBUI_PORT | default "5173"}}'
-  EXAMPLE_PORT: '{{.EXAMPLE_PORT | default "3002"}}'
+  # Ports - using custom high-range ports to avoid conflicts with common services
+  # PostgreSQL: 18229, Feedback Server: 15567, WebUI: 19568, Example: 18196
+  POSTGRES_PORT: '{{.POSTGRES_PORT | default "18229"}}'
+  SERVER_PORT: '{{.FEEDBACK_SERVER_PORT | default "15567"}}'
+  WEBUI_PORT: '{{.WEBUI_PORT | default "19568"}}'
+  EXAMPLE_PORT: '{{.EXAMPLE_PORT | default "18196"}}'
 
 # Include child Taskfiles
 includes:
   api:
     taskfile: ./packages/feedback-server-api/Taskfile.yml
     dir: ./packages/feedback-server-api
+    optional: true
+  bdd:
+    taskfile: ./tests/bdd/deployment/Taskfile.yml
+    dir: ./tests/bdd/deployment
     optional: true
 
 tasks:

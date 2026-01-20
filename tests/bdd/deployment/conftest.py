@@ -11,10 +11,14 @@ import requests
 
 
 def get_repo_root() -> Path:
-    """Find the repository root by looking for Taskfile.yml."""
+    """Find the repository root by looking for docker-compose.yml (not Taskfile.yml).
+    
+    We look for docker-compose.yml because that's unique to the repo root,
+    while Taskfile.yml exists in multiple directories including this test dir.
+    """
     current = Path(__file__).parent
     for _ in range(10):  # Max 10 levels up
-        if (current / "Taskfile.yml").exists():
+        if (current / "docker-compose.yml").exists():
             return current
         parent = current.parent
         if parent == current:
@@ -28,18 +32,26 @@ def get_repo_root() -> Path:
 # Repository root path
 REPO_ROOT = get_repo_root()
 
-# Service URLs
+# Custom ports (using high-range ports to avoid conflicts)
+PORTS = {
+    "postgres": 18229,
+    "feedback-server": 15567,
+    "webui": 19568,
+    "feedback-example": 18196,
+}
+
+# Service URLs (using custom ports)
 SERVICE_URLS = {
-    "feedback-server": "http://localhost:3001",
-    "webui": "http://localhost:5173",
-    "feedback-example": "http://localhost:3002",
+    "feedback-server": f"http://localhost:{PORTS['feedback-server']}",
+    "webui": f"http://localhost:{PORTS['webui']}",
+    "feedback-example": f"http://localhost:{PORTS['feedback-example']}",
 }
 
 # Health endpoints
 HEALTH_ENDPOINTS = {
-    "feedback-server": "http://localhost:3001/api/v1/health",
-    "feedback-example": "http://localhost:3002",
-    "webui": "http://localhost:5173",
+    "feedback-server": f"http://localhost:{PORTS['feedback-server']}/api/v1/health",
+    "feedback-example": f"http://localhost:{PORTS['feedback-example']}",
+    "webui": f"http://localhost:{PORTS['webui']}",
 }
 
 
