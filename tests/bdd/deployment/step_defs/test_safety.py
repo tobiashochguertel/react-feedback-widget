@@ -21,14 +21,14 @@ scenarios("../features/05_safety.feature")
 def examine_taskfile(repo_root: Path, context: dict):
     """Read and parse the Taskfile.yml."""
     taskfile_path = repo_root / "Taskfile.yml"
-    
+
     if not taskfile_path.exists():
         context["taskfile"] = None
         return
-    
+
     with open(taskfile_path) as f:
         content = yaml.safe_load(f)
-    
+
     context["taskfile"] = content
     context["taskfile_raw"] = taskfile_path.read_text()
 
@@ -37,17 +37,17 @@ def examine_taskfile(repo_root: Path, context: dict):
 def examine_compose(repo_root: Path, context: dict):
     """Read and parse docker-compose.yml."""
     compose_path = repo_root / "docker-compose.yml"
-    
+
     if not compose_path.exists():
         compose_path = repo_root / "compose.yml"
-    
+
     if not compose_path.exists():
         context["compose"] = None
         return
-    
+
     with open(compose_path) as f:
         content = yaml.safe_load(f)
-    
+
     context["compose"] = content
     context["compose_raw"] = compose_path.read_text()
 
@@ -62,7 +62,7 @@ def run_compose_down_volumes(repo_root: Path, context: dict):
         text=True
     )
     context["volumes_before_down_v"] = vol_before.stdout.strip()
-    
+
     result = subprocess.run(
         ["docker", "compose", "down", "-v"],
         cwd=repo_root,
@@ -81,25 +81,25 @@ def run_compose_down_volumes(repo_root: Path, context: dict):
 def reset_task_defined(context: dict):
     """Verify a reset/clean task exists in Taskfile."""
     taskfile = context.get("taskfile")
-    
+
     if taskfile is None:
         pytest.skip("Taskfile.yml not found")
-    
+
     tasks = taskfile.get("tasks", {})
-    
+
     # Look for reset, clean, or similar tasks
     reset_keywords = ["reset", "clean", "prune", "wipe", "destroy"]
-    
+
     found_reset = False
     for task_name in tasks.keys():
         if any(kw in task_name.lower() for kw in reset_keywords):
             found_reset = True
             break
-    
+
     # Also check for down task with volume removal
     if "down" in tasks:
         found_reset = True
-    
+
     assert found_reset, "No reset/clean task found in Taskfile"
 
 
@@ -107,19 +107,19 @@ def reset_task_defined(context: dict):
 def task_is_documented(context: dict):
     """Verify reset task has documentation."""
     taskfile = context.get("taskfile")
-    
+
     if taskfile is None:
         pytest.skip("Taskfile.yml not found")
-    
+
     tasks = taskfile.get("tasks", {})
-    
+
     # Check that tasks have descriptions
     for task_name, task_def in tasks.items():
         if isinstance(task_def, dict):
             # Task has a desc field (common in Taskfile)
             if "desc" in task_def:
                 return  # Found a documented task
-    
+
     # Also OK if task names are self-documenting
     pass
 
@@ -128,24 +128,24 @@ def task_is_documented(context: dict):
 def volumes_defined(context: dict):
     """Verify volumes are defined in docker-compose.yml."""
     compose = context.get("compose")
-    
+
     if compose is None:
         pytest.skip("docker-compose.yml not found")
-    
+
     # Check for top-level volumes or service volumes
     has_volumes = False
-    
+
     # Top-level volumes section
     if "volumes" in compose:
         has_volumes = True
-    
+
     # Service-level volumes
     services = compose.get("services", {})
     for svc_name, svc_def in services.items():
         if "volumes" in svc_def:
             has_volumes = True
             break
-    
+
     assert has_volumes, "No volumes defined in docker-compose.yml"
 
 
@@ -153,13 +153,13 @@ def volumes_defined(context: dict):
 def volume_configs_appropriate(context: dict):
     """Verify volume configurations look reasonable."""
     compose = context.get("compose")
-    
+
     if compose is None:
         pytest.skip("docker-compose.yml not found")
-    
+
     # Just verify volumes exist and aren't obviously wrong
     services = compose.get("services", {})
-    
+
     for svc_name, svc_def in services.items():
         volumes = svc_def.get("volumes", [])
         for vol in volumes:
@@ -181,7 +181,7 @@ def containers_stopped(repo_root: Path):
         capture_output=True,
         text=True
     )
-    
+
     running = result.stdout.strip()
     assert not running, f"Containers still running: {running}"
 
@@ -195,7 +195,7 @@ def volumes_remain(context: dict):
         capture_output=True,
         text=True
     )
-    
+
     # This is a weak check - we just verify the command works
     # Actual volume persistence depends on what volumes existed
 
@@ -209,7 +209,7 @@ def containers_removed(repo_root: Path):
         capture_output=True,
         text=True
     )
-    
+
     containers = result.stdout.strip()
     assert not containers, f"Containers still exist: {containers}"
 
@@ -223,7 +223,7 @@ def volumes_removed(context: dict):
         capture_output=True,
         text=True
     )
-    
+
     project_volumes = vol_after.stdout.strip()
     # After down -v, project volumes should be gone
     # (This depends on naming convention)

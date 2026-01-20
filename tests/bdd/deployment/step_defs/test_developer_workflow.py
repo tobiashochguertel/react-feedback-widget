@@ -53,10 +53,10 @@ def run_task_up_to_start_services(repo_root: Path, context: dict):
         timeout=300
     )
     context["task_up_result"] = result
-    
+
     if result.returncode != 0:
         pytest.fail(f"task up failed: {result.stderr}")
-    
+
     # Wait for services to be ready
     time.sleep(5)
 
@@ -84,7 +84,7 @@ def run_task_down(repo_root: Path, context: dict):
         text=True
     )
     context["volumes_before"] = set(vol_before.stdout.strip().split("\n"))
-    
+
     result = subprocess.run(
         ["task", "down"],
         cwd=repo_root,
@@ -119,7 +119,7 @@ def all_dev_containers_start(repo_root: Path, context: dict):
     result = context.get("task_up_result")
     if result and result.returncode != 0:
         pytest.fail(f"task up failed: {result.stderr}")
-    
+
     # Wait for services
     success = wait_for_services(timeout=120)
     if not success:
@@ -145,7 +145,7 @@ def see_logs_from_services(context: dict):
     """Verify logs output contains service logs."""
     result = context.get("logs_result")
     assert result is not None, "docker compose logs was not run"
-    
+
     # Logs should have some content
     output = result.stdout + result.stderr
     assert len(output) > 0, "No log output received"
@@ -156,10 +156,10 @@ def logs_include_content(context: dict):
     """Verify logs contain actual content."""
     result = context.get("logs_result")
     assert result is not None
-    
+
     output = result.stdout + result.stderr
     lines = [l for l in output.split("\n") if l.strip()]
-    
+
     # Should have multiple log lines
     assert len(lines) >= 1, "Expected log entries but got none"
 
@@ -171,7 +171,7 @@ def all_containers_stop(repo_root: Path, context: dict):
     if result and result.returncode != 0:
         # Some warnings are OK during shutdown
         pass
-    
+
     # Check no containers are running
     ps_result = subprocess.run(
         ["docker", "compose", "ps", "-q"],
@@ -179,7 +179,7 @@ def all_containers_stop(repo_root: Path, context: dict):
         capture_output=True,
         text=True
     )
-    
+
     running = ps_result.stdout.strip()
     assert not running, f"Containers still running: {running}"
 
@@ -194,7 +194,7 @@ def volumes_are_preserved(context: dict):
     )
     volumes_after = set(vol_after.stdout.strip().split("\n"))
     volumes_before = context.get("volumes_before", set())
-    
+
     # Volumes that existed before should still exist
     # (or we didn't have any project volumes to begin with)
     if volumes_before:
@@ -220,7 +220,7 @@ def images_are_created(repo_root: Path):
         capture_output=True,
         text=True
     )
-    
+
     # Should list some images
     output = result.stdout
     lines = [l for l in output.split("\n") if l.strip()]
@@ -231,11 +231,11 @@ def images_are_created(repo_root: Path):
 def all_containers_running_state(repo_root: Path, context: dict):
     """Verify all containers are in running state after restart."""
     status = get_container_status(repo_root)
-    
+
     # Check that we have some containers
     if not status:
         pytest.fail("No containers found after restart")
-    
+
     # Verify at least some are running
     running_count = sum(1 for s in status.values() if s.get("State") == "running")
     assert running_count > 0, f"No containers running. Status: {status}"

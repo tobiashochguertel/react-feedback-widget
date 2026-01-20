@@ -638,23 +638,23 @@ Scenario: Confirmation protects data
 
 ## User Story Summary
 
-| ID         | Title                        | Persona     | Priority  | Epic                     |
-| ---------- | ---------------------------- | ----------- | --------- | ------------------------ |
-| US-DEV-001 | First-Time Setup < 5 Minutes | Evaluator   | 🟢 High   | Quick Evaluation         |
-| US-DEV-002 | Immediate Visual Feedback    | Evaluator   | 🟢 High   | Quick Evaluation         |
-| US-DEV-003 | Clear Project Structure      | Evaluator   | 🟡 Medium | Quick Evaluation         |
-| US-DEV-004 | Clone to Dev < 10 Minutes    | Developer   | 🟢 High   | Developer Workflow       |
-| US-DEV-005 | Easy Access to Logs          | Developer   | 🟢 High   | Developer Workflow       |
-| US-DEV-006 | Clean Rebuild                | Developer   | 🟡 Medium | Developer Workflow       |
-| US-DEV-007 | Smart Rebuild Detection      | Developer   | 🟡 Medium | Developer Workflow       |
-| US-DEV-008 | Production Config Clear      | DevOps      | 🟢 High   | Production Deployment    |
-| US-DEV-009 | Health Checks Work           | DevOps      | 🟢 High   | Production Deployment    |
-| US-DEV-010 | Database Operations Work     | DevOps      | 🟡 Medium | Production Deployment    |
-| US-DEV-011 | Validate Configuration       | Dev/DevOps  | 🟡 Medium | Validation & Diagnostics |
-| US-DEV-012 | Comprehensive Diagnostics    | Dev/DevOps  | 🟡 Medium | Validation & Diagnostics |
-| US-DEV-013 | Commands are Discoverable    | PM/Lead     | 🟡 Medium | Usability & Docs         |
-| US-DEV-014 | Documentation is Accurate    | PM/Lead     | 🟡 Medium | Usability & Docs         |
-| US-DEV-015 | Destructive Ops are Safe     | DevOps      | 🟢 High   | Usability & Docs         |
+| ID         | Title                        | Persona    | Priority  | Epic                     |
+| ---------- | ---------------------------- | ---------- | --------- | ------------------------ |
+| US-DEV-001 | First-Time Setup < 5 Minutes | Evaluator  | 🟢 High   | Quick Evaluation         |
+| US-DEV-002 | Immediate Visual Feedback    | Evaluator  | 🟢 High   | Quick Evaluation         |
+| US-DEV-003 | Clear Project Structure      | Evaluator  | 🟡 Medium | Quick Evaluation         |
+| US-DEV-004 | Clone to Dev < 10 Minutes    | Developer  | 🟢 High   | Developer Workflow       |
+| US-DEV-005 | Easy Access to Logs          | Developer  | 🟢 High   | Developer Workflow       |
+| US-DEV-006 | Clean Rebuild                | Developer  | 🟡 Medium | Developer Workflow       |
+| US-DEV-007 | Smart Rebuild Detection      | Developer  | 🟡 Medium | Developer Workflow       |
+| US-DEV-008 | Production Config Clear      | DevOps     | 🟢 High   | Production Deployment    |
+| US-DEV-009 | Health Checks Work           | DevOps     | 🟢 High   | Production Deployment    |
+| US-DEV-010 | Database Operations Work     | DevOps     | 🟡 Medium | Production Deployment    |
+| US-DEV-011 | Validate Configuration       | Dev/DevOps | 🟡 Medium | Validation & Diagnostics |
+| US-DEV-012 | Comprehensive Diagnostics    | Dev/DevOps | 🟡 Medium | Validation & Diagnostics |
+| US-DEV-013 | Commands are Discoverable    | PM/Lead    | 🟡 Medium | Usability & Docs         |
+| US-DEV-014 | Documentation is Accurate    | PM/Lead    | 🟡 Medium | Usability & Docs         |
+| US-DEV-015 | Destructive Ops are Safe     | DevOps     | 🟢 High   | Usability & Docs         |
 
 ---
 
@@ -662,28 +662,28 @@ Scenario: Confirmation protects data
 
 ### 🟢 High Priority (Must Test)
 
-| ID         | Title                        | Rationale                               |
-| ---------- | ---------------------------- | --------------------------------------- |
+| ID         | Title                        | Rationale                                |
+| ---------- | ---------------------------- | ---------------------------------------- |
 | US-DEV-001 | First-Time Setup < 5 Minutes | First impression - critical for adoption |
-| US-DEV-002 | Immediate Visual Feedback    | Demonstrates value proposition          |
-| US-DEV-004 | Clone to Dev < 10 Minutes    | Developer experience is paramount       |
-| US-DEV-005 | Easy Access to Logs          | Essential for debugging                 |
-| US-DEV-008 | Production Config Clear      | Production deployments must be reliable |
-| US-DEV-009 | Health Checks Work           | Operational visibility                  |
-| US-DEV-015 | Destructive Ops are Safe     | Data protection                         |
+| US-DEV-002 | Immediate Visual Feedback    | Demonstrates value proposition           |
+| US-DEV-004 | Clone to Dev < 10 Minutes    | Developer experience is paramount        |
+| US-DEV-005 | Easy Access to Logs          | Essential for debugging                  |
+| US-DEV-008 | Production Config Clear      | Production deployments must be reliable  |
+| US-DEV-009 | Health Checks Work           | Operational visibility                   |
+| US-DEV-015 | Destructive Ops are Safe     | Data protection                          |
 
 ### 🟡 Medium Priority (Should Test)
 
-| ID         | Title                     | Rationale                       |
-| ---------- | ------------------------- | ------------------------------- |
-| US-DEV-003 | Clear Project Structure   | Helps understanding             |
-| US-DEV-006 | Clean Rebuild             | Developer productivity          |
-| US-DEV-007 | Smart Rebuild Detection   | Developer productivity          |
-| US-DEV-010 | Database Operations Work  | Operations support              |
-| US-DEV-011 | Validate Configuration    | Error prevention                |
-| US-DEV-012 | Comprehensive Diagnostics | Troubleshooting support         |
-| US-DEV-013 | Commands are Discoverable | Usability                       |
-| US-DEV-014 | Documentation is Accurate | Trust in documentation          |
+| ID         | Title                     | Rationale               |
+| ---------- | ------------------------- | ----------------------- |
+| US-DEV-003 | Clear Project Structure   | Helps understanding     |
+| US-DEV-006 | Clean Rebuild             | Developer productivity  |
+| US-DEV-007 | Smart Rebuild Detection   | Developer productivity  |
+| US-DEV-010 | Database Operations Work  | Operations support      |
+| US-DEV-011 | Validate Configuration    | Error prevention        |
+| US-DEV-012 | Comprehensive Diagnostics | Troubleshooting support |
+| US-DEV-013 | Commands are Discoverable | Usability               |
+| US-DEV-014 | Documentation is Accurate | Trust in documentation  |
 
 ---
 

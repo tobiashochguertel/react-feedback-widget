@@ -37,18 +37,18 @@ def check_docker_daemon(context: dict):
 def check_port_availability(repo_root: Path, context: dict):
     """Check if service ports are available or in use."""
     port_status = {}
-    
+
     for port in SERVICE_PORTS:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.settimeout(1)
         result = sock.connect_ex(('127.0.0.1', port))
         sock.close()
-        
+
         if result == 0:
             port_status[port] = "in_use"
         else:
             port_status[port] = "available"
-    
+
     context["port_status"] = port_status
 
 
@@ -108,7 +108,7 @@ def docker_can_list_containers():
 def ports_available_or_used(context: dict):
     """Verify ports are in expected state."""
     port_status = context.get("port_status", {})
-    
+
     # Each port should be either available or in use
     # (if in use, it could be our containers or something else)
     for port, status in port_status.items():
@@ -121,7 +121,7 @@ def see_status_for_services(context: dict):
     """Verify docker compose ps shows service status."""
     result = context.get("ps_result")
     assert result is not None, "docker compose ps was not run"
-    
+
     # Output should contain something
     output = result.stdout + result.stderr
     assert len(output) > 0, "No output from docker compose ps"
@@ -132,11 +132,11 @@ def services_show_state(context: dict):
     """Verify services show their state."""
     result = context.get("ps_result")
     assert result is not None
-    
+
     # If containers exist, output should show state
     # If no containers, that's also valid info
     output = result.stdout
-    
+
     # Either we have running containers, or the output indicates none
     if "NAME" in output:
         # Has header, might have containers
@@ -151,7 +151,7 @@ def recent_logs_displayed(context: dict):
     """Verify recent log entries are shown."""
     result = context.get("logs_result")
     assert result is not None, "docker compose logs was not run"
-    
+
     # Should have some output (even if just headers)
     output = result.stdout + result.stderr
     # It's OK if there are no logs (containers might not be running)
@@ -162,11 +162,11 @@ def logs_useful_for_debugging(context: dict):
     """Verify logs contain useful debugging info."""
     result = context.get("logs_result")
     assert result is not None
-    
+
     # This is a qualitative check - we just verify logs exist
     # Real debugging utility is subjective
     output = result.stdout + result.stderr
-    
+
     # If there's output, it should have some content
     if output.strip():
         # Logs exist

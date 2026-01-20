@@ -104,13 +104,13 @@ tests/bdd/deployment/
 
 ## Feature Coverage
 
-| Feature                  | User Stories            | Priority | Description                    |
-| ------------------------ | ----------------------- | -------- | ------------------------------ |
-| Quick Evaluation         | US-DEV-001, 002, 003    | High     | First-time setup experience    |
-| Developer Workflow       | US-DEV-004, 005, 006, 007 | High   | Development environment        |
-| Production Deployment    | US-DEV-008, 009, 010    | High     | Production configuration       |
-| Diagnostics              | US-DEV-011, 012         | Medium   | Troubleshooting and validation |
-| Safety                   | US-DEV-015              | High     | Data protection                |
+| Feature               | User Stories              | Priority | Description                    |
+| --------------------- | ------------------------- | -------- | ------------------------------ |
+| Quick Evaluation      | US-DEV-001, 002, 003      | High     | First-time setup experience    |
+| Developer Workflow    | US-DEV-004, 005, 006, 007 | High     | Development environment        |
+| Production Deployment | US-DEV-008, 009, 010      | High     | Production configuration       |
+| Diagnostics           | US-DEV-011, 012           | Medium   | Troubleshooting and validation |
+| Safety                | US-DEV-015                | High     | Data protection                |
 
 ## Test Reports
 

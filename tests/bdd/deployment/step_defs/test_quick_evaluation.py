@@ -28,7 +28,7 @@ scenarios("../features/01_quick_evaluation.feature")
 def run_task_up(repo_root: Path, context: dict):
     """Execute task up to start all services."""
     start_time = time.time()
-    
+
     result = subprocess.run(
         ["task", "up"],
         cwd=repo_root,
@@ -36,11 +36,11 @@ def run_task_up(repo_root: Path, context: dict):
         text=True,
         timeout=600
     )
-    
+
     elapsed = time.time() - start_time
     context["task_up_result"] = result
     context["task_up_elapsed"] = elapsed
-    
+
     # Don't fail here - let subsequent steps check success
 
 
@@ -90,7 +90,7 @@ def output_contains_tasks(context: dict):
     result = context.get("task_list_result")
     assert result is not None, "task --list was not run"
     assert result.returncode == 0, f"task --list failed: {result.stderr}"
-    
+
     # Check for task-like output
     output = result.stdout + result.stderr
     assert len(output) > 50, "Task list output seems too short"
@@ -101,12 +101,12 @@ def each_task_has_description(context: dict):
     """Verify tasks have descriptions."""
     result = context.get("task_list_result")
     assert result is not None
-    
+
     # Task output typically shows tasks with descriptions
     # This is a basic check - descriptions are shown with tasks
     output = result.stdout + result.stderr
     lines = [l for l in output.split("\n") if l.strip()]
-    
+
     # At least some lines should have meaningful content
     assert len(lines) > 3, "Expected more task entries with descriptions"
 
@@ -125,7 +125,7 @@ def page_contains_widget(context: dict):
     """Verify page contains feedback widget markup."""
     response = context.get("page_response")
     assert response is not None
-    
+
     # Check for React app or feedback-related content
     content = response.text.lower()
     # The page should contain some app structure
@@ -140,7 +140,7 @@ def response_status_200(context: dict):
     if response is None:
         error = context.get("health_error", "Unknown error")
         pytest.fail(f"Health request failed: {error}")
-    
+
     assert response.status_code == 200, \
         f"Health endpoint returned {response.status_code}"
 
@@ -150,7 +150,7 @@ def response_indicates_healthy(context: dict):
     """Verify health response indicates healthy."""
     response = context.get("health_response")
     assert response is not None
-    
+
     # Check response content
     try:
         data = response.json()
@@ -174,7 +174,7 @@ def taskfile_exists(repo_root: Path):
 def taskfile_is_valid_yaml(repo_root: Path):
     """Verify Taskfile.yml is valid YAML."""
     taskfile = repo_root / "Taskfile.yml"
-    
+
     try:
         with open(taskfile) as f:
             content = yaml.safe_load(f)

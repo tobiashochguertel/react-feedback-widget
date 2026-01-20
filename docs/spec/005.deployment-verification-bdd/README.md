@@ -494,7 +494,7 @@ def run_task_up(run_task):
     start_time = time.time()
     result = run_task("up", timeout=600)
     elapsed = time.time() - start_time
-    
+
     assert result.returncode == 0, f"task up failed: {result.stderr}"
     return {"elapsed": elapsed, "output": result.stdout}
 
@@ -504,7 +504,7 @@ def containers_healthy(minutes):
     """Verify containers are healthy."""
     timeout = minutes * 60
     start = time.time()
-    
+
     while time.time() - start < timeout:
         result = subprocess.run(
             ["docker", "compose", "ps", "--format", "json"],
@@ -515,7 +515,7 @@ def containers_healthy(minutes):
         if "healthy" in result.stdout.lower() or "running" in result.stdout.lower():
             return
         time.sleep(5)
-    
+
     pytest.fail(f"Containers not healthy within {minutes} minutes")
 
 
@@ -532,7 +532,7 @@ def see_urls():
     # Check services are accessible
     urls = [
         "http://localhost:3001",
-        "http://localhost:3002", 
+        "http://localhost:3002",
         "http://localhost:5173"
     ]
     for url in urls:
@@ -597,14 +597,14 @@ def required_vars_listed(repo_root):
     """Check required variables exist."""
     env_file = repo_root / ".env.example"
     content = env_file.read_text() if env_file.exists() else ""
-    
+
     # These are typically required
     required_patterns = [
         "DATABASE",
         "PORT",
         "NODE_ENV"
     ]
-    
+
     for pattern in required_patterns:
         assert pattern in content, f"Missing {pattern} in .env.example"
 
@@ -777,30 +777,30 @@ on:
     branches: [main]
   pull_request:
     paths:
-      - 'Taskfile.yml'
-      - 'docker-compose*.yml'
-      - 'Dockerfile*'
-      - '.env.example'
+      - "Taskfile.yml"
+      - "docker-compose*.yml"
+      - "Dockerfile*"
+      - ".env.example"
 
 jobs:
   bdd-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-      
+          python-version: "3.11"
+
       - name: Install Task
         uses: arduino/setup-task@v2
-      
+
       - name: Install test dependencies
         run: |
           cd tests/bdd/deployment
           pip install -r requirements.txt
-      
+
       - name: Run BDD tests
         run: |
           cd tests/bdd/deployment
@@ -825,21 +825,21 @@ docker>=7.0.0
 
 ## Test Coverage Mapping
 
-| User Story | Feature File            | Scenarios | Priority |
-| ---------- | ----------------------- | --------- | -------- |
-| US-DEV-001 | 01_quick_evaluation     | 2         | High     |
-| US-DEV-002 | 01_quick_evaluation     | 2         | High     |
-| US-DEV-003 | 01_quick_evaluation     | 2         | Medium   |
-| US-DEV-004 | 02_developer_workflow   | 2         | High     |
-| US-DEV-005 | 02_developer_workflow   | 2         | High     |
-| US-DEV-006 | 02_developer_workflow   | 2         | Medium   |
-| US-DEV-007 | 02_developer_workflow   | 2         | Medium   |
-| US-DEV-008 | 03_production_deployment| 2         | High     |
-| US-DEV-009 | 03_production_deployment| 2         | High     |
-| US-DEV-010 | 03_production_deployment| 2         | Medium   |
-| US-DEV-011 | 04_diagnostics          | 2         | Medium   |
-| US-DEV-012 | 04_diagnostics          | 2         | Medium   |
-| US-DEV-015 | 05_safety               | 4         | High     |
+| User Story | Feature File             | Scenarios | Priority |
+| ---------- | ------------------------ | --------- | -------- |
+| US-DEV-001 | 01_quick_evaluation      | 2         | High     |
+| US-DEV-002 | 01_quick_evaluation      | 2         | High     |
+| US-DEV-003 | 01_quick_evaluation      | 2         | Medium   |
+| US-DEV-004 | 02_developer_workflow    | 2         | High     |
+| US-DEV-005 | 02_developer_workflow    | 2         | High     |
+| US-DEV-006 | 02_developer_workflow    | 2         | Medium   |
+| US-DEV-007 | 02_developer_workflow    | 2         | Medium   |
+| US-DEV-008 | 03_production_deployment | 2         | High     |
+| US-DEV-009 | 03_production_deployment | 2         | High     |
+| US-DEV-010 | 03_production_deployment | 2         | Medium   |
+| US-DEV-011 | 04_diagnostics           | 2         | Medium   |
+| US-DEV-012 | 04_diagnostics           | 2         | Medium   |
+| US-DEV-015 | 05_safety                | 4         | High     |
 
 **Total**: 26 scenarios covering 13 user stories
 

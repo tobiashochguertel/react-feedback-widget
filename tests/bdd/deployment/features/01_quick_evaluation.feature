@@ -30,7 +30,7 @@ Feature: Quick Project Evaluation
     Then the page loads with status 200
     And the page contains feedback widget elements
 
-  @US-DEV-002 @high-priority  
+  @US-DEV-002 @high-priority
   Scenario: Health endpoint responds correctly
     Given services are running
     When I request the health endpoint

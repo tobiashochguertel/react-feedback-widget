@@ -20,7 +20,7 @@ def get_repo_root() -> Path:
         if parent == current:
             break
         current = parent
-    
+
     # Fallback: assume tests/bdd/deployment structure
     return Path(__file__).parent.parent.parent.parent
 
@@ -102,13 +102,13 @@ def run_task(repo_root: Path) -> Callable:
     ) -> subprocess.CompletedProcess:
         """
         Run a task command.
-        
+
         Args:
             task_name: Name of the task to run
             timeout: Command timeout in seconds
             check: If True, raise exception on failure
             input_text: Text to send to stdin
-            
+
         Returns:
             CompletedProcess with stdout, stderr, returncode
         """
@@ -168,18 +168,18 @@ def health_endpoints() -> dict:
 def wait_for_services(timeout: int = 120) -> bool:
     """
     Wait for all services to become healthy.
-    
+
     Args:
         timeout: Maximum time to wait in seconds
-        
+
     Returns:
         True if all services are healthy, False otherwise
     """
     start_time = time.time()
-    
+
     while time.time() - start_time < timeout:
         all_healthy = True
-        
+
         for name, url in HEALTH_ENDPOINTS.items():
             try:
                 response = requests.get(url, timeout=5)
@@ -189,12 +189,12 @@ def wait_for_services(timeout: int = 120) -> bool:
             except requests.exceptions.RequestException:
                 all_healthy = False
                 break
-        
+
         if all_healthy:
             return True
-        
+
         time.sleep(5)
-    
+
     return False
 
 
@@ -206,7 +206,7 @@ def services_running(
 ) -> Generator[None, None, None]:
     """
     Start services before tests and stop after.
-    
+
     This is a module-scoped fixture that:
     1. Starts all services with 'task up'
     2. Waits for services to be healthy
@@ -217,7 +217,7 @@ def services_running(
         pytest.skip("Docker is not running")
     if not task_available:
         pytest.skip("Task is not installed")
-    
+
     # Check if services are already running
     already_running = False
     try:
@@ -227,7 +227,7 @@ def services_running(
                 already_running = True
     except requests.exceptions.RequestException:
         pass
-    
+
     if not already_running:
         # Start services
         result = subprocess.run(
@@ -237,10 +237,10 @@ def services_running(
             text=True,
             timeout=600
         )
-        
+
         if result.returncode != 0:
             pytest.fail(f"Failed to start services: {result.stderr}")
-        
+
         # Wait for services to be healthy
         if not wait_for_services(timeout=180):
             # Try to get logs for debugging
@@ -251,9 +251,9 @@ def services_running(
                 text=True
             )
             pytest.fail(f"Services did not become healthy. Logs:\n{log_result.stdout}")
-    
+
     yield
-    
+
     # Only stop if we started them
     if not already_running:
         subprocess.run(
@@ -271,7 +271,7 @@ def fresh_environment(
 ) -> Generator[None, None, None]:
     """
     Ensure a fresh environment for tests that need isolation.
-    
+
     This fixture:
     1. Stops any running services
     2. Yields control to the test
@@ -279,9 +279,9 @@ def fresh_environment(
     """
     # Stop any running services
     run_task("down", timeout=120)
-    
+
     yield
-    
+
     # Clean up after test
     run_task("down", timeout=120)
 
@@ -289,7 +289,7 @@ def fresh_environment(
 def get_container_status(repo_root: Path) -> dict:
     """
     Get status of all containers.
-    
+
     Returns:
         Dictionary mapping container name to status
     """
@@ -299,7 +299,7 @@ def get_container_status(repo_root: Path) -> dict:
         capture_output=True,
         text=True
     )
-    
+
     status = {}
     for line in result.stdout.strip().split("\n"):
         if line:
@@ -309,5 +309,5 @@ def get_container_status(repo_root: Path) -> dict:
                 state = parts[1]
                 health = parts[2] if len(parts) > 2 else "N/A"
                 status[name] = {"state": state, "health": health}
-    
+
     return status
