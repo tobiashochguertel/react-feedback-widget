@@ -12,7 +12,7 @@ import requests
 
 def get_repo_root() -> Path:
     """Find the repository root by looking for docker-compose.yml (not Taskfile.yml).
-    
+
     We look for docker-compose.yml because that's unique to the repo root,
     while Taskfile.yml exists in multiple directories including this test dir.
     """

@@ -68,7 +68,7 @@ tasks:
       Runs all BDD tests including:
       - Static tests (Taskfile, docker-compose validation)
       - Service tests (requires running services)
-      
+
       Use 'task bdd:test:static' for tests that don't need services.
     deps:
       - setup
