@@ -4,7 +4,7 @@
     "name": "Currently Open Files",
     "files": [
       "docs/spec/002.reference-deployment-tasks/TASKS-OVERVIEW.md",
-      "docs/deployment/bun-nextjs.help.reference.md"
+      ".gitignore"
     ],
     "builtIn": true,
     "bookmarks": {}
