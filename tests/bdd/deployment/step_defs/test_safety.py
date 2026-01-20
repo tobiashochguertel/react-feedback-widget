@@ -1,5 +1,6 @@
 """Step definitions for Safety feature."""
 
+import os
 import subprocess
 from pathlib import Path
 
@@ -8,6 +9,9 @@ import yaml
 from pytest_bdd import scenarios, given, when, then, parsers
 
 from conftest import REPO_ROOT
+
+# Environment variable to control whether to skip service-dependent tests
+REQUIRE_SERVICES = os.environ.get("BDD_REQUIRE_SERVICES", "false").lower() == "true"
 
 # Load scenarios from feature file
 scenarios("../features/05_safety.feature")
@@ -50,6 +54,27 @@ def examine_compose(repo_root: Path, context: dict):
 
     context["compose"] = content
     context["compose_raw"] = compose_path.read_text()
+
+
+@when('I run "task down" to stop services')
+def run_task_down(repo_root: Path, context: dict):
+    """Execute task down to stop services."""
+    # First capture current volume list
+    vol_before = subprocess.run(
+        ["docker", "volume", "ls", "-q"],
+        capture_output=True,
+        text=True
+    )
+    context["volumes_before"] = set(vol_before.stdout.strip().split("\n"))
+
+    result = subprocess.run(
+        ["task", "down"],
+        cwd=repo_root,
+        capture_output=True,
+        text=True,
+        timeout=120
+    )
+    context["down_result"] = result
 
 
 @when("I run docker compose down with volumes flag")

@@ -1,5 +1,6 @@
 """Step definitions for Production Deployment feature."""
 
+import os
 import subprocess
 import json
 from pathlib import Path
@@ -14,6 +15,9 @@ from conftest import (
     SERVICE_URLS,
     HEALTH_ENDPOINTS,
 )
+
+# Environment variable to control whether to skip service-dependent tests
+REQUIRE_SERVICES = os.environ.get("BDD_REQUIRE_SERVICES", "false").lower() == "true"
 
 # Load scenarios from feature file
 scenarios("../features/03_production_deployment.feature")

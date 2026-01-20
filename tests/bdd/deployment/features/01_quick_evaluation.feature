@@ -19,9 +19,9 @@ Feature: Quick Project Evaluation
   @US-DEV-001 @high-priority
   Scenario: All services are accessible after startup
     Given services are running
-    Then I can access feedback-example at "http://localhost:3002"
-    And I can access webui at "http://localhost:5173"
-    And I can access feedback-server at "http://localhost:3001"
+    Then I can access feedback-example at "http://localhost:18196"
+    And I can access webui at "http://localhost:19568"
+    And I can access feedback-server at "http://localhost:15567"
 
   @US-DEV-002 @high-priority
   Scenario: Feedback widget is visible on example page

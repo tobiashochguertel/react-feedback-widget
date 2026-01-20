@@ -30,9 +30,9 @@ Feature: Production Deployment
   @US-DEV-009 @high-priority
   Scenario: All services respond to requests
     Given services are running
-    Then feedback-server responds at port 3001
-    And webui responds at port 5173
-    And feedback-example responds at port 3002
+    Then feedback-server responds at port 15567
+    And webui responds at port 19568
+    And feedback-example responds at port 18196
 
   @US-DEV-010 @medium-priority
   Scenario: Database configuration is accessible

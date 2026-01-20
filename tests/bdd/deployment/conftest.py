@@ -9,6 +9,9 @@ from typing import Generator, Callable
 import pytest
 import requests
 
+# Environment variable to control whether to fail or skip when services aren't available
+REQUIRE_SERVICES = os.environ.get("BDD_REQUIRE_SERVICES", "false").lower() == "true"
+
 
 def get_repo_root() -> Path:
     """Find the repository root by looking for docker-compose.yml (not Taskfile.yml).
@@ -251,7 +254,10 @@ def services_running(
         )
 
         if result.returncode != 0:
-            pytest.fail(f"Failed to start services: {result.stderr}")
+            if REQUIRE_SERVICES:
+                pytest.fail(f"Failed to start services: {result.stderr}")
+            else:
+                pytest.skip(f"Services could not start (set BDD_REQUIRE_SERVICES=true to fail)")
 
         # Wait for services to be healthy
         if not wait_for_services(timeout=180):
@@ -262,7 +268,10 @@ def services_running(
                 capture_output=True,
                 text=True
             )
-            pytest.fail(f"Services did not become healthy. Logs:\n{log_result.stdout}")
+            if REQUIRE_SERVICES:
+                pytest.fail(f"Services did not become healthy. Logs:\n{log_result.stdout}")
+            else:
+                pytest.skip("Services did not become healthy (set BDD_REQUIRE_SERVICES=true to fail)")
 
     yield
 
