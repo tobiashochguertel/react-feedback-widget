@@ -44,6 +44,7 @@
    VsCode extension: `cucumberopen.cucumber-official`
   */
   "cucumber.features": [
+    "tests/bdd/deployment/**/*.feature",
     "tests/bdd/**/*.feature",
     // "packages/**/tests/bdd/features/*.feature",
     // "src/test/**/*.feature",
@@ -52,8 +53,8 @@
     // "*specs*/**/*.feature"
   ],
   "cucumber.glue": [
+    "tests/bdd/deployment/**/*.py",
     "tests/bdd/steps/*.ts",
-    "tests/bdd/**/step_defs/*.ts",
     // "packages/**/tests/bdd/steps/*.ts",
     // "*specs*/**/*.cs",
     // "features/**/*.js",
