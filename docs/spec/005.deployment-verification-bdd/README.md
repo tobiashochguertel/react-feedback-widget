@@ -96,14 +96,14 @@ tests/bdd/deployment/
 **File**: `features/01_quick_evaluation.feature`
 **Status**: ✅ Complete (3 passed, 3 skipped when services not running)
 
-| Scenario                                    | User Story | Status     |
-| ------------------------------------------- | ---------- | ---------- |
-| First-time setup completes successfully     | US-DEV-001 | ⏭️ Skipped |
-| All services are accessible after startup   | US-DEV-001 | ⏭️ Skipped |
-| Feedback widget is visible on example page  | US-DEV-002 | ⏭️ Skipped |
-| Health endpoint responds correctly          | US-DEV-002 | ✅ Passed   |
-| Task list shows available commands          | US-DEV-003 | ✅ Passed   |
-| Taskfile exists and is valid                | US-DEV-003 | ✅ Passed   |
+| Scenario                                   | User Story | Status     |
+| ------------------------------------------ | ---------- | ---------- |
+| First-time setup completes successfully    | US-DEV-001 | ⏭️ Skipped |
+| All services are accessible after startup  | US-DEV-001 | ⏭️ Skipped |
+| Feedback widget is visible on example page | US-DEV-002 | ⏭️ Skipped |
+| Health endpoint responds correctly         | US-DEV-002 | ✅ Passed  |
+| Task list shows available commands         | US-DEV-003 | ✅ Passed  |
+| Taskfile exists and is valid               | US-DEV-003 | ✅ Passed  |
 
 ```gherkin
 @quick-evaluation
@@ -169,13 +169,13 @@ Feature: Quick Project Evaluation
 **File**: `features/02_developer_workflow.feature`
 **Status**: ✅ Complete (3 passed, 2 skipped when services not running)
 
-| Scenario                                      | User Story | Status     |
-| --------------------------------------------- | ---------- | ---------- |
-| Development environment starts successfully   | US-DEV-004 | ⏭️ Skipped |
-| Combined logs are accessible via docker-compose | US-DEV-005 | ✅ Passed   |
-| Clean shutdown works correctly                | US-DEV-006 | ✅ Passed   |
-| Services can be restarted after shutdown      | US-DEV-006 | ⏭️ Skipped |
-| Docker images can be built                    | US-DEV-007 | ✅ Passed   |
+| Scenario                                        | User Story | Status     |
+| ----------------------------------------------- | ---------- | ---------- |
+| Development environment starts successfully     | US-DEV-004 | ⏭️ Skipped |
+| Combined logs are accessible via docker-compose | US-DEV-005 | ✅ Passed  |
+| Clean shutdown works correctly                  | US-DEV-006 | ✅ Passed  |
+| Services can be restarted after shutdown        | US-DEV-006 | ⏭️ Skipped |
+| Docker images can be built                      | US-DEV-007 | ✅ Passed  |
 
 ```gherkin
 @developer-workflow
@@ -258,13 +258,13 @@ Feature: Developer Workflow
 **File**: `features/03_production_deployment.feature`
 **Status**: ✅ Complete (4 passed, 1 skipped when services not running)
 
-| Scenario                                  | User Story | Status     |
-| ----------------------------------------- | ---------- | ---------- |
-| Docker compose configuration is valid     | US-DEV-008 | ✅ Passed   |
-| Environment example file exists           | US-DEV-008 | ✅ Passed   |
-| Health endpoint is accessible             | US-DEV-009 | ✅ Passed   |
-| All services respond to requests          | US-DEV-009 | ⏭️ Skipped |
-| Database configuration is accessible      | US-DEV-010 | ✅ Passed   |
+| Scenario                              | User Story | Status     |
+| ------------------------------------- | ---------- | ---------- |
+| Docker compose configuration is valid | US-DEV-008 | ✅ Passed  |
+| Environment example file exists       | US-DEV-008 | ✅ Passed  |
+| Health endpoint is accessible         | US-DEV-009 | ✅ Passed  |
+| All services respond to requests      | US-DEV-009 | ⏭️ Skipped |
+| Database configuration is accessible  | US-DEV-010 | ✅ Passed  |
 
 ```gherkin
 @production-deployment
@@ -329,12 +329,12 @@ Feature: Production Deployment
 **File**: `features/04_diagnostics.feature`
 **Status**: ✅ Complete (4/4 scenarios passed)
 
-| Scenario                                          | User Story | Status    |
-| ------------------------------------------------- | ---------- | --------- |
-| Docker daemon is running and accessible           | US-DEV-011 | ✅ Passed |
+| Scenario                                               | User Story | Status    |
+| ------------------------------------------------------ | ---------- | --------- |
+| Docker daemon is running and accessible                | US-DEV-011 | ✅ Passed |
 | Required ports are available or in use by our services | US-DEV-011 | ✅ Passed |
-| Container status can be inspected                 | US-DEV-012 | ✅ Passed |
-| Service logs can be retrieved for troubleshooting | US-DEV-012 | ✅ Passed |
+| Container status can be inspected                      | US-DEV-012 | ✅ Passed |
+| Service logs can be retrieved for troubleshooting      | US-DEV-012 | ✅ Passed |
 
 ```gherkin
 @diagnostics
