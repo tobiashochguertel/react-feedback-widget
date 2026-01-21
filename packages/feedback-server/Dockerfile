@@ -45,6 +45,9 @@ RUN bun install
 COPY packages/feedback-server/src ./packages/feedback-server/src
 COPY packages/feedback-server/tsconfig.json ./packages/feedback-server/
 
+# Copy OpenAPI spec for API documentation
+COPY packages/generated/openapi ./packages/generated/openapi
+
 # Build the application
 WORKDIR /app/packages/feedback-server
 RUN bun run build
@@ -93,6 +96,9 @@ RUN bun install --production \
 
 # Copy built files from builder
 COPY --from=builder /app/packages/feedback-server/dist ./packages/feedback-server/dist
+
+# Copy OpenAPI spec for API documentation
+COPY --from=builder /app/packages/generated/openapi ./packages/generated/openapi
 
 # Copy entrypoint script
 COPY packages/feedback-server/entrypoint.sh /app/entrypoint.sh
