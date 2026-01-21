@@ -43,8 +43,11 @@ services:
     working_dir: /app/packages/feedback-server
     command: ['bun', 'run', '--watch', 'src/index.ts']
     healthcheck:
+      # Increased start_period to give Bun watch mode time to start
       interval: 10s
-      start_period: 5s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
 
   # ---------------------------------------------------------------------------
   # Feedback WebUI (Development Overrides)
@@ -64,11 +67,15 @@ services:
     command: ['bun', 'run', 'dev', '--host', '0.0.0.0']
     healthcheck:
       interval: 10s
-      start_period: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
 
   # ---------------------------------------------------------------------------
   # Feedback Example (Development Overrides)
   # ---------------------------------------------------------------------------
+  # NOTE: feedback-example Dockerfile uses /workspace instead of /app
+  # to support Next.js standalone build with workspace resolution
   feedback-example:
     build:
       context: .
@@ -76,12 +83,16 @@ services:
       target: builder
     volumes:
       # Mount source code for hot reload
-      - ./packages/feedback-example/src:/app/packages/feedback-example/src:ro
-      - ./packages/feedback-example/public:/app/packages/feedback-example/public:ro
+      # NOTE: Path is /workspace not /app (matches Dockerfile structure)
+      - ./packages/feedback-example/src:/workspace/packages/feedback-example/src:ro
+      - ./packages/feedback-example/public:/workspace/packages/feedback-example/public:ro
     environment:
       NODE_ENV: development
-    working_dir: /app/packages/feedback-example
+    working_dir: /workspace/packages/feedback-example
     command: ['bun', 'run', 'dev']
     healthcheck:
+      # Next.js dev server takes longer to compile initially
       interval: 10s
-      start_period: 15s
+      timeout: 15s
+      retries: 5
+      start_period: 45s

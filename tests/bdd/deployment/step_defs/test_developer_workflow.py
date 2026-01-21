@@ -271,6 +271,6 @@ def all_containers_running_state(repo_root: Path, context: dict):
     if not status:
         pytest.fail("No containers found after restart")
 
-    # Verify at least some are running
-    running_count = sum(1 for s in status.values() if s.get("State") == "running")
+    # Verify at least some are running (use lowercase "state" from get_container_status)
+    running_count = sum(1 for s in status.values() if s.get("state") == "running")
     assert running_count > 0, f"No containers running. Status: {status}"

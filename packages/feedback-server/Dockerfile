@@ -15,11 +15,12 @@ FROM oven/bun:1.3.6-debian AS builder
 
 WORKDIR /app
 
-# Install build dependencies for native modules (better-sqlite3)
+# Install build dependencies for native modules (better-sqlite3) and health check tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
     make \
     g++ \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Create a minimal workspace package.json for Docker build
