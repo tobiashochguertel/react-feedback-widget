@@ -1,7 +1,7 @@
-# ignored:
-# - DL3008
+ignored:
+  - DL3008
 # - SC1010
-format: json
+# format: codeclimate
 # no-color: false
 # disable-ignore-pragma: false
 # https://github.com/hadolint/hadolint?tab=readme-ov-file#configure

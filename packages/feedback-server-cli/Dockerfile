@@ -23,6 +23,7 @@ LABEL org.opencontainers.image.description="Build environment for feedback-serve
 LABEL org.opencontainers.image.vendor="React Visual Feedback"
 
 # Install system dependencies for native modules (keytar requires libsecret)
+# hadolint ignore=DL3008
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     curl \
@@ -93,6 +94,7 @@ RUN bun build ./src/index.ts --compile --target=bun-windows-x64 --outfile ./bin/
 FROM debian:bookworm-slim AS binaries
 
 # Install minimal runtime dependencies
+# hadolint ignore=DL3008
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     libsecret-1-0 \
@@ -119,6 +121,7 @@ LABEL org.opencontainers.image.description="Feedback Server CLI - Command-line i
 LABEL org.opencontainers.image.vendor="React Visual Feedback"
 
 # Install runtime dependencies
+# hadolint ignore=DL3008
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     libsecret-1-0 \

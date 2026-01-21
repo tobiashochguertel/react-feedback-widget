@@ -25,6 +25,7 @@ LABEL org.opencontainers.image.description="Build environment for react-visual-f
 LABEL org.opencontainers.image.vendor="React Visual Feedback"
 
 # Install system dependencies for native modules and Playwright
+# hadolint ignore=DL3008
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     curl \

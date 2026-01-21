@@ -15,7 +15,8 @@ ARG BUN_VERSION=1.3.6
 FROM oven/bun:${BUN_VERSION}-debian AS base
 
 # Install runtime dependencies
-RUN apt-get update && apt-get install -y wget curl bash findutils tree && apt-get clean && rm -rf /var/lib/apt/lists/*
+# hadolint ignore=DL3008
+RUN apt-get update && apt-get install -y --no-install-recommends wget curl bash findutils tree && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # ============================================
 # Dependencies stage

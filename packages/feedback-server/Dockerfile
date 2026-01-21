@@ -16,6 +16,7 @@ FROM oven/bun:1.3.6-debian AS builder
 WORKDIR /app
 
 # Install build dependencies for native modules (better-sqlite3) and health check tools
+# hadolint ignore=DL3008
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
     make \
@@ -60,6 +61,7 @@ LABEL version="1.0.0"
 WORKDIR /app
 
 # Install runtime dependencies, build tools for native modules, and dumb-init
+# hadolint ignore=DL3008
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     dumb-init \

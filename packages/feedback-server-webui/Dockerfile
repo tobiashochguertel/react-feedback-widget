@@ -50,6 +50,7 @@ LABEL version="1.0.0"
 WORKDIR /app
 
 # Install dumb-init for signal handling
+# hadolint ignore=DL3008
 RUN apt-get update && apt-get install -y --no-install-recommends \
     dumb-init \
     curl \
