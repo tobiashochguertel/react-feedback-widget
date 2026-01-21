@@ -21,7 +21,7 @@ wait_for_server() {
         timeout=${SERVER_WAIT_TIMEOUT:-30}
         elapsed=0
 
-        while [ $elapsed -lt $timeout ]; do
+        while [ $elapsed -lt "$timeout" ]; do
             if curl -sf "$FEEDBACK_SERVER_URL/api/v1/health" >/dev/null 2>&1; then
                 log_info "Feedback Server is ready!"
                 return 0

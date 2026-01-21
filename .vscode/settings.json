@@ -44,14 +44,17 @@
    VsCode extension: `cucumberopen.cucumber-official`
   */
   "cucumber.features": [
-    "packages/**/tests/bdd/features/*.feature",
+    "tests/bdd/**/*.feature",
+    // "packages/**/tests/bdd/features/*.feature",
     // "src/test/**/*.feature",
     // "features/**/*.feature",
     // "tests/**/*.feature",
     // "*specs*/**/*.feature"
   ],
   "cucumber.glue": [
-    "packages/**/tests/bdd/steps/*.ts",
+    "tests/bdd/steps/*.ts",
+    "tests/bdd/**/step_defs/*.ts",
+    // "packages/**/tests/bdd/steps/*.ts",
     // "*specs*/**/*.cs",
     // "features/**/*.js",
     // "features/**/*.jsx",
