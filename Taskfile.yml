@@ -301,7 +301,7 @@ tasks:
     prompt: This will stop services and rebuild everything. Continue?
     deps: [_docker:check, _docker:compose:check]
     cmds:
-      - docker compose down
+      - docker compose down --remove-orphans
       - docker compose build --no-cache
       - docker compose up -d
       - task: health:wait
@@ -347,14 +347,14 @@ tasks:
     desc: Stop all services
     deps: [_docker:check]
     cmds:
-      - docker compose down
+      - docker compose down --remove-orphans
 
   down:volumes:
     desc: Stop all services and remove volumes (data loss!)
     prompt: '⚠️  WARNING: This will DELETE ALL DATA including the database. Are you sure?'
     deps: [_docker:check]
     cmds:
-      - docker compose down -v
+      - docker compose down -v --remove-orphans
       - echo "All volumes removed. Next 'task up' will be a fresh start."
 
   restart:
@@ -561,7 +561,7 @@ tasks:
     prompt: '⚠️  This will DELETE ALL DATA. Are you sure?'
     deps: [_docker:check]
     cmds:
-      - docker compose down -v
+      - docker compose down -v --remove-orphans
       - rm -rf .task/checksum
       - echo "All volumes and build checksums removed. Next 'task deploy' will be a fresh start."
 
@@ -578,7 +578,7 @@ tasks:
     prompt: This will remove all project Docker images and containers. Continue?
     deps: [_docker:check]
     cmds:
-      - docker compose down --rmi all -v
+      - docker compose down --rmi all -v --remove-orphans
       - rm -rf .task/checksum
 
   # ============================================================================
