@@ -1,1 +1,0 @@
-/Users/tobiashochgurtel/work-dev/python/instructions-cli-monorepo/.github/copilot-instructions.md
